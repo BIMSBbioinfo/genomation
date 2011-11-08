@@ -1,0 +1,9 @@
+Package: Genomation
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2011-11-08
+Author: frenkiboy & al2na
+Maintainer: vedran.franke@gmail.com, 
+Description: Function for functional annotation of high througput genomic experiments
+License: What license is it under?
