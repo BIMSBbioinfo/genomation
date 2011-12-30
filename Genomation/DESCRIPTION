@@ -1,8 +1,0 @@
-Package: Genomation
-Title: Genomic Annotation
-Version: 0.1
-Date: 2011-11-08
-Author: al2na & frenkiboy
-Maintainer: Vedran Franke <vedran.franke@gmail.com>
-Description: Functions for functional annotation of high througput genomic experiments
-License: GPL-2
