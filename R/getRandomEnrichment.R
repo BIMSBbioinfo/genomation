@@ -19,7 +19,7 @@
 #' @rdname getRandomEnrichment-methods           
 setGeneric("getRandomEnrichment", function(target,query,randomizations=1000,rand.set=NULL,...) standardGeneric("getRandomEnrichment") )
 
-#' @alias getRandomEnrichment,GRanges,GRanges-method
+#' @aliases getRandomEnrichment,GRanges,GRanges-method
 #' @rdname getRandomEnrichment-methods
 setMethod("getRandomEnrichment",signature(target = "GRanges",query="GRanges"),
         function( target,query,randomizations,rand.set,... ){

@@ -30,7 +30,7 @@
 #' @rdname randomize.feature-methods
 setGeneric("randomize.feature", function(feature,chrom.sizes=NULL,stranded=TRUE,keep.strand.prop=TRUE,keep.chrom=TRUE,exclude=NULL,include=NULL,seed=NULL) standardGeneric("randomize.feature") )
 
-#' @alias randomize.feature,GRanges-method
+#' @aliases randomize.feature,GRanges-method
 #' @rdname randomize.feature-methods
 setMethod("randomize.feature", signature(feature = "GRanges"),
         function( feature,chrom.sizes ,stranded ,keep.strand.prop, keep.chrom,exclude,include,seed ){

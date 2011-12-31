@@ -16,7 +16,7 @@
 #' @rdname scoreMatrixNorm-methods           
 setGeneric("scoreMatrixNorm",function(target,windows,percentile,...) standardGeneric("scoreMatrixNorm") )
 
-#' @alias scoreMatrixNorm,GRanges,RleList-method
+#' @aliases scoreMatrixNorm,GRanges,RleList-method
 #' @rdname scoreMatrixNorm-methods
 setMethod("scoreMatrixNorm",signature("GRanges","RleList"),
           function(target,windows,percentile){
@@ -31,7 +31,7 @@ setMethod("scoreMatrixNorm",signature("GRanges","RleList"),
             
 })
 
-#' @alias  scoreMatrixNorm,GRanges,RleList,ANY-method
+#' @aliases  scoreMatrixNorm,GRanges,GRanges,ANY-method
 #' @rdname scoreMatrixNorm-methods
 setMethod("scoreMatrixNorm",signature("GRanges","GRanges"),
           function(target,windows,percentile,...){

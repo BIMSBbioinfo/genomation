@@ -2,32 +2,22 @@
 # tests and development scripts to be deleted before release
 # ONLY for developer use!!!!!!!!
 #######################
+library(roxygen2)
+roxygenise("~/Dropbox/PAPERS/R-devel/genomation",roclets = c("rd"))
 
-# get data
-#save(slentghs, feature, file = "~/Dropbox/PAPERS/R-devel/genomation_trials/feature.RData")
-#load("~/Dropbox/PAPERS/R-devel/genomation_trials/feature.RData")
-#feat=GRanges(seqnames=as.character( seqnames(feature)),
-#                                        ranges  =ranges( feature),
-#                                        strand  =strand(feature),
-#                                        elementMetadata(feature)
-#            )
-#feature=feat
-#chr.len=slentghs
+load("~/Dropbox/PAPERS/R-devel/genomation/data/feature.RData")
+# cage: cage TCs hg18
+# feature: CpG islands hg18
+# chr.len: chromosome lengths hg18
+# chr.gaps: assembly gaps on hg18
 
-#library(methylKit)
-#chr.gaps=read.bed("~/Downloads/gaps.bed")
 
-#cage=read.bed("~/Dropbox/genomation_data/L3_clusters.humanFantom4.tagTh2.cs.tagcnt.bed")
-
-#detach(package:methylKit)
-#save(cage,chr.gaps,chr.len, feature, file = "~/Dropbox/PAPERS/R-devel/genomation_trials/feature.RData")
-
-load("~/Dropbox/PAPERS/R-devel/genomation_trials/data/feature.RData")
 
 library(devtools)
-load_all("~/Dropbox/PAPERS/R-devel/genomation_trials")
-#source("~/Dropbox/PAPERS/R-devel/genomation_trials/R/getRandomEnrichment.R")
-#tester and development script
+load_all("~/Dropbox/PAPERS/R-devel/genomation")
+
+
+
 
 randomize.feature(feature)
 randomize.feature(feature,chrom.sizes=chr.len)

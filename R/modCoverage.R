@@ -24,7 +24,7 @@
 #' @rdname modCoverage-methods           
 setGeneric("modCoverage", function(x,col.name,multiply=1000,add=1) standardGeneric("modCoverage") )
 
-#' @alias modCoverage,GRanges,character-method
+#' @aliases modCoverage,GRanges,character-method
 #' @rdname modCoverage-methods
 setMethod("modCoverage", signature(x= "GRanges",col.name="character"),
         function( x,col.name,multiply,add ){
