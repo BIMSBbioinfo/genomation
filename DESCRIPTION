@@ -24,4 +24,5 @@ Collate:
     'getRandomEnrichment.R'
     'modCoverage.R'
     'scoreMatrix.R'
+    'scoreMatrixNorm.R'
 
