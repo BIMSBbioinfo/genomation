@@ -62,7 +62,7 @@ make.scoreMatrix<-function(target,windows){
 #'
 #' @usage scoreMatrix(target,windows,target,windows,strand.aware=FALSE,...)
 #' @return returns a \code{scoreMatrix} object
-#' @seealso \code{link{scoreMatrixBin-methods}}, \code{link{modCoverage-methods}}
+#' @seealso \code{\link{scoreMatrixBin}}, \code{\link{modCoverage}}
 
 #' @export
 #' @docType methods
