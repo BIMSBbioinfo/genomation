@@ -1,8 +1,8 @@
 \docType{methods}
-\name{scoreMatrix}
-\alias{scoreMatrix}
-\alias{scoreMatrix,GRanges,GRanges,ANY-method}
-\alias{scoreMatrix,GRanges,RleList-method}
+\name{scoreMatrixBin}
+\alias{scoreMatrixBin}
+\alias{scoreMatrixBin,GRanges,GRanges,ANY-method}
+\alias{scoreMatrixBin,GRanges,RleList-method}
 \title{get scores overlapping with windows in a scoreMatrix object}
 \usage{
   scoreMatrix(target,windows)
@@ -16,6 +16,13 @@
   random regions with \code{target} will be the background
   distribution of association between \code{target} and
   \code{query}.}
+
+  \item{bin.num}{A single \code{integer} value denoting how
+  many bins there should be for each window}
+
+  \item{bin.op}{A bin operation that is either one of the
+  following strings: "max","min","mean". The operation is
+  applied on the values in the bin. Defaults to "mean"}
 
   \item{strand.aware}{If TRUE (default: FALSE), the strands
   of the windows will be taken into account in the
@@ -32,8 +39,9 @@
 \description{
   A scoreMatrix object can be used to draw average profiles
   or heatmap of read coverage or wig track-like data.
-  \code{windows} can be a predefined region around
-  transcription start sites or other regions of interest
-  that have equal lengths
+  \code{windows} can be a predefined region such as CpG
+  islands or gene bodies that are not necessarily
+  equi-width. Each window will be chopped to equal number
+  of bins based on \code{bin.num} option.
 }
 

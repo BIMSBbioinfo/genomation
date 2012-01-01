@@ -34,3 +34,16 @@ system.time(getRandomEnrichment(target=cage,query=feature,randomizations=10)) # 
 x=modCoverage(cage,col.name="score",multiply=1000,add=1)
 is(x,"RleList") # TRUE
 is(x,"modRleList") # TRUE 
+
+
+# make equi-width windows for scoreMatrix function
+wins=feature
+end(wins)=start(wins)+500
+
+# work/test on scoreMatrix function
+mat=scoreMatrix(target=x,windows=wins);class(mat);dim(mat)
+head(mat)
+#trace("scoreMatrix", browser, exit=browser, signature = c("RleList","GRanges"))
+
+mat=scoreMatrixBin(target=x,windows=feature,bin.num=20);class(mat);dim(mat)
+

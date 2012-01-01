@@ -49,3 +49,15 @@ setMethod("show", "randomEnrichment", function(object) {
 setClass("modRleList", representation(multiply="numeric",add="numeric"),
         contains = "SimpleRleList")
 
+
+
+#' An S4 class for storing \code{scoreMatrix} function results
+#'
+#' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
+#' Each row on the scoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
+#'
+#' @name scoreMatrix-class
+#' @rdname scoreMatrix-class
+#' @seealso \code{\link{scoreMatrix-methods}}
+#' @export
+setClass("scoreMatrix",contains = "matrix")
