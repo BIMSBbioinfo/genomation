@@ -33,7 +33,7 @@ make.scoreMatrix<-function(target,windows){
             if(is(target,"modRleList")){
               
               #remove values full of NA values
-              mat=mat[rowSums(mat)>0,]
+              #mat=mat[rowSums(mat)>0,]
               
               mat=(mat-target@add)/target@multiply
               mat[mat<0]=NA
