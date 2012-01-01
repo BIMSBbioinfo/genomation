@@ -55,13 +55,15 @@ make.scoreMatrix<-function(target,windows){
 #' A scoreMatrix object can be used to draw average profiles or heatmap of read coverage or wig track-like data.
 #' \code{windows} can be a predefined region around transcription start sites or other regions of interest that have equal lengths
 #'
-#' @param target a \code{RleList} or a \code{modRleList} object to be overlapped with ranges in \code{windows}
-#' @param windows a \code{GRanges} object that will be randomly placed across the genome and overlap of these random regions with \code{target} will be the background distribution of association between \code{target} and \code{query}.
+#' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} object to be overlapped with ranges in \code{windows}
+#' @param windows a \code{GRanges} object that contains the windows of interest. It could be promoters, CpG islands, exons, introns. However the sizes of windows have to be equal.
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
-#' @param ... parameters to be passed to \code{modCoverage} function
+#' @param ... parameters to be passed to \code{modCoverage} function. Only needed when target is \code{GRanges}.
 #'
-#' @usage scoreMatrix(target,windows)
+#' @usage scoreMatrix(target,windows,target,windows,strand.aware=FALSE,...)
 #' @return returns a \code{scoreMatrix} object
+#' @seealso \code{link{scoreMatrixBin-methods}}, \code{link{modCoverage-methods}}
+
 #' @export
 #' @docType methods
 #' @rdname scoreMatrix-methods           

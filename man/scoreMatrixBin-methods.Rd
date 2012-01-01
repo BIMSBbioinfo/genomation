@@ -5,17 +5,17 @@
 \alias{scoreMatrixBin,GRanges,RleList-method}
 \title{get scores overlapping with windows in a scoreMatrix object}
 \usage{
-  scoreMatrix(target,windows)
+  scoreMatrixBin(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...)
 }
 \arguments{
-  \item{target}{a \code{RleList} or a \code{modRleList}
-  object to be overlapped with ranges in \code{windows}}
+  \item{target}{a \code{RleList} or a \code{modRleList} or
+  \code{GRanges} object to be overlapped with ranges in
+  \code{windows}}
 
-  \item{windows}{a \code{GRanges} object that will be
-  randomly placed across the genome and overlap of these
-  random regions with \code{target} will be the background
-  distribution of association between \code{target} and
-  \code{query}.}
+  \item{windows}{a \code{GRanges} object that contains the
+  windows of interest. It could be promoters, CpG islands,
+  exons, introns. However the sizes of windows does NOT
+  have to be equal.}
 
   \item{bin.num}{A single \code{integer} value denoting how
   many bins there should be for each window}
@@ -31,7 +31,7 @@
   reversed}
 
   \item{...}{parameters to be passed to \code{modCoverage}
-  function}
+  function. Only needed when target is \code{GRanges}.}
 }
 \value{
   returns a \code{scoreMatrix} object
@@ -43,5 +43,8 @@
   islands or gene bodies that are not necessarily
   equi-width. Each window will be chopped to equal number
   of bins based on \code{bin.num} option.
+}
+\seealso{
+  \code{link{scoreMatrix-methods}},\code{link{modCoverage-methods}}
 }
 

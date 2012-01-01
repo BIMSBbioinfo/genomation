@@ -102,15 +102,16 @@ make.scoreMatrixBin<-function(target,windows,bin.num,bin.op)
 #' \code{windows} can be a predefined region such as CpG islands or gene bodies that are not necessarily equi-width.
 #' Each window will be chopped to equal number of bins based on \code{bin.num} option.
 #'
-#' @param target a \code{RleList} or a \code{modRleList} object to be overlapped with ranges in \code{windows}
-#' @param windows a \code{GRanges} object that will be randomly placed across the genome and overlap of these random regions with \code{target} will be the background distribution of association between \code{target} and \code{query}.
+#' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} object to be overlapped with ranges in \code{windows}
+#' @param windows a \code{GRanges} object that contains the windows of interest. It could be promoters, CpG islands, exons, introns. However the sizes of windows does NOT have to be equal.
 #' @param bin.num A single \code{integer} value denoting how many bins there should be for each window
 #' @param bin.op A bin operation that is either one of the following strings: "max","min","mean". The operation is applied on the values in the bin. Defaults to "mean"
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
-#' @param ... parameters to be passed to \code{modCoverage} function
+#' @param ... parameters to be passed to \code{modCoverage} function. Only needed when target is \code{GRanges}.
 #'
-#' @usage scoreMatrix(target,windows)
+#' @usage scoreMatrixBin(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...)
 #' @return returns a \code{scoreMatrix} object
+#' @seealso \code{link{scoreMatrix-methods}},\code{link{modCoverage-methods}}
 #' @export
 #' @docType methods
 #' @rdname scoreMatrixBin-methods           

@@ -5,17 +5,17 @@
 \alias{scoreMatrix,GRanges,RleList-method}
 \title{get scores overlapping with windows in a scoreMatrix object}
 \usage{
-  scoreMatrix(target,windows)
+  scoreMatrix(target,windows,target,windows,strand.aware=FALSE,...)
 }
 \arguments{
-  \item{target}{a \code{RleList} or a \code{modRleList}
-  object to be overlapped with ranges in \code{windows}}
+  \item{target}{a \code{RleList} or a \code{modRleList} or
+  \code{GRanges} object to be overlapped with ranges in
+  \code{windows}}
 
-  \item{windows}{a \code{GRanges} object that will be
-  randomly placed across the genome and overlap of these
-  random regions with \code{target} will be the background
-  distribution of association between \code{target} and
-  \code{query}.}
+  \item{windows}{a \code{GRanges} object that contains the
+  windows of interest. It could be promoters, CpG islands,
+  exons, introns. However the sizes of windows have to be
+  equal.}
 
   \item{strand.aware}{If TRUE (default: FALSE), the strands
   of the windows will be taken into account in the
@@ -24,7 +24,7 @@
   reversed}
 
   \item{...}{parameters to be passed to \code{modCoverage}
-  function}
+  function. Only needed when target is \code{GRanges}.}
 }
 \value{
   returns a \code{scoreMatrix} object
@@ -35,5 +35,9 @@
   \code{windows} can be a predefined region around
   transcription start sites or other regions of interest
   that have equal lengths
+}
+\seealso{
+  \code{link{scoreMatrixBin-methods}},
+  \code{link{modCoverage-methods}}
 }
 
