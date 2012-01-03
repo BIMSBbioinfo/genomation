@@ -124,8 +124,8 @@ check.bed.validity<-function(bed.df,type="none")
 
 }
 
-# ----------------------------------------------------------------------------------- #
 
+# ----------------------------------------------------------------------------------- #
 # SECTION 1: S4 functions
 
 
@@ -326,6 +326,7 @@ setMethod("show", "annotationByGenicParts", function(object) {
 })
 
 
+# ----------------------------------------------------------------------------------- #
 # SECTION 2: S3 FUNCTIONS 
 # these shouldn't be exported
 
