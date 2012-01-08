@@ -90,7 +90,7 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
               new("scoreMatrix",mat)
             }else if(unique(strand(windows)) %in% "-" ){
               
-              mat1=make.scoreMatrix(target,windows[strand(windows)=="-",])
+              mat1=make.scoreMatrix(target,windows[strand(windows) == "-",])
               mat2=make.scoreMatrix(target,windows[strand(windows) != "-",])
               
               new("scoreMatrix",rbind( mat1[ncol(mat1):1],mat2) )
