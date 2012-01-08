@@ -3,7 +3,7 @@
 #######################################
 
 # returns a matrix
-make.scoreMatrix<-function(target,windows){
+_make.scoreMatrix<-function(target,windows, strand.aware = FALSE){
   
               
             #check if there are common chromsomes
@@ -18,16 +18,18 @@ make.scoreMatrix<-function(target,windows){
             
             #get views           
             my.vList=Views( target[names(target) %in% chrs], win.list[names(win.list) %in% chrs] )            
-            #RleViewsList( rleList = target[names(target) %in% chrs], rangesList = win.list[names(win.list) %in% chrs] )
-            
             # get vectors from Views and make a matrix outof it
             my.func<-function(x) t(viewApply( x,as.vector,simplify=TRUE))
-            ##my.len <-function(x) (viewApply( x,length,simplify=TRUE))
-            ##my.len(my.vList$chr15 )
             
             # make a matrix from those views            
-            mat.list=sapply(my.vList,my.func,simplify=FALSE,USE.NAMES = FALSE);class(mat.list)
-            mat=do.call("rbind",mat.list)
+            mat.list = sapply(my.vList,my.func,simplify=FALSE,USE.NAMES = FALSE);class(mat.list)
+            mat = do.call("rbind",mat.list)
+			
+			# if the order is strand aware it reverses the profiles on the negative strand
+			if(strand.aware == TRUE){
+				s.ind = as.vector(strand(windows) == '-')
+				mat[s.ind] = rev(mat[s.ind])
+			}
                     
             # if the target is modRleList do appropriate calculations to get the score and put NAs in cells that have no value
             if(is(target,"modRleList")){
@@ -40,7 +42,6 @@ make.scoreMatrix<-function(target,windows){
               
             }
       return(mat)
-  
 }
 
 
@@ -84,25 +85,7 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
             constraint=GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len))  )
             windows=subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE)
             
-            if(! strand.aware)
-            {
-              mat=make.scoreMatrix(target, windows)
-              new("scoreMatrix",mat)
-            }else if(unique(strand(windows)) %in% "-" ){
-              
-              mat1=make.scoreMatrix(target,windows[strand(windows) == "-",])
-              mat2=make.scoreMatrix(target,windows[strand(windows) != "-",])
-              
-              new("scoreMatrix",rbind( mat1[ncol(mat1):1],mat2) )
-                
-            }else{
-              mat=make.scoreMatrix(target,windows)
-              new("scoreMatrix",mat)              
-            }             
-
-            make.scoreMatrix(target,windows)
-
-               
+            mat = _make.scoreMatrix(target, windows, strand.aware=strand.aware)
             return( new("scoreMatrix",mat) )
 })
 

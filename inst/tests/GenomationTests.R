@@ -6,9 +6,12 @@ test_that("scoreMatrix works",
 		rl = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
 		
 		# test for proper workings
-		gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,5),c(3,7,3,7)))
+		gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,5),c(3,7,3,7)), strand=c('+','-','+','-'))
 		m1 = as(matrix(c(1,1,1,2,2,3,4,4,4,5,5,6), ncol=3, byrow=T), 'scoreMatrix')
-		expect_identical(scoreMatrix(rl, gr1), m1)
+		expect_identical(scoreMatrix(rl, gr1, strand.aware = FALSE), m1)
+		
+		m2 = as(matrix(c(1,1,1,3,2,2,4,4,4,6,5,5), ncol=3, byrow=T), 'scoreMatrix')
+		expect_identical(scoreMatrix(rl, gr1, strand.aware = TRUE), m2)
 		
 		# test for different lengths
 		gr2 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,5),c(3,7,3,9)))
