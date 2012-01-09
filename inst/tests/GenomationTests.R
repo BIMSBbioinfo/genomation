@@ -1,3 +1,4 @@
+# ------------------------------------------- #
 # test for scoreMatrix function
 test_that("scoreMatrix works",
 	{
@@ -22,3 +23,13 @@ test_that("scoreMatrix works",
 		m3 = as(matrix(c(1,1,1,2,2,3,4,4,4), ncol=3, byrow=T), 'scoreMatrix')
 		expect_that(scoreMatrix(rl, gr3), is_identical_to(m3))
 	})
+	
+
+# ------------------------------------------- #
+# test for scoreMatrixList
+# test_that("scoreMatrixList initalization works",
+	# {
+		
+	
+	# })
+	

@@ -61,3 +61,16 @@ setClass("modRleList", representation(multiply="numeric",add="numeric"),
 #' @seealso \code{\link{scoreMatrix-methods}}
 #' @export
 setClass("scoreMatrix",contains = "matrix")
+
+
+#' An S4 class for storing a set of \code{scoreMatrix} 
+#'
+#' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
+
+#'
+#' @name scoreMatrixList-class
+#' @rdname scoreMatrixList-class
+#' @seealso \code{\link{scoreMatrixList-methods}}
+#' @export
+setClass("scoreMatrixList", representation(scoreList="list") ,contains = "list", validity=scoreMatrixList.Check)
+
