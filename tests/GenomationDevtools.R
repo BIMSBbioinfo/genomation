@@ -34,22 +34,28 @@ library(devtools)
 	test_dir(test_path)
 	
 	set.seed(10)
-	n = 2000
-	r = RleList('1' = (c(sapply(c(5,15, 25, 35), function(x)rpois(n, x)))))
-	g = GRanges(1, IRanges(seq(1, length(r[[1]]), 50), width=50))
-	s = scoreMatrix(r, g)
-	f = factor(rep(1:4, each=n/50))
-	png(file.path(lib.path, 'scoreMatrix.png'), width=1000, height=600)
-		plotMatrix(s, fact=f)
-	dev.off()
-	png(file.path(lib.path, 'scoreMatrix.png'), width=1000, height=600)
-		plotMatrix(s)
-	dev.off()
 	
-	levels(f) = c('Class1','Class2','Class3','Class4')
-	png(file.path(lib.path, 'scoreMatrix.png'), width=1000, height=600)
-		plotMatrix(s, fact=f)
+	f = function(x, n=2000){
+		n=n
+		r = RleList('1'=c(sapply(c(x, x+5, x+10, x+15), function(y)rpois(n, y))))
+		g = GRanges(1, IRanges(seq(1, length(r[[1]]), 50), width=50))
+		scoreMatrix(r, g)
+	}
+	l = lapply(c(5,10,15,20), f)
+	lg = scoreMatrixList(l)
+	
+	png(file.path(lib.path, 'sml.png'), width=1000, height=800)
+		heatmapProfile(lg)
 	dev.off()
+		
+	
+	sl1 = s1[1:4,1:4]
+	sl2 = s1[1:4,1:10]
+	sl3 = cbind(sl2,sl2)
+	sl4 = rbind(sl3, sl3, sl3)
+	sl = scoreMatrixList(sl1,sl2,sl3,sl4)
+	s2 = scoreMatrix(r, g)
+	sl = scoreMatrixList(s1, s2)
 	
 	#/{{3}} MAIN
 #/{2} CODE

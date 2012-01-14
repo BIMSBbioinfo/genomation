@@ -3,40 +3,52 @@
 #######################################
 
 # returns a matrix
-.make.scoreMatrix<-function(target,windows, strand.aware = FALSE){
+make.scoreMatrix<-function(target, win.list){
   
-             
+	checkClass(target, 'SimpleRleList')
+	checkClass(win.list, 'CompressedIRangesList')
+	
+	#get views           
+    my.vList = Views(target, win.list)            
+    # get vectors from Views and make a matrix outof it
+    my.func = function(x) t(viewApply( x, as.vector,simplify=TRUE))
             
-            #get views           
-            my.vList = Views(target[chrs], win.list[chrs] )            
-            # get vectors from Views and make a matrix outof it
-            my.func = function(x) t(viewApply( x, as.vector,simplify=TRUE))
-            
-            # make a matrix from those views            
-            mat.list = sapply(my.vList,my.func,simplify=FALSE,USE.NAMES = FALSE)
-            mat = do.call("rbind", mat.list)
-			rownames(mat) = 
-			
-			# if the order is strand aware it reverses the profiles on the negative strand
-			if(strand.aware == TRUE){
-				s.ind = as.vector(strand(windows) == '-')
-				mat[s.ind] = rev(mat[s.ind])
-			}
-                    
-            # if the target is modRleList do appropriate calculations to get the score and put NAs in cells that have no value
-            if(is(target,"modRleList")){
+    # make a matrix from those views            
+    mat.list = sapply(my.vList,my.func,simplify=FALSE,USE.NAMES = FALSE)
+    mat = do.call("rbind", mat.list) 
+			        
+    # if the target is modRleList do appropriate calculations to get the score and put NAs in cells that have no value
+    if(is(target,"modRleList")){
               
-              #remove values full of NA values
-              #mat=mat[rowSums(mat)>0,]
+		#remove values full of NA values
+		#mat=mat[rowSums(mat)>0,]
               
-              mat=(mat-target@add)/target@multiply
-              mat[mat<0]=NA
-              
-            }
-      return(mat)
+		mat=(mat-target@add)/target@multiply
+		mat[mat<0]=NA
+   }
+   return(mat)
 }
 
+# removes ranges that fell of the rle object
+# does not check for the correspondence of the chromosome names - always chech before using this function
+removeOffRanges = function(target, windows){
+	
+	checkClass(target, 'SimpleRleList')
+	checkClass(windows, 'GRanges')
+	
+	r.chr.len = lapply(target, length)
+    constraint = GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len)))
+    win.list.chr = subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE)
+	return(win.list.chr)
+}
 
+# checkw whether the x object corresponds to the given class
+checkClass = function(x, class.name, var.name = deparse(substitute(x))){
+
+	fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
+	if(!class(x) == class.name)
+		stop(paste(fun.name,': ', var.name, ' is not of class: ', class.name, '\n', sep=''))
+}
 #######################################
 # S4 functions
 #######################################
@@ -72,18 +84,43 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
           function(target,windows,strand.aware){
             
             #check if all windows are equal length
-            if( length(unique(width(windows))) >1 ){
+            if( length(unique(width(windows))) >1 )
               stop("width of 'windows' are not equal, provide 'windows' with equal widths")
-            }
-			
-            #check if windows lengths exceeds the length of feature based chromosomes
-            r.chr.len=lapply(target,length)
-            constraint=GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len)))
-			values(windows)$rank = 1:length(windows)
-            windows=subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE)
             
-            mat = .make.scoreMatrix(target, windows, strand.aware=strand.aware)
-            return( new("scoreMatrix",mat) )
+			# set a uniq id for the GRanges
+			values(windows)$X_rank = 1:length(windows)
+			
+			# checks if the chromosome names overlap
+            chrs = intersect(names(target), unique(as.vector(seqnames(windows))))
+            if(length(chrs)==0){
+              stop("There are no common chromosomes/spaces to do overlap")
+            }
+			target.chr = target[chrs]
+			windows.chr = windows[as.vector(seqnames(windows)) %in% chrs]
+			seqlevels(windows.chr) = chrs
+			
+            # check if windows lengths exceeds the length of feature based chromosomes
+            windows.chr = removeOffRanges(target.chr, windows.chr)
+			# checks whether we have any ranges left
+			if(length(windows.chr) == 0){
+				warning('windows have no ranges left after filtering')
+				mat = matrix(nrow=0, ncol=0)
+			
+			}else{
+			
+				# gets the views
+				win.list.chr = as(windows.chr, 'RangesList')
+				mat = make.scoreMatrix(target.chr, win.list.chr)
+				
+				# if the order is strand aware it reverses the profiles on the negative strand
+				if(strand.aware == TRUE){
+					s.ind = as.vector(strand(windows.chr) == '-')
+					mat[s.ind,] = t(apply(mat[s.ind,],1, rev))
+				}
+				# sets the rownames to the corresponding ranges from the windows variable
+				rownames(mat) = values(windows.chr)$X_rank
+			}
+            return(new("scoreMatrix",mat))
 })
 
 #' @aliases scoreMatrix,GRanges,GRanges,ANY-method

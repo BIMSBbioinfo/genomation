@@ -72,5 +72,8 @@ setClass("scoreMatrix",contains = "matrix")
 #' @rdname scoreMatrixList-class
 #' @seealso \code{\link{scoreMatrixList-methods}}
 #' @export
-setClass("scoreMatrixList", representation(scoreList="list") ,contains = "list", validity=scoreMatrixList.Check)
+setClass("scoreMatrixList", 
+			contains = "list"
+#			validity=.valid.scoreMatrixList
+			)
 

@@ -1,55 +1,89 @@
 setGeneric("scoreMatrixList",function(...) standardGeneric("scoreMatrixList"))
 
 # constructor
-setMethod("scoreMatrixList", signature(...),
-          function(...){
-            l = as.list(...)
-            return(new("scoreMatrixList"), ...)
-})
+scoreMatrixList = function(...){
+	l = list(...)
+	len = length(l)
+	if(len == 0L){
+		stop('length of the arguments is zero')
+	}else{
+		if(len == 1L && is.list(l[[1]]))
+			l = l[[1]]
+		if(!all(unlist(lapply(l, class)) == 'scoreMatrix'))
+			stop('Not all provided elements are of class scoreMatrix')
+	}
+	return(new("scoreMatrixList",l))
+}
 
 # --------------------------------- #
 # Validator
-scoreMatrixList.Check = function(sml){
+.valid.scoreMatrixList = function(x){
 	errors = character()
 	# checks whether all matrices are of class scoreMatrix
 	if(!all(unlist(lapply(l, function(x)class(x) == 'scoreMatrix'))))
 		errors = paste(errors, 'All elements for scoreMatrixList need to be of class scoreMatrix', sep='\n')
 
 	# checks whether all matrices are numeric
-	if(!all(unlist(lapply(l, function(x)all(is.integer(x) | is.numeric(x)))))))
+	if(!all(unlist(lapply(l, function(x)all(is.integer(x) | is.numeric(x))))))
 		errors = paste(errors, 'Not all matrices are of type integer or numeric', sep='\n')
 		
 	if(length(errors) == 0) TRUE else errors 
 }
 
 
-
+# --------------------------------- #
+# show Methods
+setMethod("show", "scoreMatrixList",
+			function(object){
+				dims = lapply(object, dim)
+				len = length(object)
+				widths = apply(do.call(rbind, dims),2, function(x)max(nchar(x)))
+				cat('scoreMatrixlist of length:', len, '\n')
+				for(i in 1:len){
+					s=sprintf(paste('%d%s ','%',widths[1],'d %',widths[2],'d\n', sep=''), 
+							i, '. scoreMatrix with dims:', dims[[i]][1], dims[[i]][2])
+					cat(s)
+				}
+			}
+)
 
 # --------------------------------- #
 # plot functions for score matrix list
 
-# setGeneric("heamapProfile", function(mat.list, ...))
+setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, ...)standardGeneric("heatmapProfile"))
 
-# setMethod("heatmapProfile", signature("scoreMatrixList"),
-		  # function(mat.list, ...){
-		  
-			# par(cex=(0.1 +0.1*nsamp/1000) * nsamp/500, mar=c(2,2,2,2), oma=c(1,1,1,1), cex.axis=1.5, cex.main=2)
-            # layout(matrix(1:3, ncol=3), widths=c(5,1,1))
-                     
-            # image(x=0:ncol(mat), y=0:nrow(mat), z = t(mat.ord), col=mat.cols, useRaster=T, main=name , xlab="Positon", ylab="Sample")
-            # AddSep(mat, rowsep[-length(rowsep)], "black")
-                        
-            # image(t(matrix(as.numeric(fact[ord.fact]), ncol=1)), col=key.cols, axes=F)
+setMethod("heatmapProfile", signature("scoreMatrixList"),
+			function(mat.list, mat.cols){
+				
+				dims = unlist(lapply(mat.list, nrow))
+				if(!length(unique(dims)) == 1)
+					stop('scoreMatrixList does not contain matrices with the same number of rows')
+				
+				if(is.null(mat.cols)){
+					cat('Using default mat.cols...\n')
+					mat.cols = colorRampPalette(c('lightgray','darkblue'), interpolate='spline')(20)
+				}
+				
+				ncols = unlist(lapply(mat.list, ncol))
+				nrow = nrow(mat.list[[1]])
+				len = length(mat.list)
+				layout(matrix(1:len, ncol=len), ncols)
 
-            # plots the annotation for each group
-            # t = tab/2
-            # t[2:nfac] = t[1:(nfac-1)] +t[2:nfac]
-            # plot.new()
-            # plot.window(xlim=c(0,2), ylim=c(0,nrow(mat)))
-            # text(1, cumsum(t)+2^(1:nfac), levels(fact), cex=1.5)
-		  
-			
-		  
-		  # }
-# )
+				for(i in 1:len){
+					cat('Plotting matrix: ', i,'\r')
+					if(i == 1){
+						par(mar=c(3,3,3,.5))
+					}else{
+						par(mar=c(3,.5,3,.5))
+					}
+					
+					image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), main=names(mat.list)[i], col=mat.cols,yaxt='n', xlab='', ylab='', useRaster=T)
+					if(i==1){
+						s = round(fivenum(1:nrow))
+						axis(2, at=s, las=2, cex.lab=2, labels=s)
+					}
+				}
+				cat('n')
+		 }
+)
 
