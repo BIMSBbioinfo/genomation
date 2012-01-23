@@ -19,12 +19,12 @@ Suggests:
     testthat
 Collate:
     'genomation-classes.R'
+    'getRandomEnrichment.R'
+	'miscFunctions'
+    'modCoverage.R'
     'read_annotate.R'
     'randomize.feature.R'
-    'getRandomEnrichment.R'
-    'modCoverage.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
 	'scoreMatrixList.R'
-	'miscFunctions'
 
