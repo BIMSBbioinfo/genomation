@@ -25,4 +25,6 @@ Collate:
     'modCoverage.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
+	'scoreMatrixList.R'
+	'miscFunctions'
 

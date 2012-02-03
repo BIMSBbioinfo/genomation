@@ -1,0 +1,5 @@
+08.01.2011.
+	* what to do when the ranges for score matrix overlap - make the user select only nonoverlapping ranges?
+	* implement plotting for mean profiles over the ranges
+	* implement scoreMatrixList and plotting for score matrix list
+	* implement naming of the classes on the plot
