@@ -3,7 +3,7 @@
 ### AUTHOR: frenkiboy
 
 # {1} LIBRARIES
-# library(devtools)
+library(devtools)
  # library(testthat)
 #/{1} LIBRARIES
 

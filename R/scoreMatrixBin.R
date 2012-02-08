@@ -159,3 +159,20 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
             scoreMatrixBin(target.rle,windows,bin.num,bin.op,strand.aware)
             
 })
+
+
+# given a vector and length smooths the vector to a given size
+# ScalerLarge = function(a, len, round.means=FALSE){
+  
+    # if(length(a) < len)
+		# stop('vector can not be extended')
+    # s = unique(seq.int(1, length(a), length.out=len+1))
+    # starts = ceiling(s)[-length(s)]
+    # ends = floor(s)[-1]
+    # v = viewMeans(Views(a, starts, ends))
+    # if(round.means == TRUE){
+      # v=round(v)
+    # }
+          
+    # return(v)
+  # }
