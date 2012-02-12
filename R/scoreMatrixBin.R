@@ -4,92 +4,83 @@
 # S3 functions
 #######################################
 
-# returns a matrix
-make.scoreMatrixBin<-function(target,windows,bin.num,bin.op)
-{
-            # chop windows to bins
-            my.binner=function(strt,end,nbins){
-              x=round(seq(from = strt, to = end,length.out=nbins ) )
-              my.strt=x[1:(nbins-1)]
-              my.end =x[2:nbins]-1
-              
-              return( t(cbind(my.strt, my.end) )  )
-            }
+# given a target Rle/modRle and windows gets the views to be used for binning
+getViewsBin = function(target, windows, bin.num){
 
-            coord=matrix(
-                        mapply(my.binner,start(windows),end(windows),bin.num+1,SIMPLIFY=TRUE )
-                    ,ncol=2,byrow=T)
-           subWins=GRanges(seqnames=rep(as.character(seqnames(windows)),bin.num),IRanges(start=coord[,1],end=coord[,2]))
-            
-            #check if there are common chromsomes
-            win.list=as(subWins, "RangesList")
-            chrs.t=names(target)
-            chrs.w=names(win.list)
-            chrs  =chrs.t[chrs.t %in% chrs.w]
-            if(length(chrs)==0){
-              stop("There are no common chromosomes/spaces to do overlap")
-            }
-            
-            
-            #get views           
-            my.vList=Views( target[names(target) %in% chrs], win.list[names(win.list) %in% chrs] )            
-            #RleViewsList( rleList = target[names(target) %in% chrs], rangesList = win.list[names(win.list) %in% chrs] )
-
-            if(is(target,"modRleList") ){
-              # get vectors from Views and make a matrix outof it
-
-              #stores the number of indices with values in Rle vector list
-              my.lList=Views( target[names(target) %in% chrs]>0, win.list[names(win.list) %in% chrs] )
-              
-              if(bin.op=="mean")
-              {
-                sum.bins=unlist(lapply(my.vList,viewSums) )# sum of each view
-                len.bins=unlist(lapply(my.lList,viewSums ) ) # number of values in each bin, discarding bases with no value
-                mat=matrix( ((sum.bins/len.bins)-target@add)/target@multiply, ncol=bin.num,byrow=TRUE)
-              
-                return( mat )
-              }
-              else if (bin.op=="max")
-              {
-                sum.bins=unlist(lapply(my.vList,viewMaxs) )# max of each view
-              }
-              else if (bin.op=="min")
-              {
-                sum.bins=unlist(lapply(my.vList,viewMins) )# max of each view
-                
-              }else{stop("wrong 'bin.op' option given")}
-              
-              # make a matrix from those views            
-              mat=matrix( (sum.bins-target@add)/target@multiply, ncol=bin.num,byrow=TRUE)
-              
-              return(mat)
-                              
-            }else{
-              
-              if(bin.op=="mean")
-              {
-                sum.bins=unlist(lapply(my.vList,viewMeans) )# sum of each view
-              }
-              else if (bin.op=="max")
-              {
-                sum.bins=unlist(lapply(my.vList,viewMaxs) )# max of each view
-              }
-              else if (bin.op=="min")
-              {
-                sum.bins=unlist(lapply(my.vList,viewMins) )# max of each view
-                
-              }else{stop("wrong 'bin.op' option given")}
-              
-              # make a matrix from those views            
-              mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
-              
-              mat
-              
-            }      
- 
+	coord = matrix(
+				mapply(binner, start(windows), end(windows), bin.num, SIMPLIFY=TRUE), 
+			ncol=2, byrow=T)
+	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),IRanges(start=coord[,1],end=coord[,2]))
+	values(subWins)$X_rank = rep(values(windows)$X_rank, each=bin.num)
+	
+	my.vList = getViews(target, subWins)
+	return(my.vList)
+		
+	
 }
 
+# applies the summary function for the views to bin the objects - for standard Rle and returns a matrix object
+summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 
+	# chop windows to bins
+	functs = c('mean','max','median')
+	if(!bin.op %in% functs)
+		stop(paste('Supported binning functions are', functs,'\n'))
+	fun = match.fun(bin.op)
+	
+	sum.bins=unlist(lapply(my.vList, function(x)viewApply(x, fun)), use.names=F)
+	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
+	rownames(mat) = unlist(lapply(my.vList, names), use.names=F)[seq(1, length(mat), bin.num)]
+	if(strand.aware == T)
+		mat[strand(windows) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
+	
+	return(mat)
+	
+}
+
+# replicates a lot of code from summarizeViews.modRle - have to think about it
+summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
+
+	functs = c('mean','max','median')
+	if(!bin.op %in% functs)
+		stop(paste('Supported binning functions are', functs,'\n'))
+
+	if(bin.op=="mean"){
+		# sum of each view
+		sum.bins=unlist( lapply(my.vList, function(x)viewApply(x, sum)), use.names=F)
+		# number of values in each bin, discarding bases with no value
+		len.bins=unlist( lapply(my.vList, function(x)viewApply(x, function(y)sum(y > 0))), use.names=F )
+		
+		sum.bins = sum.bins/len.bins
+	}else{
+		sum.bins=unlist(lapply(my.vList, function(x)viewApply(x, match.fun(bin.op))))	
+	}
+	
+	mat = matrix( sum.bins, ncol=bin.num,byrow=TRUE)
+	rownames(mat) = unlist(lapply(my.vList, names))[seq(1, length(mat), bin.num)]
+	if(strand.aware == T)
+		mat[strand(windows) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
+		
+	return(mat)
+}
+
+# given a vector and length smooths the vector to a given size
+# the function is not safe - check for the window length before
+binner=function(start,end,nbins){
+	
+	if(! is.numeric(start))
+		stop('start needs to be class numeric')
+	if(! is.numeric(end))
+		stop('end needs to be class numeric')
+	if(! is.numeric(nbins))
+		stop('nbins needs to be class numeric')
+	
+	x = unique(seq(from = start, to = end,length.out=nbins + 1 ) )
+	my.start = ceiling(x)[-length(x)]
+	my.end = floor(x)[-1]
+	
+	return( t(cbind(my.start, my.end) )  )
+}
 #######################################
 # S4 functions
 #######################################
@@ -112,38 +103,57 @@ make.scoreMatrixBin<-function(target,windows,bin.num,bin.op)
 #' @usage scoreMatrixBin(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...)
 #' @return returns a \code{scoreMatrix} object
 #' @seealso \code{\link{scoreMatrix}},\code{\link{modCoverage}}
-#' @export
 #' @docType methods
 #' @rdname scoreMatrixBin-methods           
+#' @export
 setGeneric("scoreMatrixBin",function(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...) standardGeneric("scoreMatrixBin") )
 
 #' @aliases scoreMatrixBin,GRanges,RleList-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("RleList","GRanges"),
-          function(target,windows,bin.num,bin.op,strand.aware){
+          function(target, windows, bin.num, bin.op, strand.aware){
 
-            #check if windows lengths exceeds the length of feature based chromosomes
-            r.chr.len=lapply(target,length)
-            constraint=GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len))  )
-            windows=subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE)
-            
-            if(! strand.aware)
-            {
-              mat=make.scoreMatrixBin(target, windows, bin.num, bin.op)
-              new("scoreMatrix",mat)
-            }else if(unique(strand(windows)) %in% "-" ){
-              
-              mat1=make.scoreMatrixBin(target,windows[strand(windows)=="-",],bin.num,bin.op)
-              mat2=make.scoreMatrixBin(target,windows[strand(windows) != "-",],bin.num,bin.op)
-              
-              new("scoreMatrix",rbind( mat1[ncol(mat1):1],mat2) )
-                
-            }else{
-              mat=make.scoreMatrixBin(target,windows,bin.num,bin.op)
-              new("scoreMatrix",mat)              
-            }             
+			# removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
+			windows = constrainRanges(target, windows)
+			
+			# checks whether some windows are shorter than the wanted window size
+			wi = width(windows) < bin.num
+			if(any(wi)){
+				warning('supplied GRanges object contains ranges of width < number of bins')
+				windows = windows[!wi]
+			}
+	
+			
+			# gets the view list
+			my.vList = getViewsBin(target, windows, bin.num)
+			
+			# summarize views with the given function
+			mat = summarizeViews.Rle(my.vList, windows, bin.op, bin.num, strand.aware)
+			new("scoreMatrix",mat)
+})
 
-      
+
+#' @aliases scoreMatrixBin,GRanges,modRleList-method
+#' @rdname scoreMatrixBin-methods
+setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
+          function(target, windows, bin.num, bin.op, strand.aware){
+
+			# removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
+			windows = constrainRanges(as(target,'RleList'), windows)
+			
+			# checks whether some windows are shorter than the wanted window size
+			wi = width(windows) < bin.num
+			if(any(wi)){
+				warning('supplied GRanges object contains ranges of width < number of bins')
+				windows = windows[!wi]
+			}
+			
+			# gets the view list
+			my.vList = getViewsBin(as(target,'RleList'), windows, bin.num)
+			
+			# summarize
+			mat = summarizeViews.modRle(my.vList, windows, bin.op, bin.num, strand.aware)
+			new("scoreMatrix",mat)
 })
 
 #' @aliases  scoreMatrixBin,GRanges,GRanges,ANY-method
@@ -161,18 +171,4 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
 })
 
 
-# given a vector and length smooths the vector to a given size
-# ScalerLarge = function(a, len, round.means=FALSE){
-  
-    # if(length(a) < len)
-		# stop('vector can not be extended')
-    # s = unique(seq.int(1, length(a), length.out=len+1))
-    # starts = ceiling(s)[-length(s)]
-    # ends = floor(s)[-1]
-    # v = viewMeans(Views(a, starts, ends))
-    # if(round.means == TRUE){
-      # v=round(v)
-    # }
-          
-    # return(v)
-  # }
+

@@ -2,44 +2,51 @@
 # S3 functions
 #######################################
 
-# returns a matrix
-make.scoreMatrix<-function(target, win.list){
-  
-	checkClass(target, 'SimpleRleList')
-	checkClass(win.list, 'CompressedIRangesList')
-	
-	#get views           
-    my.vList = Views(target, win.list)            
-    # get vectors from Views and make a matrix outof it
-    my.func = function(x) t(viewApply( x, as.vector,simplify=TRUE))
-            
-    # make a matrix from those views            
-    mat.list = sapply(my.vList,my.func,simplify=FALSE,USE.NAMES = FALSE)
-    mat = do.call("rbind", mat.list) 
-			        
-    # if the target is modRleList do appropriate calculations to get the score and put NAs in cells that have no value
-    if(is(target,"modRleList")){
-              
-		#remove values full of NA values
-		#mat=mat[rowSums(mat)>0,]
-              
-		mat=(mat-target@add)/target@multiply
-		mat[mat<0]=NA
-   }
-   return(mat)
-}
 
 # removes ranges that fell of the rle object
 # does not check for the correspondence of the chromosome names - always chech before using this function
-removeOffRanges = function(target, windows){
+constrainRanges = function(target, windows){
 	
 	checkClass(target, 'SimpleRleList')
 	checkClass(windows, 'GRanges')
 	
+	values(windows)$X_rank = 1:length(windows)
 	r.chr.len = lapply(target, length)
-    constraint = GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len)))
-    win.list.chr = subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE)
+    constraint = GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len, use.names=F)))
+	# suppressWarnings is done becuause GenomicRanges function give warnings if you don't have the same seqnames in both objects
+    win.list.chr = suppressWarnings(subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE))
+	
+	if(length(win.list.chr) == 0)
+		stop('All windows fell have coordinates outside chromosome boundaries')
 	return(win.list.chr)
+}
+
+# given a RleList and a granges object it selcets the intersecting chromosomes and fetches the views
+getViews = function(target, windows){
+
+	checkClass(target, 'SimpleRleList')
+	checkClass(windows, 'GRanges')
+
+	# orders the granges object so that we can track which view corresponds to which range
+	windows = windows[order(as.vector(seqnames(windows)), start(windows))]
+	win.list=as(windows, "RangesList")
+	#check if there are common chromsomes
+	chrs  = intersect(names(win.list), names(target))
+	if(length(chrs)==0)
+		stop("There are no common chromosomes/spaces to do overlap")
+		
+	#get views 
+	# the subsetting needs to be done using a character vector, because otherwise it can take the views from wrong seqnames
+	my.vList = Views(target[chrs], win.list[chrs] )
+	
+	# rownames of each view correspond to the ids of each window
+	my.vList = RleViewsList(lapply(chrs, 
+								   function(x){
+									v = my.vList[[x]]
+									names(v) = values(windows)$X_rank[as.vector(seqnames(windows)) == x]
+									v}))
+	names(my.vList) = chrs
+	return(my.vList)
 }
 
 # checkw whether the x object corresponds to the given class
@@ -71,9 +78,9 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @return returns a \code{scoreMatrix} object
 #' @seealso \code{\link{scoreMatrixBin}}, \code{\link{modCoverage}}
 
-#' @export
 #' @docType methods
 #' @rdname scoreMatrix-methods           
+#' @export
 setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,...) standardGeneric("scoreMatrix") )
 
 
@@ -88,39 +95,29 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
               stop("width of 'windows' are not equal, provide 'windows' with equal widths")
             
 			# set a uniq id for the GRanges
-			values(windows)$X_rank = 1:length(windows)
+			windows = constrainRanges(target, windows)
 			
-			# checks if the chromosome names overlap
-            chrs = intersect(names(target), unique(as.vector(seqnames(windows))))
-            if(length(chrs)==0){
-              stop("There are no common chromosomes/spaces to do overlap")
-            }
-			target.chr = target[chrs]
-			windows.chr = windows[as.vector(seqnames(windows)) %in% chrs]
-			seqlevels(windows.chr) = chrs
-			
-            # check if windows lengths exceeds the length of feature based chromosomes
-            windows.chr = removeOffRanges(target.chr, windows.chr)
-			# checks whether we have any ranges left
-			if(length(windows.chr) == 0){
-				warning('windows have no ranges left after filtering')
-				mat = matrix(nrow=0, ncol=0)
-			
-			}else{
-			
-				# gets the views
-				win.list.chr = as(windows.chr, 'RangesList')
-				mat = make.scoreMatrix(target.chr, win.list.chr)
-				
-				# if the order is strand aware it reverses the profiles on the negative strand
-				if(strand.aware == TRUE){
-					s.ind = as.vector(strand(windows.chr) == '-')
+			# fetches the windows
+			viewsList = getViews(target, windows)
+			mat = do.call(rbind, lapply(viewsList, function(x)t(viewApply(x, as.vector))))
+			rownames(mat) = unlist(lapply(viewsList, names), use.names=F)
+	
+			if(strand.aware == TRUE){
+					s.ind = as.vector(strand(windows) == '-')
 					mat[s.ind,] = t(apply(mat[s.ind,],1, rev))
-				}
-				# sets the rownames to the corresponding ranges from the windows variable
-				rownames(mat) = values(windows.chr)$X_rank
 			}
             return(new("scoreMatrix",mat))
+})
+
+#' @aliases scoreMatrix,GRanges,RleList-method
+#' @rdname scoreMatrix-methods
+setMethod("scoreMatrix",signature("modRleList","GRanges"),
+          function(target,windows,strand.aware){
+		  
+		  mat = scoreMatrix(as(target, 'RleList'), windows, strand.aware)
+		  mat=(mat-target@add)/target@multiply
+		  mat[mat<0]=NA
+		  return(mat)	
 })
 
 #' @aliases scoreMatrix,GRanges,GRanges,ANY-method
@@ -155,12 +152,12 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
 #' @usage plotMatrix(mat, fact, ord.vec, shift, mat.cols, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, ...)
 #' @return nothing
 
-#' @seealso
 #' @docType methods
-#' @rdname scoreMatrix-methods
+#' @rdname plotMatrix-methods
+#' @export
 setGeneric("plotMatrix", function(mat, fact=NULL, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, ...) standardGeneric("plotMatrix") )
 
-#' @rdname scoreMatrix-methods
+#' @rdname plotMatrix-methods
 setMethod("plotMatrix", signature("scoreMatrix"),
 		  function(mat, fact, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, ...){
 			
