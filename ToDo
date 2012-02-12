@@ -1,5 +1,9 @@
-08.01.2011.
+08.01.2012.
 	* what to do when the ranges for score matrix overlap - make the user select only nonoverlapping ranges?
 	* implement plotting for mean profiles over the ranges
 	* implement scoreMatrixList and plotting for score matrix list
 	* implement naming of the classes on the plot
+	
+12.02.2012.
+	* does not want to build: No definition was found for superclass "SimpleRleList" in the specification of class "modRleList" - this is without scoreMatrixList
+	* NAMESPACE file is not made in a proper way - all functions are exported

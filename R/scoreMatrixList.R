@@ -1,6 +1,16 @@
+# ---------------------------------------------------------------------------#
+#' Construct a list of scoreMatrixObjects that can be used for plotting
+#'
+#' @usage scoreMatrixBin(...), where ... corresponds to 1 or more scoreMatrix objects
+#' @return returns a \code{scoreMatrixList} object
+#' @export
+#' @docType methods
+#' @rdname scoreMatrixList-methods        
 setGeneric("scoreMatrixList",function(...) standardGeneric("scoreMatrixList"))
 
 # constructor
+#' @aliases scoreMatrixList
+#' @rdname scoreMatrixList-methods
 scoreMatrixList = function(...){
 	l = list(...)
 	len = length(l)
@@ -33,6 +43,7 @@ scoreMatrixList = function(...){
 
 # --------------------------------- #
 # show Methods
+#' @rdname scoreMatrixList-methods
 setMethod("show", "scoreMatrixList",
 			function(object){
 				dims = lapply(object, dim)
@@ -49,9 +60,19 @@ setMethod("show", "scoreMatrixList",
 
 # --------------------------------- #
 # plot functions for score matrix list
+#' Plot a scoreMatrixList object, along with the underlying factors
+#'
+#' @usage heatmapProfile(mat.list, mat.cols)
+#' @param'\code{mat.list} a scoreMatrixList object
+#' @param'\code{mat.cols} colors to be used for plotting
 
+#' @return returns a \code{scoreMatrixList} object
+#' @export
+#' @docType methods
+#' @rdname heatmapProfile-methods
 setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, ...)standardGeneric("heatmapProfile"))
 
+#' @rdname heatmapProfile-methods
 setMethod("heatmapProfile", signature("scoreMatrixList"),
 			function(mat.list, mat.cols){
 				

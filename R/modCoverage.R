@@ -28,8 +28,8 @@ setGeneric("modCoverage", function(x,col.name,multiply=1000,add=1) standardGener
 #' @rdname modCoverage-methods
 setMethod("modCoverage", signature(x= "GRanges",col.name="character"),
         function( x,col.name,multiply,add ){
-          if(  !is.numeric(elementMetadata(x)[col.name][,1])  ){
-            stop("The column you prodived ", col.name," is non-numeric! Specify a numeric column")
+          if(  !is.numeric(elementMetadata(x)[col.name][,1]) ){
+            stop("The column you provided ", col.name," is non-numeric! Specify a numeric column")
           }
           #data=coverage(x,weight=(multiply*elementMetadata(x)[col.name][,1])+add )
           new("modRleList",coverage(x,weight=(multiply*elementMetadata(x)[col.name][,1])+add )
