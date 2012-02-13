@@ -4,7 +4,7 @@
 
 # {1} LIBRARIES
 library(devtools)
- library(testthat)
+ # library(testthat)
 #/{1} LIBRARIES
 
 

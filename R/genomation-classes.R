@@ -1,5 +1,6 @@
 # S4 classes for genomation show and accessor functions
 
+# ------------------------------------------------------------------------------ #
 #' An S4 class for storing \code{getRandomEnrichment} function results
 #'
 #' The resulting object stores the results of \code{getRandomEnrichment} function
@@ -16,9 +17,14 @@
 #' @rdname randomEnrichment-class
 #' @seealso \code{\link{getRandomEnrichment}}
 #' @export
-setClass("randomEnrichment", representation(
-  orig.cnt = "numeric", rand.olap.dist = "numeric",
-  log2fc="numeric",p.value="numeric",rand.p.value="numeric" ))
+setClass("randomEnrichment", 
+		representation(
+			orig.cnt = "numeric", 
+			rand.olap.dist = "numeric",
+			log2fc="numeric",
+			p.value="numeric",
+			rand.p.value="numeric" 
+))
 
 
 #' show method for some of the genomation classes
@@ -32,6 +38,7 @@ setMethod("show", "randomEnrichment", function(object) {
 })
 
 
+# ------------------------------------------------------------------------------ #
 #' An S4 class for storing \code{modCoverage} function results
 #'
 #' The resulting object is an extension of a \code{RleList} object, and the results of \code{modCoverage} function.
@@ -50,7 +57,7 @@ setClass("modRleList", representation(multiply="numeric",add="numeric"),
         contains = "SimpleRleList")
 
 
-
+# ------------------------------------------------------------------------------ #
 #' An S4 class for storing \code{scoreMatrix} function results
 #'
 #' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
@@ -63,10 +70,10 @@ setClass("modRleList", representation(multiply="numeric",add="numeric"),
 setClass("scoreMatrix",contains = "matrix")
 
 
-#' An S4 class for storing a set of \code{scoreMatrix} 
+# ------------------------------------------------------------------------------ #
+#' An S4 class for storing a set of \code{scoreMatrixList} 
 #'
 #' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
-
 #'
 #' @name scoreMatrixList-class
 #' @rdname scoreMatrixList-class
