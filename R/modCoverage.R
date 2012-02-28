@@ -12,7 +12,7 @@
 #' @param multiply a value (default:1000) that will be multiplied by the value denoted by \code{col.name} in GRanges object. This is useful to retain some of the values with decimals.
 #' @param add This value (default:1) be added to the value denoted by \code{col.name} in GRanges object. This addition will procede the multiplication. This way the bases that have no defined value will have 0 value in the Rle vector, and the bases with a predefined value (even though it is 0 will be distinguishable in subsequent operations)
 #'
-#' @usage modCoverage(x,col.name,multiply=1,add=0)
+#' @usage modCoverage(x,col.name,multiply=1000,add=1)
 #' @return returns a \code{modRleList} object
 #'
 #' @note \code{multiply} argument helps users retain some of the values with decimal points. Users have to keep in mind the fact that \code{add} and/or \code{multiply} arguments are in effect in the resulting RleList object and do subsequent calculations keep that fact in mind.

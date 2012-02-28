@@ -1,8 +1,9 @@
 \docType{methods}
 \name{scoreMatrixBin}
 \alias{scoreMatrixBin}
-\alias{scoreMatrixBin,GRanges,GRanges,ANY-method}
-\alias{scoreMatrixBin,GRanges,RleList-method}
+\alias{scoreMatrixBin,GRanges,GRanges-method}
+\alias{scoreMatrixBin,RleList,GRanges-method}
+\alias{scoreMatrixBin,modRleList,GRanges-method}
 \title{get scores overlapping with windows in a scoreMatrix object}
 \usage{
   scoreMatrixBin(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...)
@@ -45,6 +46,6 @@
   of bins based on \code{bin.num} option.
 }
 \seealso{
-  \code{link{scoreMatrix-methods}},\code{link{modCoverage-methods}}
+  \code{\link{scoreMatrix}},\code{\link{modCoverage}}
 }
 

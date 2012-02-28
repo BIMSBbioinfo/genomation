@@ -11,7 +11,7 @@ getViewsBin = function(target, windows, bin.num){
 				mapply(binner, start(windows), end(windows), bin.num, SIMPLIFY=TRUE), 
 			ncol=2, byrow=T)
 	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),IRanges(start=coord[,1],end=coord[,2]))
-	values(subWins)$X_rank = rep(values(windows)$X_rank, each=bin.num)
+	GenomicRanges::values(subWins)$X_rank = rep(GenomicRanges::values(windows)$X_rank, each=bin.num)
 	
 	my.vList = getViews(target, subWins)
 	return(my.vList)
@@ -108,7 +108,7 @@ binner=function(start,end,nbins){
 #' @export
 setGeneric("scoreMatrixBin",function(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...) standardGeneric("scoreMatrixBin") )
 
-#' @aliases scoreMatrixBin,GRanges,RleList-method
+#' @aliases scoreMatrixBin,RleList,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
@@ -133,7 +133,7 @@ setMethod("scoreMatrixBin",signature("RleList","GRanges"),
 })
 
 
-#' @aliases scoreMatrixBin,GRanges,modRleList-method
+#' @aliases scoreMatrixBin,modRleList,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
@@ -156,7 +156,7 @@ setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
 			new("scoreMatrix",mat)
 })
 
-#' @aliases  scoreMatrixBin,GRanges,GRanges,ANY-method
+#' @aliases  scoreMatrixBin,GRanges,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
           function(target,windows,bin.num,bin.op,strand.aware,...){

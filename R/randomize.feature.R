@@ -23,7 +23,7 @@
 #' @param exclude A GRanges object where no randomized feature should overlap, can be gaps or unmappable regions in the genome as an example.
 #' @param include A GRanges object which defines the boundaries of randomized features
 #' @param seed random number generator seed
-#' @usage randomize.feature(feature,chrom.sizes=NULL,stranded=FALSE,keep.strand.prop=FALSE,keep.chrom=TRUE,exclude=NULL,include=NULL,seed=NULL)
+#' @usage randomize.feature(feature,chrom.sizes=NULL,stranded=TRUE,keep.strand.prop=TRUE,keep.chrom=TRUE,exclude=NULL,include=NULL,seed=NULL)
 #' @return returns a GRanges object which is randomized version of the feature
 #' @export
 #' @docType methods

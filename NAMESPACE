@@ -1,0 +1,53 @@
+import(methods)
+
+import(GenomicRanges)
+
+#importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
+
+#importClassesFrom("GenomicRanges",GRanges,GRangesList)
+
+importClassesFrom("IRanges", RangedData, RangedDataList, DataTable,
+                  Annotated, Vector, List, DataTableORNULL, characterORNULL,
+                  RangedSelection, SimpleList, DataFrame,SimpleRleList,RleList,SimpleAtomicList,AtomicList,RleViews,RleViewsList)
+
+importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
+           RangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
+
+importMethodsFrom("IRanges",nearest,as.data.frame)
+
+
+
+importFrom("data.table", data.table)
+
+
+# importFrom("parallel", mclapply)
+exportClasses(annotationByFeature)
+exportClasses(annotationByGenicParts)
+exportClasses(modRleList)
+exportClasses(randomEnrichment)
+exportClasses(scoreMatrix)
+exportClasses(scoreMatrixList)
+exportMethods(annotate.WithFeature)
+exportMethods(annotate.WithFeature.Flank)
+exportMethods(annotate.WithGenicParts)
+exportMethods(convert.bed.df)
+exportMethods(convert.bed2exons)
+exportMethods(convert.bed2introns)
+exportMethods(getAssociationWithTSS)
+exportMethods(getFeatsWithTargetsStats)
+exportMethods(getFlanks)
+exportMethods(getMembers)
+exportMethods(getRandomEnrichment)
+exportMethods(getTargetAnnotationStats)
+exportMethods(heatmapProfile)
+exportMethods(modCoverage)
+exportMethods(plotMatrix)
+exportMethods(plotTargetAnnotation)
+exportMethods(randomize.feature)
+exportMethods(read.bed)
+exportMethods(read.feature.flank)
+exportMethods(read.transcript.features)
+exportMethods(scoreMatrix)
+exportMethods(scoreMatrixBin)
+#exportMethods(scoreMatrixList)
+export(scoreMatrixList)

@@ -6,4 +6,10 @@
 	
 12.02.2012.
 	* does not want to build: No definition was found for superclass "SimpleRleList" in the specification of class "modRleList" - this is without scoreMatrixList
-	* NAMESPACE file is not made in a proper way - all functions are exported
+	* NAMESPACE file is not made in a proper way - all functions are exported 
+
+28.02.2012.
+  * Now R CMD CHECK returns few warnings, NAMESPACE file is there
+	* unit tests are pending
+  * documentation of data sets are pending
+  * Vignette is pending
