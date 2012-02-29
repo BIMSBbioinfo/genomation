@@ -30,6 +30,7 @@ getViews = function(target, windows){
 	# orders the granges object so that we can track which view corresponds to which range
 	windows = windows[order(as.vector(seqnames(windows)), start(windows))]
 	win.list=as(windows, "RangesList")
+	win.list = win.list[sapply(win.list, length) > 0]
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
 	if(length(chrs)==0)
