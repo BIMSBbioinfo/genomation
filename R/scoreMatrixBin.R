@@ -31,9 +31,10 @@ summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	sum.bins=unlist(lapply(my.vList, function(x)viewApply(x, fun)), use.names=F)
 	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
 	rownames(mat) = unlist(lapply(my.vList, names), use.names=F)[seq(1, length(mat), bin.num)]
-	if(strand.aware == T)
-		mat[strand(windows) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
-	
+	if(strand.aware == T){
+		str.ind = as.vector(strand(windows)) == '-'
+		mat[str.ind,] = t(apply(mat[str.ind,], 1, rev))
+	}
 	return(mat)
 	
 }
@@ -58,9 +59,10 @@ summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.awar
 	
 	mat = matrix( sum.bins, ncol=bin.num,byrow=TRUE)
 	rownames(mat) = unlist(lapply(my.vList, names))[seq(1, length(mat), bin.num)]
-	if(strand.aware == T)
-		mat[strand(windows) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
-		
+	if(strand.aware == T){
+		str.ind = as.vector(strand(windows)) == '-'
+		mat[str.ind,] = t(apply(mat[str.ind,], 1, rev))
+	}
 	return(mat)
 }
 
