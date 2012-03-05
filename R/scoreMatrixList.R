@@ -98,7 +98,7 @@ setMethod("heatmapProfile", signature("scoreMatrixList"),
 						par(mar=c(3,.5,3,.5))
 					}
 					
-					image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), main=names(mat.list)[i], col=mat.cols,yaxt='n', xlab='', ylab='', useRaster=T)
+					image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), main=names(mat.list)[i], col=mat.cols,yaxt='n', xlab='', ylab='', useRaster=T, xlim =(-ncols[1]/2):(ncols[1]/2))
 					if(i==1){
 						s = round(fivenum(1:nrow))
 						axis(2, at=s, las=2, cex.lab=2, labels=s)
