@@ -8,10 +8,10 @@
 getViewsBin = function(target, windows, bin.num){
 
 	coord = matrix(
-				mapply(binner, start(windows), end(windows), bin.num, SIMPLIFY=TRUE), 
+				mapply(binner, IRanges::start(windows),IRanges::end(windows), bin.num, SIMPLIFY=TRUE), 
 			ncol=2, byrow=T)
 	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),IRanges(start=coord[,1],end=coord[,2]))
-	GenomicRanges::values(subWins)$X_rank = rep(GenomicRanges::values(windows)$X_rank, each=bin.num)
+	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
 	
 	my.vList = getViews(target, subWins)
 	return(my.vList)
@@ -26,13 +26,20 @@ summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	functs = c('mean','max','median')
 	if(!bin.op %in% functs)
 		stop(paste('Supported binning functions are', functs,'\n'))
-	fun = match.fun(bin.op)
-	
-	sum.bins=unlist(lapply(my.vList, function(x)viewApply(x, fun)), use.names=F)
+	#fun = match.fun(bin.op)
+	if(bin.op=="max"){sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMaxs(x) ),use.names=F )      }
+	if(bin.op=="mean"){sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMeans(x) ),use.names=F )    }
+	if(bin.op=="median"){sum.bins=unlist(IRanges::lapply(my.vList, function(x) viewApply(x, function(x) median(as.numeric(x),na.rm=T)  )), use.names=F)  }
+        
+	#sum.bins=unlist(IRanges::lapply(my.vList, function(x) viewApply(x, fun)), use.names=F)
 	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
-	rownames(mat) = unlist(lapply(my.vList, names), use.names=F)[seq(1, length(mat), bin.num)]
-	if(strand.aware == T)
-		mat[strand(windows) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
+	rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=F)[seq(1, length(mat), bin.num)]
+	if(strand.aware){
+		#mat[as.character(strand(windows) ) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
+                orig.rows=which(as.character(strand(windows))== '-')
+        
+		mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+        }
 	
 	return(mat)
 	
@@ -47,19 +54,22 @@ summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.awar
 
 	if(bin.op=="mean"){
 		# sum of each view
-		sum.bins=unlist( lapply(my.vList, function(x)viewApply(x, sum)), use.names=F)
+		sum.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, sum)), use.names=F)
 		# number of values in each bin, discarding bases with no value
-		len.bins=unlist( lapply(my.vList, function(x)viewApply(x, function(y)sum(y > 0))), use.names=F )
+		len.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y)sum(y > 0))), use.names=F )
 		
 		sum.bins = sum.bins/len.bins
 	}else{
-		sum.bins=unlist(lapply(my.vList, function(x)viewApply(x, match.fun(bin.op))))	
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y) match.fun(bin.op)(as.numeric(y),na.rm=T) )))	
 	}
 	
 	mat = matrix( sum.bins, ncol=bin.num,byrow=TRUE)
-	rownames(mat) = unlist(lapply(my.vList, names))[seq(1, length(mat), bin.num)]
-	if(strand.aware == T)
-		mat[strand(windows) == '-'] = t(apply(mat[strand(windows) == '-'], 1, rev))
+	rownames(mat) = unlist(IRanges::lapply(my.vList, names))[seq(1, length(mat), bin.num)]
+	if(strand.aware){
+		#mat[as.character(strand(windows))== '-',] = t(apply(mat[as.character(strand(windows)) == '-'], 1, rev))
+                orig.rows=which(as.character(strand(windows))== '-')        
+		mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+        }
 		
 	return(mat)
 }
@@ -117,7 +127,7 @@ setMethod("scoreMatrixBin",signature("RleList","GRanges"),
 			windows = constrainRanges(target, windows)
 			
 			# checks whether some windows are shorter than the wanted window size
-			wi = width(windows) < bin.num
+			wi = IRanges::width(windows) < bin.num
 			if(any(wi)){
 				warning('supplied GRanges object contains ranges of width < number of bins')
 				windows = windows[!wi]

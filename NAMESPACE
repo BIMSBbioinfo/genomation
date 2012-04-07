@@ -1,19 +1,19 @@
 import(methods)
 
 import(GenomicRanges)
-
+import(IRanges)
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)
 
-importClassesFrom("IRanges", RangedData, RangedDataList, DataTable,
-                  Annotated, Vector, List, DataTableORNULL, characterORNULL,
-                  RangedSelection, SimpleList, DataFrame,SimpleRleList,RleList,SimpleAtomicList,AtomicList,RleViews,RleViewsList)
+#importClassesFrom("IRanges", RangedData, RangedDataList, DataTable,
+#                  Annotated, Vector, List, DataTableORNULL, characterORNULL,
+#                  RangedSelection, SimpleList, DataFrame,SimpleRleList,RleList,SimpleAtomicList,AtomicList,RleViews,RleViewsList)
 
-importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
-           RangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
+#importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
+#           RangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,subsetByOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
 
-importMethodsFrom("IRanges",nearest,as.data.frame)
+#importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
 
 

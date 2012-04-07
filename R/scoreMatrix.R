@@ -10,11 +10,11 @@ constrainRanges = function(target, windows){
 	checkClass(target, 'SimpleRleList')
 	checkClass(windows, 'GRanges')
 	
-	GenomicRanges::values(windows)$X_rank = 1:length(windows)
-	r.chr.len = lapply(target, length)
-    constraint = GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=unlist(r.chr.len, use.names=F)))
+	IRanges::values(windows)$X_rank = 1:length(windows)
+	r.chr.len = elementLengths(target)
+    constraint = GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=as.numeric(r.chr.len)))
 	# suppressWarnings is done becuause GenomicRanges function give warnings if you don't have the same seqnames in both objects
-    win.list.chr = suppressWarnings(GenomicRanges::subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE))
+    win.list.chr = suppressWarnings(IRanges::subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE))
 	
 	if(length(win.list.chr) == 0)
 		stop('All windows fell have coordinates outside chromosome boundaries')
@@ -28,7 +28,7 @@ getViews = function(target, windows){
 	checkClass(windows, 'GRanges')
 
 	# orders the granges object so that we can track which view corresponds to which range
-	windows = windows[order(as.vector(seqnames(windows)), start(windows))]
+	windows = windows[order(as.character(seqnames(windows)), start(windows))]
 	win.list=as(windows, "RangesList")
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
@@ -43,7 +43,7 @@ getViews = function(target, windows){
 	my.vList = RleViewsList(lapply(chrs, 
 								   function(x){
 									v = my.vList[[x]]
-									names(v) = GenomicRanges::values(windows)$X_rank[as.vector(seqnames(windows)) == x]
+									names(v) = IRanges::values(windows)$X_rank[as.character(seqnames(windows)) == x]
 									v}))
 	names(my.vList) = chrs
 	return(my.vList)
@@ -103,8 +103,11 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 			rownames(mat) = unlist(lapply(viewsList, names), use.names=F)
 	
 			if(strand.aware == TRUE){
-					s.ind = as.vector(strand(windows) == '-')
-					mat[s.ind,] = t(apply(mat[s.ind,],1, rev))
+					 #s.ind = as.vector(strand(windows) == '-') # this commented out part will not work, the order of mat is not same as windows
+                                         orig.rows=which(as.character(strand(windows))== '-') # this will work
+        
+                                         mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+					#mat[s.ind,] = t(apply(mat[s.ind,],1, rev))
 			}
             return(new("scoreMatrix",mat))
 })
