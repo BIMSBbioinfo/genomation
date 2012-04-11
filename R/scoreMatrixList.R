@@ -1,15 +1,15 @@
 # ---------------------------------------------------------------------------#
+       
+#setGeneric("scoreMatrixList",function(...) standardGeneric("scoreMatrixList"))
+
+# constructor
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @usage scoreMatrixBin(...), where ... corresponds to 1 or more scoreMatrix objects
+#' @param ... corresponds to 1 or more scoreMatrix objects
+#' @usage scoreMatrixList(...)
 #' @return returns a \code{scoreMatrixList} object
 #' @export
 #' @docType methods
-#' @rdname scoreMatrixList-methods        
-setGeneric("scoreMatrixList",function(...) standardGeneric("scoreMatrixList"))
-
-# constructor
-#' @aliases scoreMatrixList
 #' @rdname scoreMatrixList-methods
 scoreMatrixList = function(...){
 	l = list(...)
@@ -43,7 +43,7 @@ scoreMatrixList = function(...){
 
 # --------------------------------- #
 # show Methods
-#' @rdname scoreMatrixList-methods
+#' @rdname show-methods
 setMethod("show", "scoreMatrixList",
 			function(object){
 				dims = lapply(object, dim)
@@ -62,18 +62,19 @@ setMethod("show", "scoreMatrixList",
 # plot functions for score matrix list
 #' Plot a scoreMatrixList object, along with the underlying factors
 #'
-#' @usage heatmapProfile(mat.list, mat.cols)
-#' @param'\code{mat.list} a scoreMatrixList object
-#' @param'\code{mat.cols} colors to be used for plotting
-
+#' @param mat.list a scoreMatrixList object
+#' @param mat.cols colors to be used for plotting
+#' @param ... other options (obselete for now)
 #' @return returns a \code{scoreMatrixList} object
+#' @usage heatmapProfile(mat.list, mat.cols=NULL, ...)
 #' @export
 #' @docType methods
 #' @rdname heatmapProfile-methods
 setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, ...)standardGeneric("heatmapProfile"))
 
+#' @aliases heatmapProfile,scoreMatrixList-method
 #' @rdname heatmapProfile-methods
-setMethod("heatmapProfile", signature("scoreMatrixList"),
+setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
 			function(mat.list, mat.cols){
 				
 				dims = unlist(lapply(mat.list, nrow))

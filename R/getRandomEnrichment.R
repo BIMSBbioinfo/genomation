@@ -10,6 +10,7 @@
 #' @param target a \code{GRanges} object to be overlapped with \code{query}
 #' @param query a \code{GRanges} object that will be randomly placed across the genome and overlap of these random regions with \code{target} will be the background distribution of association between \code{target} and \code{query}.
 #' @param rand.set instead of randomly placing features in \code{query} one can supply an already shuffled set of \code{query} genomic features.
+#' @param randomizations  number of times the features to be shuffled
 #' @param ... other parameters to be passed to \code{randomize.feature} function. This parameters constrains how randomization is done.
 #' @usage getRandomEnrichment(target,query,randomizations=1000,rand.set=NULL,...)
 #' @return returns a \code{randomEnrichment} object

@@ -20,6 +20,9 @@
   \code{query} one can supply an already shuffled set of
   \code{query} genomic features.}
 
+  \item{randomizations}{number of times the features to be
+  shuffled}
+
   \item{...}{other parameters to be passed to
   \code{randomize.feature} function. This parameters
   constrains how randomization is done.}

@@ -4,7 +4,7 @@
 \alias{modCoverage,GRanges,character-method}
 \title{gets a weighted coverage vector from a GRanges object with a numeric column}
 \usage{
-  modCoverage(x,col.name,multiply=1,add=0)
+  modCoverage(x,col.name,multiply=1000,add=1)
 }
 \arguments{
   \item{x}{GRanges object with elementData}
