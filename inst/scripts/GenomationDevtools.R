@@ -13,7 +13,7 @@ library(devtools)
 	
 		# {{{1}}} PATH VARIABLES
 		lib.path='/home/members/vfranke/Projects/Code/Scripts/TestLib'
-		genomation.path='/home/members/vfranke/Projects/Code/Scripts/Genomation'
+		genomation.path='/home/members/vfranke/Projects/Code/Scripts/genomation'
 		
 		
 		#/{{{1}}} PATH VARIABLES
