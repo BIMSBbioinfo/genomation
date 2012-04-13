@@ -253,8 +253,8 @@ setMethod("binMatrix", signature("scoreMatrix"),
 		  
 				fun = match.fun(fun)
 				coord = binner(1, ncol(mat), nbins)
-				bmat = apply(mat, 1, function(x)
-										mapply(function(a,b)fun(x[a:b]), coord[1,], coord[2,]))
+				bmat = t(apply(mat, 1, function(x)
+										mapply(function(a,b)fun(x[a:b]), coord[1,], coord[2,])))
 										
 				return(new("scoreMatrix", bmat))
 		 }
