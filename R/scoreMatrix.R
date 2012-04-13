@@ -106,7 +106,7 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 			rownames(mat) = unlist(lapply(matList, rownames), use.names=F)
 	
 			if(strand.aware == TRUE){
-				orig.rows=which(as.character(strand(windows))== '-')
+				orig.rows=which(as.character(strand(windows)) == '-')
                 mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
 			}
             return(new("scoreMatrix",mat))
@@ -248,7 +248,7 @@ setMethod("binMatrix", signature("scoreMatrix"),
 				if(is.null(nbins))
 					return(mat)
 					
-				if(ncol(mat) > nbins)
+				if(nbins > ncol(mat))
 					stop("number of given bins is bigger than the number of matrix columns")
 		  
 				fun = match.fun(fun)
