@@ -23,35 +23,46 @@
 }
 
 # ------------------------------------------------------------------------------------ #
-
-
-
-
-# ------------------------------------------------------------------------------------ #
-       
-#setGeneric("scoreMatrixList",function(...) standardGeneric("scoreMatrixList"))
-
 # constructor
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param ... corresponds to 1 or more scoreMatrix objects
+#' @param l corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{scoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
+#' @param granges a \code{GenomicRanges} containing 
 #' @usage scoreMatrixList(...)
 #' @return returns a \code{scoreMatrixList} object
 #' @export
 #' @docType methods
 #' @rdname scoreMatrixList-methods
-scoreMatrixList = function(...){
-	l = list(...)
+scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
+
 	len = length(l)
 	if(len == 0L){
-		stop('length of the arguments is zero')
+		stop('list argument is empty')
+	
+	# checks whether the list argument contains only scoreMatrix objects
+	if(all(unlist(lapply(l, class)) == 'scoreMatrix'))
+		return(new("scoreMatrixList",l))
+	
+	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
+	if(all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList')){
+		if(is.null(granges))
+			stop("If the list contains RleLists granges must be defined")
+		
+		
+		if(is.null(bin) && all(width(granges)) == unique(width(granges))){
+			sml = lapply(l, function(x)scoreMatrix(x, granges))
+		
+		} else{
+			if(is.null(bin))
+				bin = 10
+			sml = lapply(l, function(x)scoreMatrixBin(x, granges, bin=bin))
+		}
+	
 	}else{
-		if(len == 1L && is.list(l[[1]]))
-			l = l[[1]]
-		if(!all(unlist(lapply(l, class)) == 'scoreMatrix'))
-			stop('Not all provided elements are of class scoreMatrix')
+		stop("List does not contain the proper classes")
 	}
-	return(new("scoreMatrixList",l))
+	
+	return(new("scoreMatrixList",sml))
 }
 
 # ------------------------------------------------------------------------------------ #
