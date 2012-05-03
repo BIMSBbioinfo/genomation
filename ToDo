@@ -18,6 +18,6 @@
 
  * what is the difference between annotate.WitFeature, annotate.WithFreatureFlank, annotate.WithGenicParts?
  * add a function to plot enrichments as heatmaps - could use ggplot2
- * add a function that takes a granges list and a RleList and automaticly produces a scoreMatrixList
+ [+] add a function that takes a granges list and a RleList and automaticly produces a scoreMatrixList
  * add a function that takes a granges of genes and consturcts transcript features
  * add gff3ToGRanges function

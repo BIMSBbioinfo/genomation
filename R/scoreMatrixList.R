@@ -23,12 +23,14 @@
 }
 
 # ------------------------------------------------------------------------------------ #
-# constructor
+# scoreMatrixList constructor
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{scoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
-#' @param granges a \code{GenomicRanges} containing 
-#' @usage scoreMatrixList(...)
+#' @param l: corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{scoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
+#' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or scoreMatrixList functions
+#' @param bin: an integer telling the number of bins to bin the score matrix
+ 
+#' @usage scoreMatrixList(l, granges, bin)
 #' @return returns a \code{scoreMatrixList} object
 #' @export
 #' @docType methods
