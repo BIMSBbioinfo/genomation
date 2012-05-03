@@ -17,12 +17,14 @@ Depends:
 Imports:
     GenomicRanges,
     IRanges,
-    data.table
+    data.table,
+	plyr
 Suggests:
     testthat
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
+	'gffFunctions.R'
     'modCoverage.R'
     'randomize.feature.R'
     'read_annotate.R'
