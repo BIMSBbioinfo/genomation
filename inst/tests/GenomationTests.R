@@ -137,4 +137,17 @@ test_that("binner works",
 		expect_that(binner(1,2,3), is_equivalent_to(m3))	
 	})
 	
+
+# ------------------------------------------- #	
+# scoreMatrixList tests
+l = lapply(seq(20, 40,5), function(x)matrix(rpois(1000, x), ncol=25))
+l = lapply(l, function(x)as(x, "scoreMatrix"))
+l = scoreMatrixList(l)
+names(l) = letters[1:5]
+load_all(pkg = genomation.path)
+png(file.path(getwd(),'sml.png'), width=800, height=800)
+	heatmapProfile(l, xcex=1.5, ycex=1.5, cex.main=3,  ylab='Number',  xlab='Position')
+dev.off()
+	
+	
 	
