@@ -200,7 +200,7 @@ setGeneric("convert.bed2introns",function(bed.df) standardGeneric("convert.bed2i
 
 #' @aliases convert.bed2introns,data.frame-method
 #' @rdname convert.bed2introns-methods
-setMethod("convert.bed2introns" ,
+setMethod("convert.bed2introns",
 			signature(bed.df = "data.frame" ),
 			function(bed.df){
 
@@ -230,8 +230,8 @@ setGeneric("read.bed", function(location,remove.unsual=T) standardGeneric("read.
 #' @aliases read.bed,character-method
 #' @rdname read.bed-methods
 setMethod("read.bed", 
-			signature(location = "character")),
-			function(location,remove.unsual){
+			signature(location = "character"),
+			function(location, remove.unsual){
 
 				# find out if there is a header, skip 1st line if there is a header
 				f.line=readLines(con = location, n = 1)

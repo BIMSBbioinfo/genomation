@@ -38,7 +38,7 @@
 scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 
 	len = length(l)
-	if(len == 0L){
+	if(len == 0L)
 		stop('list argument is empty')
 	
 	# checks whether the list argument contains only scoreMatrix objects
@@ -46,7 +46,7 @@ scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 		return(new("scoreMatrixList",l))
 	
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList')){
+	if(all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList'))){
 		if(is.null(granges))
 			stop("If the list contains RleLists granges must be defined")
 		

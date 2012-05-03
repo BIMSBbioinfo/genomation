@@ -1,7 +1,6 @@
 import(methods)
 import(GenomicRanges)
 import(IRanges)
-import(plyr)
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)
@@ -18,6 +17,7 @@ import(plyr)
 
 
 importFrom("data.table", data.table)
+importFrom("plyr",rbind.fill)
 
 
 # importFrom("parallel", mclapply)
@@ -51,6 +51,5 @@ exportMethods(scoreMatrix)
 exportMethods(binMatrix)
 exportMethods(scoreMatrixBin)
 
-exp(gffToGRanges)
-#exportMethods(scoreMatrixList)
+export(gffToGRanges)
 export(scoreMatrixList)
