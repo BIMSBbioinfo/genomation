@@ -50,6 +50,7 @@ exportMethods(read.transcript.features)
 exportMethods(scoreMatrix)
 exportMethods(binMatrix)
 exportMethods(scoreMatrixBin)
-exportMethods(gffToGRanges)
+
+exp(gffToGRanges)
 #exportMethods(scoreMatrixList)
 export(scoreMatrixList)
