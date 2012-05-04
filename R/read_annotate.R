@@ -66,7 +66,7 @@ bed12.to.introns<-function(ref){
 	temp.ref		= temp.ref[temp.ref[,7]==temp.ref[,14],]
 	temp.ref[,2]	= temp.ref[,3]
 	temp.ref[,3]	= temp.ref[,9]
-	rep.ref		= temp.ref[,1:6]
+	rep.ref			= temp.ref[,1:6]
 
 	# subtract 1 from - strand exon numbers
 	rep.ref[rep.ref[,6]=="-",5]=rep.ref[rep.ref[,6]=="-",5]-1 
@@ -101,6 +101,13 @@ check.bed.validity<-function(bed.df,type="none"){
 	return(num.col & col1.2 & chr )
 }
 
+# ----------------------------------------------------------------------------------------------- #
+# fast reading of big tables
+.readTableFast<-function(filename, header=T, skip=0, sep=""){
+  tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100)
+  classes  <- sapply(tab5rows, class)
+  return( read.table(filename, header = header,skip=skip,sep=sep, colClasses = classes)  )
+}
 
 
 #######################################
@@ -141,18 +148,20 @@ setMethod("convert.bed.df" ,
 				strands=as.character(bed$V6)
 				strands[strands=="."]="*"
 				grange=GRanges(seqnames=as.character(bed$V1),
-				ranges=IRanges(start=bed$V2+1, end=bed$V3),
-				strand=strands, score=bed$V5,name=bed$V4)
+							   ranges=IRanges(start=bed$V2+1, end=bed$V3),
+							   strand=strands, 
+							   score=bed$V5,
+							   name=bed$V4)
 			}
 
 			if(ncol(bed)==5){
-				grange=GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)), score=bed$V5,name=bed$V4 )
+				grange = GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)), score=bed$V5,name=bed$V4 )
 			}
 			if(ncol(bed)==4){
-				grange=GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)),name=bed$V4)
+				grange = GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)),name=bed$V4)
 			}    
 			if(ncol(bed)==3){
-				grange=GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)))
+				grange = GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)))
 			}                           
 			return(grange)
 })
@@ -249,7 +258,7 @@ setMethod("read.bed",
 
 
 # ----------------------------------------------------------------------------------------------- #
-#' Function for  reading exon intron and promoter structure from a given bed file
+#' Function for reading exon intron and promoter structure from a given bed file
 #'
 #' @param location location of the bed file with 12 or more columns
 #' @param remove.unsual remove the chromomesomes with unsual names, mainly random chromsomes etc
@@ -278,16 +287,20 @@ setMethod("read.transcript.features",
 				skip=1
 
 			# read bed6
+			cat('Reading the table...\r')
 			bed=.readTableFast(location,header=F,skip=skip)                    
 			if(remove.unsual)
 				bed=bed[grep("_", as.character(bed[,1]),invert=T),]
 			
 			# introns
+			cat('Calculating intron coordinates...\r')
 			introns	= convert.bed2introns(bed)
 			# exons
+			cat('Calculating exon coordinates...\r')
 			exons	= convert.bed2exons(bed)
 
 			# get the locations of TSSes
+			cat('Calculating TSS coordinates...\r')
 			tss=bed
 			#  + strand
 			tss[tss$V6=="+",3] = tss[tss$V6=="+",2]
@@ -300,6 +313,7 @@ setMethod("read.transcript.features",
 						   score=rep(0,nrow(tss)),
 						   name=tss$V4)
 
+			cat('Calculating promoter coordinates...\r')
 			# get the locations of promoters
 			# + strand
 			bed[bed$V6=="+",3]=bed[bed$V6=="+",2]+down.flank
@@ -309,6 +323,7 @@ setMethod("read.transcript.features",
 			bed[bed$V6=="-",2]=bed[bed$V6=="-",3]-down.flank
 			bed[bed$V6=="-",3]=bed[bed$V6=="-",3]+up.flank
 
+			
 			if(! unique.prom){
 				prom.df = (bed[,c(1,2,3,4,6)])
 				prom = GRanges(seqnames=as.character(prom.df$V1),
@@ -324,7 +339,8 @@ setMethod("read.transcript.features",
 							   score=rep(0,nrow(prom.df)),
 							   name=rep(".",nrow(prom.df)) )
 			}
-
+			
+			cat('Outputting the final GRangesList...\r\n')
 			GRangesList(exons=exons,introns=introns,promoters=prom,TSSes=tssg)
 })
 
