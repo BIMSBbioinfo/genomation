@@ -21,3 +21,7 @@
  [+] add a function that takes a granges list and a RleList and automaticly produces a scoreMatrixList
  * add a function that takes a granges of genes and consturcts transcript features
  [+] add gff3ToGRanges function
+
+04.05.2012
+
+ * make show functions pretty

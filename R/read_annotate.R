@@ -123,6 +123,7 @@ check.bed.validity<-function(bed.df,type="none"){
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' @note bed files are expected not to have header lines
 #'
 #' @export
 #' @docType methods
@@ -492,17 +493,16 @@ setClass("annotationByGenicParts",
 setMethod("show", "annotationByGenicParts", 
 			function(object) {
 
-				cat("summary of target set annotation with genic parts\n");
-				cat(nrow(object@members))
-				cat(" rows in target set\n--------------\n")
-				cat("--------------\n")
+				cat("Summary of target set annotation with genic parts\n");
+				cat("Rows in target set:", nrow(object@members), "\n")
+				cat("-----------------------\n\n")
 				
 				cat("percentage of target features overlapping with annotation :\n")
 				print(object@annotation)
 				cat("\n\n")
 				
-				cat("percentage of target features overlapping with annotation (with
-				promoter>exon>intron precedence) :\n"); 
+				cat("percentage of target features overlapping with annotation\n")
+				cat("(with promoter > exon > intron precedence) :\n"); 
 				print(object@precedence)
 				cat("\n\n")
 				
@@ -512,6 +512,7 @@ setMethod("show", "annotationByGenicParts",
 				
 				cat("summary of distances to the nearest TSS :\n")
 				print(summary(abs(object@dist.to.TSS[,2])))
+				cat("\n")
 })
 
 
@@ -660,11 +661,11 @@ distance2nearestFeature<-function(g.idh,tss){
 
 
 # ----------------------------------------------------------------------------------------------- #
-#' Function to annotate given GRanges object with promoter, exon, intron & intergenic values
+#' Function to annotate given GRanges object with promoter, exon, intron & intergenic ranges
 #'
-#' @param target: A GRanges object storing chromosome locations to be annotated
+#' @param target: A GRanges object storing chromosome locations to be annotated (e.g. chipseq peaks)
 #' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of read.transcript.features function
-#' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
+#' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
 #' @usage annotate.WithGenicParts(target,GRangesList.obj,strand=F)
 #' @return \code{annotationByGenicParts} object
 #' 
@@ -679,7 +680,11 @@ setMethod("annotate.WithGenicParts",
 		  signature(target = "GRanges", GRangesList.obj = "GRangesList"),
 		  function(target, GRangesList.obj,strand){
 
-			a.list = annotate.gr.WithGenicParts(target,GRangesList.obj$promoters,GRangesList.obj$exons,GRangesList.obj$introns,strand=strand)
+			a.list = annotate.gr.WithGenicParts(target, 
+												GRangesList.obj$promoters,
+												GRangesList.obj$exons,
+												GRangesList.obj$introns,
+												strand=strand)
 			dist2TSS = distance2nearestFeature(target,GRangesList.obj$TSSes)
 
 			new("annotationByGenicParts",
@@ -695,7 +700,31 @@ setMethod("annotate.WithGenicParts",
 
 
 # ----------------------------------------------------------------------------------------------- #
-#' Function to annotate given GRanges object with promoter,exon,intron & intergenic values
+#'Given a GRangesList object it annotates each Range with gene annotation
+#'
+#' @param target: A GRangesList object storing chromosome locations to be annotated (e.g. chipseq peaks from multiple experiments)
+#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of read.transcript.features function
+#' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
+#'
+#' @usage annotate.WithGenicParts(target, GRangesList.obj, strand=F)
+#' @return \code{annotationByGenicParts} object
+#' @export
+#'
+#' @docType methods
+#' @rdname annotate.WithGenicParts-methods
+setMethod("annotate.WithGenicParts",
+		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
+		  function(target, GRangesList.obj, strand){
+		  
+			l = lapply(target, function(x)annotate.withGenicParts(target, GRangesList.obj, strand))
+			return(l)
+})
+
+
+
+
+# ----------------------------------------------------------------------------------------------- #
+#' Function to annotate a given GRanges object with promoter,exon,intron & intergenic values
 #'  
 #' @param target    a granges object storing chromosome locations to be annotated
 #' @param feature   a granges object storing chromosome locations of a feature (can be CpG islands, ChIP-seq peaks, etc)
@@ -717,8 +746,10 @@ setMethod( "annotate.WithFeature.Flank",
 			signature(target = "GRanges",feature="GRanges",flank="GRanges"),
 			function(target, feature, flank,feature.name,flank.name,strand){
 
-				if( ! strand){strand(target)="*"}
-					memb=data.frame(matrix(rep(0,length(target)*2),ncol=2) )  ;colnames(memb)=c(feature.name,flank.name)
+				if( ! strand )
+					strand(target) = "*"
+					memb=data.frame(matrix(rep(0,length(target)*2),ncol=2) )
+					colnames(memb) = c(feature.name,flank.name)
 					memb[countOverlaps(target,feature)>0,1]=1
 					memb[countOverlaps(target,flank)>0,2]=1
 
@@ -777,36 +808,37 @@ setGeneric("annotate.WithFeature", function(target,feature,strand=FALSE,extend=0
 
 #' @aliases annotate.WithFeature,GRanges,GRanges-method
 #' @rdname annotate.WithFeature-methods
-setMethod("annotate.WithFeature", signature(target = "GRanges",feature="GRanges"),
-function(target, feature, strand,extend,feature.name){
+setMethod("annotate.WithFeature", 
+		   signature(target = "GRanges",feature="GRanges"),
+		   function(target, feature, strand,extend,feature.name){
 
-	if( ! strand){strand(target)="*"}
-		memb=rep(0,length(target))
+				if( ! strand){strand(target)="*"}
+					memb=rep(0,length(target))
 
-	if(extend>0){
-		start(feature)=start(feature)-extend
-		end(feature)  =end(feature)+extend
-	}
-	memb[countOverlaps(target,feature)>0] = 1
+				if(extend>0){
+					start(feature) = start(feature)- extend
+					end(feature)   = end(feature)  + extend
+				}
+				memb[countOverlaps(target,feature) > 0] = 1
 
-	annotation = c( 100*sum(memb>0)/length(memb) ,
-				   100*sum((memb)==0)/length(memb) )
-	
-	num.annotation = c( sum(memb>0),
-					  sum((memb)==0) )
-	names(annotation) = c(feature.name,"other")
+				annotation = c( 100*sum(memb >  0)/length(memb) ,
+								100*sum(memb == 0)/length(memb) )
+				
+				num.annotation = c( sum( memb >  0),
+									sum( memb == 0) )
+				names(annotation) = c(feature.name, "other")
 
-	numberOfOlapFeat = c(sum(countOverlaps(feature,target)>0))
-	percOfOlapFeat = 100*numberOfOlapFeat/c(length(feature))
+				numberOfOlapFeat = c(sum(countOverlaps(feature,target)>0))
+				percOfOlapFeat = 100*numberOfOlapFeat/c(length(feature))
 
-	new("annotationByFeature",
-		members         = as.matrix(memb),
-		annotation      = annotation,
-		precedence		= annotation,
-		num.annotation  = num.annotation,
-		num.precedence	= num.annotation,
-		no.of.OlapFeat  = numberOfOlapFeat,
-		perc.of.OlapFeat= percOfOlapFeat)
+				new("annotationByFeature",
+					members         = as.matrix(memb),
+					annotation      = annotation,
+					precedence		= annotation,
+					num.annotation  = num.annotation,
+					num.precedence	= num.annotation,
+					no.of.OlapFeat  = numberOfOlapFeat,
+					perc.of.OlapFeat= percOfOlapFeat)
 })
 
 # ACCESSOR FUNCTIONS
@@ -984,6 +1016,39 @@ setMethod("plotTargetAnnotation",
 })
 
 
+# ----------------------------------------------------------------------------------------------- #
+
+
+setGeneric("plotGenicAnnotation", def=function(l, cluster=FALSE, col=c('white','cornflowerblue'), ...)standardGeneric("plotGenicAnnotation"))
+
+setMethod("plotGenicAnnotation", 
+			signature(l="list"),
+			function(l, cluster, col, ...){
+			
+				if(!all(unlist(lapply(l, class)) == "annotationByGenicParts"))
+					stop("All elements of the input list need to be annotationByGenicParts-class")
+			
+				d = do.call(rbind, lapply(l, function(x)x@precedence))
+				
+				ind = 1:nrow(d)
+				if(cluster == TRUE){
+					h = hclust(dist(d))
+					ind = h$order
+				}
+				m = reshape2::melt(data.frame(d))
+				m = melt(d)
+				
+				p <- ggplot(m, aes(x=X2, y=X1, fill=value, colour="white")) + 
+					 scale_fill_gradient(low =col[1], high = col[2]) + 
+					 scale_y_discrete(limits = rownames(d)[ind] ) + 
+					 opts(axis.title.x=theme_text(colour='white'), 
+						  axis.text.x=theme_text(colour='black', face='bold'), 
+						  axis.text.y=theme_text(colour='black'), 
+						  axis.title.y=theme_text(colour='white', face='bold'))
+				p + geom_tile(color='white') 
+})
 
 # SECTION 3:
 # annotate ML objects with annotations read-in and converted to GRanges objects
+
+

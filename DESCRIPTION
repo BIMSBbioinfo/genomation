@@ -19,6 +19,7 @@ Imports:
     IRanges,
     data.table,
 	plyr
+	reshape2
 Suggests:
     testthat
 Collate:

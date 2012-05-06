@@ -18,6 +18,7 @@ import(IRanges)
 
 importFrom("data.table", data.table)
 importFrom("plyr",rbind.fill)
+importFrom("reshape2", melt)
 
 
 # importFrom("parallel", mclapply)

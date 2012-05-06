@@ -149,5 +149,16 @@ png(file.path(getwd(),'sml.png'), width=800, height=800)
 	heatmapProfile(l, xcex=1.5, ycex=1.5, cex.main=3,  ylab='Number',  xlab='Position')
 dev.off()
 	
+
+# ------------------------------------------- #	
+# test for annotate with genic parts
+# test_that("",
+	# {
+	
+
+	# })
+
+
+
 	
 	
