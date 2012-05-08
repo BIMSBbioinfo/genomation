@@ -1017,10 +1017,23 @@ setMethod("plotTargetAnnotation",
 
 
 # ----------------------------------------------------------------------------------------------- #
+#' Plots the enrichment of each feature in the set in the gene annotation
+#'
+#' This function plots a heatmap of enrichment of each range in given gene feature
+#' @param l a \code{list} of  \code{annotationByGenicParts} objects
+#' @param cluster TRUE/FALSE. If TRUE the heatmap is going to be clustered using hierarchical clustering
+#' @param col a vector of two colors that will be used for interpolation. The first color is the lowest one, the second is the highest one
 
-
+#' usage  plotGenicAnnotation(l, cluster=FALSE, col=c('white','cornflowerblue'),...)
+#' 
+#' @export
+#' @docType methods
+#' @rdname plotGenicAnnotation-methods
 setGeneric("plotGenicAnnotation", def=function(l, cluster=FALSE, col=c('white','cornflowerblue'), ...)standardGeneric("plotGenicAnnotation"))
 
+#' @rdname plotGenicAnnotation-methods
+#' @docType methods
+#' @aliases plotGenicAnnotation,annotationByFeature-method
 setMethod("plotGenicAnnotation", 
 			signature(l="list"),
 			function(l, cluster, col, ...){
