@@ -30,21 +30,24 @@ getViews = function(target, windows){
 	# orders the granges object so that we can track which view corresponds to which range
 	windows = windows[order(as.character(seqnames(windows)), start(windows))]
 	win.list=as(windows, "RangesList")
+	win.list = win.list[sapply(win.list, length) > 0]
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
+	winsize = width(windows[1])
 	if(length(chrs)==0)
 		stop("There are no common chromosomes/spaces to do overlap")
 		
 	#get views 
 	# the subsetting needs to be done using a character vector, because otherwise it can take the views from wrong seqnames
-	my.vList = Views(target[chrs], win.list[chrs] )
+	my.vList = seqselect(target[chrs], win.list[chrs] )
+	my.vList = lapply(my.vList, function(x)matrix(as.integer(x), ncol=winsize, byrow=T))
 	
 	# rownames of each view correspond to the ids of each window
-	my.vList = RleViewsList(lapply(chrs, 
-								   function(x){
-									v = my.vList[[x]]
-									names(v) = IRanges::values(windows)$X_rank[as.character(seqnames(windows)) == x]
-									v}))
+	my.vList = lapply(chrs, 
+						function(x){
+						v = my.vList[[x]]
+						rownames(v) = IRanges::values(windows)$X_rank[as.character(seqnames(windows)) == x]
+						return(v)})
 	names(my.vList) = chrs
 	return(my.vList)
 }
@@ -98,16 +101,13 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 			windows = constrainRanges(target, windows)
 			
 			# fetches the windows
-			viewsList = getViews(target, windows)
-			mat = do.call(rbind, lapply(viewsList, function(x)t(viewApply(x, as.vector))))
-			rownames(mat) = unlist(lapply(viewsList, names), use.names=F)
+			matList = getViews(target, windows)
+			mat = do.call(rbind, matList)
+			rownames(mat) = unlist(lapply(matList, rownames), use.names=F)
 	
 			if(strand.aware == TRUE){
-					 #s.ind = as.vector(strand(windows) == '-') # this commented out part will not work, the order of mat is not same as windows
-                                         orig.rows=which(as.character(strand(windows))== '-') # this will work
-        
-                                         mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
-					#mat[s.ind,] = t(apply(mat[s.ind,],1, rev))
+				orig.rows=which(as.character(strand(windows)) == '-')
+                mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
 			}
             return(new("scoreMatrix",mat))
 })
@@ -226,3 +226,36 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 	  }
 )
 
+
+# ------------------------------------------------------------------------------------ #
+#' Bins the columns of a matrix using a user provided function 
+
+#' @param mat a \code{scoreMatrix} object
+#' @param nbins a \code{integer} number of bins in the final matrix
+#' @param fun  a \code{character} vector representing the function to be used for bining
+
+#' @usage binMatrix(mat, nbins=NULL, fun='mean', ...)
+#' @return \code(scoreMatrix) object
+
+#' @docType methods
+#' @rdname binMatrix-methods
+#' @export
+setGeneric("binMatrix", function(mat, nbins=NULL, fun='mean', ...) standardGeneric("binMatrix") )
+
+setMethod("binMatrix", signature("scoreMatrix"),
+			function(mat, nbins=NULL, fun='mean', ...){
+		  
+				if(is.null(nbins))
+					return(mat)
+					
+				if(nbins > ncol(mat))
+					stop("number of given bins is bigger than the number of matrix columns")
+		  
+				fun = match.fun(fun)
+				coord = binner(1, ncol(mat), nbins)
+				bmat = t(apply(mat, 1, function(x)
+										mapply(function(a,b)fun(x[a:b]), coord[1,], coord[2,])))
+										
+				return(new("scoreMatrix", bmat))
+		 }
+)
