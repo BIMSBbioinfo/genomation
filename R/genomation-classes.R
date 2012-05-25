@@ -83,4 +83,3 @@ setClass("scoreMatrixList",
 			contains = "list"
 #			validity=.valid.scoreMatrixList
 			)
-
