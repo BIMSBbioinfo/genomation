@@ -46,24 +46,31 @@ summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 }
 
 # replicates a lot of code from summarizeViews.modRle - have to think about it
-summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
+# median should not be supported yet
+summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.aware,t.multiply,t.add){
 
-	functs = c('mean','max','median')
+	functs = c('mean','max','min')
 	if(!bin.op %in% functs)
 		stop(paste('Supported binning functions are', functs,'\n'))
 
 	if(bin.op=="mean"){
 		# sum of each view
-		sum.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, sum)), use.names=F)
+		sum.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewSums(x)), use.names=F)
 		# number of values in each bin, discarding bases with no value
 		len.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y)sum(y > 0))), use.names=F )
 		
-		sum.bins = sum.bins/len.bins
+		vals = sum.bins/len.bins  # get the means by using only covered values
+                vals[!is.na(vals)]=(vals[!is.na(vals)]-t.add)/t.multiply # the bind that have no coverage will have NAs, the rest should be adjusted for additive and multiplicative constants
+                mat=matrix( vals, ncol=bin.num,byrow=TRUE) # make the matrix
+
 	}else{
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y) match.fun(bin.op)(as.numeric(y),na.rm=T) )))	
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y) match.fun(bin.op)(as.numeric(y),na.rm=T) )))
+                vals=(sum.bins-t.add)/t.multiply #adjusted for additive and multiplicative constants
+                vals[vals<0]=NA # remove values with negative scores as NA, because they are uncovered bases
+                mat=matrix( vals, ncol=bin.num,byrow=TRUE)
 	}
-	
-	mat = matrix( sum.bins, ncol=bin.num,byrow=TRUE)
+
+	#mat = matrix( sum.bins, ncol=bin.num,byrow=TRUE)
 	rownames(mat) = unlist(IRanges::lapply(my.vList, names))[seq(1, length(mat), bin.num)]
 	if(strand.aware){
 		#mat[as.character(strand(windows))== '-',] = t(apply(mat[as.character(strand(windows)) == '-'], 1, rev))
@@ -162,7 +169,7 @@ setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
 			my.vList = getViewsBin(as(target,'RleList'), windows, bin.num)
 			
 			# summarize
-			mat = summarizeViews.modRle(my.vList, windows, bin.op, bin.num, strand.aware)
+			mat = summarizeViews.modRle(my.vList, windows, bin.op, bin.num, strand.aware,target@multiply,target@add)
 			new("scoreMatrix",mat)
 })
 

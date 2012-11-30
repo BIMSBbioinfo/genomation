@@ -10,6 +10,14 @@
 # SECTION 1: S3 functions
 #######################################
 
+# reads a table in a fast way to a dataframe
+.readTableFast<-function(filename,header=T,skip=0,sep="")
+{
+  tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100)
+  classes  <- sapply(tab5rows, class)
+  return( read.table(filename, header = header,skip=skip,sep=sep, colClasses = classes)  )
+}
+
 # extracts exons from a bed12 file and puts them into GRanges object
 # done in pure R
 bed12.to.exons<-function(ref)
