@@ -1,0 +1,8 @@
+genomation 0.2.1
+--------------
+
+
+IMPROVEMENTS AND BUG FIXES
+
+* scoreMatrixBin should work now correctly with modRleList objects
+
