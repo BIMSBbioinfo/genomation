@@ -55,49 +55,39 @@ summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	
 }
 
-# replicates a lot of code from summarizeViews.modRle - have to think about it
-# median should not be supported yet, we need another if clause to support the median operation
-summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num,strand.aware,t.multiply,t.add){
+# median should not be supported yet
+summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.aware,t.multiply,t.add){
 
-       functs = c('mean','max','min')
-       if(!bin.op %in% functs)
-               stop(paste('Supported binning functions are', functs,'\n'))
+	functs = c('mean','max','min')
+	if(!bin.op %in% functs)
+		stop(paste('Supported binning functions are', functs,'\n'))
 
-       if(bin.op=="mean"){
-               # sum of each view
-               sum.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewSums(x)), use.names=F)
-               
-			   # number of values in each bin, discarding bases with no value
-               len.bins=unlist( IRanges::lapply(my.vList, function(x)IRanges::viewApply(x, function(y)sum(y > 0))), use.names=F )
-
-			   # get the means by using only covered values
-               vals = sum.bins/len.bins  
-			   # the bind that have no coverage will have NAs, the rest should be adjusted for additive and multiplicative constants
-			   	vals[!is.na(vals)]=(vals[!is.na(vals)]-t.add)/t.multiply 
-				
-			   # make the matrix
-               mat=matrix( vals, ncol=bin.num,byrow=TRUE) 
-
-       }else{
-               sum.bins=unlist(IRanges::lapply(my.vList, function(x)IRanges::viewApply(x, function(y)match.fun(bin.op)(as.numeric(y),na.rm=T) )))
-			   
-			   #adjusted for additive and multiplicative constants
-               vals=(sum.bins-t.add)/t.multiply 
-
-			   # remove values with negative scores as NA, because they are uncovered bases
-               vals[vals<0]=NA 
-               mat=matrix( vals, ncol=bin.num,byrow=TRUE)
-       }
-
-       
-       rownames(mat) = unlist(IRanges::lapply(my.vList, names))[seq(1,length(mat), bin.num)]
-       if(strand.aware){
-               t(apply(mat[as.character(strand(windows)) == '-'], 1, rev))
-               orig.rows=which(as.character(strand(windows))== '-')
-               mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
-       }
-
-       return(mat)
+	if(bin.op=="mean"){
+		# sum of each view
+		sum.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewSums(x)), use.names=F)
+		# number of values in each bin, discarding bases with no value
+		len.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y)sum(y > 0))), use.names=F )
+		
+		# get the means by using only covered values
+		vals = sum.bins/len.bins  
+		# the bind that have no coverage will have NAs, the rest should be adjusted for additive and multiplicative constants
+		vals[!is.na(vals)]=(vals[!is.na(vals)]-t.add)/t.multiply 
+		# make the matrix
+	}else{
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y) match.fun(bin.op)(as.numeric(y),na.rm=T) )))
+		#adjusted for additive and multiplicative constants
+		vals=(sum.bins-t.add)/t.multiply 
+		# remove values with negative scores as NA, because they are uncovered bases
+		vals[vals<0]=NA 
+	}
+	mat=matrix( vals, ncol=bin.num,byrow=TRUE)
+	rownames(mat) = unlist(IRanges::lapply(my.vList, names))[seq(1, length(mat), bin.num)]
+	if(strand.aware){
+			orig.rows=which(as.character(strand(windows))== '-')        
+			mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+        }
+		
+	return(mat)
 }
 
 # given a vector and length smooths the vector to a given size

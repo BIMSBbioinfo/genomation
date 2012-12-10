@@ -2,7 +2,7 @@ Package: genomation
 Type: Package
 Title: : R package for graphics and operations for genomic
     features
-Version: 0.2
+Version: 0.2.1
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran
