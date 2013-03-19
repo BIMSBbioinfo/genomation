@@ -186,7 +186,7 @@ setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
 					cat('Plotting matrix: ', i,'\r')
 					# sets the margins for each plot
 					if(i == 1){
-						par(mar=c(mar[c(1,2,3)], mar[5]/2))
+						par(mar=c(mar[c(1,5,3)], mar[5]/2), oma=c(0,2,0,0))
 					}else if(i == len){
 						par(mar=c(mar[1], mar[5]/2, mar[3], mar[4]))
 					}else{
