@@ -195,5 +195,3 @@ setMethod("calculateOverlapSignificance", signature(feature = "GRanges", target=
 		co = co[,length(subjectHits), by=set]
 		return(co$V1/length(target))
 })
-
-s = calculateOverlapSignificance(target, feature, chrom.sizes, keep.strand.prop=TRUE, nrand=1000)

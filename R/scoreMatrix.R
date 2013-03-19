@@ -29,6 +29,10 @@ getViews = function(target, windows){
 
 	# orders the granges object so that we can track which view corresponds to which range
 	windows = windows[order(as.character(seqnames(windows)), start(windows))]
+	
+	# this drops not used seqlevels - bug in recent versions of R
+	chrs.not = setdiff(seqlevels(windows), unique(as.character(seqnames(windows)))) 
+	seqlevels(windows) = setdiff(seqlevels(windows), chrs.not)
 	win.list=as(windows, "RangesList")
 	win.list = win.list[sapply(win.list, length) > 0]
 	#check if there are common chromsomes
@@ -75,6 +79,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} object to be overlapped with ranges in \code{windows}
 #' @param windows a \code{GRanges} object that contains the windows of interest. It could be promoters, CpG islands, exons, introns. However the sizes of windows have to be equal.
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
+#' @param ordered If TRUE (default: FALSE), the input order will be preserved
 #' @param ... parameters to be passed to \code{modCoverage} function. Only needed when target is \code{GRanges}.
 #'
 #' @usage scoreMatrix(target,windows,strand.aware=FALSE,...)
@@ -84,14 +89,14 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,...) standardGeneric("scoreMatrix") )
+setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALSE,...) standardGeneric("scoreMatrix") )
 
 
 # ------------------------------------------------------------------------------------ #
 #' @aliases scoreMatrix,RleList,GRanges-method
 #' @rdname scoreMatrix-methods
 setMethod("scoreMatrix",signature("RleList","GRanges"),
-          function(target,windows,strand.aware){
+          function(target,windows,strand.aware,ordered){
             
             #check if all windows are equal length
             if( length(unique(width(windows))) >1 )
@@ -108,6 +113,9 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 			if(strand.aware == TRUE){
 				orig.rows=which(as.character(strand(windows)) == '-')
                 mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+			}
+			if(ordered == TRUE){
+				mat = mat[order(as.numeric(rownames(mat))),]
 			}
             return(new("scoreMatrix",mat))
 })
@@ -133,6 +141,15 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
             
             # call scoreMatrix function
             scoreMatrix(target.rle,windows,strand.aware)
+})
+
+#' @aliases scoreMatrix,GRanges,GRanges-method
+#' @rdname scoreMatrix-methods
+setMethod("scoreMatrix",signature("matrix"),
+          function(target,...){
+          
+		  #converts matrix to scoreMatrix
+          return(new("scoreMatrix",target))
 })
 
 
@@ -253,8 +270,7 @@ setMethod("binMatrix", signature("scoreMatrix"),
 		  
 				fun = match.fun(fun)
 				coord = binner(1, ncol(mat), nbins)
-				bmat = t(apply(mat, 1, function(x)
-										mapply(function(a,b)fun(x[a:b]), coord[1,], coord[2,])))
+				bmat = mapply(function(a,b)apply(mat[,a:b],1,fun), coord[1,], coord[2,])
 										
 				return(new("scoreMatrix", bmat))
 		 }
