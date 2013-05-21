@@ -159,12 +159,13 @@ setMethod("randomize.feature", signature(feature = "GRanges"),
 #' @export
 #' @docType methods
 #' @rdname randomize.feature-methods
-setGeneric("calculateOverlapSignificance", function(target, feature, chrom.sizes=NULL,stranded=TRUE,
-keep.strand.prop=TRUE,keep.chrom=TRUE,
-exclude=NULL,include=NULL,seed=NULL,nrand=1)
-standardGeneric("calculateOverlapSignificance") )
+setGeneric("calculateOverlapSignificance", 
+				function(target, feature, chrom.sizes=NULL, stranded=TRUE,
+						 keep.strand.prop=TRUE, keep.chrom=TRUE,
+						 exclude=NULL, include=NULL, seed=NULL, nrand=1)
+				standardGeneric("calculateOverlapSignificance") )
 
-setMethod("calculateOverlapSignificance", signature(feature = "GRanges", target='GRanges'),
+setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="GRanges"),
 			function( target,
 					  feature,
 					  chrom.sizes ,
@@ -196,4 +197,3 @@ setMethod("calculateOverlapSignificance", signature(feature = "GRanges", target=
 		return(co$V1/length(target))
 })
 
-s = calculateOverlapSignificance(target, feature, chrom.sizes, keep.strand.prop=TRUE, nrand=1000)

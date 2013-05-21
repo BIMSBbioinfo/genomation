@@ -143,12 +143,29 @@ test_that("binner works",
 l = lapply(seq(20, 40,5), function(x)matrix(rpois(1000, x), ncol=25))
 l = lapply(l, function(x)as(x, "scoreMatrix"))
 l = scoreMatrixList(l)
-names(l) = letters[1:5]
-load_all(pkg = genomation.path)
 png(file.path(getwd(),'sml.png'), width=800, height=800)
 	heatmapProfile(l, xcex=1.5, ycex=1.5, cex.main=3,  ylab='Number',  xlab='Position')
 dev.off()
 	
+# tests the yargs and y.at arguments
+l = lapply(seq(20, 40,5), function(x)matrix(rpois(1000, x), ncol=25))
+l = lapply(l, function(x)as(x, "scoreMatrix"))
+l = scoreMatrixList(l)
+png(file.path('/home/members/vfranke/Tmp','sml1.png'), width=800, height=800)
+	ymarks1 = c('aa','bb','cc','dd')
+	y.at1 = c(10,20,30,40)	
+	heatmapProfile(l, xcex=1.5, ycex=1.5, cex.main=3,  ylab='Number',  xlab='Position', ymarks=ymarks1, y.at=y.at1)
+dev.off()
+	
+png(file.path('/home/members/vfranke/Tmp','sml2.png'), width=1200, height=800)
+	ymarks2 = c('aaaaaaaaaaaaaaaaaaaaaaaaa','bb','cc','dd')
+	y.at2 = c(10,12,14,16)	
+	heatmapProfile(l, xcex=1.5, ycex=1.5, cex.main=3,  ylab='Number',  xlab='Position', ymarks=ymarks2, y.at=y.at2)
+dev.off()
+
+
+
+load_all(pkg = genomation.path)
 
 # ------------------------------------------- #	
 # test for annotate with genic parts

@@ -12,13 +12,11 @@ Description: A package for genomic feature analysis and
 License: Artistic-2.0
 LazyLoad: yes
 Depends:
-    R (>= 2.14.0),
-    methods
+    R (>= 2.14.0)
 Imports:
     GenomicRanges,
     IRanges,
     data.table,
-	plyr
 	reshape2
 Suggests:
     testthat
