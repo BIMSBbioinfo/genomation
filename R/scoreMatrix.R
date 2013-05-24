@@ -159,12 +159,12 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
 #' @docType methods
 #' @rdname plotMatrix-methods
 #' @export
-setGeneric("plotMatrix", function(mat, fact=NULL, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, use.names=FALSE, ...) standardGeneric("plotMatrix") )
+setGeneric("plotMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, use.names=FALSE, ...) standardGeneric("plotMatrix") )
 
 #' @aliases plotMatrix,scoreMatrix-method
 #' @rdname plotMatrix-methods
 setMethod("plotMatrix", signature("scoreMatrix"),
-		  function(mat, fact, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, use.names, ...){
+		  function(mat, fact, add.sep, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, use.names, ...){
 			
 			# -------------------------- #
 			# parameter checking
@@ -213,7 +213,8 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), col=mat.cols, , oma=c(0,0,0,0), useRaster=T, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
-            AddSep(mat, rowsep[-length(rowsep)], "black")	
+			if(add.sep == TRUE)
+				AddSep(mat, rowsep[-length(rowsep)], "black")	
 			
 			if(use.names==TRUE){
 				axis(2, at=1:nrow(mat), labels=rownames(mat), las=2)
