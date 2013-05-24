@@ -159,12 +159,12 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
 #' @docType methods
 #' @rdname plotMatrix-methods
 #' @export
-setGeneric("plotMatrix", function(mat, fact=NULL, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, ...) standardGeneric("plotMatrix") )
+setGeneric("plotMatrix", function(mat, fact=NULL, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, use.names=FALSE, ...) standardGeneric("plotMatrix") )
 
 #' @aliases plotMatrix,scoreMatrix-method
 #' @rdname plotMatrix-methods
 setMethod("plotMatrix", signature("scoreMatrix"),
-		  function(mat, fact, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, ...){
+		  function(mat, fact, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, use.names, ...){
 			
 			# -------------------------- #
 			# parameter checking
@@ -203,17 +203,25 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 			mat = mat[order(as.numeric(fact), ord.vec),]
 			# par(fig=c(0,.95,0,1), mar=c(5,5,3,.5))
 			layout(matrix(c(1,2), ncol=2), widths=c(10,1))
-			par(mar=c(5,5,3,.5), oma=c(0,0,0,0))
+			par(mar=c(5,8,3,.5), oma=c(0,0,0,0))
 			AddSep = function(x, rowsep, col, sepwidth=c(0.05,0.5)){
 				for(rsep in rowsep){
 					rect(xleft =0, ybottom= (rsep), xright=ncol(x)+1,  ytop = (rsep+1) - sepwidth[2], lty=1, lwd=1, col=col, border=col)
 				}
 			}
 			# plots the main matrix
-			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), col=mat.cols, , oma=c(0,0,0,0), useRaster=T, xlab=xlab, ylab=ylab, main=main)
+			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), col=mat.cols, , oma=c(0,0,0,0), useRaster=T, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
             AddSep(mat, rowsep[-length(rowsep)], "black")	
+			
+			if(use.names==TRUE){
+				axis(2, at=1:nrow(mat), labels=rownames(mat), las=2)
+			}else{
+				at = round(fivenum(1:nrow(mat)))
+				axis(2, at=at, labels=at, las=2)
+			}
+			
 			
 			# plots the class designation
 			# par(fig=c(.95,1,0,1), new=TRUE, mar=c(5,.5,3,1))
