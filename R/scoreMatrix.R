@@ -80,7 +80,10 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @usage scoreMatrix(target,windows,strand.aware=FALSE,...)
 #' @return returns a \code{scoreMatrix} object
 #' @seealso \code{\link{scoreMatrixBin}}, \code{\link{modCoverage}}
-
+#' @example
+#'          data(feature)
+#'          #get promoters
+#'          
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export

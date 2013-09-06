@@ -18,8 +18,8 @@ Imports:
     GenomicRanges,
     IRanges,
     data.table,
-	plyr
-	reshape2
+	  plyr,
+	  reshape2
 Suggests:
     testthat
 Collate:
