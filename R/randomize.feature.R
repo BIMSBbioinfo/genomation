@@ -58,9 +58,19 @@ setMethod("randomize.feature", signature(feature = "GRanges"),
 			if(!is.null(seed) & is.numeric(seed)){set.seed(seed)}
 			
 			#checks whether the chromosome sizes are defined
-			if(is.null(chrom.sizes))
-				stop('Chromosome sizes need to be defined as a named vector')
-			
+			if(is.null(chrom.sizes)){
+			  chrom.sizes=list()
+			  chrs=as.character(unique(seqnames(feature)))
+			  my.starts=c()
+			  my.ends=c()
+			  for( i in 1:length(chrs) )
+			  {
+			    my.set= feature[seqnames(feature)==chrs[i], ]
+			    chrom.sizes[chrs[i]]  =max( end(my.set) )
+	
+			  }
+			  chrom.sizes=unlist(chrom.sizes)
+			}
 			# if the include ranges are not defined, defines the ranges across the whole chromosome
 			if(is.null(include))
 				include = GRanges(names(chrom.sizes), IRanges(1, chrom.sizes))
@@ -159,12 +169,15 @@ setMethod("randomize.feature", signature(feature = "GRanges"),
 #' @export
 #' @docType methods
 #' @rdname randomize.feature-methods
-setGeneric("calculateOverlapSignificance", function(target, feature, chrom.sizes=NULL,stranded=TRUE,
+setGeneric("calculateOverlapSignificance", function(target, feature, 
+                                                    chrom.sizes=NULL,
+                                                    stranded=TRUE,
 keep.strand.prop=TRUE,keep.chrom=TRUE,
 exclude=NULL,include=NULL,seed=NULL,nrand=1)
 standardGeneric("calculateOverlapSignificance") )
 
-setMethod("calculateOverlapSignificance", signature(feature = "GRanges", target='GRanges'),
+setMethod("calculateOverlapSignificance",
+          signature(target='GRanges',feature = "GRanges"),
 			function( target,
 					  feature,
 					  chrom.sizes ,
@@ -196,4 +209,4 @@ setMethod("calculateOverlapSignificance", signature(feature = "GRanges", target=
 		return(co$V1/length(target))
 })
 
-s = calculateOverlapSignificance(target, feature, chrom.sizes, keep.strand.prop=TRUE, nrand=1000)
+#s = calculateOverlapSignificance(target, feature, chrom.sizes, keep.strand.prop=TRUE, nrand=1000)
