@@ -277,6 +277,11 @@ setMethod("read.bed",
 #' @usage read.transcript.features(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 #' @return a \code{\link{GRangesList}} containing locations of exon/intron/promoter/TSS
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' 
+#' @examples
+#'   my.bed12.file=my.file=system.file("extdata", "hg18.refseq.txt.Test", package = "genomation")
+#'   my.bed12.file
+#'   feats=read.transcript.features(my.bed12.file) 
 #'
 #' @export
 #' @docType methods
