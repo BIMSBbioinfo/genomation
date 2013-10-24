@@ -18,6 +18,8 @@ Imports:
     IRanges,
     data.table,
 	reshape2
+	plyr,
+	reshape2
 Suggests:
     testthat
 Collate:
