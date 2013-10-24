@@ -210,7 +210,7 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 				}
 			}
 			# plots the main matrix
-			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), col=mat.cols, , oma=c(0,0,0,0), useRaster=T, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
+			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), col=mat.cols, , oma=c(0,0,0,0), useRaster=T, xlab=xlab, ylab=ylab, main=, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
 			if(add.sep == TRUE)
