@@ -17,7 +17,6 @@ Imports:
     GenomicRanges,
     IRanges,
     data.table,
-	reshape2
 	plyr,
 	reshape2
 Suggests:
