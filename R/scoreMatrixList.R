@@ -107,6 +107,8 @@ setMethod("show", "scoreMatrixList",
 #' @param mat.list a \code{scoreMatrixList} object
 #' @param mat.cols colors to be used for plotting
 #' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap. By default it takes the values of -ncol/2, 0, ncol/2
+#' @param ymarks a vector of that will lable the thick marks on the y axis
+#' @param y.at a numeric vector that will specify the positions of the thick marks on the y axis
 #' @param xcex, ycex an integer number which controls the character expansion on x and y axis
 #' @param cex.main an integer number which controls the character expansion of the plot label
 #' @param mar a vector of length 5 which controls the size of the margins. The order is the following: below, left, up, right, spacing between consecutive plots
@@ -124,12 +126,12 @@ setMethod("show", "scoreMatrixList",
 #' @example names(l) = letters[1:5]
 #' @example heatmapProfile(l)
 #' @export
-setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, xmarks=NULL, xcex=1.5, ycex=1.5, cex.main=3, mar=NULL, use.names=T, xlab=NULL, ylab=NULL, ...)standardGeneric("heatmapProfile"))
+setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, xmarks=NULL, ymarks=NULL, y.at=NULL, xcex=1.5, ycex=1.5, cex.main=3, mar=NULL, use.names=T, xlab=NULL, ylab=NULL, ...)standardGeneric("heatmapProfile"))
 
 #' @aliases heatmapProfile,scoreMatrixList-method
 #' @rdname heatmapProfile-methods
 setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
-			function(mat.list, mat.cols, xmarks, xcex, ycex, cex.main, mar, use.names, xlab, ylab, ...){
+			function(mat.list, mat.cols, xmarks, ymarks, y.at, xcex, ycex, cex.main, mar, use.names, xlab, ylab, ...){
 				
 				dims = unlist(lapply(mat.list, nrow))
 				if(!length(unique(dims)) == 1)
@@ -150,6 +152,7 @@ setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
 				
 				if(use.names)
 					main = names(mat.list)
+				
 				
 				# gets the dimension of the matrices
 				ncols = unlist(lapply(mat.list, ncol))
@@ -182,10 +185,29 @@ setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
 					xmarks = c(-ncols[1]/2, 0, ncols[1]/2)
 				xpos = seq(1, ncols[1], length.out=length(xmarks))
 				
+				# sets the thick marks and labels on the y axis
+				if(is.null(ymarks)){
+					ymarks = round(fivenum(1:nrow))
+				}
+				if(is.null(y.at)){
+					y.at = round(fivenum(1:nrow))
+				}
+				if(length(ymarks) != length(y.at))
+					stop('ymarks and y.at do not have the same length')
+				if(!is.null(y.at)){
+					if(!is.numeric(y.at)){
+						stop('y.at need to be a numeric variable')
+					}
+					if(any((y.at < 1) | (y.at > nrow))){
+						stop('y.at values are outside of the matrix dimension')
+					}
+				}
+				
+				# plots the heatmaps
 				for(i in 1:len){
 					cat('Plotting matrix: ', i,'\r')
 					# sets the margins for each plot
-					if(i == 1){
+					if(i == 1){	
 						par(mar=c(mar[c(1,2,3)], mar[5]/2))
 					}else if(i == len){
 						par(mar=c(mar[1], mar[5]/2, mar[3], mar[4]))
@@ -195,8 +217,7 @@ setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
 					
 					image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), main=main[i], cex.main=cex.main, col=mat.cols, yaxt='n', xaxt='n', xlab='', ylab='', useRaster=T, ...)
 					if(i==1){
-						s = round(fivenum(1:nrow))
-						axis(2, at=s, las=2, cex.lab=2, labels=s, cex.axis=ycex)
+						axis(2, at=y.at, las=2, cex.lab=2, labels=ymarks, cex.axis=ycex)
 					}
 					
 					axis(1, at=xpos, labels=xmarks, cex.axis=xcex)
