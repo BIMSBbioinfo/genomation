@@ -20,7 +20,7 @@
 }
 
 # extracts exons from a bed12 file and puts them into GRanges object
-bed12.to.exons<-function(ref){
+bed12ToExons<-function(ref){
 
 	ref=unique(ref)
 
@@ -47,7 +47,7 @@ bed12.to.exons<-function(ref){
 
 # ----------------------------------------------------------------------------------------------- #
 # extracts introns from a bed12 file and puts them into GRanges object
-bed12.to.introns<-function(ref){
+bed12ToIntrons<-function(ref){
 
 	#remove the genes with one exon only (they won't have any introns)
 	ref=ref[ref[,10]>1,]
@@ -89,7 +89,7 @@ bed12.to.introns<-function(ref){
 
 # ----------------------------------------------------------------------------------------------- #
 # checks the validity of the bed data.frame if it is a legitimate bed columns
-check.bed.validity<-function(bed.df,type="none"){
+checkBedValidity<-function(bed.df,type="none"){
 
 	# does it have at least 3 columns
 	num.col=(ncol(bed.df)>=3)
@@ -127,7 +127,7 @@ check.bed.validity<-function(bed.df,type="none"){
 #' convert a data frame read-in from a bed file to a GRanges object
 #'  
 #' @param bed  a data.frame where column order and content resembles a bed file with 12 columns
-#' @usage convert.bed.df(bed)
+#' @usage converBedDf(bed)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
@@ -135,16 +135,16 @@ check.bed.validity<-function(bed.df,type="none"){
 #'
 #' @export
 #' @docType methods
-#' @rdname convert.bed.df-methods
-setGeneric("convert.bed.df",function(bed) standardGeneric("convert.bed.df"))
+#' @rdname converBedDf-methods
+setGeneric("converBedDf",function(bed) standardGeneric("convert.bed.df"))
 
-#' @aliases convert.bed.df,data.frame-method
-#' @rdname convert.bed.df-methods
-setMethod("convert.bed.df" ,
+#' @aliases converBedDf,data.frame-method
+#' @rdname converBedDf-methods
+setMethod("converBedDf" ,
 		  signature(bed = "data.frame" ),
 		  function(bed){
 
-			if(! check.bed.validity(bed))
+			if(! checkBedValidity(bed))
 				stop("this is not a valid bed file")
 				
 			if(ncol(bed)>=6){
@@ -179,26 +179,26 @@ setMethod("convert.bed.df" ,
 #' convert a data frame read-in from a bed file to a GRanges object for exons
 #'  
 #' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
-#' @usage convert.bed2exons(bed.df)
+#' @usage convertBed2Exons(bed.df)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #'
 #' @export
 #' @docType methods
-#' @rdname convert.bed2exons-methods
-setGeneric("convert.bed2exons",function(bed.df) standardGeneric("convert.bed2exons"))
+#' @rdname convertBed2Exons-methods
+setGeneric("convertBed2Exons",function(bed.df) standardGeneric("convert.bed2exons"))
 
-#' @aliases convert.bed2exons,data.frame-method
-#' @rdname convert.bed2exons-methods
-setMethod("convert.bed2exons" ,
+#' @aliases convertBed2Exons,data.frame-method
+#' @rdname convertBed2Exons-methods
+setMethod("convertBed2Exons" ,
 			signature(bed.df = "data.frame" ),
 			function(bed.df){
 
-			if(! check.bed.validity(bed.df,"exon"))
+			if(! checkBedValidity(bed.df,"exon"))
 				stop("this is not a valid bed file")
 				
-			bed12.to.exons(bed.df)
+			bed12ToExons(bed.df)
 })
 
 
@@ -206,26 +206,26 @@ setMethod("convert.bed2exons" ,
 #' convert a data frame read-in from a bed file to a GRanges object for introns
 #'  
 #' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
-#' @usage convert.bed2introns(bed.df)
+#' @usage convertBed2Introns(bed.df)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #'
 #' @export
 #' @docType methods
-#' @rdname convert.bed2introns-methods
-setGeneric("convert.bed2introns",function(bed.df) standardGeneric("convert.bed2introns"))
+#' @rdname convertBed2Introns-methods
+setGeneric("convertBed2Introns",function(bed.df) standardGeneric("convert.bed2introns"))
 
-#' @aliases convert.bed2introns,data.frame-method
-#' @rdname convert.bed2introns-methods
-setMethod("convert.bed2introns",
+#' @aliases convertBed2Introns,data.frame-method
+#' @rdname convertBed2Introns-methods
+setMethod("convertBed2Introns",
 			signature(bed.df = "data.frame" ),
 			function(bed.df){
 
-			if(! check.bed.validity(bed.df,"exon"))
+			if(! checkBedValidity(bed.df,"exon"))
 				stop("this is not a valid bed file")
 				
-			bed12.to.introns(bed.df)
+			bed12ToIntrons(bed.df)
 })
 
 
@@ -235,19 +235,19 @@ setMethod("convert.bed2introns",
 #' @param location  location of the file, a character string such as: "/home/user/my.bed"
 #' @param remove.unsual if TRUE(default) remove the chromomesomes with unsual names, mainly random chromsomes etc
 #'
-#' @usage read.bed(location,remove.unsual=T)
+#' @usage readBed(location,remove.unsual=T)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #'
 #' @export
 #' @docType methods
-#' @rdname read.bed-methods
-setGeneric("read.bed", function(location,remove.unsual=T) standardGeneric("read.bed"))
+#' @rdname readBed-methods
+setGeneric("readBed", function(location,remove.unsual=T) standardGeneric("read.bed"))
 
-#' @aliases read.bed,character-method
-#' @rdname read.bed-methods
-setMethod("read.bed", 
+#' @aliases readBed,character-method
+#' @rdname readBed-methods
+setMethod("readBed", 
 			signature(location = "character"),
 			function(location, remove.unsual){
 
@@ -257,12 +257,12 @@ setMethod("read.bed",
 				if(grepl("^track",f.line))
 					skip=1
 
-				# read bed6
+				# readBed6
 				bed=.readTableFast(location,header=F,skip=skip)                    
 				if(remove.unsual)
 					bed = bed[grep("_", as.character(bed[,1]),invert=T),]
 				
-				convert.bed.df(bed)
+				converBedDf(bed)
 })
 
 
@@ -274,23 +274,23 @@ setMethod("read.bed",
 #' @param up.flank  up-stream from TSS to detect promoter boundaries
 #' @param down.flank down-stream from TSS to detect promoter boundaries
 #' @param unique.prom     get only the unique promoters, promoter boundaries will not have a gene name if you set this option to be TRUE
-#' @usage read.transcript.features(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+#' @usage readTranscriptFeatures(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 #' @return a \code{\link{GRangesList}} containing locations of exon/intron/promoter/TSS
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #' 
 #' @examples
 #'   my.bed12.file=my.file=system.file("extdata", "hg18.refseq.txt.Test", package = "genomation")
 #'   my.bed12.file
-#'   feats=read.transcript.features(my.bed12.file) 
+#'   feats=readTranscriptFeatures(my.bed12.file) 
 #'
 #' @export
 #' @docType methods
-#' @rdname read.transcript.features-methods
-setGeneric("read.transcript.features", function(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE) standardGeneric("read.transcript.features"))
+#' @rdname readTranscriptFeatures-methods
+setGeneric("readTranscriptFeatures", function(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE) standardGeneric("read.transcript.features"))
 
-#' @aliases read.transcript.features,character-method
-#' @rdname read.transcript.features-methods
-setMethod("read.transcript.features", 
+#' @aliases readTranscriptFeatures,character-method
+#' @rdname readTranscriptFeatures-methods
+setMethod("readTranscriptFeatures", 
 			signature(location = "character"),#,remove.unsual="logical",up.flank="numeric",down.flank="numeric",unique.prom="logical" ),
 			function(location,remove.unsual,up.flank ,down.flank ,unique.prom){
 
@@ -300,7 +300,7 @@ setMethod("read.transcript.features",
 			if(grepl("^track",f.line))
 				skip=1
 
-			# read bed6
+			# readBed6
 			cat('Reading the table...\r')
 			bed=.readTableFast(location,header=F,skip=skip)                    
 			if(remove.unsual)
@@ -308,10 +308,10 @@ setMethod("read.transcript.features",
 			
 			# introns
 			cat('Calculating intron coordinates...\r')
-			introns	= convert.bed2introns(bed)
+			introns	= convertBed2Introns(bed)
 			# exons
 			cat('Calculating exon coordinates...\r')
-			exons	= convert.bed2exons(bed)
+			exons	= convertBed2Exons(bed)
 
 			# get the locations of TSSes
 			cat('Calculating TSS coordinates...\r')
@@ -398,23 +398,23 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 #' @param clean    If set to TRUE, flanks overlapping with other main features will be trimmed
 #' @param remove.unsual  remove chromsomes with unsual names random, Un and antyhing with "_" character
 #' @param feature.flank.name the names for feature and flank ranges, it should be a character vector of length 2. example: c("CpGi","shores")
-#' @usage  read.feature.flank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
+#' @usage  readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
 #' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object for the main feature.
 #'   NOTE:This can not return a GRangesList at the moment because flanking regions do not have to have the same column name as the feature.
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
 #'
 #' @export
 #' @docType methods
-#' @rdname read.feature.flank-methods
-setGeneric("read.feature.flank", function(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL) standardGeneric("read.feature.flank") )
+#' @rdname readFeatureFlank-methods
+setGeneric("readFeatureFlank", function(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL) standardGeneric("read.feature.flank") )
 
-#' @aliases read.feature.flank,character-method
-#' @rdname read.feature.flank-methods
-setMethod("read.feature.flank", 
+#' @aliases readFeatureFlank,character-method
+#' @rdname readFeatureFlank-methods
+setMethod("readFeatureFlank", 
 			signature(location = "character"),
 			function(location,remove.unsual,flank ,clean,feature.flank.name){
 
-				feat = read.bed(location, remove.unsual)
+				feat = readBed(location, remove.unsual)
 				flanks = getFlanks(feat,flank=flank,clean=clean)
 				x = GenomicRangesList(features=feat,flanks=flanks)
 				if(!is.null(feature.flank.name) & length(feature.flank.name)==2)
@@ -556,7 +556,7 @@ setMethod("show", "annotationByFeature",
 
 # ----------------------------------------------------------------------------------------------- #
 
-annotate.gr.WithGenicParts <- function(gr, prom, exon, intron, strand=F){
+annotatGrWithGeneParts <- function(gr, prom, exon, intron, strand=F){
 
 	if( ! strand){strand(gr)="*"}
 	memb = data.frame(matrix(rep(0,length(gr)*3),ncol=3) )
@@ -601,7 +601,7 @@ annotate.gr.WithGenicParts <- function(gr, prom, exon, intron, strand=F){
 }
 
 # ----------------------------------------------------------------------------------------------- #
-distance2nearestFeature<-function(g.idh,tss){
+distance2NearestFeature<-function(g.idh,tss){
 
 	elementMetadata(g.idh) = DataFrame(elementMetadata(g.idh),orig.row=1:length(g.idh))
 	# get the row number column
@@ -677,28 +677,28 @@ distance2nearestFeature<-function(g.idh,tss){
 #' Function to annotate given GRanges object with promoter, exon, intron & intergenic ranges
 #'
 #' @param target: A GRanges object storing chromosome locations to be annotated (e.g. chipseq peaks)
-#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of read.transcript.features function
+#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of readTranscriptFeatures function
 #' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
-#' @usage annotate.WithGenicParts(target,GRangesList.obj,strand=F)
+#' @usage annotateWithGeneParts(target,GRangesList.obj,strand=F)
 #' @return \code{annotationByGenicParts} object
 #' 
 #' @export
 #' @docType methods
-#' @rdname annotate.WithGenicParts-methods
-setGeneric("annotate.WithGenicParts", function(target,GRangesList.obj,strand=F) standardGeneric("annotate.WithGenicParts") )
+#' @rdname annotateWithGeneParts-methods
+setGeneric("annotateWithGeneParts", function(target,GRangesList.obj,strand=F) standardGeneric("annotate.WithGenicParts") )
 
-#' @aliases annotate.WithGenicParts,GRanges,GRangesList-method
-#' @rdname annotate.WithGenicParts-methods
-setMethod("annotate.WithGenicParts", 
+#' @aliases annotateWithGeneParts,GRanges,GRangesList-method
+#' @rdname annotateWithGeneParts-methods
+setMethod("annotateWithGeneParts", 
 		  signature(target = "GRanges", GRangesList.obj = "GRangesList"),
 		  function(target, GRangesList.obj,strand){
 
-			a.list = annotate.gr.WithGenicParts(target, 
+			a.list = annotatGrWithGeneParts(target, 
 												GRangesList.obj$promoters,
 												GRangesList.obj$exons,
 												GRangesList.obj$introns,
 												strand=strand)
-			dist2TSS = distance2nearestFeature(target,GRangesList.obj$TSSes)
+			dist2TSS = distance2NearestFeature(target,GRangesList.obj$TSSes)
 
 			new("annotationByGenicParts",
 				members 		= as.matrix(a.list$members),
@@ -716,16 +716,16 @@ setMethod("annotate.WithGenicParts",
 #'Given a GRangesList object it annotates each Range with gene annotation
 #'
 #' @param target: A GRangesList object storing chromosome locations to be annotated (e.g. chipseq peaks from multiple experiments)
-#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of read.transcript.features function
+#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of readTranscriptFeatures function
 #' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
 #'
-#' @usage annotate.WithGenicParts(target, GRangesList.obj, strand=F)
+#' @usage annotateWithGeneParts(target, GRangesList.obj, strand=F)
 #' @return \code{annotationByGenicParts} object
 #' @export
 #'
 #' @docType methods
-#' @rdname annotate.WithGenicParts-methods
-setMethod("annotate.WithGenicParts",
+#' @rdname annotateWithGeneParts-methods
+setMethod("annotateWithGeneParts",
 		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
 		  function(target, GRangesList.obj, strand){
 		  
@@ -745,17 +745,17 @@ setMethod("annotate.WithGenicParts",
 #' @param feature.name     string for the name of the feature
 #' @param flank.name     string for the name of the flanks
 #' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
-#' @usage annotate.WithFeature.Flank(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE)
+#' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE)
 #' @return returns an \code{annotationByFeature} object
 #' 
 #' @export
 #' @docType methods
-#' @rdname annotate.WithFeature.Flank-methods
-setGeneric("annotate.WithFeature.Flank", function(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE) standardGeneric("annotate.WithFeature.Flank") )
+#' @rdname annotateWithFeatureFlank-methods
+setGeneric("annotateWithFeatureFlank", function(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE) standardGeneric("annotateWithFeature.Flank") )
 
-#' @aliases annotate.WithFeature.Flank,GRanges,GRanges,GRanges-method
-#' @rdname annotate.WithFeature.Flank-methods
-setMethod( "annotate.WithFeature.Flank", 
+#' @aliases annotateWithFeatureFlank,GRanges,GRanges,GRanges-method
+#' @rdname annotateWithFeatureFlank-methods
+setMethod( "annotateWithFeatureFlank", 
 			signature(target = "GRanges",feature="GRanges",flank="GRanges"),
 			function(target, feature, flank,feature.name,flank.name,strand){
 
@@ -811,17 +811,17 @@ setMethod( "annotate.WithFeature.Flank",
 #' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
 #' @param extend   specifiying a positive value will extend the feature on both sides as much as \code{extend}
 #' @param feature.name name of the annotation feature. For example: H3K4me1,CpGisland etc.
-#' @usage annotate.WithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
+#' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
 #' @return returns an \code{annotationByFeature} object
 #' 
 #' @export
 #' @docType methods
-#' @rdname annotate.WithFeature-methods
-setGeneric("annotate.WithFeature", function(target,feature,strand=FALSE,extend=0,feature.name="feat1") standardGeneric("annotate.WithFeature") )
+#' @rdname annotateWithFeature-methods
+setGeneric("annotateWithFeature", function(target,feature,strand=FALSE,extend=0,feature.name="feat1") standardGeneric("annotate.WithFeature") )
 
-#' @aliases annotate.WithFeature,GRanges,GRanges-method
-#' @rdname annotate.WithFeature-methods
-setMethod("annotate.WithFeature", 
+#' @aliases annotateWithFeature,GRanges,GRanges-method
+#' @rdname annotateWithFeature-methods
+setMethod("annotateWithFeature", 
 		   signature(target = "GRanges",feature="GRanges"),
 		   function(target, feature, strand,extend,feature.name){
 

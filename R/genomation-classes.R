@@ -71,15 +71,15 @@ setClass("scoreMatrix",contains = "matrix")
 
 
 # ------------------------------------------------------------------------------ #
-#' An S4 class for storing a set of \code{scoreMatrixList} 
+#' An S4 class for storing a set of \code{ScoreMatrixList} 
 #'
 #' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
 #'
-#' @name scoreMatrixList-class
-#' @rdname scoreMatrixList-class
-#' @seealso \code{\link{scoreMatrixList-methods}}
+#' @name ScoreMatrixList-class
+#' @rdname ScoreMatrixList-class
+#' @seealso \code{\link{ScoreMatrixList-methods}}
 #' @export
-setClass("scoreMatrixList", 
+setClass("ScoreMatrixList", 
 			contains = "list"
-#			validity=.valid.scoreMatrixList
+#			validity=.valid.ScoreMatrixList
 			)

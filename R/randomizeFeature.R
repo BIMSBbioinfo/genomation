@@ -1,6 +1,6 @@
 
 # ------------------------------------------------------------------------------------------------ #
-# randomize.feature
+# randomizeFeature
 #' function that randomizes the genomic coordinates
 #'
 #' This function randomly distributes the coordinates of genomic features which
@@ -26,22 +26,22 @@
 #'        features. If not provided the whole genome is used, as defined using the chrom.sizes parameter.
 #' @param seed random number generator seed
 #' @param nrand number of randomizations (default:1)
-#' @usage randomize.feature(feature,chrom.sizes=NULL,stranded=TRUE,
+#' @usage randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
 #'                          keep.strand.prop=TRUE,keep.chrom=TRUE,
 #'                          exclude=NULL,include=NULL,seed=NULL)
 #' @return returns a GRanges object which is randomized version of the feature, along with a "set" column in the metadata which designates to which iteration of the randomization the range belong.
 
 #' @export
 #' @docType methods
-#' @rdname randomize.feature-methods
-setGeneric("randomize.feature", function(feature,chrom.sizes=NULL,stranded=TRUE,
+#' @rdname randomizeFeature-methods
+setGeneric("randomizeFeature", function(feature,chrom.sizes=NULL,stranded=TRUE,
 keep.strand.prop=TRUE,keep.chrom=TRUE,
 exclude=NULL,include=NULL,seed=NULL,nrand=1)
-standardGeneric("randomize.feature") )
+standardGeneric("randomizeFeature") )
 
-#' @aliases randomize.feature,GRanges-method
-#' @rdname randomize.feature-methods
-setMethod("randomize.feature", signature(feature = "GRanges"),
+#' @aliases randomizeFeature,GRanges-method
+#' @rdname randomizeFeature-methods
+setMethod("randomizeFeature", signature(feature = "GRanges"),
 			function( feature,
 					  chrom.sizes ,
 					  stranded ,
@@ -162,13 +162,13 @@ setMethod("randomize.feature", signature(feature = "GRanges"),
 #'        features
 #' @param seed random number generator seed
 #' @param nrand number of randomizations (default:1)
-#' @usage randomize.feature(feature,chrom.sizes=NULL,stranded=TRUE,
+#' @usage randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
 #'                          keep.strand.prop=TRUE,keep.chrom=TRUE,
 #'                          exclude=NULL,include=NULL,seed=NULL)
 #' @return returns a GRanges object which is randomized version of the feature
 #' @export
 #' @docType methods
-#' @rdname randomize.feature-methods
+#' @rdname randomizeFeature-methods
 setGeneric("calculateOverlapSignificance", 
 				function(target, feature, chrom.sizes=NULL, stranded=TRUE,
 						 keep.strand.prop=TRUE, keep.chrom=TRUE,
@@ -188,7 +188,7 @@ setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="G
 					  nrand ){
 		
 		# randomizes the ranges nrand times
-		rand.ranges = randomize.feature(feature=feature, 
+		rand.ranges = randomizeFeature(feature=feature, 
 										chrom.sizes=chrom.sizes,
 										stranded=stranded, 
 										keep.strand.prop=keep.strand.prop, 

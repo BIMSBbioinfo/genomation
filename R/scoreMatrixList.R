@@ -23,19 +23,19 @@
 }
 
 # ------------------------------------------------------------------------------------ #
-# scoreMatrixList constructor
+# ScoreMatrixList constructor
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l: corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{scoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
-#' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or scoreMatrixList functions
+#' @param l: corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
+#' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
 #' @param bin: an integer telling the number of bins to bin the score matrix
  
-#' @usage scoreMatrixList(l, granges, bin)
-#' @return returns a \code{scoreMatrixList} object
+#' @usage ScoreMatrixList(l, granges, bin)
+#' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
-#' @rdname scoreMatrixList-methods
-scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
+#' @rdname ScoreMatrixList-methods
+ScoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 
 	len = length(l)
 	if(len == 0L)
@@ -43,7 +43,7 @@ scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 	
 	# checks whether the list argument contains only scoreMatrix objects
 	if(all(unlist(lapply(l, class)) == 'scoreMatrix'))
-		return(new("scoreMatrixList",l))
+		return(new("ScoreMatrixList",l))
 	
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
 	if(all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList'))){
@@ -64,16 +64,16 @@ scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 		stop("List does not contain the proper classes")
 	}
 	
-	return(new("scoreMatrixList",sml))
+	return(new("ScoreMatrixList",sml))
 }
 
 # ------------------------------------------------------------------------------------ #
 # Validator
-.valid.scoreMatrixList = function(x){
+.valid.ScoreMatrixList = function(x){
 	errors = character()
 	# checks whether all matrices are of class scoreMatrix
 	if(!all(unlist(lapply(l, function(x)class(x) == 'scoreMatrix'))))
-		errors = paste(errors, 'All elements for scoreMatrixList need to be of class scoreMatrix', sep='\n')
+		errors = paste(errors, 'All elements for ScoreMatrixList need to be of class scoreMatrix', sep='\n')
 
 	# checks whether all matrices are numeric
 	if(!all(unlist(lapply(l, function(x)all(is.integer(x) | is.numeric(x))))))
@@ -86,7 +86,7 @@ scoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 # ------------------------------------------------------------------------------------ #
 # show Methods
 #' @rdname show-methods
-setMethod("show", "scoreMatrixList",
+setMethod("show", "ScoreMatrixList",
 			function(object){
 				dims = lapply(object, dim)
 				len = length(object)
@@ -102,9 +102,9 @@ setMethod("show", "scoreMatrixList",
 
 # ------------------------------------------------------------------------------------ #
 #' plot functions for score matrix list
-#' Plot a scoreMatrixList object as a panel of heatmaps
+#' Plot a ScoreMatrixList object as a panel of heatmaps
 #'
-#' @param mat.list a \code{scoreMatrixList} object
+#' @param mat.list a \code{ScoreMatrixList} object
 #' @param mat.cols colors to be used for plotting
 #' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap. By default it takes the values of -ncol/2, 0, ncol/2
 #' @param ymarks a vector of that will lable the thick marks on the y axis
@@ -112,30 +112,30 @@ setMethod("show", "scoreMatrixList",
 #' @param xcex, ycex an integer number which controls the character expansion on x and y axis
 #' @param cex.main an integer number which controls the character expansion of the plot label
 #' @param mar a vector of length 5 which controls the size of the margins. The order is the following: below, left, up, right, spacing between consecutive plots
-#' @param use.names whether to use the names of the scoreMatrixList object to label each plot
-#' @param main whether to use the names of the scoreMatrixList object to label each plot
+#' @param use.names whether to use the names of the ScoreMatrixList object to label each plot
+#' @param main whether to use the names of the ScoreMatrixList object to label each plot
 #' @param xlab, ylab name to be used for the x/y axis 
 #' @param ... other options (obselete for now)
 
 #' @usage heatmapProfile(mat.list, mat.cols=NULL, ...)
 #' @docType methods
-#' @rdname scoreMatrixList-methods
+#' @rdname ScoreMatrixList-methods
 
 #' @example l = lapply(seq(20, 40,5), function(x)as(matrix(rpois(1000, x), ncol=25), 'scoreMatrix'))
-#' @example l = scoreMatrixList(l)
+#' @example l = ScoreMatrixList(l)
 #' @example names(l) = letters[1:5]
 #' @example heatmapProfile(l)
 #' @export
 setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, xmarks=NULL, ymarks=NULL, y.at=NULL, xcex=1.5, ycex=1.5, cex.main=3, mar=NULL, use.names=T, xlab=NULL, ylab=NULL, ...)standardGeneric("heatmapProfile"))
 
-#' @aliases heatmapProfile,scoreMatrixList-method
+#' @aliases heatmapProfile,ScoreMatrixList-method
 #' @rdname heatmapProfile-methods
-setMethod("heatmapProfile", signature(mat.list="scoreMatrixList"),
+setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 			function(mat.list, mat.cols, xmarks, ymarks, y.at, xcex, ycex, cex.main, mar, use.names, xlab, ylab, ...){
 				
 				dims = unlist(lapply(mat.list, nrow))
 				if(!length(unique(dims)) == 1)
-					stop('scoreMatrixList does not contain matrices with the same number of rows')
+					stop('ScoreMatrixList does not contain matrices with the same number of rows')
 								
 				
 				# default matrix colors
