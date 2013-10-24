@@ -8,9 +8,16 @@ Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmai
 Description: A package for genomic feature analysis and annotation by extending bioconductor packages
 License: Artistic-2.0
 LazyLoad: yes
-Depends: R (>= 2.14.0), methods
-Imports: GenomicRanges,IRanges,data.table,reshape2
-Suggests: testthat
+Depends:
+    R (>= 2.14.0)
+Imports:
+    GenomicRanges,
+    IRanges,
+    data.table,
+	plyr,
+	reshape2
+Suggests:
+    testthat
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'

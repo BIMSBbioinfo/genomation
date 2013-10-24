@@ -25,3 +25,10 @@
 04.05.2012
 
  * make show functions pretty
+
+13.05.2013
+
+ * insert row normalization and ordering into scoreMatrix function
+ * remove scoreMatrixList and think about how to sort the validation of the object sent into heatmapProfile
+ * add factor variables into heatmap profiles
+ * set subsetting functions for scoreMatrix 

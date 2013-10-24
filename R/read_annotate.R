@@ -16,7 +16,7 @@
 {
   tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100)
   classes  <- sapply(tab5rows, class)
-  return( read.table(filename, header = header,skip=skip,sep=sep, colClasses = classes)  )
+  return( read.table(filename, header = header,skip=skip,sep=sep, colClasses = classes,stringsAsFactors=FALSE)  )
 }
 
 # extracts exons from a bed12 file and puts them into GRanges object
@@ -29,7 +29,7 @@ bed12.to.exons<-function(ref){
 	rep.ref = ref[rep(1:nrow(ref),ref[,10]),] # replicate rows occurs as many as its exon number
 
 
-	exon.id = unlist( mapply( function(x,y) ifelse(x=="+",return(1:y),return(y:1) ),ref[,6],ref[,10]  ) )
+	exon.id = unlist( mapply( function(x,y) if(x=="+"){return(1:y)}else{return(y:1)} ,ref[,6],ref[,10]  ) )
 	rep.ref$V5=exon.id
 
 	rep.ref$V3 = rep.ref$V2+b.start.size[,1]+b.start.size[,2] # calculate exon start and ends
@@ -61,7 +61,7 @@ bed12.to.introns<-function(ref){
 	# replicate rows occurs as many as its exon number
 	rep.ref = ref[rep(1:nrow(ref),ref[,10]),] 
 
-	exon.id = unlist( mapply( function(x,y) ifelse(x=="+",return(1:y),return(y:1) ),ref[,6],ref[,10]  ) )
+	exon.id = unlist( mapply( function(x,y) if(x=="+"){return(1:y)}else{return(y:1)} ,ref[,6],ref[,10]  ) )
 	rep.ref$V5 = exon.id
 
 	# calculate exon start and ends
@@ -277,6 +277,11 @@ setMethod("read.bed",
 #' @usage read.transcript.features(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 #' @return a \code{\link{GRangesList}} containing locations of exon/intron/promoter/TSS
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' 
+#' @examples
+#'   my.bed12.file=my.file=system.file("extdata", "hg18.refseq.txt.Test", package = "genomation")
+#'   my.bed12.file
+#'   feats=read.transcript.features(my.bed12.file) 
 #'
 #' @export
 #' @docType methods
