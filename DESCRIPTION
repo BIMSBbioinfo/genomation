@@ -1,14 +1,11 @@
 Package: genomation
 Type: Package
-Title: : R package for graphics and operations for genomic
-    features
+Title: : R package for graphics and operations for genomic features
 Version: 0.2.1
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
-Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran
-    Franke <vedran.franke@gmail.com>
-Description: A package for genomic feature analysis and
-    annotation by extending bioconductor packages
+Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
+Description: A package for genomic feature analysis and annotation by extending bioconductor packages
 License: Artistic-2.0
 LazyLoad: yes
 Depends:
@@ -26,8 +23,8 @@ Collate:
     'getRandomEnrichment.R'
 	'gffFunctions.R'
     'modCoverage.R'
-    'randomize.feature.R'
-    'read_annotate.R'
+    'randomizeFeature.R'
+    'readAnnotate.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'

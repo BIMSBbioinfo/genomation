@@ -30,7 +30,7 @@ getViewsBin = function(target, windows, bin.num){
 }
 
 # applies the summary function for the views to bin the objects - for standard Rle and returns a matrix object
-summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
+summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 
 	# chop windows to bins
 	functs = c('mean','max','median')
@@ -56,7 +56,7 @@ summarizeViews.Rle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 }
 
 # median should not be supported yet
-summarizeViews.modRle = function(my.vList, windows, bin.op, bin.num, strand.aware,t.multiply,t.add){
+summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware,t.multiply,t.add){
 
 	functs = c('mean','max','min')
 	if(!bin.op %in% functs)
@@ -154,7 +154,7 @@ setMethod("scoreMatrixBin",signature("RleList","GRanges"),
 			my.vList = getViewsBin(target, windows, bin.num)
 			
 			# summarize views with the given function
-			mat = summarizeViews.Rle(my.vList, windows, bin.op, bin.num, strand.aware)
+			mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
 			new("scoreMatrix",mat)
 })
 
@@ -181,7 +181,7 @@ setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
 			my.vList = getViewsBin(as(target,'RleList'), windows, bin.num)
 
 			# summarize
-			mat = summarizeViews.modRle(my.vList, windows, bin.op, bin.num, strand.aware,target@multiply,target@add)
+			mat = summarizeViewsModRle(my.vList, windows, bin.op, bin.num, strand.aware,target@multiply,target@add)
 			new("scoreMatrix",mat)
 })
 

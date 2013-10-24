@@ -9,10 +9,10 @@
 #' @param query a \code{GRanges} object that will be randomly placed across the genome and overlap of these random regions with \code{target} will be the background distribution of association between \code{target} and \code{query}.
 #' @param rand.set instead of randomly placing features in \code{query} one can supply an already shuffled set of \code{query} genomic features.
 #' @param randomizations  number of times the features to be shuffled
-#' @param ... other parameters to be passed to \code{randomize.feature} function. These parameters ccontrol how randomization is done.
+#' @param ... other parameters to be passed to \code{randomizeFeature} function. These parameters ccontrol how randomization is done.
 #' @usage getRandomEnrichment(target,query,randomizations=1000,rand.set=NULL,...)
 #' @return returns a \code{randomEnrichment} object
-#' @seealso \code{\link{randomize.feature}}
+#' @seealso \code{\link{randomizeFeature}}
 #' @export
 #' @docType methods
 #' @rdname getRandomEnrichment-methods
@@ -31,7 +31,7 @@ setMethod("getRandomEnrichment",
 					rand.olap.dist=numeric(randomizations)
 					for(i in 1:randomizations){
 						cat("Iteration number:",i,"\r")
-						my.rand = randomize.feature(query,...)
+						my.rand = randomizeFeature(query,...)
 						my.cnts = sum(countOverlaps(target,my.rand)>0)
 						rand.olap.dist[i] = my.cnts
 					}
