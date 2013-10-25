@@ -127,7 +127,7 @@ checkBedValidity<-function(bed.df,type="none"){
 #' convert a data frame read-in from a bed file to a GRanges object
 #'  
 #' @param bed  a data.frame where column order and content resembles a bed file with 12 columns
-#' @usage converBedDf(bed)
+#' @usage convertBedDf(bed)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
@@ -135,12 +135,12 @@ checkBedValidity<-function(bed.df,type="none"){
 #'
 #' @export
 #' @docType methods
-#' @rdname converBedDf-methods
-setGeneric("converBedDf",function(bed) standardGeneric("convert.bed.df"))
+#' @rdname convertBedDf-methods
+setGeneric("convertBedDf",function(bed) standardGeneric("convertBedDf"))
 
-#' @aliases converBedDf,data.frame-method
-#' @rdname converBedDf-methods
-setMethod("converBedDf" ,
+#' @aliases convertBedDf,data.frame-method
+#' @rdname convertBedDf-methods
+setMethod("convertBedDf" ,
 		  signature(bed = "data.frame" ),
 		  function(bed){
 
@@ -187,7 +187,7 @@ setMethod("converBedDf" ,
 #' @export
 #' @docType methods
 #' @rdname convertBed2Exons-methods
-setGeneric("convertBed2Exons",function(bed.df) standardGeneric("convert.bed2exons"))
+setGeneric("convertBed2Exons",function(bed.df) standardGeneric("convertBed2Exons"))
 
 #' @aliases convertBed2Exons,data.frame-method
 #' @rdname convertBed2Exons-methods
@@ -214,7 +214,7 @@ setMethod("convertBed2Exons" ,
 #' @export
 #' @docType methods
 #' @rdname convertBed2Introns-methods
-setGeneric("convertBed2Introns",function(bed.df) standardGeneric("convert.bed2introns"))
+setGeneric("convertBed2Introns",function(bed.df) standardGeneric("convertBed2Introns"))
 
 #' @aliases convertBed2Introns,data.frame-method
 #' @rdname convertBed2Introns-methods
@@ -243,7 +243,7 @@ setMethod("convertBed2Introns",
 #' @export
 #' @docType methods
 #' @rdname readBed-methods
-setGeneric("readBed", function(location,remove.unsual=T) standardGeneric("read.bed"))
+setGeneric("readBed", function(location,remove.unsual=T) standardGeneric("readBed"))
 
 #' @aliases readBed,character-method
 #' @rdname readBed-methods
@@ -262,7 +262,7 @@ setMethod("readBed",
 				if(remove.unsual)
 					bed = bed[grep("_", as.character(bed[,1]),invert=T),]
 				
-				converBedDf(bed)
+				convertBedDf(bed)
 })
 
 
@@ -286,7 +286,7 @@ setMethod("readBed",
 #' @export
 #' @docType methods
 #' @rdname readTranscriptFeatures-methods
-setGeneric("readTranscriptFeatures", function(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE) standardGeneric("read.transcript.features"))
+setGeneric("readTranscriptFeatures", function(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE) standardGeneric("readTranscriptFeatures"))
 
 #' @aliases readTranscriptFeatures,character-method
 #' @rdname readTranscriptFeatures-methods
@@ -406,7 +406,7 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 #' @export
 #' @docType methods
 #' @rdname readFeatureFlank-methods
-setGeneric("readFeatureFlank", function(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL) standardGeneric("read.feature.flank") )
+setGeneric("readFeatureFlank", function(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL) standardGeneric("readFeatureFlank") )
 
 #' @aliases readFeatureFlank,character-method
 #' @rdname readFeatureFlank-methods
@@ -685,7 +685,7 @@ distance2NearestFeature<-function(g.idh,tss){
 #' @export
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
-setGeneric("annotateWithGeneParts", function(target,GRangesList.obj,strand=F) standardGeneric("annotate.WithGenicParts") )
+setGeneric("annotateWithGeneParts", function(target,GRangesList.obj,strand=F) standardGeneric("annotateWithGeneParts") )
 
 #' @aliases annotateWithGeneParts,GRanges,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
@@ -729,7 +729,7 @@ setMethod("annotateWithGeneParts",
 		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
 		  function(target, GRangesList.obj, strand){
 		  
-			l = lapply(target, function(x)annotate.withGenicParts(target, GRangesList.obj, strand))
+			l = lapply(target, function(x)annotateWithGeneParts(target, GRangesList.obj, strand))
 			return(l)
 })
 
@@ -751,7 +751,7 @@ setMethod("annotateWithGeneParts",
 #' @export
 #' @docType methods
 #' @rdname annotateWithFeatureFlank-methods
-setGeneric("annotateWithFeatureFlank", function(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE) standardGeneric("annotateWithFeature.Flank") )
+setGeneric("annotateWithFeatureFlank", function(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE) standardGeneric("annotateWithFeatureFlank") )
 
 #' @aliases annotateWithFeatureFlank,GRanges,GRanges,GRanges-method
 #' @rdname annotateWithFeatureFlank-methods
@@ -817,7 +817,7 @@ setMethod( "annotateWithFeatureFlank",
 #' @export
 #' @docType methods
 #' @rdname annotateWithFeature-methods
-setGeneric("annotateWithFeature", function(target,feature,strand=FALSE,extend=0,feature.name="feat1") standardGeneric("annotate.WithFeature") )
+setGeneric("annotateWithFeature", function(target,feature,strand=FALSE,extend=0,feature.name="feat1") standardGeneric("annotateWithFeature") )
 
 #' @aliases annotateWithFeature,GRanges,GRanges-method
 #' @rdname annotateWithFeature-methods
