@@ -1,0 +1,13 @@
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\title{genomation - a toolsed for annotation of genomic data}
+
+
+\author{Altuna Aakalin & Vedran Franke}
+
+
+
+
+\end{document}
