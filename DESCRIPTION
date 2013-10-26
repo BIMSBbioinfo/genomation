@@ -8,6 +8,8 @@ Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmai
 Description: A package for genomic feature analysis and annotation by extending bioconductor packages
 License: Artistic-2.0
 LazyLoad: yes
+VignetteBuilder: knitr
+biocViews: Annotation, HighThroughputSequencing, Visualization
 Depends:
     R (>= 2.14.0)
 Imports:
@@ -18,6 +20,7 @@ Imports:
 	reshape2
 Suggests:
     testthat
+	knitr
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'

@@ -1,13 +1,40 @@
+%\VignetteIndexEntry{genomation}
+%\VignetteKeywords{genomation}
+%\VignettePackage{genomation}
+%\VignetteEngine{knitr::knitr}
+
 \documentclass{article}
 
-\begin{document}
+
 \SweaveOpts{concordance=TRUE}
 \title{genomation - a toolsed for annotation of genomic data}
-
-
 \author{Altuna Akalin & Vedran Franke}
+\date{October 25, 2013}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% ----------------------------------------------------------------- %
+\section{Introduction}
 
 
+
+% ----------------------------------------------------------------- %
+\section{Access the data}
+
+
+% ----------------------------------------------------------------- %
+\section{Basic annotation}
+
+
+% ----------------------------------------------------------------- %
+\section{Visualization of CHiP sequncing data}
+
+
+% ----------------------------------------------------------------- %
+\section{}
 
 
 \end{document}
