@@ -5,7 +5,7 @@
 \title{genomation - a toolsed for annotation of genomic data}
 
 
-\author{Altuna Aakalin & Vedran Franke}
+\author{Altuna Akalin & Vedran Franke}
 
 
 
