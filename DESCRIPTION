@@ -19,7 +19,7 @@ Imports:
 	plyr,
 	reshape2
 Suggests:
-    testthat
+    testthat,
 	knitr
 Collate:
     'genomation-classes.R'
