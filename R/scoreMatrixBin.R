@@ -20,7 +20,7 @@ binner=function(start,end,nbins){
   return( t(cbind(my.start, my.end) )  )
 }
 
-# given a target Rle/modRle and windows gets the views to be used for binning
+# given a target Rle and windows gets the views to be used for binning
 getViewsBin = function(target, windows, bin.num){
 
   #get coordinates of bins in each window
@@ -146,8 +146,7 @@ setGeneric("scoreMatrixBin",
 #' @aliases scoreMatrixBin,RleList,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("RleList","GRanges"),
-          function(target, windows, bin.num, bin.op, strand.aware,
-                   ordered,is.noCovNA){
+          function(target, windows, bin.num, bin.op, strand.aware,is.noCovNA){
 
 			# removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
 			windows = constrainRanges(target, windows)
