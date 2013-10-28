@@ -161,6 +161,24 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
 })
 
 
+#' @aliases scoreMatrix,character,GRanges-method
+#' @rdname scoreMatrix-methods
+setMethod("scoreMatrix",signature("character","GRanges"),
+          function(target,windows,strand.aware,col.name){
+            
+            #make coverage vector (modRleList) from target
+            if(is.null(col.name)){
+              target.rle=coverage(target)
+            }else{
+              if(! col.name %in% names(mcols(cage)) ){
+                stop("provided column 'col.name' does not exist in tartget\n")
+              }
+              target.rle=coverage(target,weight=mcols(cage)[col.name][,1])             
+            }
+            # call scoreMatrix function
+            scoreMatrix(target.rle,windows,strand.aware)
+          })
+
 
 # ------------------------------------------------------------------------------------ #
 #' visual representation of scoreMatrix using a heatmap 
