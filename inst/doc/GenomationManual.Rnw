@@ -54,7 +54,7 @@ The pipeline for computational knowledge extraction consists of three steps: dat
 % ----------------------------------------------------------------- %
 \section{Access the data}
 
-High throughput data which will be used to show the functonality of the \Rpackage(genomation) can be found in two sources. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage(genomationData).\\
+High throughput data which will be used to show the functonality of the \Rpackage(genomation) is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage(genomationData).\\
 To install the data package from bioconductor c/p the following lines into your R interpreter:
 
 <<gnomationData, eval=FALSE>>=
@@ -91,3 +91,40 @@ head(r)
 
 
 \end{document}
+
+
+genomation-classes.R:setMethod("show", "randomEnrichment", function(object) {
+getRandomEnrichment.R:setMethod("getRandomEnrichment",
+modCoverage.R:setMethod("modCoverage",
+randomizeFeature.R:setMethod("randomizeFeature", signature(feature = "GRanges"),
+randomizeFeature.R:setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="GRanges"),
+readAnnotate.R:setMethod("converBedDf" ,
+readAnnotate.R:setMethod("convertBed2Exons" ,
+readAnnotate.R:setMethod("convertBed2Introns",
+readAnnotate.R:setMethod("readBed",
+readAnnotate.R:setMethod("readTranscriptFeatures",
+readAnnotate.R:setMethod("getFlanks", signature(grange= "GRanges"),
+readAnnotate.R:setMethod("readFeatureFlank",
+readAnnotate.R:setMethod("show", "annotationByGenicParts",
+readAnnotate.R:setMethod("show", "annotationByFeature",
+readAnnotate.R:setMethod("annotateWithGeneParts",
+readAnnotate.R:setMethod("annotateWithGeneParts",
+readAnnotate.R:setMethod( "annotateWithFeatureFlank",
+readAnnotate.R:setMethod("annotateWithFeature",
+readAnnotate.R:setMethod("getMembers",
+readAnnotate.R:setMethod("getTargetAnnotationStats",
+readAnnotate.R:setMethod("getFeatsWithTargetsStats",
+readAnnotate.R:setMethod("getAssociationWithTSS",
+readAnnotate.R:setMethod("plotTargetAnnotation",
+readAnnotate.R:setMethod("plotGenicAnnotation",
+scoreMatrixBin.R:setMethod("scoreMatrixBin",signature("RleList","GRanges"),
+scoreMatrixBin.R:setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
+scoreMatrixBin.R:setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
+scoreMatrixList.R:setMethod("show", "ScoreMatrixList",
+scoreMatrixList.R:setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
+scoreMatrix.R:setMethod("scoreMatrix",signature("RleList","GRanges"),
+scoreMatrix.R:setMethod("scoreMatrix",signature("modRleList","GRanges"),
+scoreMatrix.R:setMethod("scoreMatrix",signature("GRanges","GRanges"),
+scoreMatrix.R:setMethod("scoreMatrix",signature("matrix"),
+scoreMatrix.R:setMethod("plotMatrix", signature("scoreMatrix"),
+scoreMatrix.R:setMethod("binMatrix", signature("scoreMatrix"),
