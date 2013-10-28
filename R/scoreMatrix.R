@@ -10,11 +10,13 @@ constrainRanges = function(target, windows){
 	checkClass(target, 'SimpleRleList')
 	checkClass(windows, 'GRanges')
 	
-	IRanges::values(windows)$X_rank = 1:length(windows)
+	mcols(windows)$X_rank = 1:length(windows)
 	r.chr.len = elementLengths(target)
-    constraint = GRanges(seqnames=names(r.chr.len),IRanges(start=rep(1,length(r.chr.len)),end=as.numeric(r.chr.len)))
+    constraint = GRanges(seqnames=names(r.chr.len),
+                         IRanges(start=rep(1,length(r.chr.len)),
+                                                           end=as.numeric(r.chr.len)))
 	# suppressWarnings is done becuause GenomicRanges function give warnings if you don't have the same seqnames in both objects
-    win.list.chr = suppressWarnings(IRanges::subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE))
+    win.list.chr = suppressWarnings(subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE))
 	
 	if(length(win.list.chr) == 0)
 		stop('All windows fell have coordinates outside chromosome boundaries')
@@ -80,19 +82,21 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @param windows a \code{GRanges} object that contains the windows of interest. It could be promoters, CpG islands, exons, introns. However the sizes of windows have to be equal.
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
 #' @param ordered If TRUE (default: FALSE), the input order will be preserved
-#' @param ... parameters to be passed to \code{modCoverage} function. Only needed when target is \code{GRanges}.
+#' @param col.name if the object is \code{GRanges} object which meta column
+#'        should be used as a weight.
 #'
-#' @usage scoreMatrix(target,windows,strand.aware=FALSE,...)
 #' @return returns a \code{scoreMatrix} object
-#' @seealso \code{\link{scoreMatrixBin}}, \code{\link{modCoverage}}
-#' @example
-#'          data(feature)
-#'          #get promoters
+#' @seealso \code{\link{scoreMatrixBin}}
+#' @examples
+#'          data(cage)
+#'          data(promoters)
+#'          scoreMatrix(target=cage,windows=promoters,strand.aware=FALSE,
+#'                                  col.name="tpm")
 #'          
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALSE,...) standardGeneric("scoreMatrix") )
+setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALSE,col.name=NULL) standardGeneric("scoreMatrix") )
 
 
 # ------------------------------------------------------------------------------------ #
@@ -101,59 +105,58 @@ setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALS
 setMethod("scoreMatrix",signature("RleList","GRanges"),
           function(target,windows,strand.aware,ordered){
             
-            #check if all windows are equal length
-            if( length(unique(width(windows))) >1 )
-              stop("width of 'windows' are not equal, provide 'windows' with equal widths")
-            
-			# set a uniq id for the GRanges
-			windows = constrainRanges(target, windows)
-			
-			# fetches the windows
-			matList = getViews(target, windows)
-			mat = do.call(rbind, matList)
-			rownames(mat) = unlist(lapply(matList, rownames), use.names=F)
-	
-			if(strand.aware == TRUE){
-				orig.rows=which(as.character(strand(windows)) == '-')
-                mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
-			}
-			if(ordered == TRUE){
-				mat = mat[order(as.numeric(rownames(mat))),]
-			}
-            return(new("scoreMatrix",mat))
+   #check if all windows are equal length
+    if( length(unique(width(windows))) >1 ){
+    stop("width of 'windows' are not equal, provide 'windows' with equal widths")
+    }     
+		
+    # set a uniq id for the GRanges
+		windows = constrainRanges(target, windows)
+		
+   
+  	# fetches the windows
+    myViews=Views(target,as(windows,"RangesList")) # get subsets of coverage
+    #  get a list of matrices from Views object
+    #  operation below lists a matrix for each chromosome
+    mat=lapply(myViews,function(x) t(viewApply(x,as.vector)) )
+    #mat=as.matrix(myViews) # this might work as well
+    
+    mat=do.call("rbind",mat)   # combine the matrices   
+  	
+  	if(strand.aware == TRUE){
+  		orig.rows=which(as.character(strand(windows)) == '-')
+      mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+  	}
+  	if(ordered == TRUE){
+  	  # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+  	  r.list=split(mcols(windows)[,"X_rank"], as.factor(seqnames(windows))  )    
+  	  ranks=do.call("c",r.list)
+  		mat = mat[order(ranks),] # reorder matrix
+  	}
+    
+  return(new("scoreMatrix",mat))
 })
 
-#' @aliases scoreMatrix,modRleList,GRanges-method
-#' @rdname scoreMatrix-methods
-setMethod("scoreMatrix",signature("modRleList","GRanges"),
-          function(target,windows,strand.aware){
-		  
-		  mat = scoreMatrix(as(target, 'RleList'), windows, strand.aware)
-		  mat=(mat-target@add)/target@multiply
-		  mat[mat<0]=NA
-		  return(mat)	
-})
+
 
 #' @aliases scoreMatrix,GRanges,GRanges-method
 #' @rdname scoreMatrix-methods
 setMethod("scoreMatrix",signature("GRanges","GRanges"),
-          function(target,windows,strand.aware,...){
+          function(target,windows,strand.aware,col.name){
             
             #make coverage vector (modRleList) from target
-            target.rle=modCoverage(target,...)
-            
+            if(is.null(col.name)){
+              target.rle=coverage(target)
+            }else{
+              if(! col.name %in% names(mcols(cage)) ){
+                stop("provided column 'col.name' does not exist in tartget\n")
+              }
+              target.rle=coverage(target,weight=mcols(cage)[col.name][,1])             
+            }
             # call scoreMatrix function
             scoreMatrix(target.rle,windows,strand.aware)
 })
 
-#' @aliases scoreMatrix,GRanges,GRanges-method
-#' @rdname scoreMatrix-methods
-setMethod("scoreMatrix",signature("matrix"),
-          function(target,...){
-          
-		  #converts matrix to scoreMatrix
-          return(new("scoreMatrix",target))
-})
 
 
 # ------------------------------------------------------------------------------------ #
@@ -230,7 +233,9 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 				}
 			}
 			# plots the main matrix
-			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), col=mat.cols, , oma=c(0,0,0,0), useRaster=T, xlab=xlab, ylab=ylab, main=, axes=FALSE)
+			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
+            col=mat.cols, , oma=c(0,0,0,0),
+            useRaster=TRUE, xlab=xlab, ylab=ylab, main=, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
 			if(add.sep == TRUE)
