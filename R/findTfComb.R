@@ -7,7 +7,7 @@
 #' @param collapse.char a character which will be used to separate the class names if use.names=TRUE. The default is ':'
 
 #' @usage findTFomb(gl, width, use.names=FALSE, collapse.char=':')
-#' @return nothing
+#' @return a GRanges object
 
 #' @docType methods
 #' @rdname findTFComb-methods
