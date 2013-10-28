@@ -52,19 +52,22 @@ getViewsBin = function(target, windows, bin.num){
 summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 
 	# chop windows to bins
-	functs = c('mean','max','median')
+	functs = c("min",'mean','max','median')
 	if(!bin.op %in% functs)
 		stop(paste('Supported binning functions are', functs,'\n'))
-
+	if(bin.op=="min")
+	  sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMins(x,na.rm=TRUE) ),use.names=F )      
+	
 	if(bin.op=="max")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMaxs(x) ),use.names=F )      
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=F )      
 	if(bin.op=="mean")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMeans(x) ),use.names=F )    
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMeans(x,na.rm=TRUE) ),use.names=F )    
 		
 	if(bin.op=="median")
 		sum.bins=unlist(IRanges::lapply(my.vList, function(x) viewApply(x, function(x) median(as.numeric(x),na.rm=T)  )), use.names=F) 
         
 	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
+  mat[is.nan(mat)]=NA
 	rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=F)[seq(1, length(mat), bin.num)]
 	if(strand.aware){
 		orig.rows=which(as.character(strand(windows))== '-')
@@ -211,10 +214,17 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
               {  
                   # adding 1 to figure out NA columns later
                   target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
-                  mat=scoreMatrix(target.rle,windows,strand.aware)
-                  mat=mat-1 # substract 1
-                  mat[mat<0]=NA # everything that are <0 are NA
-                  return(mat)
+                  
+                  # figure out which ones are real 0 score
+                  # which ones has no coverage
+                  # put NAs for no coverage bases
+                  target.rle= endoapply( target.rle,function(x){ x=x-1 
+                                                        x[x<0]=NA
+                                                        x})
+
+              }else{
+                
+                target.rle=coverage(target,weight= col.name ) 
               }
             }
             

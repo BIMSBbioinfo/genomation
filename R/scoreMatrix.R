@@ -97,7 +97,6 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #'                    \code{scoreMatrix}.
 #'                     If the strand of a window is -, the values of the bins 
 #'                     for that window will be reversed
-#' @param ordered If TRUE (default: TRUE), the input order will be preserved
 #' @param col.name if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
@@ -132,7 +131,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=TRUE,
+setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,
                                   col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrix") )
 
 
@@ -140,7 +139,7 @@ setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=TRUE
 #' @aliases scoreMatrix,RleList,GRanges-method
 #' @rdname scoreMatrix-methods
 setMethod("scoreMatrix",signature("RleList","GRanges"),
-          function(target,windows,strand.aware,ordered){
+          function(target,windows,strand.aware){
             
    #check if all windows are equal length
     if( length(unique(width(windows))) >1 ){
@@ -179,9 +178,8 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
   		orig.rows=which(as.character(strand(windows)) == '-')
       mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
   	}
-  	if(ordered == TRUE){
-  		mat = mat[order(ranks),] # reorder matrix
-  	}
+
+  	mat = mat[order(ranks),] # reorder matrix
     
   return(new("scoreMatrix",mat))
 })
@@ -253,15 +251,15 @@ setMethod("scoreMatrix",signature("character","GRanges"),
 #' @param main plot name
 #' @param class.names names for each factor class - has to have the same lenght as \code{levels(fact)}
 #' @param ... other options to be passed to functions (obsolete at the moment)
-
-
-#' @usage plotMatrix(mat, fact=NULL, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, ...)
 #' @return nothing
-
 #' @docType methods
 #' @rdname plotMatrix-methods
 #' @export
-setGeneric("plotMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL, shift=0, mat.cols=NULL, fact.cols=NULL, xlab='Position', ylab='Region', main='Positional profile', class.names=NULL, use.names=FALSE, ...) standardGeneric("plotMatrix") )
+setGeneric("plotMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL,
+                                  shift=0, mat.cols=NULL, fact.cols=NULL, 
+                                  xlab='Position', ylab='Region', 
+                                  main='Positional profile', 
+                                  class.names=NULL, use.names=FALSE, ...) standardGeneric("plotMatrix") )
 
 #' @aliases plotMatrix,scoreMatrix-method
 #' @rdname plotMatrix-methods
