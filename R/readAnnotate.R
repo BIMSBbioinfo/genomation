@@ -115,13 +115,7 @@ checkBedValidity<-function(bed.df,type="none"){
 	return(num.col & col1.2 & chr )
 }
 
-# ----------------------------------------------------------------------------------------------- #
-# fast reading of big tables
-.readTableFast<-function(filename, header=T, skip=0, sep=""){
-  tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100)
-  classes  <- sapply(tab5rows, class)
-  return( read.table(filename, header = header,skip=skip,sep=sep, colClasses = classes)  )
-}
+
 
 
 #######################################
@@ -233,44 +227,6 @@ setMethod("convertBed2Introns",
 				
 			bed12ToIntrons(bed.df)
 })
-
-
-# ----------------------------------------------------------------------------------------------- #
-#' read a bed file and convert it to GRanges
-#'  
-#' @param location  location of the file, a character string such as: "/home/user/my.bed"
-#' @param remove.unsual if TRUE(default) remove the chromomesomes with unsual names, mainly random chromsomes etc
-#'
-#' @usage readBed(location,remove.unsual=T)
-#' @return \code{\link{GRanges}} object
-#'
-#' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
-#'
-#' @export
-#' @docType methods
-#' @rdname readBed-methods
-setGeneric("readBed", function(location,remove.unsual=T) standardGeneric("readBed"))
-
-#' @aliases readBed,character-method
-#' @rdname readBed-methods
-setMethod("readBed", 
-			signature(location = "character"),
-			function(location, remove.unsual){
-
-				# find out if there is a header, skip 1st line if there is a header
-				f.line=readLines(con = location, n = 1)
-				skip=0
-				if(grepl("^track",f.line))
-					skip=1
-
-				# readBed6
-				bed=.readTableFast(location,header=F,skip=skip)                    
-				if(remove.unsual)
-					bed = bed[grep("_", as.character(bed[,1]),invert=T),]
-				
-				convertBedDf(bed)
-})
-
 
 # ----------------------------------------------------------------------------------------------- #
 #' Function for reading exon intron and promoter structure from a given bed file
