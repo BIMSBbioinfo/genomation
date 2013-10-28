@@ -30,13 +30,14 @@ getViewsBin = function(target, windows, bin.num){
                     IRanges(start=coord[,1],end=coord[,2]))
 	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
 	
+  # convert sub-windows to RangesList
 	win.list=as(subWins, "RangesList")
-	win.list = win.list[sapply(win.list, length) > 0]
+	win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
-	if(length(chrs)==0)
-		stop("There are no common chromosomes/spaces to do overlap")
+	if(length(chrs)==0) stop("There are no common chromosomes/spaces to do overlap")
 
+  # get views on your windows
 	my.vList = Views(target[chrs], win.list[chrs] )
 	my.vList = lapply(chrs, 
 						function(x){
@@ -115,23 +116,41 @@ summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware
 
 
 
-#' Get bin score for bins in each window
+#' Get bin score for bins on each window
 #'
+#' The function firsts bins each window to equal number of bins, and calculates
+#' the a summary metrix for scores of each bin (currently, mean, max and min supported)
 #' A scoreMatrix object can be used to draw average profiles or heatmap of read coverage or wig track-like data.
 #' \code{windows} can be a predefined region such as CpG islands or gene bodies that are not necessarily equi-width.
 #' Each window will be chopped to equal number of bins based on \code{bin.num} option.
 #'
-#' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} object to be overlapped with ranges in \code{windows}
-#' @param windows a \code{GRanges} object that contains the windows of interest. It could be promoters, CpG islands, exons, introns. However the sizes of windows does NOT have to be equal.
-#' @param bin.num A single \code{integer} value denoting how many bins there should be for each window
-#' @param bin.op A bin operation that is either one of the following strings: "max","min","mean". The operation is applied on the values in the bin. Defaults to "mean"
-#' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
+#' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} 
+#'               object to be overlapped with ranges in \code{windows}
+#' @param windows a \code{GRanges} object that contains the windows of interest. 
+#'                It could be promoters, CpG islands, exons, introns. However 
+#'                the sizes of windows does NOT have to be equal.
+#' @param bin.num A single \code{integer} value denoting how many bins there 
+#'                should be for each window
+#' @param bin.op A bin operation that is either one of the following strings: 
+#'              "max","min","mean". The operation is applied on the 
+#'              values in the bin. Defaults to "mean"
+#' @param strand.aware If TRUE (default: FALSE), the strands of the windows will 
+#'                     be taken into account in the resulting \code{scoreMatrix}. 
+#'                     If the strand of a window is -, the values of the bins 
+#'                     for that window will be reversed
 #' @param col.name if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
-#'                
+#' @param is.noCovNA (Default:FALSE)
+#'                  if TRUE,and if 'target' is a GRanges object with 'col.name'
+#'                   provided, the bases that are uncovered will be preserved as
+#'                   NA in the returned object. This useful for situations where
+#'                   you can not have coverage all over the genome, such as CpG
+#'                    methylation values.
+#'                   
+#'                                                 
 #' @return returns a \code{scoreMatrix} object
 #' 
 #' @examples
@@ -145,12 +164,14 @@ summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware
 #' @export
 setGeneric("scoreMatrixBin",
            function(target,windows,bin.num=10,bin.op="mean",
-                    strand.aware=FALSE,col.name=NULL) standardGeneric("scoreMatrixBin") )
+                    strand.aware=FALSE,ordered=TRUE,
+                    col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrixBin") )
 
 #' @aliases scoreMatrixBin,RleList,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("RleList","GRanges"),
-          function(target, windows, bin.num, bin.op, strand.aware){
+          function(target, windows, bin.num, bin.op, strand.aware,
+                   ordered,is.noCovNA){
 
 			# removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
 			windows = constrainRanges(target, windows)
@@ -186,16 +207,18 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
               if(! col.name %in% names(mcols(target)) ){
                 stop("provided column 'col.name' does not exist in tartget\n")
               }
+              if(is.noCovNA)
+              {  
+                  # adding 1 to figure out NA columns later
+                  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
+                  mat=scoreMatrix(target.rle,windows,strand.aware)
+                  mat=mat-1 # substract 1
+                  mat[mat<0]=NA # everything that are <0 are NA
+                  return(mat)
+              }
             }
             
-            #if(is.noCovNA)
-            #{ # adding 1 to figure out NA columns later
-            #  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
-            #  mat=scoreMatrix(target.rle,windows,strand.aware)
-            #  mat=mat-1 # substract 1
-            #  mat[mat<0]=NA # everything that are <0 are NA
-            #  return(mat)
-            #}
+
 
             # call scoreMatrix function
             scoreMatrixBin(target.rle,windows,bin.num,

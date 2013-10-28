@@ -107,7 +107,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #'                  if TRUE,and if 'target' is a GRanges object with 'col.name'
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
-#'                   you can have coverage all over the genome, such as CpG methylation
+#'                   you can not have coverage all over the genome, such as CpG methylation
 #'                   values.
 #' 
 #' @return returns a \code{scoreMatrix} object
@@ -126,11 +126,13 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' 
 #'  
 #' # When target is a bam file
-#'          
+#'  # bamfile="example.bam"
+#'  # scores3=scoreMatrix(target=bamfile,windows=promoters,strand.aware=TRUE) 
+#'  
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALSE,
+setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=TRUE,
                                   col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrix") )
 
 
@@ -195,19 +197,22 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
             if(is.null(col.name)){
               target.rle=coverage(target)
             }else{
-              if(! col.name %in% names(mcols(target)) ){
-                stop("provided column 'col.name' does not exist in tartget\n")
-              }
+                if(! col.name %in% names(mcols(target)) ){
+                  stop("provided column 'col.name' does not exist in tartget\n")
+                }
+                if(is.noCovNA)
+                { # adding 1 to figure out NA columns later
+                  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
+                  mat=scoreMatrix(target.rle,windows,strand.aware)
+                  mat=mat-1 # substract 1
+                  mat[mat<0]=NA # everything that are <0 are NA
+                  return(mat)
+                }
+                target.rle=coverage(target,weight= col.name ) 
+                
             }
             
-            if(is.noCovNA)
-            { # adding 1 to figure out NA columns later
-              target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
-              mat=scoreMatrix(target.rle,windows,strand.aware)
-              mat=mat-1 # substract 1
-              mat[mat<0]=NA # everything that are <0 are NA
-              return(mat)
-            }
+
             # call scoreMatrix function
             scoreMatrix(target.rle,windows,strand.aware)
 })
