@@ -132,7 +132,14 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @examples
 #'   data(cage)
 #'   data(cpgi)
+#'   myMat=scoreMatrixBin(target=cage,
+#'                        windows=cpgi,bin.num=10,bin.op="mean",col.name="tpm")
+#'   plot(colMeans(myMat,na.rm=TRUE),type="l")
 #'   
+#'   myMat2=scoreMatrixBin(target=cage,
+#'                         windows=promoters,bin.num=10,bin.op="mean",
+#'                         col.name="tpm",strand.aware=TRUE)
+#'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #' 
 #' @seealso \code{\link{scoreMatrix}}
 #' @docType methods

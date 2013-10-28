@@ -239,7 +239,7 @@ setMethod("scoreMatrix",signature("character","GRanges"),
 # ------------------------------------------------------------------------------------ #
 #' visual representation of scoreMatrix using a heatmap 
 #' The rows can be reordered using one factor and one numeric vector
-
+#'
 #' @param mat a \code{scoreMatrix} object
 #' @param fact a \code{factor} of length equal to \code{nrow(mat)}. Unused factor levels are dropped
 #' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, which is going to be used for ordering of the rows
@@ -252,6 +252,15 @@ setMethod("scoreMatrix",signature("character","GRanges"),
 #' @param class.names names for each factor class - has to have the same lenght as \code{levels(fact)}
 #' @param ... other options to be passed to functions (obsolete at the moment)
 #' @return nothing
+#' 
+#' @examples
+#'   data(cage)
+#'   data(promoters)
+#'   myMat2=scoreMatrix(target=cage,windows=promoters,
+#'                         col.name="tpm",strand.aware=TRUE)
+#'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
+#'   plotMatrix(myMat2,fact=)
+#' 
 #' @docType methods
 #' @rdname plotMatrix-methods
 #' @export
@@ -286,11 +295,11 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 				class.names = levels(fact)
 			
 			if(is.null(mat.cols)){
-				cat('Using default mat.cols...\n')
+				message('Using default mat.cols...\n')
 				mat.cols = colorRampPalette(c('lightgray','darkblue'), interpolate='spline')(20)
 			}
 			if(is.null(fact.cols)){
-				cat('Using default fact.cols...\n')
+				message('Using default fact.cols...\n')
 				fact.cols = adjustcolor(rainbow(length(levels(fact))), offset=c(0.5,0.5,0.5, 0), transform=diag(c(.7, .7, .7, 0.6)))
 				 
 			}
@@ -312,7 +321,7 @@ setMethod("plotMatrix", signature("scoreMatrix"),
 			# plots the main matrix
 			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
             col=mat.cols, , oma=c(0,0,0,0),
-            useRaster=TRUE, xlab=xlab, ylab=ylab, main=, axes=FALSE)
+            useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
 			if(add.sep == TRUE)
