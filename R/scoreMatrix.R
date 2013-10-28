@@ -73,28 +73,48 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 # ------------------------------------------------------------------------------------ #
 #' Get base-pair score for windows
 #'
-#' A scoreMatrix object can be used to draw average profiles or heatmap of read 
-#' coverage or wig track-like data.
-#' \code{windows} can be a predefined region around transcription start sites 
+#' The funcion produces a base-pair resolution matrix of scores for given equal
+#' width windows of interest. The returned matrix  can be used to 
+#' draw meta profiles or heatmap of read coverage or wig track-like data.
+#' The \code{windows} argument can be a predefined region around transcription start sites 
 #' or other regions of interest that have equal lengths
 #' The function removes all window that fall off the Rle object - 
 #' have the start coordinate < 1 or end coordinate > length(Rle)
 #' The function takes the intersection of names in the Rle and GRanges objects
 #'
-#' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} object to be overlapped with ranges in \code{windows}
-#' @param windows a \code{GRanges} object that contains the windows of interest. It could be promoters, CpG islands, exons, introns. However the sizes of windows have to be equal.
-#' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
+#' @param target a \code{RleList} , \code{GRanges} or a BAM file
+#'  to be overlapped with ranges in \code{windows}
+#' @param windows a \code{GRanges} object that contains the windows of interest. 
+#'                It could be promoters, CpG islands, exons, introns. 
+#'                However the sizes of windows have to be equal.
+#' @param strand.aware If TRUE (default: FALSE), the strands of the
+#'                   windows will be taken into account in the resulting
+#'                    \code{scoreMatrix}.
+#'                     If the strand of a window is -, the values of the bins 
+#'                     for that window will be reversed
 #' @param ordered If TRUE (default: FALSE), the input order will be preserved
-#' @param col.name if the object is \code{GRanges} object which meta column
-#'        should be used as a weight.
+#' @param col.name if the object is \code{GRanges} object a numeric column
+#'                 in meta data part can be used as weights. This is particularly
+#'                useful when genomic regions have scores other than their
+#'                coverage values, such as percent methylation, conservation
+#'                scores, GC content, etc. 
 #'
 #' @return returns a \code{scoreMatrix} object
 #' @seealso \code{\link{scoreMatrixBin}}
 #' @examples
+#' 
+#' # When target is GRanges
 #'          data(cage)
 #'          data(promoters)
-#'          scoreMatrix(target=cage,windows=promoters,strand.aware=FALSE,
+#'          scores1=scoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
 #'                                  col.name="tpm")
+#'                                  
+#' # When target is RleList
+#' covs=coverage(cage)
+#' scores2=scoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
+#' 
+#'  
+#' # When target is a bam file
 #'          
 #' @docType methods
 #' @rdname scoreMatrix-methods           
@@ -166,17 +186,18 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
 setMethod("scoreMatrix",signature("character","GRanges"),
           function(target,windows,strand.aware,col.name){
             
-            #make coverage vector (modRleList) from target
-            if(is.null(col.name)){
-              target.rle=coverage(target)
-            }else{
-              if(! col.name %in% names(mcols(cage)) ){
-                stop("provided column 'col.name' does not exist in tartget\n")
-              }
-              target.rle=coverage(target,weight=mcols(cage)[col.name][,1])             
+            if(!file.exists(target)){
+              stop("Indicated 'target' file does not exist\n")
             }
-            # call scoreMatrix function
-            scoreMatrix(target.rle,windows,strand.aware)
+            
+            # get the coverage vector for 
+            # given locations
+            param <- ScanBamParam(which=windows)
+            alns <- readGAlignmentsFromBam(target, param=param)# read alignments
+            
+            covs=coverage(alns) # get coverage vectors
+            
+            scoreMatrix(covs,windows,strand.aware)
           })
 
 
