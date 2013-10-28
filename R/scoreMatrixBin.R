@@ -2,6 +2,23 @@
 #######################################
 # S3 functions
 #######################################
+# given a vector and length smooths the vector to a given size
+# the function is not safe - check for the window length before
+binner=function(start,end,nbins){
+  
+  if(! is.numeric(start))
+    stop('start needs to be class numeric')
+  if(! is.numeric(end))
+    stop('end needs to be class numeric')
+  if(! is.numeric(nbins))
+    stop('nbins needs to be class numeric')
+  
+  x = unique(seq(from = start, to = end,length.out=nbins + 1 ) )
+  my.start = ceiling(x)[-length(x)]
+  my.end = floor(x)[-1]
+  
+  return( t(cbind(my.start, my.end) )  )
+}
 
 # given a target Rle/modRle and windows gets the views to be used for binning
 getViewsBin = function(target, windows, bin.num){
@@ -9,7 +26,8 @@ getViewsBin = function(target, windows, bin.num){
 	coord = matrix(
 				mapply(binner, IRanges::start(windows),IRanges::end(windows), bin.num, SIMPLIFY=TRUE), 
 			ncol=2, byrow=T)
-	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),IRanges(start=coord[,1],end=coord[,2]))
+	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
+                    IRanges(start=coord[,1],end=coord[,2]))
 	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
 	
 	win.list=as(subWins, "RangesList")
@@ -90,23 +108,7 @@ summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware
 	return(mat)
 }
 
-# given a vector and length smooths the vector to a given size
-# the function is not safe - check for the window length before
-binner=function(start,end,nbins){
-	
-	if(! is.numeric(start))
-		stop('start needs to be class numeric')
-	if(! is.numeric(end))
-		stop('end needs to be class numeric')
-	if(! is.numeric(nbins))
-		stop('nbins needs to be class numeric')
-	
-	x = unique(seq(from = start, to = end,length.out=nbins + 1 ) )
-	my.start = ceiling(x)[-length(x)]
-	my.end = floor(x)[-1]
-	
-	return( t(cbind(my.start, my.end) )  )
-}
+
 #######################################
 # S4 functions
 #######################################

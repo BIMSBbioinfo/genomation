@@ -71,11 +71,14 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 
 
 # ------------------------------------------------------------------------------------ #
-#' get scores overlapping with windows in a scoreMatrix object
+#' Get base-pair score for windows
 #'
-#' A scoreMatrix object can be used to draw average profiles or heatmap of read coverage or wig track-like data.
-#' \code{windows} can be a predefined region around transcription start sites or other regions of interest that have equal lengths
-#' The function removes all window that fall off the Rle object - have the start coordinate < 1 or end coordinate > length(Rle)
+#' A scoreMatrix object can be used to draw average profiles or heatmap of read 
+#' coverage or wig track-like data.
+#' \code{windows} can be a predefined region around transcription start sites 
+#' or other regions of interest that have equal lengths
+#' The function removes all window that fall off the Rle object - 
+#' have the start coordinate < 1 or end coordinate > length(Rle)
 #' The function takes the intersection of names in the Rle and GRanges objects
 #'
 #' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} object to be overlapped with ranges in \code{windows}
