@@ -14,9 +14,13 @@ constrainRanges = function(target, windows){
 	r.chr.len = elementLengths(target)
     constraint = GRanges(seqnames=names(r.chr.len),
                          IRanges(start=rep(1,length(r.chr.len)),
-                                                           end=as.numeric(r.chr.len)))
-	# suppressWarnings is done becuause GenomicRanges function give warnings if you don't have the same seqnames in both objects
-    win.list.chr = suppressWarnings(subsetByOverlaps(windows, constraint,type = "within",ignore.strand = TRUE))
+                                   end=as.numeric(r.chr.len)))
+	# suppressWarnings is done becuause GenomicRanges function give warnings 
+  #if you don't have the same seqnames in both objects
+  win.list.chr = suppressWarnings(subsetByOverlaps(windows, 
+                                                   constraint,
+                                                   type = "within",
+                                                   ignore.strand = TRUE))
 	
 	if(length(win.list.chr) == 0)
 		stop('All windows fell have coordinates outside chromosome boundaries')
@@ -44,7 +48,8 @@ getViews = function(target, windows){
 		stop("There are no common chromosomes/spaces to do overlap")
 		
 	#get views 
-	# the subsetting needs to be done using a character vector, because otherwise it can take the views from wrong seqnames
+	# the subsetting needs to be done using a character vector, 
+  # because otherwise it can take the views from wrong seqnames
 	my.vList = seqselect(target[chrs], win.list[chrs] )
 	my.vList = lapply(my.vList, function(x)matrix(as.integer(x), ncol=winsize, byrow=T))
 	
@@ -71,7 +76,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 
 
 # ------------------------------------------------------------------------------------ #
-#' Get base-pair score for windows
+#' Get base-pair score for bases in each window
 #'
 #' The funcion produces a base-pair resolution matrix of scores for given equal
 #' width windows of interest. The returned matrix  can be used to 
@@ -92,13 +97,19 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #'                    \code{scoreMatrix}.
 #'                     If the strand of a window is -, the values of the bins 
 #'                     for that window will be reversed
-#' @param ordered If TRUE (default: FALSE), the input order will be preserved
+#' @param ordered If TRUE (default: TRUE), the input order will be preserved
 #' @param col.name if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
-#'
+#' @param is.noCovNA (Default:FALSE)
+#'                  if TRUE,and if 'target' is a GRanges object with 'col.name'
+#'                   provided, the bases that are uncovered will be preserved as
+#'                   NA in the returned object. This useful for situations where
+#'                   you can have coverage all over the genome, such as CpG methylation
+#'                   values.
+#' 
 #' @return returns a \code{scoreMatrix} object
 #' @seealso \code{\link{scoreMatrixBin}}
 #' @examples
@@ -119,7 +130,8 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALSE,col.name=NULL) standardGeneric("scoreMatrix") )
+setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,ordered=FALSE,
+                                  col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrix") )
 
 
 # ------------------------------------------------------------------------------------ #
@@ -137,23 +149,35 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 		windows = constrainRanges(target, windows)
 		
    
-  	# fetches the windows
-    myViews=Views(target,as(windows,"RangesList")) # get subsets of coverage
+  	# fetches the windows and the scores
+    myViews=Views(target,as(windows,"RangesList")) # get subsets of RleList
+    
     #  get a list of matrices from Views object
     #  operation below lists a matrix for each chromosome
     mat=lapply(myViews,function(x) t(viewApply(x,as.vector)) )
     #mat=as.matrix(myViews) # this might work as well
     
-    mat=do.call("rbind",mat)   # combine the matrices   
-  	
+    mat = do.call("rbind",mat)   # combine the matrices from chromosomes 
+    
+    # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+    r.list=split(mcols(windows)[,"X_rank"], as.factor(seqnames(windows))  )    
+    ranks=do.call("c",r.list)
+    
+    # put original window order as rownames
+    # this is very important to keep
+    # if we have multiple RleLists for the same set of windows
+    # we need to know which windows are removed from which set
+    # so when we are doing something comparative (clustering windows
+    # based on different histone marks) we only work with windows
+    # that are covered by all histone marks
+  	rownames(mat) =ranks  
+    
+    # if strand aware is TRUE, we need to flip the windows on the minus strand
   	if(strand.aware == TRUE){
   		orig.rows=which(as.character(strand(windows)) == '-')
       mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
   	}
   	if(ordered == TRUE){
-  	  # get the ranks of windows, when things are reorganized by as(...,"RangesList")
-  	  r.list=split(mcols(windows)[,"X_rank"], as.factor(seqnames(windows))  )    
-  	  ranks=do.call("c",r.list)
   		mat = mat[order(ranks),] # reorder matrix
   	}
     
@@ -165,16 +189,24 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 #' @aliases scoreMatrix,GRanges,GRanges-method
 #' @rdname scoreMatrix-methods
 setMethod("scoreMatrix",signature("GRanges","GRanges"),
-          function(target,windows,strand.aware,col.name){
+          function(target,windows,strand.aware,col.name,is.noCovNA){
             
-            #make coverage vector (modRleList) from target
+            #make coverage vector  from target
             if(is.null(col.name)){
               target.rle=coverage(target)
             }else{
-              if(! col.name %in% names(mcols(cage)) ){
+              if(! col.name %in% names(mcols(target)) ){
                 stop("provided column 'col.name' does not exist in tartget\n")
               }
-              target.rle=coverage(target,weight=mcols(cage)[col.name][,1])             
+            }
+            
+            if(is.noCovNA)
+            { # adding 1 to figure out NA columns later
+              target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
+              mat=scoreMatrix(target.rle,windows,strand.aware)
+              mat=mat-1 # substract 1
+              mat[mat<0]=NA # everything that are <0 are NA
+              return(mat)
             }
             # call scoreMatrix function
             scoreMatrix(target.rle,windows,strand.aware)
@@ -184,7 +216,7 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
 #' @aliases scoreMatrix,character,GRanges-method
 #' @rdname scoreMatrix-methods
 setMethod("scoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware,col.name){
+          function(target,windows,strand.aware){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")

@@ -115,7 +115,7 @@ summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware
 
 
 
-#' get scores overlapping with windows in a scoreMatrix object
+#' Get bin score for bins in each window
 #'
 #' A scoreMatrix object can be used to draw average profiles or heatmap of read coverage or wig track-like data.
 #' \code{windows} can be a predefined region such as CpG islands or gene bodies that are not necessarily equi-width.
@@ -126,15 +126,26 @@ summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware
 #' @param bin.num A single \code{integer} value denoting how many bins there should be for each window
 #' @param bin.op A bin operation that is either one of the following strings: "max","min","mean". The operation is applied on the values in the bin. Defaults to "mean"
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will be taken into account in the resulting \code{scoreMatrix}. If the strand of a window is -, the values of the bins for that window will be reversed
-#' @param ... parameters to be passed to \code{modCoverage} function. Only needed when target is \code{GRanges}.
-#'
-#' @usage scoreMatrixBin(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...)
+#' @param col.name if the object is \code{GRanges} object a numeric column
+#'                 in meta data part can be used as weights. This is particularly
+#'                useful when genomic regions have scores other than their
+#'                coverage values, such as percent methylation, conservation
+#'                scores, GC content, etc. 
+#'                
 #' @return returns a \code{scoreMatrix} object
-#' @seealso \code{\link{scoreMatrix}},\code{\link{modCoverage}}
+#' 
+#' @examples
+#'   data(cage)
+#'   data(cpgi)
+#'   
+#' 
+#' @seealso \code{\link{scoreMatrix}}
 #' @docType methods
 #' @rdname scoreMatrixBin-methods           
 #' @export
-setGeneric("scoreMatrixBin",function(target,windows,bin.num=10,bin.op="mean",strand.aware=FALSE,...) standardGeneric("scoreMatrixBin") )
+setGeneric("scoreMatrixBin",
+           function(target,windows,bin.num=10,bin.op="mean",
+                    strand.aware=FALSE,col.name=NULL) standardGeneric("scoreMatrixBin") )
 
 #' @aliases scoreMatrixBin,RleList,GRanges-method
 #' @rdname scoreMatrixBin-methods
@@ -161,44 +172,34 @@ setMethod("scoreMatrixBin",signature("RleList","GRanges"),
 })
 
 
-#' @aliases scoreMatrixBin,modRleList,GRanges-method
-#' @rdname scoreMatrixBin-methods
-#' @aliases scoreMatrixBin,modRleList,GRanges-method
-#' @rdname scoreMatrixBin-methods
-setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
-         function(target, windows, bin.num, bin.op, strand.aware){
-
-            # removes windows that fall of the chromosomes - window id is in
-			values(windows)$X_rank
-			windows = constrainRanges(as(target,'RleList'), windows)
-
-			# checks whether some windows are shorter than the wanted window size
-			wi = width(windows) < bin.num
-			if(any(wi)){
-				warning('supplied GRanges object contains ranges of width < number of bins')
-                windows = windows[!wi]
-			}
-
-			# gets the view list
-			my.vList = getViewsBin(as(target,'RleList'), windows, bin.num)
-
-			# summarize
-			mat = summarizeViewsModRle(my.vList, windows, bin.op, bin.num, strand.aware,target@multiply,target@add)
-			new("scoreMatrix",mat)
-})
 
 
 #' @aliases  scoreMatrixBin,GRanges,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
-          function(target,windows,bin.num,bin.op,strand.aware,...){
+          function(target,windows,bin.num,bin.op,strand.aware,col.name,is.noCovNA){
             
+            #make coverage vector  from target
+            if(is.null(col.name)){
+              target.rle=coverage(target)
+            }else{
+              if(! col.name %in% names(mcols(target)) ){
+                stop("provided column 'col.name' does not exist in tartget\n")
+              }
+            }
             
-            #make coverage vector (modRleList) from target
-            target.rle=modCoverage(target,...)
-            
+            #if(is.noCovNA)
+            #{ # adding 1 to figure out NA columns later
+            #  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
+            #  mat=scoreMatrix(target.rle,windows,strand.aware)
+            #  mat=mat-1 # substract 1
+            #  mat[mat<0]=NA # everything that are <0 are NA
+            #  return(mat)
+            #}
+
             # call scoreMatrix function
-            scoreMatrixBin(target.rle,windows,bin.num,bin.op,strand.aware)
+            scoreMatrixBin(target.rle,windows,bin.num,
+                           bin.op,strand.aware)
             
 })
 
