@@ -23,16 +23,22 @@ binner=function(start,end,nbins){
 # given a target Rle/modRle and windows gets the views to be used for binning
 getViewsBin = function(target, windows, bin.num){
 
+  #get coordinates of bins in each window
 	coord = matrix(
 				mapply(binner, IRanges::start(windows),IRanges::end(windows), bin.num, SIMPLIFY=TRUE), 
 			ncol=2, byrow=T)
+  
+  # make GRanges object for the bins
+	# subtract 1 so next start pos is not identical to  current end pos
+  # keep window rank from original "windows" GRanges object
 	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
-                    IRanges(start=coord[,1],end=coord[,2]))
+                    IRanges(start=coord[,1],end=coord[,2]-1)) 
 	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
 	
-  # convert sub-windows to RangesList
+  # convert sub-windows to RangesList to be fed into coverage()
 	win.list=as(subWins, "RangesList")
 	win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
+  
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
 	if(length(chrs)==0) stop("There are no common chromosomes/spaces to do overlap")
@@ -77,40 +83,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	
 }
 
-# median should not be supported yet
-summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware,t.multiply,t.add){
 
-	functs = c('mean','max','min')
-	if(!bin.op %in% functs)
-		stop(paste('Supported binning functions are', functs,'\n'))
-
-	if(bin.op=="mean"){
-		# sum of each view
-		sum.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewSums(x)), use.names=F)
-		# number of values in each bin, discarding bases with no value
-		len.bins=unlist( IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y)sum(y > 0))), use.names=F )
-		
-		# get the means by using only covered values
-		vals = sum.bins/len.bins  
-		# the bind that have no coverage will have NAs, the rest should be adjusted for additive and multiplicative constants
-		vals[!is.na(vals)]=(vals[!is.na(vals)]-t.add)/t.multiply 
-		# make the matrix
-	}else{
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewApply(x, function(y) match.fun(bin.op)(as.numeric(y),na.rm=T) )))
-		#adjusted for additive and multiplicative constants
-		vals=(sum.bins-t.add)/t.multiply 
-		# remove values with negative scores as NA, because they are uncovered bases
-		vals[vals<0]=NA 
-	}
-	mat=matrix( vals, ncol=bin.num,byrow=TRUE)
-	rownames(mat) = unlist(IRanges::lapply(my.vList, names))[seq(1, length(mat), bin.num)]
-	if(strand.aware){
-			orig.rows=which(as.character(strand(windows))== '-')        
-			mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
-        }
-		
-	return(mat)
-}
 
 
 #######################################
@@ -167,7 +140,7 @@ summarizeViewsModRle = function(my.vList, windows, bin.op, bin.num, strand.aware
 #' @export
 setGeneric("scoreMatrixBin",
            function(target,windows,bin.num=10,bin.op="mean",
-                    strand.aware=FALSE,ordered=TRUE,
+                    strand.aware=FALSE,
                     col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrixBin") )
 
 #' @aliases scoreMatrixBin,RleList,GRanges-method
@@ -223,7 +196,7 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
                                                         x})
 
               }else{
-                
+                # get coverage with weights
                 target.rle=coverage(target,weight= col.name ) 
               }
             }
