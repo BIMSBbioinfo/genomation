@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------------------------- #
 # fast reading of big tables
-readTableFast<-function(filename,header=T,skip=0,sep="")
-{
+readTableFast<-function(filename,header=T,skip=0,sep=""){
+  
   tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100, stringsAsFactors=F)
   classes  <- sapply(tab5rows, class)
   df = read.table(filename, 
