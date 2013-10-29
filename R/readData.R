@@ -24,28 +24,29 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @param colnames a character vector that gives designates the name of the columns of the bed file. Only applicable if the header is set to \Rcode{FALSE}. If header == FALSE and nchar(colnames) == 0, the function will set the names of the first three columns to chr, start, end
 #' @param starts.in.df.are.0based a boolean which tells the whether the ranges in the bed file are 0 or 1 base encoded. A 0 based encoding is persumed
 #'
-#' @usage readBed(location,remove.unsual=T)
+#' @usage readGeneric(location,remove.unsual=T)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #'
 #' @export
 #' @docType methods
-#' @rdname readBed-methods
-setGeneric("readBed", 
+#' @rdname readGeneric-methods
+setGeneric("readGeneric", 
             function(file, 
-                     remove.unsual=TRUE, 
                      header=FALSE, 
-                     colnames='', 
+                     colnames=NULL,
+                     keep.metadata=TRUE,
                      starts.in.df.are.0based=TRUE,
+                     remove.unsual=TRUE
                      ...) 
-              standardGeneric("readBed"))
+              standardGeneric("readGeneric"))
 
-#' @aliases readBed,character-method
-#' @rdname readBed-methods
-setMethod("readBed", 
+#' @aliases readGeneric,character-method
+#' @rdname readGeneric-methods
+setMethod("readGeneric", 
           signature(file = "character"),
-          function(file, remove.unsual, header, colnames, starts.in.df.are.0.based, ...){
+          function(file, header, colnames, keep.metadata, starts.in.df.are.0.based, remove.unsual, ...){
             
             # find out if there is a header, skip 1st line if there is a header
             f.line=readLines(con = file, n = 1)
@@ -64,12 +65,18 @@ setMethod("readBed",
             # if it does not, then it uses the colnames variable to construct the header
             # if col.names is empty it will name the first three columns chr start end
             if(!header){
-              if(nchar(col.names) == 0){
+              if(if(is.null(colnames))){
                 colnames(bed)[1:3] = c('chr','start','end')
               }else{
-                if(length(colnames(bed) != ncol(bed)))
-                  stop('number of designated col.names does not equal the number of columns')
-                colnames(bed)=col.names
+                if(all(as.character(colnames)) == TRUE){
+                  if(length(colnames(bed) != ncol(bed)))
+                    stop('number of designated col.names does not equal the number of columns')
+                  colnames(bed)=col.names
+                }
+                if(all(as.numeric(colnames)) == TRUE){
+                  
+                  
+                }
               }
             }
             
@@ -105,7 +112,7 @@ setMethod("readBroadPeak", signature("character"),
             # checks whether the file contains a track header
             colnames = c('chrom','chromStart','chromEnd','name','score',
                          'strand','signalValue','pvalue','qvalue')
-            g = readBed(file, header=FALSE, colnames=colnames)
+            g = readGeneric(file, header=FALSE, colnames=colnames)
             return(g)
           }
 )          
@@ -128,7 +135,7 @@ setMethod("readNarrowPeak", signature("character"),
             # checks whether the file contains a track header
             colnames = c('chrom','chromStart','chromEnd','name','score',
                          'strand','signalValue','pvalue','qvalue', 'peak')
-            g = readBed(file, header=FALSE, colnames=colnames)
+            g = readGeneric(file, header=FALSE, colnames=colnames)
             return(g)
           }
 )          
