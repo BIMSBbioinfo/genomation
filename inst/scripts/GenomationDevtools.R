@@ -27,7 +27,7 @@ library(devtools)
 	# {{3}} MAIN
 	dev_mode(on=TRUE, path=lib.path)
 	bpath = build(path=genomation.path, vignettes=FALSE)
-  install(bpath)
+  install(genomation.path)
 
 	load_all(pkg = genomation.path)
 

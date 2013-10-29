@@ -61,7 +61,7 @@ The pipeline for computational knowledge extraction consists of three steps: dat
 High throughput data which will be used to show the functonality of the \Rpackage(genomation) is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage(genomationData).\\
 To install the data package from bioconductor c/p the following lines into your R interpreter:
 
-<<gnomationData, eval=FALSE>>=
+<<genomationData, eval=FALSE>>=
 source("http://bioconductor.org/biocLite.R")
 biocLite("genomationData")
 @
@@ -73,7 +73,7 @@ list.files(system.file(package='genomationData'))
 @
 
 To see the descriptions of the files:
-<<listGenomationData, eval=FALSE, tidy=TRUE>>=
+<<genomationDataInfo, eval=FALSE, tidy=TRUE>>=
 r = read.table(system.file('SampleInfo.txt',package='genomationData'),header=T, sep='\t')
 head(r)
 @
