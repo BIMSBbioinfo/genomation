@@ -24,8 +24,7 @@ Suggests:
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
-	'gffFunctions.R'
-    'modCoverage.R'
+  	'gffFunctions.R'
     'randomizeFeature.R'
     'readAnnotate.R'
     'scoreMatrix.R'
