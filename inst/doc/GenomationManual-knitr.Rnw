@@ -6,7 +6,11 @@
 \documentclass{article}
 
 
-\SweaveOpts{concordance=TRUE}
+
+<<include=FALSE>>=
+opts_chunk$set(concordance=TRUE)
+@
+
 \title{genomation - a toolsed for annotation of genomic data}
 \author{Altuna Akalin & Vedran Franke}
 \date{October 25, 2013}

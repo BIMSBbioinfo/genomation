@@ -32,13 +32,20 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @export
 #' @docType methods
 #' @rdname readBed-methods
-setGeneric("readBed", function(file, remove.unsual=TRUE, header=FALSE, colnames='', starts.in.df.are.0based=TRUE) standardGeneric("readBed"))
+setGeneric("readBed", 
+            function(file, 
+                     remove.unsual=TRUE, 
+                     header=FALSE, 
+                     colnames='', 
+                     starts.in.df.are.0based=TRUE,
+                     ...) 
+              standardGeneric("readBed"))
 
 #' @aliases readBed,character-method
 #' @rdname readBed-methods
 setMethod("readBed", 
           signature(file = "character"),
-          function(file, remove.unsual, header, colnames, starts.in.df.are.0.based){
+          function(file, remove.unsual, header, colnames, starts.in.df.are.0.based, ...){
             
             # find out if there is a header, skip 1st line if there is a header
             f.line=readLines(con = file, n = 1)
@@ -96,7 +103,8 @@ setMethod("readBroadPeak", signature("character"),
           function(file){
           
             # checks whether the file contains a track header
-            colnames = c('chrom','chromStart','chromEnd','name','score','strand','signalValue','pvalue','qvalue')
+            colnames = c('chrom','chromStart','chromEnd','name','score',
+                         'strand','signalValue','pvalue','qvalue')
             g = readBed(file, header=FALSE, colnames=colnames)
             return(g)
           }
@@ -118,7 +126,8 @@ setMethod("readNarrowPeak", signature("character"),
           function(file){
                       
             # checks whether the file contains a track header
-            colnames = c('chrom','chromStart','chromEnd','name','score','strand','signalValue','pvalue','qvalue', 'peak')
+            colnames = c('chrom','chromStart','chromEnd','name','score',
+                         'strand','signalValue','pvalue','qvalue', 'peak')
             g = readBed(file, header=FALSE, colnames=colnames)
             return(g)
           }

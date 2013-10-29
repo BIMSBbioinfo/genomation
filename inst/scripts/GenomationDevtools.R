@@ -12,8 +12,8 @@ library(devtools)
 	# {{2}} INPUT VARIABLES 
 	
 		# {{{1}}} PATH VARIABLES
-		lib.path='/home/members/vfranke/Projects/Code/Genomation/TestLib'
-		genomation.path='/home/members/vfranke/Projects/Code/Genomation/genomation'
+		lib.path='D:\\Job\\Projects\\Genomation\\TestLib'
+		genomation.path='D:\\Job\\Projects\\Genomation\\genomation'
 		
 		
 		#/{{{1}}} PATH VARIABLES
@@ -26,7 +26,9 @@ library(devtools)
 	
 	# {{3}} MAIN
 	dev_mode(on=TRUE, path=lib.path)
-	install(genomation.path)
+	bpath = build(path=genomation.path, vignettes=FALSE)
+  install(bpath)
+
 	load_all(pkg = genomation.path)
 
 	code_path = file.path(genomation.path, 'R')
