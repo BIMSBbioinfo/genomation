@@ -1,13 +1,15 @@
 Package: genomation
 Type: Package
 Title: : R package for graphics and operations for genomic features
-Version: 0.4.1
+Version: 0.4.2
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for genomic feature analysis and annotation by extending bioconductor packages
 License: Artistic-2.0
 LazyLoad: yes
+VignetteBuilder: knitr
+biocViews: Annotation, HighThroughputSequencing, Visualization
 Depends:
     R (>= 2.14.0)
 Imports:
@@ -17,7 +19,8 @@ Imports:
 	plyr,
 	reshape2
 Suggests:
-    testthat
+    testthat,
+	knitr
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
@@ -27,3 +30,5 @@ Collate:
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'
+	'findTfComb.R'
+	'readData.R'

@@ -23,45 +23,11 @@ constrainRanges = function(target, windows){
                                                    ignore.strand = TRUE))
 	
 	if(length(win.list.chr) == 0)
-		stop('All windows fell have coordinates outside chromosome boundaries')
+    stop('All windows fell have coordinates outside windows boundaries')
 	return(win.list.chr)
 }
 
-# given a RleList and a granges object it selcets the intersecting chromosomes and fetches the views
-getViews = function(target, windows){
 
-	checkClass(target, 'SimpleRleList')
-	checkClass(windows, 'GRanges')
-
-	# orders the granges object so that we can track which view corresponds to which range
-	windows = windows[order(as.character(seqnames(windows)), start(windows))]
-	
-	# this drops not used seqlevels - bug in recent versions of R
-	chrs.not = setdiff(seqlevels(windows), unique(as.character(seqnames(windows)))) 
-	seqlevels(windows) = setdiff(seqlevels(windows), chrs.not)
-	win.list=as(windows, "RangesList")
-	win.list = win.list[sapply(win.list, length) > 0]
-	#check if there are common chromsomes
-	chrs  = intersect(names(win.list), names(target))
-	winsize = width(windows[1])
-	if(length(chrs)==0)
-		stop("There are no common chromosomes/spaces to do overlap")
-		
-	#get views 
-	# the subsetting needs to be done using a character vector, 
-  # because otherwise it can take the views from wrong seqnames
-	my.vList = seqselect(target[chrs], win.list[chrs] )
-	my.vList = lapply(my.vList, function(x)matrix(as.integer(x), ncol=winsize, byrow=T))
-	
-	# rownames of each view correspond to the ids of each window
-	my.vList = lapply(chrs, 
-						function(x){
-						v = my.vList[[x]]
-						rownames(v) = IRanges::values(windows)$X_rank[as.character(seqnames(windows)) == x]
-						return(v)})
-	names(my.vList) = chrs
-	return(my.vList)
-}
 
 # checkw whether the x object corresponds to the given class
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
@@ -143,11 +109,11 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
             
    #check if all windows are equal length
     if( length(unique(width(windows))) >1 ){
-    stop("width of 'windows' are not equal, provide 'windows' with equal widths")
+        stop("width of 'windows' are not equal, provide 'windows' with equal widths")
     }     
 		
     # set a uniq id for the GRanges
-		windows = constrainRanges(target, windows)
+    windows = constrainRanges(target, windows)
 		
    
   	# fetches the windows and the scores
@@ -155,10 +121,11 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
     
     #  get a list of matrices from Views object
     #  operation below lists a matrix for each chromosome
-    mat=lapply(myViews,function(x) t(viewApply(x,as.vector)) )
-    #mat=as.matrix(myViews) # this might work as well
+    mat = lapply(myViews,function(x) t(viewApply(x,as.vector)) )
+    #mat=as.matrix(myViews) # this might work as well - have to check which one is faster
     
-    mat = do.call("rbind",mat)   # combine the matrices from chromosomes 
+    # combine the matrices from chromosomes 
+    mat = do.call("rbind",mat)   
     
     # get the ranks of windows, when things are reorganized by as(...,"RangesList")
     r.list=split(mcols(windows)[,"X_rank"], as.factor(seqnames(windows))  )    
@@ -171,15 +138,16 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
     # so when we are doing something comparative (clustering windows
     # based on different histone marks) we only work with windows
     # that are covered by all histone marks
-  	rownames(mat) =ranks  
+  	rownames(mat) = ranks  
     
     # if strand aware is TRUE, we need to flip the windows on the minus strand
   	if(strand.aware == TRUE){
-  		orig.rows=which(as.character(strand(windows)) == '-')
+      orig.rows=which(as.character(strand(windows)) == '-')
       mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
   	}
 
-  	mat = mat[order(ranks),] # reorder matrix
+	# reorder matrix
+  	mat = mat[order(ranks),] 
     
   return(new("scoreMatrix",mat))
 })
@@ -193,7 +161,7 @@ setMethod("scoreMatrix",signature("GRanges","GRanges"),
             
             #make coverage vector  from target
             if(is.null(col.name)){
-              target.rle=coverage(target)
+				target.rle=coverage(target)
             }else{
                 if(! col.name %in% names(mcols(target)) ){
                   stop("provided column 'col.name' does not exist in tartget\n")
@@ -222,7 +190,7 @@ setMethod("scoreMatrix",signature("character","GRanges"),
           function(target,windows,strand.aware){
             
             if(!file.exists(target)){
-              stop("Indicated 'target' file does not exist\n")
+				stop("Indicated 'target' file does not exist\n")
             }
             
             # get the coverage vector for 
@@ -259,20 +227,20 @@ setMethod("scoreMatrix",signature("character","GRanges"),
 #'   myMat2=scoreMatrix(target=cage,windows=promoters,
 #'                         col.name="tpm",strand.aware=TRUE)
 #'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
-#'   plotMatrix(myMat2,fact=)
+#'   heatMatrix(myMat2,fact=)
 #' 
 #' @docType methods
-#' @rdname plotMatrix-methods
+#' @rdname heatMatrix-methods
 #' @export
-setGeneric("plotMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL,
+setGeneric("heatMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL,
                                   shift=0, mat.cols=NULL, fact.cols=NULL, 
                                   xlab='Position', ylab='Region', 
                                   main='Positional profile', 
-                                  class.names=NULL, use.names=FALSE, ...) standardGeneric("plotMatrix") )
+                                  class.names=NULL, use.names=FALSE, ...) standardGeneric("heatMatrix") )
 
-#' @aliases plotMatrix,scoreMatrix-method
-#' @rdname plotMatrix-methods
-setMethod("plotMatrix", signature("scoreMatrix"),
+#' @aliases heatMatrix,scoreMatrix-method
+#' @rdname heatMatrix-methods
+setMethod("heatMatrix", signature("scoreMatrix"),
 		  function(mat, fact, add.sep, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, use.names, ...){
 			
 			# -------------------------- #

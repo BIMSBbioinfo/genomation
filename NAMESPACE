@@ -49,6 +49,10 @@ exportMethods(readTranscriptFeatures)
 exportMethods(scoreMatrix)
 exportMethods(binMatrix)
 exportMethods(scoreMatrixBin)
+exportMethods(findTFComb)
+exportMethods(readBroadPeak)
+exportMethods(readNarrowPeak)
 
 export(gffToGRanges)
 export(ScoreMatrixList)
+
