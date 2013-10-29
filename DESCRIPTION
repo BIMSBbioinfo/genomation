@@ -30,5 +30,5 @@ Collate:
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'
-	'findTfComb.R'
+	'findTFComb.R'
 	'readData.R'

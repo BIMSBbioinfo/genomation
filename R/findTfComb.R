@@ -12,7 +12,7 @@
 #' @docType methods
 #' @rdname findTFComb-methods
 #' @export
-setGeneric("findTfComb", function(gl, width=0, use.names=FALSE, collapse.char=':') standardGeneric("findTfComb") )
+setGeneric("findTFComb", function(gl, width=0, use.names=FALSE, collapse.char=':') standardGeneric("findTFComb") )
 
 #' @aliases findTFComb
 #' @rdname findTFComb-methods
@@ -46,3 +46,4 @@ setMethod("findTFComb", signature("GRangesList"),
                 return(r)
               }
           }
+)

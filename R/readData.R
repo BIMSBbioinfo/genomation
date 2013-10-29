@@ -1,11 +1,17 @@
 # ----------------------------------------------------------------------------------------------- #
 # fast reading of big tables
-.readTableFast<-function(file, header=T, skip=0, sep=""){
-  tab5rows <- read.table(file, header = header,skip=skip,sep=sep, nrows = 100)
+readTableFast<-function(filename,header=T,skip=0,sep=""){
+  
+  tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100, stringsAsFactors=F)
   classes  <- sapply(tab5rows, class)
-  return( read.table(file, header = header,skip=skip,sep=sep, colClasses = classes)  )
+  df = read.table(filename, 
+                  header = header,
+                  skip=skip,
+                  sep=sep, 
+                  colClasses = classes,
+                  stringsAsFactors=FALSE)
+  return(df)
 }
-
 
 # ----------------------------------------------------------------------------------------------- #
 #' read a bed file and convert it to GRanges. 
@@ -26,13 +32,20 @@
 #' @export
 #' @docType methods
 #' @rdname readBed-methods
-setGeneric("readBed", function(file, remove.unsual=TRUE, header=FALSE, colnames='', starts.in.df.are.0based=TRUE) standardGeneric("readBed"))
+setGeneric("readBed", 
+            function(file, 
+                     remove.unsual=TRUE, 
+                     header=FALSE, 
+                     colnames='', 
+                     starts.in.df.are.0based=TRUE,
+                     ...) 
+              standardGeneric("readBed"))
 
 #' @aliases readBed,character-method
 #' @rdname readBed-methods
 setMethod("readBed", 
           signature(file = "character"),
-          function(file, remove.unsual, header, colnames, starts.in.df.are.0.based){
+          function(file, remove.unsual, header, colnames, starts.in.df.are.0.based, ...){
             
             # find out if there is a header, skip 1st line if there is a header
             f.line=readLines(con = file, n = 1)
@@ -41,7 +54,7 @@ setMethod("readBed",
               skip=1
             
             # reads the bed files
-            bed=.readTableFast(file, header=header, skip=skip)                    
+            bed=readTableFast(file, header=header, skip=skip)                    
             
             # removes nonstandard chromosome names
             if(remove.unsual)
@@ -90,7 +103,8 @@ setMethod("readBroadPeak", signature("character"),
           function(file){
           
             # checks whether the file contains a track header
-            colnames = c('chrom','chromStart','chromEnd','name','score','strand','signalValue','pvalue','qvalue')
+            colnames = c('chrom','chromStart','chromEnd','name','score',
+                         'strand','signalValue','pvalue','qvalue')
             g = readBed(file, header=FALSE, colnames=colnames)
             return(g)
           }
@@ -112,7 +126,8 @@ setMethod("readNarrowPeak", signature("character"),
           function(file){
                       
             # checks whether the file contains a track header
-            colnames = c('chrom','chromStart','chromEnd','name','score','strand','signalValue','pvalue','qvalue', 'peak')
+            colnames = c('chrom','chromStart','chromEnd','name','score',
+                         'strand','signalValue','pvalue','qvalue', 'peak')
             g = readBed(file, header=FALSE, colnames=colnames)
             return(g)
           }
