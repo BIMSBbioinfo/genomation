@@ -1,11 +1,17 @@
 # ----------------------------------------------------------------------------------------------- #
 # fast reading of big tables
-.readTableFast<-function(file, header=T, skip=0, sep=""){
-  tab5rows <- read.table(file, header = header,skip=skip,sep=sep, nrows = 100)
+readTableFast<-function(filename,header=T,skip=0,sep="")
+{
+  tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100, stringsAsFactors=F)
   classes  <- sapply(tab5rows, class)
-  return( read.table(file, header = header,skip=skip,sep=sep, colClasses = classes)  )
+  df = read.table(filename, 
+                  header = header,
+                  skip=skip,
+                  sep=sep, 
+                  colClasses = classes,
+                  stringsAsFactors=FALSE)
+  return(df)
 }
-
 
 # ----------------------------------------------------------------------------------------------- #
 #' read a bed file and convert it to GRanges. 
@@ -41,7 +47,7 @@ setMethod("readBed",
               skip=1
             
             # reads the bed files
-            bed=.readTableFast(file, header=header, skip=skip)                    
+            bed=readTableFast(file, header=header, skip=skip)                    
             
             # removes nonstandard chromosome names
             if(remove.unsual)
