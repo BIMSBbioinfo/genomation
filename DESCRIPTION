@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: : R package for graphics and operations for genomic features
-Version: 0.4.1
+Version: 0.4.2
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
@@ -31,3 +31,5 @@ Collate:
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'
+	'findTfComb.R'
+	'readData.R'
