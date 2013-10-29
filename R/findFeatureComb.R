@@ -33,25 +33,25 @@ setMethod("findFeatureComb", signature("GRangesList"),
               # makes a union of ranges and calculates the combinatorics
               r = reduce(unlist(gl))
               do = data.frame(lapply(gl, function(x)as.numeric(countOverlaps(r, x) > 0)))
+              # finds the combinations of ranges for each interval in the reduced ranges
+              do.comb = as.numeric(factor(rowSums(t(t(do)*(2^(0:(ncol(do)-1)))))))
               
               if(use.names == FALSE){
-                values(r)$class = as.numeric(factor(rowSums(t(t(do)*(2^(0:(ncol(do)-1)))))))
-                return(r)
+                values(r)$class = do.comb
               
               }
               if(use.names == TRUE){
-                # finds the combinations of ranges for each interval in the reduced ranges
-                do.comb = as.numeric(factor(rowSums(t(t(do)*(2^(0:(ncol(do)-1)))))))
-                cnames = colnames(do)
                 
+                cnames = colnames(do)
                 # selects only unique representatives of combinations
                 do = do[!duplicated(do.comb),]
                 # pastes names of individual sets
                 cnames = apply(do, 1, function(x)paste(cnames[x == 1]), collapse=collapse.char)
                 
-                
+                # designates each reduced set by the combination of overlapping ranges
                 r$class = cnames[match(do.comb, unique(do.comb))]
-                return(r)
+                
               }
+              return(r)
           }
 )
