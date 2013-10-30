@@ -26,7 +26,7 @@
 # ScoreMatrixList constructor
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l: corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
+#' @param l:  can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
 #' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
 #' @param bin: an integer telling the number of bins to bin the score matrix
  
@@ -35,35 +35,36 @@
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
+ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE ...){
 
 	len = length(l)
 	if(len == 0L)
 		stop('list argument is empty')
-	
+  
+	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
 	if(all(unlist(lapply(l, class)) == 'scoreMatrix'))
 		return(new("ScoreMatrixList",l))
 	
+	
+  
+	# ----------------------------------------------------------------- #
+	if(is.null(granges))
+	  stop("granges object must be defined")
+  
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList'))){
-		if(is.null(granges))
-			stop("If the list contains RleLists granges must be defined")
+	if(!all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList')) |
+	   !(all(as.character(l)) & !all(file.exists(l))))
+      stop('l is neither an RleList nor a list of files')
 		
-		
-		if(is.null(bin) && all(width(granges)) == unique(width(granges))){
-			sml = lapply(l, function(x)scoreMatrix(x, granges))
-		
-		} else{
-			if(is.null(bin))
-				bin = 10
-			sml = lapply(l, function(x)scoreMatrixBin(x, granges, bin=bin))
-		}
-	
-	}else{
-		stop("List does not contain the proper classes")
+	if(is.null(bin) && all(width(granges)) == unique(width(granges))){
+	  sml = lapply(l, function(x)scoreMatrix(x, granges, strand.aware))
+	  
+	} else{
+	  if(is.null(bin))
+	    bin = 10
+	  sml = lapply(l, function(x)scoreMatrixBin(x, granges, bin=bin, strand.aware))
 	}
-	
 	return(new("ScoreMatrixList",sml))
 }
 

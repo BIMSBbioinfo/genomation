@@ -210,7 +210,7 @@ setMethod("scoreMatrix",signature("character","GRanges"),
           function(target,windows,strand.aware){
             
             if(!file.exists(target)){
-				stop("Indicated 'target' file does not exist\n")
+			      	stop("Indicated 'target' file does not exist\n")
             }
             
             # get the coverage vector for 
