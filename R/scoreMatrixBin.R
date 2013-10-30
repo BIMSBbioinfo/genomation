@@ -2,6 +2,7 @@
 #######################################
 # S3 functions
 #######################################
+# ---------------------------------------------------------------------------- #
 # given a vector and length smooths the vector to a given size
 # the function is not safe - check for the window length before
 binner=function(start,end,nbins){
@@ -20,13 +21,16 @@ binner=function(start,end,nbins){
   return( t(cbind(my.start, my.end) )  )
 }
 
+# ---------------------------------------------------------------------------- #
 # given a target Rle and windows gets the views to be used for binning
 getViewsBin = function(target, windows, bin.num){
 
   #get coordinates of bins in each window
-	coord = matrix(
-				mapply(binner, IRanges::start(windows),IRanges::end(windows), bin.num, SIMPLIFY=TRUE), 
-			ncol=2, byrow=T)
+	coord = matrix(mapply(binner, 
+                        IRanges::start(windows),
+                        IRanges::end(windows), 
+                        bin.num, SIMPLIFY=TRUE), 
+		  	                ncol=2, byrow=T)
   
   # make GRanges object for the bins
 	# subtract 1 so next start pos is not identical to  current end pos
@@ -54,6 +58,8 @@ getViewsBin = function(target, windows, bin.num){
 	return(my.vList)
 }
 
+
+# ---------------------------------------------------------------------------- #
 # applies the summary function for the views to bin the objects - for standard Rle and returns a matrix object
 summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 
@@ -62,15 +68,19 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	if(!bin.op %in% functs)
 		stop(paste('Supported binning functions are', functs,'\n'))
 	if(bin.op=="min")
-	  sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMins(x,na.rm=TRUE) ),use.names=F )      
+	  sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+                                  IRanges::viewMins(x,na.rm=TRUE) ),use.names=F)      
 	
 	if(bin.op=="max")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=F )      
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+                                  IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=F)      
 	if(bin.op=="mean")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) IRanges::viewMeans(x,na.rm=TRUE) ),use.names=F )    
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+                                  IRanges::viewMeans(x,na.rm=TRUE) ),use.names=F)    
 		
 	if(bin.op=="median")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) viewApply(x, function(x) median(as.numeric(x),na.rm=T)  )), use.names=F) 
+		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+        viewApply(x, function(x) median(as.numeric(x),na.rm=T)  )), use.names=F) 
         
 	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
   mat[is.nan(mat)]=NA
@@ -90,8 +100,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 # S4 functions
 #######################################
 
-
-
+# ---------------------------------------------------------------------------- #
 #' Get bin score for bins on each window
 #'
 #' The function firsts bins each window to equal number of bins, and calculates
@@ -148,7 +157,8 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 setGeneric("scoreMatrixBin",
            function(target,windows,bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
-                    col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrixBin") )
+                    col.name=NULL,is.noCovNA=FALSE) 
+             standardGeneric("scoreMatrixBin") )
 
 #' @aliases scoreMatrixBin,RleList,GRanges-method
 #' @rdname scoreMatrixBin-methods
@@ -176,7 +186,7 @@ setMethod("scoreMatrixBin",signature("RleList","GRanges"),
 
 
 
-
+# ---------------------------------------------------------------------------- #
 #' @aliases  scoreMatrixBin,GRanges,GRanges-method
 #' @rdname scoreMatrixBin-methods
 setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
@@ -207,8 +217,6 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
               }
             }
             
-
-
             # call scoreMatrix function
             scoreMatrixBin(target.rle,windows,bin.num,
                            bin.op,strand.aware)

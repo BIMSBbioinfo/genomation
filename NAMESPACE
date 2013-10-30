@@ -54,6 +54,8 @@ exportMethods(readTranscriptFeatures)
 exportMethods(scoreMatrix)
 exportMethods(scoreMatrixBin)
 exportMethods(scaleScoreMatrix)
+exportMethods(scaleScoreMatrixList)
+exportMethods(unionScoreMatrixList)
 export(gffToGRanges)
 export(ScoreMatrixList)
 

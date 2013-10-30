@@ -2,7 +2,20 @@
 # S3 functions
 #######################################
 
+# ---------------------------------------------------------------------------- #
+### gets colors for a factor variable
+getColors = function(n) {
+  
+  black = "#000000"
+  if (n <= 9) {
+    library(RColorBrewer)
+    c(black,brewer.pal(n-1, "Set2"))
+  } else {
+    c(black,hcl(h=seq(0,(n-2)/(n-1),length=n-1)*360,c=100,l=65,fixup=TRUE))
+  }
+}
 
+# ---------------------------------------------------------------------------- #
 # removes ranges that fell of the rle object
 # does not check for the correspondence of the chromosome names - always chech before using this function
 constrainRanges = function(target, windows){
@@ -28,13 +41,17 @@ constrainRanges = function(target, windows){
 }
 
 
-
+# ---------------------------------------------------------------------------- #
 # checkw whether the x object corresponds to the given class
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 
 	fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
 	if(!class(x) == class.name)
-		stop(paste(fun.name,': ', var.name, ' is not of class: ', class.name, '\n', sep=''))
+		stop(paste(fun.name,': ', 
+               var.name, 
+               ' is not of class: ', 
+               class.name, 
+               '\n', sep=''))
 }
 #######################################
 # S4 functions
@@ -97,8 +114,10 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @docType methods
 #' @rdname scoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,
-                                  col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrix") )
+setGeneric("scoreMatrix",
+                    function(target,windows,strand.aware=FALSE,
+                             col.name=NULL,is.noCovNA=FALSE) 
+                                standardGeneric("scoreMatrix") )
 
 
 # ---------------------------------------------------------------------------- #
@@ -143,7 +162,8 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
     # if strand aware is TRUE, we need to flip the windows on the minus strand
   	if(strand.aware == TRUE){
       orig.rows=which(as.character(strand(windows)) == '-')
-      mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
+      mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
+                                               orig.rows, ncol(mat):1]
   	}
 
 	# reorder matrix
@@ -236,12 +256,16 @@ setGeneric("heatMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL,
                                   shift=0, mat.cols=NULL, fact.cols=NULL, 
                                   xlab='Position', ylab='Region', 
                                   main='Positional profile', 
-                                  class.names=NULL, use.names=FALSE, ...) standardGeneric("heatMatrix") )
+                                  class.names=NULL, use.names=FALSE, ...) 
+                                  standardGeneric("heatMatrix") )
 
 #' @aliases heatMatrix,scoreMatrix-method
 #' @rdname heatMatrix-methods
 setMethod("heatMatrix", signature("scoreMatrix"),
-		  function(mat, fact, add.sep, ord.vec, shift, mat.cols, fact.cols, xlab, ylab, main, class.names, use.names, ...){
+		  function(mat, fact, add.sep, 
+               ord.vec, shift, mat.cols, 
+               fact.cols, xlab, ylab, 
+               main, class.names, use.names, ...){
 			
 			# -------------------------- #
 			# parameter checking
@@ -264,12 +288,12 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 			
 			if(is.null(mat.cols)){
 				message('Using default mat.cols...\n')
-				mat.cols = colorRampPalette(c('lightgray','darkblue'), interpolate='spline')(20)
+				mat.cols = colorRampPalette(c('lightgray','darkblue'), 
+                                     interpolate='spline')(20)
 			}
 			if(is.null(fact.cols)){
 				message('Using default fact.cols...\n')
-				fact.cols = adjustcolor(rainbow(length(levels(fact))), offset=c(0.5,0.5,0.5, 0), transform=diag(c(.7, .7, .7, 0.6)))
-				 
+				fact.cols = getColors(length(levels(fact)))
 			}
 			
 			# drops unused levels from the factor
@@ -283,7 +307,11 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 			par(mar=c(5,8,3,.5), oma=c(0,0,0,0))
 			AddSep = function(x, rowsep, col, sepwidth=c(0.05,0.5)){
 				for(rsep in rowsep){
-					rect(xleft =0, ybottom= (rsep), xright=ncol(x)+1,  ytop = (rsep+1) - sepwidth[2], lty=1, lwd=1, col=col, border=col)
+				  rect(xleft =0, 
+               ybottom= (rsep), 
+               xright=ncol(x)+1,  
+               ytop = (rsep+1) - sepwidth[2], 
+               lty=1, lwd=1, col=col, border=col)
 				}
 			}
 			# plots the main matrix
@@ -306,7 +334,10 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 			# plots the class designation
 			# par(fig=c(.95,1,0,1), new=TRUE, mar=c(5,.5,3,1))
 			par(mar=c(5,.5,3, max(max(nchar(class.names)/2, 5))))
-			image(x = 1:20, y = 1:nrow(mat), z=t(matrix(as.numeric(fact), nrow=length(fact), ncol=20)), col = fact.cols, xaxt='n', yaxt='n', ylab='', xlab='')
+			image(x = 1:20, 
+            y = 1:nrow(mat), 
+            z=t(matrix(as.numeric(fact), nrow=length(fact), ncol=20)),
+            col = fact.cols, xaxt='n', yaxt='n', ylab='', xlab='')
 			at = classnum/2
 			at[-1] = at[-1] + at[-length(at)]
 			at = cumsum(at)
@@ -328,7 +359,9 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 #' @docType methods
 #' @rdname binMatrix-methods
 #' @export
-setGeneric("binMatrix", function(mat, nbins=NULL, fun='mean', ...) standardGeneric("binMatrix") )
+setGeneric("binMatrix", 
+              function(mat, nbins=NULL, fun='mean', ...)
+                standardGeneric("binMatrix") )
 
 setMethod("binMatrix", signature("scoreMatrix"),
 			function(mat, nbins=NULL, fun='mean', ...){
@@ -337,7 +370,8 @@ setMethod("binMatrix", signature("scoreMatrix"),
 					return(mat)
 					
 				if(nbins > ncol(mat))
-					stop("number of given bins is bigger than the number of matrix columns")
+					stop("number of given bins is bigger 
+                than the number of matrix columns")
 		  
 				fun = match.fun(fun)
 				coord = binner(1, ncol(mat), nbins)
@@ -354,13 +388,13 @@ setMethod("binMatrix", signature("scoreMatrix"),
 #' @param mat a \code{scoreMatrix} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argunt is set to the R scale function with center=TRUE and scale=TRUE
+#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
 
-#' @usage binMatrix(mat, nbins=NULL, fun='mean', ...)
+#' @usage scaleScoreMatrix(sml, columns=FALSE, rows=TRUE, ...)
 #' @return \code(scoreMatrix) object
 
 #' @docType methods
-#' @rdname scaleScoreMatrix-methods
+#' @rdname scoreMatrix-methods
 #' @export
 setGeneric("scaleScoreMatrix", 
                 function(mat, 
@@ -376,7 +410,7 @@ setMethod("scaleScoreMatrix", signature("scoreMatrix"),
               stop('scalefun needs to be a proper R function')
             
             if(columns)
-              mat = scalefun(mat)
+              mat = t(scalefun(t(mat)))
             
             if(rows)
               mat = scalefun(mat)

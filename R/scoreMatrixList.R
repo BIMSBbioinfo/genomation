@@ -22,7 +22,7 @@
 	text(3, 3, labels=lab, cex=2, srt=srt)
 }
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 # ScoreMatrixList constructor
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
@@ -67,23 +67,28 @@ ScoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 	return(new("ScoreMatrixList",sml))
 }
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 # Validator
 .valid.ScoreMatrixList = function(x){
 	errors = character()
 	# checks whether all matrices are of class scoreMatrix
 	if(!all(unlist(lapply(l, function(x)class(x) == 'scoreMatrix'))))
-		errors = paste(errors, 'All elements for ScoreMatrixList need to be of class scoreMatrix', sep='\n')
+		errors = paste(errors, 
+                   'All elements for ScoreMatrixList 
+                    need to be of class scoreMatrix', 
+                    sep='\n')
 
 	# checks whether all matrices are numeric
 	if(!all(unlist(lapply(l, function(x)all(is.integer(x) | is.numeric(x))))))
-		errors = paste(errors, 'Not all matrices are of type integer or numeric', sep='\n')
+		errors = paste(errors, '
+                   Not all matrices are of type integer or numeric', 
+                   sep='\n')
 		
 	if(length(errors) == 0) TRUE else errors 
 }
 
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 # show Methods
 #' @rdname show-methods
 setMethod("show", "ScoreMatrixList",
@@ -100,7 +105,7 @@ setMethod("show", "ScoreMatrixList",
 			}
 )
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' plot functions for score matrix list
 #' Plot a ScoreMatrixList object as a panel of heatmaps
 #'
@@ -126,12 +131,19 @@ setMethod("show", "ScoreMatrixList",
 #' @example names(l) = letters[1:5]
 #' @example heatmapProfile(l)
 #' @export
-setGeneric("heatmapProfile", function(mat.list, mat.cols=NULL, xmarks=NULL, ymarks=NULL, y.at=NULL, xcex=1.5, ycex=1.5, cex.main=3, mar=NULL, use.names=T, xlab=NULL, ylab=NULL, ...)standardGeneric("heatmapProfile"))
+setGeneric("heatmapProfile", 
+           function(mat.list, mat.cols=NULL, xmarks=NULL, 
+                    ymarks=NULL, y.at=NULL, xcex=1.5, 
+                    ycex=1.5, cex.main=3, mar=NULL, 
+                    use.names=T, xlab=NULL, ylab=NULL, ...)
+                      standardGeneric("heatmapProfile"))
 
 #' @aliases heatmapProfile,ScoreMatrixList-method
 #' @rdname heatmapProfile-methods
 setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
-			function(mat.list, mat.cols, xmarks, ymarks, y.at, xcex, ycex, cex.main, mar, use.names, xlab, ylab, ...){
+			function(mat.list, mat.cols, xmarks, 
+               ymarks, y.at, xcex, ycex, 
+               cex.main, mar, use.names, xlab, ylab, ...){
 				
 				dims = unlist(lapply(mat.list, nrow))
 				if(!length(unique(dims)) == 1)
@@ -140,7 +152,8 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 				
 				# default matrix colors
 				if(is.null(mat.cols))
-					mat.cols = colorRampPalette(c('lightgray','darkblue'), interpolate='spline')(20)
+					mat.cols = colorRampPalette(c('lightgray','darkblue'), 
+                                      interpolate='spline')(20)
 
 				
 				# checks the margin parameter
@@ -164,7 +177,8 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 					layout(matrix(1:len, ncol=len))
 				
 				}else if(! is.null(xlab) & is.null(ylab)){
-					layout(matrix(c(2:(len+1), rep(1, len)), ncol=len, nrow=2, byrow=T), height=c(20,1))
+					layout(matrix(c(2:(len+1), rep(1, len)), 
+                        ncol=len, nrow=2, byrow=T), height=c(20,1))
 					.plotXYlab(xlab, 'x')
 				
 				}else if(is.null(xlab) & ! is.null(ylab)){
@@ -216,7 +230,9 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 						par(mar=c(mar[1], mar[5]/2, mar[3], mar[5]/2))
 					}
 					
-					image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), main=main[i], cex.main=cex.main, col=mat.cols, yaxt='n', xaxt='n', xlab='', ylab='', useRaster=T, ...)
+					image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), 
+                main=main[i], cex.main=cex.main, col=mat.cols,
+                yaxt='n', xaxt='n', xlab='', ylab='', useRaster=T, ...)
 					if(i==1){
 						axis(2, at=y.at, las=2, cex.lab=2, labels=ymarks, cex.axis=ycex)
 					}
@@ -228,3 +244,64 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 		 }
 )
 
+
+# ---------------------------------------------------------------------------- #
+#' Scales each scoreMatrix in the ScoreMatrixList object
+
+#' @param sml a \code{ScoreMatrixList} object
+#' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
+#' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
+#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
+
+#' @usage scaleScoreMatrixList(mat, columns=FALSE, rows=TRUE, ...)
+#' @return \code(ScoreMatrixList) object
+
+#' @docType methods
+#' @rdname ScoreMatrixList-methods
+#' @export
+setGeneric("scaleScoreMatrixList", 
+           function(sml, 
+                    columns=FALSE, rows=TRUE, 
+                    scalefun=function(x)scale(x), 
+                    ...) 
+             standardGeneric("scaleScoreMatrixList") )
+
+setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
+          function(sml, columns, rows, scalefun ...){
+            
+            sml = lapply(sml, function(x)
+                          scaleScoreMatrix(x, 
+                                           columns=colums, 
+                                           rows=rows, 
+                                           scalefun=scalefun))
+            sml = ScoreMatrixList(sml)
+            return (sml)
+          }
+)
+
+# ---------------------------------------------------------------------------- #
+#' Returns a union of rows for each matrix in a ScoreMatrixList object. 
+#' This is done using the rownames of each element in the list.
+
+#' @param sml a \code{ScoreMatrixList} object
+
+
+#' @usage unionScoreMatrixList(sml, columns=FALSE, rows=TRUE, ...)
+#' @return \code(ScoreMatrixList) object
+
+#' @docType methods
+#' @rdname ScoreMatrixList-methods
+#' @export
+setGeneric("unionScoreMatrixList", 
+           function(sml)
+             standardGeneric("unionScoreMatrixList") )
+
+setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
+          function(sml){
+            
+            rnames = Reduce('union' ,lapply(sml, rownames))
+            sml = ScoreMatrixList(
+                    lapply(sml, function(x)x[rownames(x) %in% rnames,]))
+            return (sml)
+          }
+)

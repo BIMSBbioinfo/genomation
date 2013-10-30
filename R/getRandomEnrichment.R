@@ -1,5 +1,4 @@
-
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' get enrichment based on randomized feature overlap
 #'
 #' This function measures the association between two genomic features by randomizing one feature and counting the overlaps in randomized sets.
@@ -16,7 +15,9 @@
 #' @export
 #' @docType methods
 #' @rdname getRandomEnrichment-methods
-setGeneric("getRandomEnrichment", function(target, query, randomizations=1000, rand.set=NULL,...) standardGeneric("getRandomEnrichment") )
+setGeneric("getRandomEnrichment", 
+           function(target, query, randomizations=1000, rand.set=NULL,...) 
+             standardGeneric("getRandomEnrichment") )
 
 #' @aliases getRandomEnrichment,GRanges,GRanges-method
 #' @rdname getRandomEnrichment-methods
@@ -52,7 +53,10 @@ setMethod("getRandomEnrichment",
 				}
 
 				# calculate p-value assuming normal distribution
-				p.value=pnorm(orig.cnt, mean=mean(rand.olap.dist), sd=sd(rand.olap.dist),lower.tail=FALSE )
+				p.value=pnorm(orig.cnt, 
+                      mean=mean(rand.olap.dist), 
+                      sd=sd(rand.olap.dist),
+                      lower.tail=FALSE )
 				#if(p1>0.5){p.value=1-p1}else{p.value=p1}
 
 				# calculate randomized raw p-value

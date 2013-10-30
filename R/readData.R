@@ -1,8 +1,9 @@
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # fast reading of big tables
 readTableFast<-function(filename,header=T,skip=0,sep=""){
   
-  tab5rows <- read.table(filename, header = header,skip=skip,sep=sep, nrows = 100, stringsAsFactors=F)
+  tab5rows <- read.table(filename, header = header,skip=skip,
+                         sep=sep, nrows = 100, stringsAsFactors=F)
   classes  <- sapply(tab5rows, class)
   df = read.table(filename, 
                   header = header,
@@ -13,7 +14,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
   return(df)
 }
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
 #' The function can take a bed file with or without a predesignated header, or 
 #' any other tabular file.
@@ -94,16 +95,17 @@ setMethod("readGeneric",
             if(sind)
               bed[, sind] = gsub('\\.','*', bed[,sind])
             
-            g = makeGRangesFromDataFrame(bed, 
-                                         keep.extra.columns=keep.metadata, 
-                                         starts.in.df.are.0based=starts.in.df.are.0based,
-                                         ignore.strand=!sind)
+            g = makeGRangesFromDataFrame(
+                                    bed, 
+                                    keep.extra.columns=keep.metadata, 
+                                    starts.in.df.are.0based=starts.in.df.are.0based,
+                                    ignore.strand=!sind)
             return(g)
           }
 )
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #` A function to read the Encode formatted broad peak file into a GRanges object
 #' @param file a abosulte or relative path to a bed file formatted by the Encode broadPeak standard
 #' @usage readBroadPeak(file)
@@ -129,7 +131,7 @@ setMethod("readBroadPeak", signature("character"),
             return(g)
           }
 )          
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #` A function to read the Encode formatted narrowPeak file into a GRanges object
 #' @param file a abosulte or relative path to a bed file formatted by the Encode narrowPeak standard
 #' @usage readNarrowPeak(file)

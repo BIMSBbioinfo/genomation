@@ -1,4 +1,4 @@
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' Provided a GRangesList, finds the combinations of sets of ranges. It is mostly used to look at the combinatorics of transcription factor binding. The function works by, firstly, constructing a union of all ranges in the list, which are then designated by the combinatorics of overlap with the original sets. A caveat of this approach is that the number of possible combinations increases exponentially, so we would advise you to use it with up to 6 data sets. If you wish to take a look at a greater number of factors, methods like self organizing maps or ChromHMM might be more appropriate.
 
 #' @param gl a \code{GRangesList} object, containing ranges for which represent regions enriched for transcription factor binding
@@ -12,7 +12,9 @@
 #' @docType methods
 #' @rdname findFeatureComb-methods
 #' @export
-setGeneric("findFeatureComb", function(gl, width=0, use.names=FALSE, collapse.char=':') standardGeneric("findFeatureComb") )
+setGeneric("findFeatureComb", 
+           function(gl, width=0, use.names=FALSE, collapse.char=':') 
+             standardGeneric("findFeatureComb") )
 
 #' @aliases findFeatureComb
 #' @rdname findFeatureComb-methods
@@ -32,7 +34,8 @@ setMethod("findFeatureComb", signature("GRangesList"),
                 
               # makes a union of ranges and calculates the combinatorics
               r = reduce(unlist(gl))
-              do = data.frame(lapply(gl, function(x)as.numeric(countOverlaps(r, x) > 0)))
+              do = data.frame(lapply(gl, function(x)
+                                            as.numeric(countOverlaps(r, x) > 0)))
               # finds the combinations of ranges for each interval in the reduced ranges
               do.comb = as.numeric(factor(rowSums(t(t(do)*(2^(0:(ncol(do)-1)))))))
               
@@ -46,7 +49,8 @@ setMethod("findFeatureComb", signature("GRangesList"),
                 # selects only unique representatives of combinations
                 do = do[!duplicated(do.comb),]
                 # pastes names of individual sets
-                cnames = apply(do, 1, function(x)paste(cnames[x == 1]), collapse=collapse.char)
+                cnames = apply(do, 1, function(x)paste(cnames[x == 1]), 
+                                                  collapse=collapse.char)
                 
                 # designates each reduced set by the combination of overlapping ranges
                 r$class = cnames[match(do.comb, unique(do.comb))]
