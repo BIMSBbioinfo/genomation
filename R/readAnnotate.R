@@ -270,20 +270,20 @@ setMethod("readTranscriptFeatures",
 				skip=1
 
 			# readBed6
-			cat('Reading the table...\r')
+			message('Reading the table...\r')
 			bed=.readTableFast(location,header=F,skip=skip)                    
 			if(remove.unsual)
 				bed=bed[grep("_", as.character(bed[,1]),invert=T),]
 			
 			# introns
-			cat('Calculating intron coordinates...\r')
+			message('Calculating intron coordinates...\r')
 			introns	= convertBed2Introns(bed)
 			# exons
-			cat('Calculating exon coordinates...\r')
+			message('Calculating exon coordinates...\r')
 			exons	= convertBed2Exons(bed)
 
 			# get the locations of TSSes
-			cat('Calculating TSS coordinates...\r')
+			message('Calculating TSS coordinates...\r')
 			tss=bed
 			#  + strand
 			tss[tss$V6=="+",3] = tss[tss$V6=="+",2]
@@ -296,7 +296,7 @@ setMethod("readTranscriptFeatures",
 						   score=rep(0,nrow(tss)),
 						   name=tss$V4)
 
-			cat('Calculating promoter coordinates...\r')
+			message('Calculating promoter coordinates...\r')
 			# get the locations of promoters
 			# + strand
 			bed[bed$V6=="+",3]=bed[bed$V6=="+",2]+down.flank
@@ -323,7 +323,7 @@ setMethod("readTranscriptFeatures",
 							   name=rep(".",nrow(prom.df)) )
 			}
 			
-			cat('Outputting the final GRangesList...\r\n')
+			message('Outputting the final GRangesList...\r\n')
 			GRangesList(exons=exons,introns=introns,promoters=prom,TSSes=tssg)
 })
 
@@ -482,26 +482,26 @@ setClass("annotationByGenicParts",
 setMethod("show", "annotationByGenicParts", 
 			function(object) {
 
-				cat("Summary of target set annotation with genic parts\n");
-				cat("Rows in target set:", nrow(object@members), "\n")
-				cat("-----------------------\n\n")
+				message("Summary of target set annotation with genic parts\n");
+				message("Rows in target set:", nrow(object@members), "\n")
+				message("-----------------------\n\n")
 				
-				cat("percentage of target features overlapping with annotation :\n")
+				message("percentage of target features overlapping with annotation :\n")
 				print(object@annotation)
-				cat("\n\n")
+				message("\n\n")
 				
-				cat("percentage of target features overlapping with annotation\n")
-				cat("(with promoter > exon > intron precedence) :\n"); 
+				message("percentage of target features overlapping with annotation\n")
+				message("(with promoter > exon > intron precedence) :\n"); 
 				print(object@precedence)
-				cat("\n\n")
+				message("\n\n")
 				
-				cat("percentage of annotation boundaries with feature overlap :\n")
+				message("percentage of annotation boundaries with feature overlap :\n")
 				print(object@perc.of.OlapFeat);
-				cat("\n\n")  
+				message("\n\n")  
 				
-				cat("summary of distances to the nearest TSS :\n")
+				message("summary of distances to the nearest TSS :\n")
 				print(summary(abs(object@dist.to.TSS[,2])))
-				cat("\n")
+				message("\n")
 })
 
 
@@ -510,18 +510,18 @@ setMethod("show", "annotationByGenicParts",
 setMethod("show", "annotationByFeature", 
 			function(object) {
 
-			cat("summary of target set annotation with feature annotation\n")
-			cat(nrow(object@members))
-			cat(" rows in target set\n--------------\n")
-			cat("--------------\n")
+			message("summary of target set annotation with feature annotation\n")
+			message(nrow(object@members))
+			message(" rows in target set\n--------------\n")
+			message("--------------\n")
 			
-			cat("percentage of target features overlapping with annotation :\n")
+			message("percentage of target features overlapping with annotation :\n")
 			print(object@annotation)
-			cat("\n\n")
+			message("\n\n")
 			
-			cat("percentage of annotation boundaries with feature overlap :\n")
+			message("percentage of annotation boundaries with feature overlap :\n")
 			print(object@perc.of.OlapFeat)
-			cat("\n\n")  
+			message("\n\n")  
 })
 
 

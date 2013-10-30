@@ -59,7 +59,7 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			
 			#checks whether the chromosome sizes are defined, if not uses the end coordinates of features
 			if(is.null(chrom.sizes)){
-				cat('Using feature chromosome sizes ...')
+				message('Using feature chromosome sizes ...')
 				chrom.sizes=list()
 				chrs=as.character(unique(seqnames(feature)))
 				my.starts=c()
@@ -93,7 +93,7 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			exclude = exclude[seqnames(exclude) %in% chrs]
 			
 			# defines the regions that can be sampled from
-			cat('Creating allowed regions...\n')
+			message('Creating allowed regions...\n')
 			r = sapply(chrom.sizes, function(x)Rle(0, x))
 			re = sapply(names(r), function(x){a=r[[x]];a[ranges(include[seqnames(include) == x])]= 1;a})
 			if(length(exclude) > 0)
@@ -101,11 +101,11 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			names(re) = names(chrom.sizes)
 			
 			# loops over the chromosome and constructs the defined set of ranges
-			cat('Looping over the chromosomes...\n')
+			message('Looping over the chromosomes...\n')
 			glist = list()
 			for(chr in chrs){
 			
-				cat(chr,'\r')
+				message(chr,'\r')
 				# gets the indices of the features on the chromosome
 				ind = seqnames(feature) == chr
 				
@@ -131,7 +131,7 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 					strand(g) = sample(as.character(strand(feature[ind])))
 				glist[[chr]] = g
 			}
-			cat('Returning the final GRanges object...\n')	
+			message('Returning the final GRanges object...\n')	
 			return(unlist(GRangesList(glist)))
 })
 
@@ -198,7 +198,7 @@ setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="G
 										seed=seed,nrand = nrand)
 		
 		# converts the overlaps into a data.table object and summarizes the overlaps
-		cat('Summarizing the overlaps...\n')
+		message('Summarizing the overlaps...\n')
 		co = data.table(as.matrix(findOverlaps(rand.ranges, target)))
 		co$set = values(rand.ranges)$set[co$queryHits]
 		co$queryHits = NULL

@@ -96,11 +96,11 @@ setMethod("show", "ScoreMatrixList",
 				dims = lapply(object, dim)
 				len = length(object)
 				widths = apply(do.call(rbind, dims),2, function(x)max(nchar(x)))
-				cat('scoreMatrixlist of length:', len, '\n')
+				message('scoreMatrixlist of length:', len, '\n')
 				for(i in 1:len){
 					s=sprintf(paste('%d%s ','%',widths[1],'d %',widths[2],'d\n', sep=''), 
 							i, '. scoreMatrix with dims:', dims[[i]][1], dims[[i]][2])
-					cat(s)
+					message(s)
 				}
 			}
 )
@@ -219,7 +219,7 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 				
 				# plots the heatmaps
 				for(i in 1:len){
-					cat('Plotting matrix: ', i,'\r')
+					message('Plotting matrix: ', i,'\r')
 					# sets the margins for each plot
 					if(i == 1){	
 						par(mar=c(mar[c(1,2,3)], mar[5]/2))
@@ -239,7 +239,7 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 					
 					axis(1, at=xpos, labels=xmarks, cex.axis=xcex)
 				}
-				cat('\nPlotting done\n')
+				message('\nPlotting done\n')
 				
 		 }
 )

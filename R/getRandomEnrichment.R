@@ -31,23 +31,23 @@ setMethod("getRandomEnrichment",
 				
 					rand.olap.dist=numeric(randomizations)
 					for(i in 1:randomizations){
-						cat("Iteration number:",i,"\r")
+						message("Iteration number:",i,"\r")
 						my.rand = randomizeFeature(query,...)
 						my.cnts = sum(countOverlaps(target,my.rand)>0)
 						rand.olap.dist[i] = my.cnts
 					}
-					cat("\n")
+					message("\n")
 					
 				}else if(is(rand.set,"GRangesList")){
 					
 					randomizations = length(rand.set)
 					rand.olap.dist = numeric(randomizations)
 					for(i in 1:randomizations){
-						cat("Iteration number:",i,"\r")
+						message("Iteration number:",i,"\r")
 						my.cnts = sum(countOverlaps(target,rand.set[[i]])>0)
 						rand.olap.dist[i] = my.cnts
 					}
-					cat("\n")
+					message("\n")
 				}else{
 					stop("Wrong 'rand.set' argument supplied, it should be a 'GRangesList'")
 				}
