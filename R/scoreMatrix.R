@@ -404,7 +404,7 @@ setGeneric("scaleScoreMatrix",
                         standardGeneric("scaleScoreMatrix") )
 
 setMethod("scaleScoreMatrix", signature("scoreMatrix"),
-          function(mat, columns, rows, scalefun ...){
+          function(mat, columns, rows, scalefun, ...){
             
             if(!is.function(scalefun))
               stop('scalefun needs to be a proper R function')

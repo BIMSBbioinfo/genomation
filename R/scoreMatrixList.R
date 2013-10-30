@@ -267,7 +267,7 @@ setGeneric("scaleScoreMatrixList",
              standardGeneric("scaleScoreMatrixList") )
 
 setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
-          function(sml, columns, rows, scalefun ...){
+          function(sml, columns, rows, scalefun, ...){
             
             sml = lapply(sml, function(x)
                           scaleScoreMatrix(x, 
