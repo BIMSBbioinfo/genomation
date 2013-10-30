@@ -41,7 +41,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #######################################
 
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' Get base-pair score for bases in each window
 #'
 #' The funcion produces a base-pair resolution matrix of scores for given equal
@@ -101,7 +101,7 @@ setGeneric("scoreMatrix",function(target,windows,strand.aware=FALSE,
                                   col.name=NULL,is.noCovNA=FALSE) standardGeneric("scoreMatrix") )
 
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' @aliases scoreMatrix,RleList,GRanges-method
 #' @rdname scoreMatrix-methods
 setMethod("scoreMatrix",signature("RleList","GRanges"),
@@ -204,7 +204,7 @@ setMethod("scoreMatrix",signature("character","GRanges"),
           })
 
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' visual representation of scoreMatrix using a heatmap 
 #' The rows can be reordered using one factor and one numeric vector
 #'
@@ -315,7 +315,7 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 )
 
 
-# ------------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' Bins the columns of a matrix using a user provided function 
 
 #' @param mat a \code{scoreMatrix} object
@@ -345,4 +345,42 @@ setMethod("binMatrix", signature("scoreMatrix"),
 										
 				return(new("scoreMatrix", bmat))
 		 }
+)
+
+
+# ---------------------------------------------------------------------------- #
+#' Scales the values in the matrix by rows and/or columns
+
+#' @param mat a \code{scoreMatrix} object
+#' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
+#' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
+#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argunt is set to the R scale function with center=TRUE and scale=TRUE
+
+#' @usage binMatrix(mat, nbins=NULL, fun='mean', ...)
+#' @return \code(scoreMatrix) object
+
+#' @docType methods
+#' @rdname scaleScoreMatrix-methods
+#' @export
+setGeneric("scaleScoreMatrix", 
+                function(mat, 
+                         columns=FALSE, rows=TRUE, 
+                         scalefun=function(x)scale(x), 
+                         ...) 
+                        standardGeneric("scaleScoreMatrix") )
+
+setMethod("scaleScoreMatrix", signature("scoreMatrix"),
+          function(mat, columns, rows, scalefun ...){
+            
+            if(!is.function(scalefun))
+              stop('scalefun needs to be a proper R function')
+            
+            if(columns)
+              mat = scalefun(mat)
+            
+            if(rows)
+              mat = scalefun(mat)
+            
+            return(new("scoreMatrix", mat))
+          }
 )

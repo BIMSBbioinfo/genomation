@@ -53,6 +53,7 @@ exportMethods(readNarrowPeak)
 exportMethods(readTranscriptFeatures)
 exportMethods(scoreMatrix)
 exportMethods(scoreMatrixBin)
+exportMethods(scaleScoreMatrix)
 export(gffToGRanges)
 export(ScoreMatrixList)
 
