@@ -1,6 +1,6 @@
 # S4 classes for genomation show and accessor functions
 
-# ------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' An S4 class for storing \code{getRandomEnrichment} function results
 #'
 #' The resulting object stores the results of \code{getRandomEnrichment} function
@@ -41,7 +41,7 @@ setMethod("show", "randomEnrichment", function(object) {
 
 
 
-# ------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' An S4 class for storing \code{scoreMatrix} function results
 #'
 #' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
@@ -54,7 +54,7 @@ setMethod("show", "randomEnrichment", function(object) {
 setClass("scoreMatrix",contains = "matrix")
 
 
-# ------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
 #' An S4 class for storing a set of \code{ScoreMatrixList} 
 #'
 #' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object

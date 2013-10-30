@@ -10,18 +10,22 @@
 # SECTION 1: S3 functions
 #######################################
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # extracts exons from a bed12 file and puts them into GRanges object
 bed12ToExons<-function(ref){
 
 	ref=unique(ref)
 
 	# apply strsplit on columns 11 and 12 to extract exon start positions and exon sizes
-	b.start.size = cbind(as.integer(unlist(strsplit(as.character(ref$V12),"," ))),as.integer(unlist(strsplit(as.character(ref$V11),"," ))))
+	b.start.size = cbind(as.integer(unlist(strsplit(as.character(ref$V12),"," ))),
+                       as.integer(unlist(strsplit(as.character(ref$V11),"," ))))
 	rep.ref = ref[rep(1:nrow(ref),ref[,10]),] # replicate rows occurs as many as its exon number
 
 
-	exon.id = unlist( mapply( function(x,y) if(x=="+"){return(1:y)}else{return(y:1)} ,ref[,6],ref[,10]  ) )
+	exon.id = unlist( mapply( function(x,y)
+                              if(x=="+"){return(1:y)}
+                              else{return(y:1)}, 
+                              ref[,6],ref[,10]))
 	rep.ref$V5=exon.id
 
 	rep.ref$V3 = rep.ref$V2+b.start.size[,1]+b.start.size[,2] # calculate exon start and ends
@@ -37,7 +41,7 @@ bed12ToExons<-function(ref){
 	return(grange.exons)
 } 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # extracts introns from a bed12 file and puts them into GRanges object
 bed12ToIntrons<-function(ref){
 
@@ -48,12 +52,16 @@ bed12ToIntrons<-function(ref){
 	ref=unique(ref)
 
 	# apply strsplit on columns 11 and 12 to extract exon start positions and exon sizes
-	b.start.size=cbind(as.integer(unlist(strsplit(as.character(ref$V12),"," ))),as.integer(unlist(strsplit(as.character(ref$V11),"," ))))
+	b.start.size=cbind(as.integer(unlist(strsplit(as.character(ref$V12),"," ))),
+                     as.integer(unlist(strsplit(as.character(ref$V11),"," ))))
 
 	# replicate rows occurs as many as its exon number
 	rep.ref = ref[rep(1:nrow(ref),ref[,10]),] 
 
-	exon.id = unlist( mapply( function(x,y) if(x=="+"){return(1:y)}else{return(y:1)} ,ref[,6],ref[,10]  ) )
+	exon.id = unlist( mapply( function(x,y) 
+                                if(x=="+"){return(1:y)}
+                                else{return(y:1)} ,
+                                ref[,6],ref[,10]  ) )
 	rep.ref$V5 = exon.id
 
 	# calculate exon start and ends
@@ -79,7 +87,7 @@ bed12ToIntrons<-function(ref){
 	return(grange.exons)
 } 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # checks the validity of the bed data.frame if it is a legitimate bed columns
 checkBedValidity<-function(bed.df,type="none"){
 
@@ -109,7 +117,7 @@ checkBedValidity<-function(bed.df,type="none"){
 #######################################
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object
 #'  
 #' @param bed  a data.frame where column order and content resembles a bed file with 12 columns
@@ -150,18 +158,24 @@ setMethod("convertBedDf" ,
 			}
 
 			if(ncol(bed)==5){
-				grange = GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)), score=bed$V5,name=bed$V4 )
+				grange = GRanges(seqnames=bed$V1,
+                         ranges=IRanges(start=bed$V2+1, end=bed$V3),
+                         strand=rep("*",nrow(bed)), score=bed$V5,name=bed$V4 )
 			}
 			if(ncol(bed)==4){
-				grange = GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)),name=bed$V4)
+				grange = GRanges(seqnames=bed$V1,
+                         ranges=IRanges(start=bed$V2+1, end=bed$V3),
+                         strand=rep("*",nrow(bed)),name=bed$V4)
 			}    
 			if(ncol(bed)==3){
-				grange = GRanges(seqnames=bed$V1,ranges=IRanges(start=bed$V2+1, end=bed$V3),strand=rep("*",nrow(bed)))
+				grange = GRanges(seqnames=bed$V1,
+                         ranges=IRanges(start=bed$V2+1, end=bed$V3),
+                         strand=rep("*",nrow(bed)))
 			}                           
 			return(grange)
 })
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object for exons
 #'  
 #' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
@@ -173,7 +187,8 @@ setMethod("convertBedDf" ,
 #' @export
 #' @docType methods
 #' @rdname convertBed2Exons-methods
-setGeneric("convertBed2Exons",function(bed.df) standardGeneric("convertBed2Exons"))
+setGeneric("convertBed2Exons",
+                function(bed.df) standardGeneric("convertBed2Exons"))
 
 #' @aliases convertBed2Exons,data.frame-method
 #' @rdname convertBed2Exons-methods
@@ -188,7 +203,7 @@ setMethod("convertBed2Exons" ,
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object for introns
 #'  
 #' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
@@ -200,7 +215,8 @@ setMethod("convertBed2Exons" ,
 #' @export
 #' @docType methods
 #' @rdname convertBed2Introns-methods
-setGeneric("convertBed2Introns",function(bed.df) standardGeneric("convertBed2Introns"))
+setGeneric("convertBed2Introns",
+                  function(bed.df) standardGeneric("convertBed2Introns"))
 
 #' @aliases convertBed2Introns,data.frame-method
 #' @rdname convertBed2Introns-methods
@@ -214,7 +230,7 @@ setMethod("convertBed2Introns",
 			bed12ToIntrons(bed.df)
 })
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Function for reading exon intron and promoter structure from a given bed file
 #'
 #' @param location location of the bed file with 12 or more columns
@@ -234,12 +250,17 @@ setMethod("convertBed2Introns",
 #' @export
 #' @docType methods
 #' @rdname readTranscriptFeatures-methods
-setGeneric("readTranscriptFeatures", function(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE) standardGeneric("readTranscriptFeatures"))
+setGeneric("readTranscriptFeatures", 
+                  function(location,remove.unsual=TRUE,
+                           up.flank=1000,
+                           down.flank=1000,
+                           unique.prom=TRUE) 
+                    standardGeneric("readTranscriptFeatures"))
 
 #' @aliases readTranscriptFeatures,character-method
 #' @rdname readTranscriptFeatures-methods
 setMethod("readTranscriptFeatures", 
-			signature(location = "character"),#,remove.unsual="logical",up.flank="numeric",down.flank="numeric",unique.prom="logical" ),
+			signature(location = "character"),
 			function(location,remove.unsual,up.flank ,down.flank ,unique.prom){
 
 			# find out if there is a header, skip 1st line if there is a header
@@ -307,7 +328,7 @@ setMethod("readTranscriptFeatures",
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Function to get upstream and downstream adjecent regions to a genomic feature such as CpG islands
 #' 
 #' @param grange GRanges object for the feature
@@ -320,7 +341,9 @@ setMethod("readTranscriptFeatures",
 #' @export
 #' @docType methods
 #' @rdname getFlanks-methods
-setGeneric("getFlanks", function(grange,flank=2000,clean=T) standardGeneric("getFlanks"))
+setGeneric("getFlanks", 
+                function(grange,flank=2000,clean=T) 
+                          standardGeneric("getFlanks"))
 
 #' @aliases getFlanks,GRanges-method
 #' @rdname getFlanks-methods
@@ -338,7 +361,7 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores
 #'
 #' @param location for the bed file of the feature 
@@ -354,7 +377,12 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 #' @export
 #' @docType methods
 #' @rdname readFeatureFlank-methods
-setGeneric("readFeatureFlank", function(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL) standardGeneric("readFeatureFlank") )
+setGeneric("readFeatureFlank", 
+                  function(location,remove.unsual=T,
+                           flank=2000,
+                           clean=T,
+                           feature.flank.name=NULL) 
+                           standardGeneric("readFeatureFlank") )
 
 #' @aliases readFeatureFlank,character-method
 #' @rdname readFeatureFlank-methods
@@ -382,7 +410,7 @@ setMethod("readFeatureFlank",
 # SECTION 2: Define new classes
 #######################################
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # A set of objects that will hold statistics about feature and annotation overlap
 #' An S4 class that information on overlap of target features with annotation features  
 #'
@@ -413,7 +441,7 @@ setClass("annotationByFeature",
 						   no.of.OlapFeat = "numeric",
 						   perc.of.OlapFeat = "numeric"))
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' An S4 class that information on overlap of target features with annotation features  
 #'
 #' This object is desgined to hold statistics and information about genomic feature overlaps
@@ -502,7 +530,7 @@ setMethod("show", "annotationByFeature",
 # these shouldn't be exported
 #######################################
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 
 annotatGrWithGeneParts <- function(gr, prom, exon, intron, strand=F){
 
@@ -548,7 +576,7 @@ annotatGrWithGeneParts <- function(gr, prom, exon, intron, strand=F){
 				numberOfOlapFeat=numberOfOlapFeat,percOfOlapFeat=percOfOlapFeat))
 }
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 distance2NearestFeature<-function(g.idh,tss){
 
 	elementMetadata(g.idh) = DataFrame(elementMetadata(g.idh),orig.row=1:length(g.idh))
@@ -565,9 +593,11 @@ distance2NearestFeature<-function(g.idh,tss){
 	met.tss = .nearest.2bed(g.idh, tss) 
 
 	dist.col=ncol(met.tss)
-	met.tss[met.tss$end < met.tss$start.y & met.tss$strand.y=="+", dist.col] = -1* met.tss[met.tss$end<met.tss$start.y & met.tss$strand.y=="+",dist.col]
+	met.tss[met.tss$end < met.tss$start.y & met.tss$strand.y=="+", dist.col] = 
+    -1* met.tss[met.tss$end<met.tss$start.y & met.tss$strand.y=="+",dist.col]
 
-	met.tss[met.tss$end > met.tss$start.y & met.tss$strand.y=="-",dist.col] = -1* met.tss[met.tss$end>met.tss$start.y & met.tss$strand.y=="-",dist.col]
+	met.tss[met.tss$end > met.tss$start.y & met.tss$strand.y=="-",dist.col] = 
+    -1* met.tss[met.tss$end>met.tss$start.y & met.tss$strand.y=="-",dist.col]
 
 	res = met.tss[order(met.tss[,id.col]),c(id.col,dist.col,tss.id.col,strnd.col)]
 	names(res)=c("target.row", "dist.to.feature",  "feature.name", "feature.strand")
@@ -576,7 +606,7 @@ distance2NearestFeature<-function(g.idh,tss){
 }
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # get the nearest features between a subject and query bed file
 # get grange objects in bed zormat
 # g.bed is GenomicRanges object, biatch!!!
@@ -592,7 +622,8 @@ distance2NearestFeature<-function(g.idh,tss){
 	for(i in 1:length(chrs)){
 		
 		# find the nearest for this range
-		ind = nearest(ranges(g.bed[seqnames(g.bed)==chrs[i],]),ranges(subject[seqnames(subject)==chrs[i],]))
+		ind = nearest(ranges(g.bed[seqnames(g.bed)==chrs[i],]),
+                  ranges(subject[seqnames(subject)==chrs[i],]))
 		sbdf1 = IRanges::as.data.frame(g.bed[seqnames(g.bed)==chrs[i],] )
 		sbdf2 = IRanges::as.data.frame(subject[seqnames(subject)==chrs[i],] )
 		sbdf2 = sbdf2[ind,]
@@ -621,7 +652,7 @@ distance2NearestFeature<-function(g.idh,tss){
 #######################################
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Function to annotate given GRanges object with promoter, exon, intron & intergenic ranges
 #'
 #' @param target: A GRanges object storing chromosome locations to be annotated (e.g. chipseq peaks)
@@ -633,7 +664,9 @@ distance2NearestFeature<-function(g.idh,tss){
 #' @export
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
-setGeneric("annotateWithGeneParts", function(target,GRangesList.obj,strand=F) standardGeneric("annotateWithGeneParts") )
+setGeneric("annotateWithGeneParts", 
+                function(target,GRangesList.obj,strand=F)
+                    standardGeneric("annotateWithGeneParts") )
 
 #' @aliases annotateWithGeneParts,GRanges,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
@@ -660,7 +693,7 @@ setMethod("annotateWithGeneParts",
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #'Given a GRangesList object it annotates each Range with gene annotation
 #'
 #' @param target: A GRangesList object storing chromosome locations to be annotated (e.g. chipseq peaks from multiple experiments)
@@ -677,14 +710,15 @@ setMethod("annotateWithGeneParts",
 		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
 		  function(target, GRangesList.obj, strand){
 		  
-			l = lapply(target, function(x)annotateWithGeneParts(target, GRangesList.obj, strand))
+			l = lapply(target, function(x)
+                          annotateWithGeneParts(target, GRangesList.obj, strand))
 			return(l)
 })
 
 
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Function to annotate a given GRanges object with promoter,exon,intron & intergenic values
 #'  
 #' @param target    a granges object storing chromosome locations to be annotated
@@ -699,7 +733,14 @@ setMethod("annotateWithGeneParts",
 #' @export
 #' @docType methods
 #' @rdname annotateWithFeatureFlank-methods
-setGeneric("annotateWithFeatureFlank", function(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE) standardGeneric("annotateWithFeatureFlank") )
+setGeneric("annotateWithFeatureFlank", 
+                          function(target,
+                                   feature,
+                                   flank,
+                                   feature.name="feat",
+                                   flank.name="flank",
+                                   strand=FALSE) 
+                            standardGeneric("annotateWithFeatureFlank") )
 
 #' @aliases annotateWithFeatureFlank,GRanges,GRanges,GRanges-method
 #' @rdname annotateWithFeatureFlank-methods
@@ -751,7 +792,7 @@ setMethod( "annotateWithFeatureFlank",
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Function to annotate given GRanges object with a given genomic feature
 #' 
 #' @param target   a GRanges object storing chromosome locations to be annotated
@@ -765,7 +806,13 @@ setMethod( "annotateWithFeatureFlank",
 #' @export
 #' @docType methods
 #' @rdname annotateWithFeature-methods
-setGeneric("annotateWithFeature", function(target,feature,strand=FALSE,extend=0,feature.name="feat1") standardGeneric("annotateWithFeature") )
+setGeneric("annotateWithFeature", 
+                    function(target,
+                             feature,
+                             strand=FALSE,
+                             extend=0,
+                             feature.name="feat1") 
+                      standardGeneric("annotateWithFeature") )
 
 #' @aliases annotateWithFeature,GRanges,GRanges-method
 #' @rdname annotateWithFeature-methods
@@ -807,7 +854,7 @@ setMethod("annotateWithFeature",
 #annotationBygenicparts
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Get the membership slot of annotationByFeature
 #'
 #' Membership slot defines the overlap of target features with annotation features
@@ -832,7 +879,7 @@ setMethod("getMembers",
 				return(x@members)
 })
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Get the percentage of target features overlapping with annotation from annotationByFeature
 #'
 #' This function retrieves percentage/number of target features overlapping with annotation
@@ -850,7 +897,9 @@ setMethod("getMembers",
 #' @export
 #' @docType methods
 #' @rdname getTargetAnnotationStats-methods
-setGeneric("getTargetAnnotationStats", def=function(x,percentage=TRUE,precedence=TRUE) standardGeneric("getTargetAnnotationStats"))
+setGeneric("getTargetAnnotationStats", 
+                  function(x,percentage=TRUE,precedence=TRUE) 
+                    standardGeneric("getTargetAnnotationStats"))
 
 #' @rdname getTargetAnnotationStats-methods
 #' @aliases getTargetAnnotationStats,annotationByFeature-method
@@ -874,7 +923,7 @@ setMethod("getTargetAnnotationStats",
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Get the percentage/count of annotation features overlapping with target features from annotationByFeature
 #'
 #' This function retrieves percentage/number of annotation features overlapping with targets. 
@@ -890,7 +939,9 @@ setMethod("getTargetAnnotationStats",
 #' @export
 #' @docType methods
 #' @rdname getFeatsWithTargetsStats-methods
-setGeneric("getFeatsWithTargetsStats", def=function(x,percentage=TRUE) standardGeneric("getFeatsWithTargetsStats"))
+setGeneric("getFeatsWithTargetsStats", 
+                  function(x,percentage=TRUE) 
+                    standardGeneric("getFeatsWithTargetsStats"))
 
 
 #' @rdname getFeatsWithTargetsStats-methods
@@ -907,7 +958,7 @@ setMethod("getFeatsWithTargetsStats",
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Get distance to nearest TSS and gene id from annotationByGenicParts
 #'
 #' This accessor function gets the nearest TSS, its distance to target feature,strand and name of TSS/gene from annotationByGenicParts object
@@ -919,7 +970,9 @@ setMethod("getFeatsWithTargetsStats",
 #' @export
 #' @docType methods
 #' @rdname annotationByGenicParts-methods
-setGeneric("getAssociationWithTSS", def=function(x) standardGeneric("getAssociationWithTSS"))
+setGeneric("getAssociationWithTSS", 
+                  function(x) 
+                    standardGeneric("getAssociationWithTSS"))
 
 #' @rdname annotationByGenicParts-methods
 #' @docType methods
@@ -934,7 +987,7 @@ setMethod("getAssociationWithTSS",
 
 # PLOTTING FUNCTIONS
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Plot annotation categories from annotationByGenicParts or annotationByFeature
 #'
 #' This function plots a pie or bar chart for showing percentages of targets annotated by genic parts or other query features
@@ -951,7 +1004,11 @@ setMethod("getAssociationWithTSS",
 #' @export
 #' @docType methods
 #' @rdname plotTargetAnnotation-methods
-setGeneric("plotTargetAnnotation", def=function(x,precedence=TRUE,col=rainbow(length(x@annotation)),...) standardGeneric("plotTargetAnnotation"))
+setGeneric("plotTargetAnnotation", 
+              function(x,
+                       precedence=TRUE,
+                       col=rainbow(length(x@annotation)),...) 
+                       standardGeneric("plotTargetAnnotation"))
 
 #' @rdname plotTargetAnnotation-methods
 #' @docType methods
@@ -977,7 +1034,7 @@ setMethod("plotTargetAnnotation",
 })
 
 
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' Plots the enrichment of each feature in the set in the gene annotation
 #'
 #' This function plots a heatmap of enrichment of each range in given gene feature
@@ -990,7 +1047,12 @@ setMethod("plotTargetAnnotation",
 #' @export
 #' @docType methods
 #' @rdname plotGenicAnnotation-methods
-setGeneric("plotGenicAnnotation", def=function(l, cluster=FALSE, col=c('white','cornflowerblue'), ...)standardGeneric("plotGenicAnnotation"))
+setGeneric("plotGenicAnnotation", 
+                  function(l, 
+                           cluster=FALSE, 
+                           col=c('white','cornflowerblue'), 
+                           ...)
+                    standardGeneric("plotGenicAnnotation"))
 
 #' @rdname plotGenicAnnotation-methods
 #' @docType methods

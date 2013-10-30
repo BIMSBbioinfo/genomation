@@ -1,4 +1,4 @@
-# ------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # test for removeOffRanges
 test_that("constrainRanges work",
 	{
@@ -11,7 +11,7 @@ test_that("constrainRanges work",
 
 
 
-# ------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # test for scoreMatrix function
 test_that("scoreMatrix works",
 	{
@@ -65,7 +65,7 @@ test_that("scoreMatrix works",
 	})
 	
 
-# ------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # test for scoreMatrixBin function
 test_that("scoreMatrixBin works",
 	{
@@ -94,7 +94,7 @@ test_that("scoreMatrixBin works",
 	})
 	
 
-# ------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # test for binMatrix
 test_that("binMatrix works"
 	m1 = as(matrix(rep(1:4, 4), ncol=4), 'scoreMatrix')
@@ -117,7 +117,7 @@ test_that("binMatrix works"
 
 
 
-# ------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 # test for binner function
 test_that("binner works",
 	{
@@ -138,7 +138,7 @@ test_that("binner works",
 	})
 	
 
-# ------------------------------------------- #	
+# ---------------------------------------------------------------------------- #
 # scoreMatrixList tests
 l = lapply(seq(20, 40,5), function(x)matrix(rpois(1000, x), ncol=25))
 l = lapply(l, function(x)as(x, "scoreMatrix"))
@@ -164,22 +164,13 @@ png(file.path('/home/members/vfranke/Tmp','sml2.png'), width=1200, height=800)
 	heatmapProfile(l, xcex=1.5, ycex=1.5, cex.main=3,  ylab='Number',  xlab='Position', ymarks=ymarks2, y.at=y.at2)
 dev.off()
 
-# ------------------------------------------- #	
+# ---------------------------------------------------------------------------- #
 # test for plotMatrix
 m = as(matrix(rnorm(500), nrow=50), 'scoreMatrix')
 rownames(m) = sample(letters, nrow(m), replace=T)
 png(file.path('/home/members/vfranke/Tmp','pm.png'), width=1200, height=1200)
 	plotMatrix(m, use.names=T)
 dev.off()
-
-
-
-# test_that("",
-	# {
-	
-
-	# })
-
 
 
 	
