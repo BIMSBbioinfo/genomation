@@ -1,26 +1,29 @@
-%\VignetteIndexEntry{genomation}
 %\VignetteKeywords{genomation}
 %\VignettePackage{genomation}
 %\VignetteEngine{knitr::knitr}
-
+%\VignetteIndexEntry{genomation: User Guide}
+% !Rnw weave = knitr
 \documentclass{article}
+\usepackage{geometry}
+\usepackage{wrapfig}
+
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+
+
+\title{genomation - a toolkit for annotation and visualization of genomic data}
+
+\author{Altuna Akalin\\ \texttt{altuna.akalin@fmi.ch}\\
+\and
+Vedran Franke \\ \texttt{vedran.franke@gmail.com} }
 
 
 
-<<include=FALSE>>=
-opts_chunk$set(concordance=TRUE)
-@
-
-\title{genomation - a toolsed for annotation of genomic data}
-\author{Altuna Akalin & Vedran Franke}
-\date{October 25, 2013}
 
 \newcommand{\Rpackage}[1]{{\textit{#1}}}
-\graphicspath{{inst/doc/Figures}}
 
-\begin{document}
 
-<<setup, include=FALSE, cache=FALSE>>=
+
+<<setup2, include=FALSE, cache=FALSE>>=
 library(knitr)
 options(replace.assign=TRUE,width=50)
 opts_chunk$set(root.dir=getwd(),
@@ -38,32 +41,43 @@ if (before && options$fig.show!='none') par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axi
 }, crop=hook_pdfcrop)
 @
 
-
+\begin{document}
 \maketitle
 \tableofcontents
 
 % ----------------------------------------------------------------- %
 \section{Introduction}
 
-Recent advances in sequencing technologies have enabled a downpoor of biological data. The sheer amount of data has impeeded the extraction of useful knowledge and novel hypothesis generation. \Rpackage(genomation) is a toolset for fast and easy annotation of raw and processed high throuput sequencing (HTS) data.
+Recent advances in sequencing technologies have enabled a downpoor of biological data. The sheer amount of data has impeeded the extraction of useful knowledge and novel hypothesis generation.
+\begin{wrapfigure}{r}{0.4\textwidth}
+ \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{Figures/genomationFlowChart1.pdf}
+  \end{center}
+  \caption{Bulk visualization for different genomic feature datasets flowchart}
+   \vspace{-20pt}
+\end{wrapfigure} 
+\Rpackage(genomation) is a toolkit for annotation and in bulk visualization of 
+genomic features (scored or unscored) over predefined regions. The \textbf{genomic features} the package can handle can be  anything with a minimal information of chromosome,start and end. The features could have any length
+and most of the time they are associated with a score. Typical examples of such data sets include aligned 
+from reads high-throughput sequencing (HTS) experiments, percent
+methylation values for CpGs (or other cytosines), locations of transcription factor binding site motifs, and so on. On the other hand, throughout the vignette we use the phrase "genomic annotation" to refer to the regions of the genome associated
+with a potential function and do not necessarily have a score (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). These genomic annotations are usually regions on interest,
+and distribution of genomic features over/around the annotations are can make the way
+for biological interpretation of the data.
 
-The pipeline for computational knowledge extraction consists of three steps: data filtering, integration of data from multiple sources or generation of predictive models and biological interpretation of produced models, which leads to novel hypotheses that can be tested in the wetlab
 
-\begin{figure}
-  includegraphics[width=0.75\textwidth]{dataAnalysis.pdf}
-\end{figure}
-
-\Rpackage(genomation) aims to facilitate the integration of multiple sources of high throughput data with genomic annotation or already published experimental results.
+The pipeline for computational knowledge extraction consists of three steps: data filtering, integration of data from multiple sources or generation of predictive models and biological interpretation of produced models, which leads to novel hypotheses that can be tested in the wetlab. \Rpackage(genomation) aims to facilitate the integration of multiple sources of genomic features with genomic annotation or already published experimental results.
 
 % ----------------------------------------------------------------- %
 \section{Access the data}
 
-High throughput data which will be used to show the functonality of the \Rpackage(genomation) is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage(genomationData).\\
+High-throughput data which will be used to show the functonality of the \Rpackage(genomation) is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage(genomationData).\\
 To install the data package from bioconductor c/p the following lines into your R interpreter:
 
 <<genomationData, eval=FALSE>>=
-source("http://bioconductor.org/biocLite.R")
-biocLite("genomationData")
+library(devtools)
+install_github("genomationData")
 @
 
 The \Rpackage(genomationData) vignette contains a verbose description of contained files.\\
@@ -79,56 +93,54 @@ head(r)
 @
 
 % ----------------------------------------------------------------- %
-\section{Annotation data input}
+\section{Data input}
+\Rpackage(genomation) has functions to read genomic features and genomic annotation 
+provided they are in a tabular format. In addition, BAM files can be also utilized in
+core \Rpackage(genomation) functions. These functions will read the data from 
+flat files and create GRanges or GRangesList objects.
+<<readExamples, eval=FALSE, tidy=TRUE>>=
+
+readBed()
+
+readBroadPeak()
+
+readGeneric()
+@
+There are specific functions to read genomic annotation from flat bed files.
+<<readExamples, eval=FALSE, tidy=TRUE>>=
+# reading genes stored as a BED files
+readGeneFeatures()
+
+# reading CpGi islands and shores stored as a BED files
+readFeatureFlank()
+
+@
+
+% ----------------------------------------------------------------- %
+\section{Extraction of genomic features over predefined windows}
+You can extract 
+
+% ----------------------------------------------------------------- %
+\section{Annotation of genomic features}
 
 
 % ----------------------------------------------------------------- %
-\section{Annotation of HTS data by functional regions}
+\section{Use cases for genomation package}
+The genomation package provides generalizable functions for genomic data analysis
+and visualization. Below we will demonstrate the functionality on specific use cases
+
+% ----------------------------------------------------------------- %
+\subsection{Annotation of HTS data by functional regions}
 
 
 % ----------------------------------------------------------------- %
-\section{Visualization of CHiP sequncing data}
+\subsection{Visualization of ChiP sequencing data}
 
 
 % ----------------------------------------------------------------- %
-\section{Annotation of bam files}
+\subsection{Annotation of bam files}
 
 
 \end{document}
 
 
-genomation-classes.R:setMethod("show", "randomEnrichment", function(object) {
-getRandomEnrichment.R:setMethod("getRandomEnrichment",
-modCoverage.R:setMethod("modCoverage",
-randomizeFeature.R:setMethod("randomizeFeature", signature(feature = "GRanges"),
-randomizeFeature.R:setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="GRanges"),
-readAnnotate.R:setMethod("converBedDf" ,
-readAnnotate.R:setMethod("convertBed2Exons" ,
-readAnnotate.R:setMethod("convertBed2Introns",
-readAnnotate.R:setMethod("readBed",
-readAnnotate.R:setMethod("readTranscriptFeatures",
-readAnnotate.R:setMethod("getFlanks", signature(grange= "GRanges"),
-readAnnotate.R:setMethod("readFeatureFlank",
-readAnnotate.R:setMethod("show", "annotationByGenicParts",
-readAnnotate.R:setMethod("show", "annotationByFeature",
-readAnnotate.R:setMethod("annotateWithGeneParts",
-readAnnotate.R:setMethod("annotateWithGeneParts",
-readAnnotate.R:setMethod( "annotateWithFeatureFlank",
-readAnnotate.R:setMethod("annotateWithFeature",
-readAnnotate.R:setMethod("getMembers",
-readAnnotate.R:setMethod("getTargetAnnotationStats",
-readAnnotate.R:setMethod("getFeatsWithTargetsStats",
-readAnnotate.R:setMethod("getAssociationWithTSS",
-readAnnotate.R:setMethod("plotTargetAnnotation",
-readAnnotate.R:setMethod("plotGenicAnnotation",
-scoreMatrixBin.R:setMethod("scoreMatrixBin",signature("RleList","GRanges"),
-scoreMatrixBin.R:setMethod("scoreMatrixBin",signature("modRleList","GRanges"),
-scoreMatrixBin.R:setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
-scoreMatrixList.R:setMethod("show", "ScoreMatrixList",
-scoreMatrixList.R:setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
-scoreMatrix.R:setMethod("scoreMatrix",signature("RleList","GRanges"),
-scoreMatrix.R:setMethod("scoreMatrix",signature("modRleList","GRanges"),
-scoreMatrix.R:setMethod("scoreMatrix",signature("GRanges","GRanges"),
-scoreMatrix.R:setMethod("scoreMatrix",signature("matrix"),
-scoreMatrix.R:setMethod("plotMatrix", signature("scoreMatrix"),
-scoreMatrix.R:setMethod("binMatrix", signature("scoreMatrix"),
