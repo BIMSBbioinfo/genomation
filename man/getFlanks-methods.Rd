@@ -2,7 +2,7 @@
 \name{getFlanks}
 \alias{getFlanks}
 \alias{getFlanks,GRanges-method}
-\title{a function to get upstream and downstream adjecent regions to a genomic feature such as CpG islands}
+\title{Function to get upstream and downstream adjecent regions to a genomic feature such as CpG islands}
 \usage{
   getFlanks(grange,flank=2000,clean=T)
 }
@@ -21,7 +21,7 @@
   GRanges object for flanking regions
 }
 \description{
-  a function to get upstream and downstream adjecent
-  regions to a genomic feature such as CpG islands
+  Function to get upstream and downstream adjecent regions
+  to a genomic feature such as CpG islands
 }
 

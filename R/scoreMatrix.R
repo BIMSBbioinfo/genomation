@@ -348,14 +348,13 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 
 # ---------------------------------------------------------------------------- #
 #' Bins the columns of a matrix using a user provided function 
-
+#'
 #' @param mat a \code{scoreMatrix} object
 #' @param nbins a \code{integer} number of bins in the final matrix
 #' @param fun  a \code{character} vector representing the function to be used for bining
-
-#' @usage binMatrix(mat, nbins=NULL, fun='mean', ...)
-#' @return \code(scoreMatrix) object
-
+#'
+#' @return \code{scoreMatrix} object
+#'
 #' @docType methods
 #' @rdname binMatrix-methods
 #' @export
@@ -384,15 +383,14 @@ setMethod("binMatrix", signature("scoreMatrix"),
 
 # ---------------------------------------------------------------------------- #
 #' Scales the values in the matrix by rows and/or columns
-
+#'
 #' @param mat a \code{scoreMatrix} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
-
-#' @usage scaleScoreMatrix(sml, columns=FALSE, rows=TRUE, ...)
-#' @return \code(scoreMatrix) object
-
+#'
+#' @return \code{scoreMatrix} object
+#'
 #' @docType methods
 #' @rdname scoreMatrix-methods
 #' @export

@@ -1,14 +1,15 @@
 \docType{methods}
-\name{plotMatrix}
-\alias{plotMatrix}
-\alias{plotMatrix,scoreMatrix-method}
+\name{heatMatrix}
+\alias{heatMatrix}
+\alias{heatMatrix,scoreMatrix-method}
 \title{visual representation of scoreMatrix using a heatmap
 The rows can be reordered using one factor and one numeric vector}
 \usage{
-  plotMatrix(mat, fact=NULL, ord.vec=NULL, shift=0,
-  mat.cols=NULL, fact.cols=NULL, xlab='Position',
-  ylab='Region', main='Positional profile',
-  class.names=NULL, ...)
+  heatMatrix(mat, fact = NULL, add.sep = TRUE,
+    ord.vec = NULL, shift = 0, mat.cols = NULL,
+    fact.cols = NULL, xlab = "Position", ylab = "Region",
+    main = "Positional profile", class.names = NULL,
+    use.names = FALSE, ...)
 }
 \arguments{
   \item{mat}{a \code{scoreMatrix} object}
@@ -49,5 +50,13 @@ The rows can be reordered using one factor and one numeric vector}
   visual representation of scoreMatrix using a heatmap The
   rows can be reordered using one factor and one numeric
   vector
+}
+\examples{
+data(cage)
+  data(promoters)
+  myMat2=scoreMatrix(target=cage,windows=promoters,
+                        col.name="tpm",strand.aware=TRUE)
+  plot(colMeans(myMat2,na.rm=TRUE),type="l")
+  heatMatrix(myMat2,fact=)
 }
 

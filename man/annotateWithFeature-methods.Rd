@@ -1,10 +1,10 @@
 \docType{methods}
-\name{annotate.WithFeature}
-\alias{annotate.WithFeature}
-\alias{annotate.WithFeature,GRanges,GRanges-method}
-\title{function to annotate given GRanges object with a given genomic feature}
+\name{annotateWithFeature}
+\alias{annotateWithFeature}
+\alias{annotateWithFeature,GRanges,GRanges-method}
+\title{Function to annotate given GRanges object with a given genomic feature}
 \usage{
-  annotate.WithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
+  annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
 }
 \arguments{
   \item{target}{a GRanges object storing chromosome
@@ -28,7 +28,7 @@
   returns an \code{annotationByFeature} object
 }
 \description{
-  function to annotate given GRanges object with a given
+  Function to annotate given GRanges object with a given
   genomic feature
 }
 

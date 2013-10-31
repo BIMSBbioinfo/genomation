@@ -23,14 +23,19 @@
 }
 
 # ---------------------------------------------------------------------------- #
-# ScoreMatrixList constructor
+#' ScoreMatrixList constructor
+#' 
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l: corresponds to can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, or a list of \code{RleList} objects that are used to construct the \code{scoreMatrixList}
-#' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
-#' @param bin: an integer telling the number of bins to bin the score matrix
- 
-#' @usage ScoreMatrixList(l, granges, bin)
+#' @param l corresponds to can be a list of \code{scoreMatrix} objects, 
+#'        that are coerced to the \code{ScoreMatrixList}, or a 
+#'        list of \code{RleList} objects that are used to construct
+#'         the \code{scoreMatrixList}
+#'         
+#' @param granges a \code{GenomicRanges} containing viewpoints for the 
+#' scoreMatrix or ScoreMatrixList functions
+#' @param bin an integer telling the number of bins to bin the score matrix
+#' 
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
@@ -106,8 +111,9 @@ setMethod("show", "ScoreMatrixList",
 )
 
 # ---------------------------------------------------------------------------- #
-#' plot functions for score matrix list
-#' Plot a ScoreMatrixList object as a panel of heatmaps
+#' Plot functions for score matrix list
+#' 
+#' Functions plot a ScoreMatrixList object as a panel of heatmaps
 #'
 #' @param mat.list a \code{ScoreMatrixList} object
 #' @param mat.cols colors to be used for plotting
@@ -123,14 +129,14 @@ setMethod("show", "ScoreMatrixList",
 #' @param ... other options (obselete for now)
 
 #' @usage heatmapProfile(mat.list, mat.cols=NULL, ...)
-#' @docType methods
-#' @rdname ScoreMatrixList-methods
 
-#' @example l = lapply(seq(20, 40,5), function(x)as(matrix(rpois(1000, x), ncol=25), 'scoreMatrix'))
-#' @example l = ScoreMatrixList(l)
-#' @example names(l) = letters[1:5]
-#' @example heatmapProfile(l)
+#' @examples
+#'  l = lapply(seq(20, 40,5), function(x)as(matrix(rpois(1000, x), ncol=25), 'scoreMatrix'))
+#'  
+#'  
 #' @export
+#' @docType methods
+#' @rdname heatmapProfile-methods
 setGeneric("heatmapProfile", 
            function(mat.list, mat.cols=NULL, xmarks=NULL, 
                     ymarks=NULL, y.at=NULL, xcex=1.5, 
@@ -246,18 +252,20 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 
 
 # ---------------------------------------------------------------------------- #
+#' Scale the ScoreMatrixList
+#' 
 #' Scales each scoreMatrix in the ScoreMatrixList object
-
 #' @param sml a \code{ScoreMatrixList} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
-
+#' @param scalefun a function object that takes as input a matrix and returns a matrix.
+#'  By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
+#'
 #' @usage scaleScoreMatrixList(mat, columns=FALSE, rows=TRUE, ...)
 #' @return \code(ScoreMatrixList) object
-
+#'
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname scaleScoreMatrixList-methods
 #' @export
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
@@ -280,17 +288,18 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 )
 
 # ---------------------------------------------------------------------------- #
+#' Get common rows from a ScoreMatrixList object
+#' 
 #' Returns a union of rows for each matrix in a ScoreMatrixList object. 
 #' This is done using the rownames of each element in the list.
-
+#'
 #' @param sml a \code{ScoreMatrixList} object
-
-
-#' @usage unionScoreMatrixList(sml, columns=FALSE, rows=TRUE, ...)
+#'
+#'
 #' @return \code(ScoreMatrixList) object
-
+#'
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname unionScoreMatrixList-methods
 #' @export
 setGeneric("unionScoreMatrixList", 
            function(sml)

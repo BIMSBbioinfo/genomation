@@ -16,6 +16,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
+#' 
 #' The function can take a bed file with or without a predesignated header, or 
 #' any other tabular file.
 #' If the file is in bed format, the user must specifiy which columns contain
@@ -24,8 +25,9 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #` 
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
-#' @param header whether the original file contains a header line which designates the column names. 
-#' @param col.names a named \Rcode{list} that maps individual columns to chr, start, end, strand information. e.g. list(chr=4, start=6, end=7, strand=9, score=10). If header = TRUE, colnames parameter does not have any effect. If the keep.medata is set to FALSE, only chromosome, start, end and strand colums will be used to construct the GRanges object, otherwise, all columns will be read in.
+#' @param header whether the original file contains a header line
+#'  which designates the column names. 
+#' @param col.names a named \code{list} that maps individual columns to chr, start, end, strand information. e.g. list(chr=4, start=6, end=7, strand=9, score=10). If header = TRUE, colnames parameter does not have any effect. If the keep.medata is set to FALSE, only chromosome, start, end and strand colums will be used to construct the GRanges object, otherwise, all columns will be read in.
 #' 
 #' @param starts.in.df.are.0based a boolean which tells whether the ranges in the bed file are 0 or 1 base encoded. A 0 based encoding is persumed
 #' @param remove.unsual if TRUE(default) remove the chromomesomes with unsual names, such as chrX_random
@@ -34,7 +36,9 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @usage readGeneric(location,remove.unsual=T)
 #' @return \code{\link{GRanges}} object
 #'
-#' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' @note 
+#' one bed track per file is only accepted, 
+#' the bed files with multiple tracks will cause en error
 #'
 #' @export
 #' @docType methods
@@ -106,18 +110,19 @@ setMethod("readGeneric",
 
 
 # ---------------------------------------------------------------------------- #
-#` A function to read the Encode formatted broad peak file into a GRanges object
+#' A function to read the Encode formatted broad peak file into a GRanges object
+#'
 #' @param file a abosulte or relative path to a bed file formatted by the Encode broadPeak standard
 #' @usage readBroadPeak(file)
 #' @return a GRanges object
-
+#'
 #' @docType methods
-#' @rdname readBroadPeak
+#' @rdname readBroadPeak-methods
 #' @export
 setGeneric("readBroadPeak", function(file) standardGeneric("readBroadPeak") )
 
 #' @aliases readBroadPeak
-#' @rdname readBroadPeak
+#' @rdname readBroadPeak-methods
 setMethod("readBroadPeak", signature("character"),
           function(file){
           
@@ -132,18 +137,18 @@ setMethod("readBroadPeak", signature("character"),
           }
 )          
 # ---------------------------------------------------------------------------- #
-#` A function to read the Encode formatted narrowPeak file into a GRanges object
+#' A function to read the Encode formatted narrowPeak file into a GRanges object
 #' @param file a abosulte or relative path to a bed file formatted by the Encode narrowPeak standard
 #' @usage readNarrowPeak(file)
 #' @return a GRanges object
-          
+#'        
 #' @docType methods
-#' @rdname readNarrowPeak
+#' @rdname readNarrowPeak-methods
 #' @export
 setGeneric("readNarrowPeak", function(file) standardGeneric("readNarrowPeak") )
     
 #' @aliases readNarrowPeak
-#' @rdname readNarrowPeak
+#' @rdname readNarrowPeak-methods
 setMethod("readNarrowPeak", signature("character"),
           function(file){
                       

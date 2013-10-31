@@ -98,16 +98,16 @@ head(r)
 provided they are in a tabular format. In addition, BAM files can be also utilized in
 core \Rpackage(genomation) functions. These functions will read the data from 
 flat files and create GRanges or GRangesList objects.
-<<readExamples, eval=FALSE, tidy=TRUE>>=
-
-readBed()
+<<readExamples1, eval=FALSE, tidy=TRUE>>=
+file.to.read1=system.file("extdata", "chr21.CpGi.hg19.bed", package = "genomation")
+readBed(file.to.read1)
 
 readBroadPeak()
 
 readGeneric()
 @
 There are specific functions to read genomic annotation from flat bed files.
-<<readExamples, eval=FALSE, tidy=TRUE>>=
+<<readExamples2, eval=FALSE, tidy=TRUE>>=
 # reading genes stored as a BED files
 readGeneFeatures()
 

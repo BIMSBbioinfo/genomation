@@ -1,10 +1,10 @@
 \docType{methods}
-\name{convert.bed2introns}
-\alias{convert.bed2introns}
-\alias{convert.bed2introns,data.frame-method}
+\name{convertBed2Introns}
+\alias{convertBed2Introns}
+\alias{convertBed2Introns,data.frame-method}
 \title{convert a data frame read-in from a bed file to a GRanges object for introns}
 \usage{
-  convert.bed2introns(bed.df)
+  convertBed2Introns(bed.df)
 }
 \arguments{
   \item{bed.df}{a data.frame where column order and content
