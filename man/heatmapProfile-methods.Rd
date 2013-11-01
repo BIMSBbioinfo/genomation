@@ -12,7 +12,7 @@
   \item{mat.cols}{colors to be used for plotting}
 
   \item{xmarks}{an integer number to lable the thick marks
-  on the x axis of each heatmap. By default it takes the
+  on the x axis of each heatmap.  By default it takes the
   values of -ncol/2, 0, ncol/2}
 
   \item{ymarks}{a vector of that will lable the thick marks

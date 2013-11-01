@@ -1,8 +1,8 @@
 \docType{methods}
 \name{heatMatrix}
 \alias{heatMatrix}
-\alias{heatMatrix,scoreMatrix-method}
-\title{visual representation of scoreMatrix using a heatmap
+\alias{heatMatrix,ScoreMatrix-method}
+\title{visual representation of ScoreMatrix using a heatmap
 The rows can be reordered using one factor and one numeric vector}
 \usage{
   heatMatrix(mat, fact = NULL, add.sep = TRUE,
@@ -12,7 +12,7 @@ The rows can be reordered using one factor and one numeric vector}
     use.names = FALSE, ...)
 }
 \arguments{
-  \item{mat}{a \code{scoreMatrix} object}
+  \item{mat}{a \code{ScoreMatrix} object}
 
   \item{fact}{a \code{factor} of length equal to
   \code{nrow(mat)}. Unused factor levels are dropped}
@@ -25,7 +25,7 @@ The rows can be reordered using one factor and one numeric vector}
   (plot starts at -shift)}
 
   \item{mat.cols}{a vector of colors used for plotting of
-  the heatmap. Default colors range from lightgray to
+  the heatmap.  Default colors range from lightgray to
   darkblue.}
 
   \item{fact.cols}{a vector of colors used for plotting of
@@ -47,15 +47,15 @@ The rows can be reordered using one factor and one numeric vector}
   nothing
 }
 \description{
-  visual representation of scoreMatrix using a heatmap The
+  visual representation of ScoreMatrix using a heatmap The
   rows can be reordered using one factor and one numeric
   vector
 }
 \examples{
 data(cage)
   data(promoters)
-  myMat2=scoreMatrix(target=cage,windows=promoters,
-                        col.name="tpm",strand.aware=TRUE)
+  myMat2=ScoreMatrix(target=cage,windows=promoters,
+                        weight.col="tpm",strand.aware=TRUE)
   plot(colMeans(myMat2,na.rm=TRUE),type="l")
   heatMatrix(myMat2,fact=)
 }

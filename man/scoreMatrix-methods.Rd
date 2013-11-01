@@ -1,14 +1,14 @@
 \docType{methods}
-\name{scoreMatrix}
+\name{ScoreMatrix}
 \alias{scaleScoreMatrix}
-\alias{scoreMatrix}
-\alias{scoreMatrix,character,GRanges-method}
-\alias{scoreMatrix,GRanges,GRanges-method}
-\alias{scoreMatrix,RleList,GRanges-method}
+\alias{ScoreMatrix}
+\alias{ScoreMatrix,character,GRanges-method}
+\alias{ScoreMatrix,GRanges,GRanges-method}
+\alias{ScoreMatrix,RleList,GRanges-method}
 \title{Get base-pair score for bases in each window}
 \usage{
-  scoreMatrix(target, windows, strand.aware = FALSE,
-    col.name = NULL, is.noCovNA = FALSE)
+  ScoreMatrix(target, windows, strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE)
 
   scaleScoreMatrix(mat, columns = FALSE, rows = TRUE,
     scalefun = function(x) scale(x), ...)
@@ -24,24 +24,25 @@
 
   \item{strand.aware}{If TRUE (default: FALSE), the strands
   of the windows will be taken into account in the
-  resulting \code{scoreMatrix}.  If the strand of a window
+  resulting \code{ScoreMatrix}.  If the strand of a window
   is -, the values of the bins for that window will be
   reversed}
 
-  \item{col.name}{if the object is \code{GRanges} object a
-  numeric column in meta data part can be used as weights.
-  This is particularly useful when genomic regions have
-  scores other than their coverage values, such as percent
-  methylation, conservation scores, GC content, etc.}
+  \item{weight.col}{if the object is \code{GRanges} object
+  a numeric column in meta data part can be used as
+  weights. This is particularly useful when genomic regions
+  have scores other than their coverage values, such as
+  percent methylation, conservation scores, GC content,
+  etc.}
 
   \item{is.noCovNA}{(Default:FALSE) if TRUE,and if 'target'
-  is a GRanges object with 'col.name' provided, the bases
+  is a GRanges object with 'weight.col' provided, the bases
   that are uncovered will be preserved as NA in the
   returned object. This useful for situations where you can
   not have coverage all over the genome, such as CpG
   methylation values.}
 
-  \item{mat}{a \code{scoreMatrix} object}
+  \item{mat}{a \code{ScoreMatrix} object}
 
   \item{columns}{a \code{columns} whether to scale the
   matrix by columns. Set by default to FALSE.}
@@ -55,9 +56,9 @@
   scale=TRUE}
 }
 \value{
-  returns a \code{scoreMatrix} object
+  returns a \code{ScoreMatrix} object
 
-  \code{scoreMatrix} object
+  \code{ScoreMatrix} object
 }
 \description{
   The funcion produces a base-pair resolution matrix of
@@ -77,19 +78,19 @@
 # When target is GRanges
          data(cage)
          data(promoters)
-         scores1=scoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-                                 col.name="tpm")
+         scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+                                 weight.col="tpm")
 
 # When target is RleList
 covs=coverage(cage)
-scores2=scoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)
+scores2=ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)
 
 
 # When target is a bam file
  # bamfile="example.bam"
- # scores3=scoreMatrix(target=bamfile,windows=promoters,strand.aware=TRUE)
+ # scores3=ScoreMatrix(target=bamfile,windows=promoters,strand.aware=TRUE)
 }
 \seealso{
-  \code{\link{scoreMatrixBin}}
+  \code{\link{ScoreMatrixBin}}
 }
 

@@ -9,7 +9,7 @@
   \item{sml}{a \code{ScoreMatrixList} object}
 }
 \value{
-  \code(ScoreMatrixList) object
+  \code{ScoreMatrixList} object
 }
 \description{
   Returns a union of rows for each matrix in a

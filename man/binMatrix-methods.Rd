@@ -6,7 +6,7 @@
   binMatrix(mat, nbins = NULL, fun = "mean", ...)
 }
 \arguments{
-  \item{mat}{a \code{scoreMatrix} object}
+  \item{mat}{a \code{ScoreMatrix} object}
 
   \item{nbins}{a \code{integer} number of bins in the final
   matrix}
@@ -15,7 +15,7 @@
   function to be used for bining}
 }
 \value{
-  \code{scoreMatrix} object
+  \code{ScoreMatrix} object
 }
 \description{
   Bins the columns of a matrix using a user provided

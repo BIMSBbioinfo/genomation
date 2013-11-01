@@ -3,7 +3,8 @@
 \alias{scaleScoreMatrixList}
 \title{Scale the ScoreMatrixList}
 \usage{
-  scaleScoreMatrixList(mat, columns=FALSE, rows=TRUE, ...)
+  scaleScoreMatrixList(sml, columns = FALSE, rows = TRUE,
+    scalefun = function(x) scale(x), ...)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
@@ -20,7 +21,7 @@
   scale=TRUE}
 }
 \value{
-  \code(ScoreMatrixList) object
+  \code{ScoreMatrixList} object
 }
 \description{
   Scales each scoreMatrix in the ScoreMatrixList object

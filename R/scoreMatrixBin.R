@@ -123,13 +123,13 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                     be taken into account in the resulting \code{scoreMatrix}. 
 #'                     If the strand of a window is -, the values of the bins 
 #'                     for that window will be reversed
-#' @param col.name if the object is \code{GRanges} object a numeric column
+#' @param weight.col if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
 #' @param is.noCovNA (Default:FALSE)
-#'                  if TRUE,and if 'target' is a GRanges object with 'col.name'
+#'                  if TRUE,and if 'target' is a GRanges object with 'weight.col'
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG
@@ -141,28 +141,28 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @examples
 #'   data(cage)
 #'   data(cpgi)
-#'   myMat=scoreMatrixBin(target=cage,
-#'                        windows=cpgi,bin.num=10,bin.op="mean",col.name="tpm")
+#'   myMat=ScoreMatrixBin(target=cage,
+#'                        windows=cpgi,bin.num=10,bin.op="mean",weight.col="tpm")
 #'   plot(colMeans(myMat,na.rm=TRUE),type="l")
 #'   
-#'   myMat2=scoreMatrixBin(target=cage,
+#'   myMat2=ScoreMatrixBin(target=cage,
 #'                         windows=promoters,bin.num=10,bin.op="mean",
-#'                         col.name="tpm",strand.aware=TRUE)
+#'                         weight.col="tpm",strand.aware=TRUE)
 #'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #' 
 #' @seealso \code{\link{scoreMatrix}}
 #' @docType methods
-#' @rdname scoreMatrixBin-methods           
+#' @rdname ScoreMatrixBin-methods           
 #' @export
-setGeneric("scoreMatrixBin",
+setGeneric("ScoreMatrixBin",
            function(target,windows,bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
-                    col.name=NULL,is.noCovNA=FALSE) 
-             standardGeneric("scoreMatrixBin") )
+                    weight.col=NULL,is.noCovNA=FALSE) 
+             standardGeneric("ScoreMatrixBin") )
 
-#' @aliases scoreMatrixBin,RleList,GRanges-method
-#' @rdname scoreMatrixBin-methods
-setMethod("scoreMatrixBin",signature("RleList","GRanges"),
+#' @aliases ScoreMatrixBin,RleList,GRanges-method
+#' @rdname ScoreMatrixBin-methods
+setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware,is.noCovNA){
 
 			# removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
@@ -181,28 +181,28 @@ setMethod("scoreMatrixBin",signature("RleList","GRanges"),
 			
 			# summarize views with the given function
 			mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
-			new("scoreMatrix",mat)
+			new("ScoreMatrix",mat)
 })
 
 
 
 # ---------------------------------------------------------------------------- #
-#' @aliases  scoreMatrixBin,GRanges,GRanges-method
-#' @rdname scoreMatrixBin-methods
-setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
-          function(target,windows,bin.num,bin.op,strand.aware,col.name,is.noCovNA){
+#' @aliases  ScoreMatrixBin,GRanges,GRanges-method
+#' @rdname ScoreMatrixBin-methods
+setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
+          function(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA){
             
             #make coverage vector  from target
-            if(is.null(col.name)){
+            if(is.null(weight.col)){
               target.rle=coverage(target)
             }else{
-              if(! col.name %in% names(mcols(target)) ){
-                stop("provided column 'col.name' does not exist in tartget\n")
+              if(! weight.col %in% names(mcols(target)) ){
+                stop("provided column 'weight.col' does not exist in tartget\n")
               }
               if(is.noCovNA)
               {  
                   # adding 1 to figure out NA columns later
-                  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
+                  target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
                   
                   # figure out which ones are real 0 score
                   # which ones has no coverage
@@ -213,12 +213,12 @@ setMethod("scoreMatrixBin",signature("GRanges","GRanges"),
 
               }else{
                 # get coverage with weights
-                target.rle=coverage(target,weight= col.name ) 
+                target.rle=coverage(target,weight= weight.col ) 
               }
             }
             
             # call scoreMatrix function
-            scoreMatrixBin(target.rle,windows,bin.num,
+            ScoreMatrixBin(target.rle,windows,bin.num,
                            bin.op,strand.aware)
             
 })

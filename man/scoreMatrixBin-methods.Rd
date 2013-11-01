@@ -1,13 +1,13 @@
 \docType{methods}
-\name{scoreMatrixBin}
-\alias{scoreMatrixBin}
-\alias{scoreMatrixBin,GRanges,GRanges-method}
-\alias{scoreMatrixBin,RleList,GRanges-method}
+\name{ScoreMatrixBin}
+\alias{ScoreMatrixBin}
+\alias{ScoreMatrixBin,GRanges,GRanges-method}
+\alias{ScoreMatrixBin,RleList,GRanges-method}
 \title{Get bin score for bins on each window}
 \usage{
-  scoreMatrixBin(target, windows, bin.num = 10,
-    bin.op = "mean", strand.aware = FALSE, col.name = NULL,
-    is.noCovNA = FALSE)
+  ScoreMatrixBin(target, windows, bin.num = 10,
+    bin.op = "mean", strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE)
 }
 \arguments{
   \item{target}{a \code{RleList} or a \code{modRleList} or
@@ -32,14 +32,15 @@
   is -, the values of the bins for that window will be
   reversed}
 
-  \item{col.name}{if the object is \code{GRanges} object a
-  numeric column in meta data part can be used as weights.
-  This is particularly useful when genomic regions have
-  scores other than their coverage values, such as percent
-  methylation, conservation scores, GC content, etc.}
+  \item{weight.col}{if the object is \code{GRanges} object
+  a numeric column in meta data part can be used as
+  weights. This is particularly useful when genomic regions
+  have scores other than their coverage values, such as
+  percent methylation, conservation scores, GC content,
+  etc.}
 
   \item{is.noCovNA}{(Default:FALSE) if TRUE,and if 'target'
-  is a GRanges object with 'col.name' provided, the bases
+  is a GRanges object with 'weight.col' provided, the bases
   that are uncovered will be preserved as NA in the
   returned object. This useful for situations where you can
   not have coverage all over the genome, such as CpG
@@ -62,13 +63,13 @@
 \examples{
 data(cage)
   data(cpgi)
-  myMat=scoreMatrixBin(target=cage,
-                       windows=cpgi,bin.num=10,bin.op="mean",col.name="tpm")
+  myMat=ScoreMatrixBin(target=cage,
+                       windows=cpgi,bin.num=10,bin.op="mean",weight.col="tpm")
   plot(colMeans(myMat,na.rm=TRUE),type="l")
 
-  myMat2=scoreMatrixBin(target=cage,
+  myMat2=ScoreMatrixBin(target=cage,
                         windows=promoters,bin.num=10,bin.op="mean",
-                        col.name="tpm",strand.aware=TRUE)
+                        weight.col="tpm",strand.aware=TRUE)
   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 }
 \seealso{

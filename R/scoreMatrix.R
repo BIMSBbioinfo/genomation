@@ -230,9 +230,11 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #'
 #' @param mat a \code{ScoreMatrix} object
 #' @param fact a \code{factor} of length equal to \code{nrow(mat)}. Unused factor levels are dropped
-#' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, which is going to be used for ordering of the rows
+#' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, 
+#'        which is going to be used for ordering of the rows
 #' @param shift shift the start coordinate of the x axis (plot starts at -shift)
-#' @param mat.cols a vector of colors used for plotting of the heatmap. Default colors range from lightgray to darkblue.
+#' @param mat.cols a vector of colors used for plotting of the heatmap. 
+#'        Default colors range from lightgray to darkblue.
 #' @param fact.cols a vector of colors used for plotting of the factor key
 #' @param xlab x axis label
 #' @param ylab y axis label
