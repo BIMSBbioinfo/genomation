@@ -90,7 +90,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
     stop("Number of columns is lower than designated number of columns by ",
          "meta.col,chr,start,end or strand arguments\n")
   
-  #
+  # change the col names to the ones given by meta.col and chr,str,end,strand
   colnames(df)[unlist(col.names)] = names(unlist(col.names))
   
   
