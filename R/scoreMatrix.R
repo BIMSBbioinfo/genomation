@@ -80,13 +80,13 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #'                    \code{ScoreMatrix}.
 #'                     If the strand of a window is -, the values of the bins 
 #'                     for that window will be reversed
-#' @param col.name if the object is \code{GRanges} object a numeric column
+#' @param weight.col if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
 #' @param is.noCovNA (Default:FALSE)
-#'                  if TRUE,and if 'target' is a GRanges object with 'col.name'
+#'                  if TRUE,and if 'target' is a GRanges object with 'weight.col'
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG methylation
@@ -100,7 +100,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #'          data(cage)
 #'          data(promoters)
 #'          scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#'                                  col.name="tpm")
+#'                                  weight.col="tpm")
 #'                                  
 #' # When target is RleList
 #' covs=coverage(cage)
@@ -116,7 +116,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @export
 setGeneric("ScoreMatrix",
                     function(target,windows,strand.aware=FALSE,
-                             col.name=NULL,is.noCovNA=FALSE) 
+                             weight.col=NULL,is.noCovNA=FALSE) 
                                 standardGeneric("ScoreMatrix") )
 
 
@@ -177,24 +177,24 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
-          function(target,windows,strand.aware,col.name,is.noCovNA){
+          function(target,windows,strand.aware,weight.col,is.noCovNA){
             
             #make coverage vector  from target
-            if(is.null(col.name)){
+            if(is.null(weight.col)){
 				target.rle=coverage(target)
             }else{
-                if(! col.name %in% names(mcols(target)) ){
-                  stop("provided column 'col.name' does not exist in tartget\n")
+                if(! weight.col %in% names(mcols(target)) ){
+                  stop("provided column 'weight.col' does not exist in tartget\n")
                 }
                 if(is.noCovNA)
                 { # adding 1 to figure out NA columns later
-                  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
+                  target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
                   mat=ScoreMatrix(target.rle,windows,strand.aware)
                   mat=mat-1 # substract 1
                   mat[mat<0]=NA # everything that are <0 are NA
                   return(mat)
                 }
-                target.rle=coverage(target,weight= col.name ) 
+                target.rle=coverage(target,weight= weight.col ) 
                 
             }
             
@@ -245,7 +245,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #'   data(cage)
 #'   data(promoters)
 #'   myMat2=ScoreMatrix(target=cage,windows=promoters,
-#'                         col.name="tpm",strand.aware=TRUE)
+#'                         weight.col="tpm",strand.aware=TRUE)
 #'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #'   heatMatrix(myMat2,fact=)
 #' 
