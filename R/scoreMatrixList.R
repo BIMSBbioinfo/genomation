@@ -27,7 +27,7 @@
 #' 
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l corresponds to can be a list of \code{scoreMatrix} objects, 
+#' @param l corresponds to can be a list of \code{ScoreMatrix} objects, 
 #'        that are coerced to the \code{ScoreMatrixList}, or a 
 #'        list of \code{RleList} objects that are used to construct
 #'         the \code{scoreMatrixList}
@@ -39,7 +39,7 @@
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname ScoreMatrixList
 ScoreMatrixList = function(l, granges=NULL, bin=NULL, ...){
 
 	len = length(l)
@@ -117,12 +117,14 @@ setMethod("show", "ScoreMatrixList",
 #'
 #' @param mat.list a \code{ScoreMatrixList} object
 #' @param mat.cols colors to be used for plotting
-#' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap. By default it takes the values of -ncol/2, 0, ncol/2
+#' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap.
+#'  By default it takes the values of -ncol/2, 0, ncol/2
 #' @param ymarks a vector of that will lable the thick marks on the y axis
 #' @param y.at a numeric vector that will specify the positions of the thick marks on the y axis
 #' @param xcex, ycex an integer number which controls the character expansion on x and y axis
 #' @param cex.main an integer number which controls the character expansion of the plot label
-#' @param mar a vector of length 5 which controls the size of the margins. The order is the following: below, left, up, right, spacing between consecutive plots
+#' @param mar a vector of length 5 which controls the size of the margins. 
+#' The order is the following: below, left, up, right, spacing between consecutive plots
 #' @param use.names whether to use the names of the ScoreMatrixList object to label each plot
 #' @param main whether to use the names of the ScoreMatrixList object to label each plot
 #' @param xlab, ylab name to be used for the x/y axis 

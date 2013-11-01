@@ -7,9 +7,10 @@
 }
 \arguments{
   \item{l}{corresponds to can be a list of
-  \code{scoreMatrix} objects, that are coerced to the
+  \code{ScoreMatrix} objects, that are coerced to the
   \code{ScoreMatrixList}, or a list of \code{RleList}
-  objects that are used to construct the \code{ScoreMatrixList}}
+  objects that are used to construct the
+  \code{scoreMatrixList}}
 
   \item{granges}{a \code{GenomicRanges} containing
   viewpoints for the scoreMatrix or ScoreMatrixList
@@ -19,8 +20,8 @@
   the score matrix}
 }
 \value{
-  returns a ScoreMatrixList object}
-  
+  returns a \code{ScoreMatrixList} object
+}
 \description{
   Construct a list of scoreMatrixObjects that can be used
   for plotting

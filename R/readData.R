@@ -17,96 +17,103 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
 #' 
-#' The function can take a bed file with or without a predesignated header, or 
-#' any other tabular file.
-#' If the file is in bed format, the user must specifiy which columns contain
-#' chromosome, start, and end information, using the col.names argument. 
-#' Strand information is not compulsory.
+#' The function reads a tabular  text file that contains location and other information
+#' on genomic features and returns a \code{\link{GRanges}} object. 
+#' The minimal information that the file has to have is chromosome, 
+#' start and end columns. Strand information is not compulsory.
 #` 
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
-#' @param header whether the original file contains a header line
-#'  which designates the column names. 
-#' @param col.names a named \code{list} that maps individual columns to chr, start, end, strand information. e.g. list(chr=4, start=6, end=7, strand=9, score=10). If header = TRUE, colnames parameter does not have any effect. If the keep.medata is set to FALSE, only chromosome, start, end and strand colums will be used to construct the GRanges object, otherwise, all columns will be read in.
-#' 
-#' @param starts.in.df.are.0based a boolean which tells whether the ranges in the bed file are 0 or 1 base encoded. A 0 based encoding is persumed
-#' @param remove.unsual if TRUE(default) remove the chromomesomes with unsual names, such as chrX_random
-#' @param sep a single character which designates the separator in the file. The default value is tab. 
 #'
-#' @usage readGeneric(location,remove.unsual=T)
+#' @param chr  number of the column that has chromsomes information in the table (Def:1)
+#' @param start number of the column that has start coordinates in the table (Def:2)
+#' @param end  number of the column that has end coordinates in the table (Def:3)
+#' @param strand number of the column that has strand information, only -/+
+#'               is accepted (Default:NULL)
+#'               
+#' @param meta.col  named \code{list} that maps column numbers to 
+#'                   meta data columns. 
+#'                   e.g. list(name=5, score=10), which means 5th column will be
+#'                   named "name", and 10th column will be named "score" and their
+#'                   contents will be a part of the returned GRanges object. 
+#'                   If header = TRUE, meta.col parameter will over-write the 
+#'                   column names given by the header line of the data frame.
+#'                   
+#' @param keep.all.metadata \code{logical} determining if the extra columns (
+#'        the ones that are not designated by chr,start,end,strand and meta.col
+#'        arguments )
+#'        should be kept or not. (Default:FALSE)
+#'        
+#'        
+#' @param zero.based a boolean which tells whether the ranges in 
+#'        the bed file are 0 or 1 base encoded. (Default: FALSE)
+#'        
+#' @param remove.unsual if TRUE(default) remove the chromosomes with unsual 
+#'        names, such as chrX_random (Default:FALSE)
+#'        
+#' @param header whether the original file contains a header line
+#'  which designates the column names. If \code{TRUE} header will be used to 
+#'  construct column names. These names can be over written by meta.col argument.
+#' @param skip number of lines to skip. If there is a header line(s) you do not
+#'        wish to include you can use skip argument to skip that line.
+#' @param sep a single character which designates the separator in the file. 
+#'        The default value is tab. 
+#'        
 #' @return \code{\link{GRanges}} object
 #'
-#' @note 
-#' one bed track per file is only accepted, 
-#' the bed files with multiple tracks will cause en error
+#' @examples
+#'  my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+#'  readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
+#'                       meta.col=list(score=5,name=4),
+#'                      keep.all.metadata=FALSE, zero.based=TRUE)
 #'
 #' @export
 #' @docType methods
-#' @rdname readGeneric-methods
-setGeneric("readGeneric", 
-            function(file, 
-                     header=FALSE, 
-                     col.names=NULL,
-                     keep.metadata=TRUE,
-                     starts.in.df.are.0based=TRUE,
-                     remove.unsual=TRUE,
-                     sep='\t',
-                     ...) 
-              standardGeneric("readGeneric"))
+#' @rdname readGeneric
+readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL, 
+                      keep.all.metadata=FALSE, zero.based=FALSE, remove.unsual=FALSE,
+                      header=FALSE, skip=0,sep="\t"){
+              
+  # reads the bed files
+  df=readTableFast(file, header=header, skip=skip, sep=sep)                    
+  
+  # removes nonstandard chromosome names
+  if(remove.unsual)
+    df = df[grep("_", as.character(df[,1]),invert=T),]
+  
+  # make a list of new column names, and their column numbers
+  col.names1=list(chr=chr,start=start,end=end,strand=strand)
+  col.names=c(col.names1,meta.col) # put the meta colums if any
+  
+  # check if col number exceeds dimensions of the original df.
+  if( max(unlist(col.names)) > ncol(df) ) 
+    stop("Number of columns is lower than designated number of columns by ",
+         "meta.col,chr,start,end or strand arguments\n")
+  
+  #
+  colnames(df)[unlist(col.names)] = names(unlist(col.names))
+  
+  
+  g = makeGRangesFromDataFrame(
+                          df, 
+                          keep.extra.columns=FALSE, 
+                          starts.in.df.are.0based=zero.based,
+                          ignore.strand=is.null(strand))
+  if(keep.all.metadata){
+    mcols(g)=df[,-unlist(col.names1),drop=FALSE]
+  }else if(!is.null(meta.col)){
+    mcols(g)=df[,unlist(meta.col),drop=FALSE]
+  }
+    
+  return(g)
+}
 
-#' @aliases readGeneric,character-method
-#' @rdname readGeneric-methods
-setMethod("readGeneric", 
-          signature(file = "character"),
-          function(file, header, col.names, keep.metadata, 
-                   starts.in.df.are.0.based, remove.unsual, sep, ...){
-            
-            # find out if there is a header, skip 1st line if there is a header
-            f.line=readLines(con = file, n = 1)
-            skip=0
-            if(grepl("^track",f.line))
-              skip=1
-            
-            # reads the bed files
-            bed=readTableFast(file, header=header, skip=skip, sep=sep)                    
-            
-            # removes nonstandard chromosome names
-            if(remove.unsual)
-              bed = bed[grep("_", as.character(bed[,1]),invert=T),]
-            
-            # checks whether the bed file contains a designated header, 
-            # if it does not, then it uses the col.names variable to construct the header
-            # if col.names is empty it will name the first three columns chr start end
-            if(!header){
-              if(is.null(col.names)){
-                colnames(bed)[1:3] = c('chr','start','end')
-              }else{
-                if(!is.list(col.names))
-                  stop('col.names argument is not a named list')
-                  
-                  # checks whether all necessary information is present
-                  if(!all(c('chr','start','end') %in% names(col.names)))
-                    stop(paste(setdiff(c('chr','start','end'), names(col.names))
-                               ,'information is missing' ))
-                  
-                  colnames(bed)[unlist(col.names)] = names(col.names)
-                }
-              }
-            
-            
-            # converts . as strand character into *
-            sind = grepl('strand', colnames(bed))
-            if(sind)
-              bed[, sind] = gsub('\\.','*', bed[,sind])
-            
-            g = makeGRangesFromDataFrame(
-                                    bed, 
-                                    keep.extra.columns=keep.metadata, 
-                                    starts.in.df.are.0based=starts.in.df.are.0based,
-                                    ignore.strand=!sind)
-            return(g)
-          }
-)
+
+
+
+
+
+
 
 
 # ---------------------------------------------------------------------------- #
@@ -117,25 +124,20 @@ setMethod("readGeneric",
 #' @return a GRanges object
 #'
 #' @docType methods
-#' @rdname readBroadPeak-methods
+#' @rdname readBroadPeak
 #' @export
-setGeneric("readBroadPeak", function(file) standardGeneric("readBroadPeak") )
-
-#' @aliases readBroadPeak
-#' @rdname readBroadPeak-methods
-setMethod("readBroadPeak", signature("character"),
-          function(file){
+readBroadPeak<-function(file){
           
             # checks whether the file contains a track header
-            cnames = c('chrom','chromStart','chromEnd','name','score',
-                         'strand','signalValue','pvalue','qvalue')
-            col.names = as.list(1:length(cnames))
-            names(col.names) = cnames
-            
-            g = readGeneric(file, header=FALSE, col.names=col.names)
+            #cnames = c('chrom','chromStart','chromEnd','name','score',
+            #             'strand','signalValue','pvalue','qvalue')
+            g = readGeneric(file,strand=6,meta.col=list(name=4,score=5,
+                                                        signalValue=7,
+                                                        pvalue=8,qvalue=9),
+                            header=FALSE )
             return(g)
           }
-)          
+        
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted narrowPeak file into a GRanges object
 #' @param file a abosulte or relative path to a bed file formatted by the Encode narrowPeak standard
@@ -143,22 +145,21 @@ setMethod("readBroadPeak", signature("character"),
 #' @return a GRanges object
 #'        
 #' @docType methods
-#' @rdname readNarrowPeak-methods
+#' @rdname readNarrowPeak
 #' @export
-setGeneric("readNarrowPeak", function(file) standardGeneric("readNarrowPeak") )
-    
-#' @aliases readNarrowPeak
-#' @rdname readNarrowPeak-methods
-setMethod("readNarrowPeak", signature("character"),
-          function(file){
+readNarrowPeak<-function(file){
                       
             # checks whether the file contains a track header
             cnames = c('chrom','chromStart','chromEnd','name','score',
                          'strand','signalValue','pvalue','qvalue', 'peak')
             col.names = as.list(1:length(cnames))
             names(col.names) = cnames
-            g = readGeneric(file, header=FALSE, colnames=colnames)
+            g = readGeneric(file,strand=6,meta.col=list(name=4,score=5,
+                                                        signalValue=7,
+                                                        pvalue=8,qvalue=9,
+                                                        peak=10),
+                            header=FALSE )
             return(g)
           }
-)          
+         
           
