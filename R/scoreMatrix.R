@@ -318,7 +318,7 @@ setMethod("heatMatrix", signature("ScoreMatrix"),
 			}
 			# plots the main matrix
 			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
-            col=mat.cols, , oma=c(0,0,0,0),
+            col=mat.cols, oma=c(0,0,0,0),
             useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
