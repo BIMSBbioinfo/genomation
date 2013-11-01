@@ -23,7 +23,8 @@
 }
 
 # ---------------------------------------------------------------------------- #
-# ScoreMatrixList constructor
+#' ScoreMatrixList constructor
+#' 
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
 #' @param l:  can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
@@ -107,31 +108,34 @@ setMethod("show", "ScoreMatrixList",
 )
 
 # ---------------------------------------------------------------------------- #
-#' plot functions for score matrix list
-#' Plot a ScoreMatrixList object as a panel of heatmaps
+#' Plot functions for score matrix list
+#' 
+#' Functions plot a ScoreMatrixList object as a panel of heatmaps
 #'
 #' @param mat.list a \code{ScoreMatrixList} object
 #' @param mat.cols colors to be used for plotting
-#' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap. By default it takes the values of -ncol/2, 0, ncol/2
+#' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap.
+#'  By default it takes the values of -ncol/2, 0, ncol/2
 #' @param ymarks a vector of that will lable the thick marks on the y axis
 #' @param y.at a numeric vector that will specify the positions of the thick marks on the y axis
 #' @param xcex, ycex an integer number which controls the character expansion on x and y axis
 #' @param cex.main an integer number which controls the character expansion of the plot label
-#' @param mar a vector of length 5 which controls the size of the margins. The order is the following: below, left, up, right, spacing between consecutive plots
+#' @param mar a vector of length 5 which controls the size of the margins. 
+#' The order is the following: below, left, up, right, spacing between consecutive plots
 #' @param use.names whether to use the names of the ScoreMatrixList object to label each plot
 #' @param main whether to use the names of the ScoreMatrixList object to label each plot
 #' @param xlab, ylab name to be used for the x/y axis 
 #' @param ... other options (obselete for now)
 
 #' @usage heatmapProfile(mat.list, mat.cols=NULL, ...)
-#' @docType methods
-#' @rdname ScoreMatrixList-methods
 
-#' @example l = lapply(seq(20, 40,5), function(x)as(matrix(rpois(1000, x), ncol=25), 'scoreMatrix'))
-#' @example l = ScoreMatrixList(l)
-#' @example names(l) = letters[1:5]
-#' @example heatmapProfile(l)
+#' @examples
+#'  l = lapply(seq(20, 40,5), function(x)as(matrix(rpois(1000, x), ncol=25), 'scoreMatrix'))
+#'  
+#'  
 #' @export
+#' @docType methods
+#' @rdname heatmapProfile-methods
 setGeneric("heatmapProfile", 
            function(mat.list, mat.cols=NULL, xmarks=NULL, 
                     ymarks=NULL, y.at=NULL, xcex=1.5, 
@@ -247,18 +251,19 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 
 
 # ---------------------------------------------------------------------------- #
+#' Scale the ScoreMatrixList
+#' 
 #' Scales each scoreMatrix in the ScoreMatrixList object
-
 #' @param sml a \code{ScoreMatrixList} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
-
-#' @usage scaleScoreMatrixList(mat, columns=FALSE, rows=TRUE, ...)
-#' @return \code(ScoreMatrixList) object
-
+#' @param scalefun a function object that takes as input a matrix and returns a matrix.
+#'  By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
+#'
+#' @return \code{ScoreMatrixList} object
+#'
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname scaleScoreMatrixList-methods
 #' @export
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
@@ -281,17 +286,18 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 )
 
 # ---------------------------------------------------------------------------- #
+#' Get common rows from a ScoreMatrixList object
+#' 
 #' Returns a union of rows for each matrix in a ScoreMatrixList object. 
 #' This is done using the rownames of each element in the list.
-
+#'
 #' @param sml a \code{ScoreMatrixList} object
-
-
-#' @usage unionScoreMatrixList(sml, columns=FALSE, rows=TRUE, ...)
-#' @return \code(ScoreMatrixList) object
-
+#'
+#'
+#' @return \code{ScoreMatrixList} object
+#'
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname unionScoreMatrixList-methods
 #' @export
 setGeneric("unionScoreMatrixList", 
            function(sml)

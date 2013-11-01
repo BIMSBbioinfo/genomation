@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 GenomationDevtools.R
+.DS_Store
+inst/.DS_Store
+inst/extdata/.DS_Store

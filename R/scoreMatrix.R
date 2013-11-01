@@ -72,53 +72,53 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #'                However the sizes of windows have to be equal.
 #' @param strand.aware If TRUE (default: FALSE), the strands of the
 #'                   windows will be taken into account in the resulting
-#'                    \code{scoreMatrix}.
+#'                    \code{ScoreMatrix}.
 #'                     If the strand of a window is -, the values of the bins 
 #'                     for that window will be reversed
-#' @param col.name if the object is \code{GRanges} object a numeric column
+#' @param weight.col if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
 #' @param is.noCovNA (Default:FALSE)
-#'                  if TRUE,and if 'target' is a GRanges object with 'col.name'
+#'                  if TRUE,and if 'target' is a GRanges object with 'weight.col'
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG methylation
 #'                   values.
 #' 
-#' @return returns a \code{scoreMatrix} object
-#' @seealso \code{\link{scoreMatrixBin}}
+#' @return returns a \code{ScoreMatrix} object
+#' @seealso \code{\link{ScoreMatrixBin}}
 #' @examples
 #' 
 #' # When target is GRanges
 #'          data(cage)
 #'          data(promoters)
-#'          scores1=scoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#'                                  col.name="tpm")
+#'          scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#'                                  weight.col="tpm")
 #'                                  
 #' # When target is RleList
 #' covs=coverage(cage)
-#' scores2=scoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
+#' scores2=ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
 #' 
 #'  
 #' # When target is a bam file
 #'  # bamfile="example.bam"
-#'  # scores3=scoreMatrix(target=bamfile,windows=promoters,strand.aware=TRUE) 
+#'  # scores3=ScoreMatrix(target=bamfile,windows=promoters,strand.aware=TRUE) 
 #'  
 #' @docType methods
-#' @rdname scoreMatrix-methods           
+#' @rdname ScoreMatrix-methods           
 #' @export
-setGeneric("scoreMatrix",
+setGeneric("ScoreMatrix",
                     function(target,windows,strand.aware=FALSE,
-                             col.name=NULL,is.noCovNA=FALSE) 
-                                standardGeneric("scoreMatrix") )
+                             weight.col=NULL,is.noCovNA=FALSE) 
+                                standardGeneric("ScoreMatrix") )
 
 
 # ---------------------------------------------------------------------------- #
-#' @aliases scoreMatrix,RleList,GRanges-method
-#' @rdname scoreMatrix-methods
-setMethod("scoreMatrix",signature("RleList","GRanges"),
+#' @aliases ScoreMatrix,RleList,GRanges-method
+#' @rdname ScoreMatrix-methods
+setMethod("ScoreMatrix",signature("RleList","GRanges"),
           function(target,windows,strand.aware){
             
    #check if all windows are equal length
@@ -164,44 +164,44 @@ setMethod("scoreMatrix",signature("RleList","GRanges"),
 	# reorder matrix
   	mat = mat[order(ranks),] 
     
-  return(new("scoreMatrix",mat))
+  return(new("ScoreMatrix",mat))
 })
 
 
 
-#' @aliases scoreMatrix,GRanges,GRanges-method
-#' @rdname scoreMatrix-methods
-setMethod("scoreMatrix",signature("GRanges","GRanges"),
-          function(target,windows,strand.aware,col.name,is.noCovNA){
+#' @aliases ScoreMatrix,GRanges,GRanges-method
+#' @rdname ScoreMatrix-methods
+setMethod("ScoreMatrix",signature("GRanges","GRanges"),
+          function(target,windows,strand.aware,weight.col,is.noCovNA){
             
             #make coverage vector  from target
-            if(is.null(col.name)){
+            if(is.null(weight.col)){
 				target.rle=coverage(target)
             }else{
-                if(! col.name %in% names(mcols(target)) ){
-                  stop("provided column 'col.name' does not exist in tartget\n")
+                if(! weight.col %in% names(mcols(target)) ){
+                  stop("provided column 'weight.col' does not exist in tartget\n")
                 }
                 if(is.noCovNA)
                 { # adding 1 to figure out NA columns later
-                  target.rle=coverage(target,weight=(mcols(target)[col.name][,1]+1) )
-                  mat=scoreMatrix(target.rle,windows,strand.aware)
+                  target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
+                  mat=ScoreMatrix(target.rle,windows,strand.aware)
                   mat=mat-1 # substract 1
                   mat[mat<0]=NA # everything that are <0 are NA
                   return(mat)
                 }
-                target.rle=coverage(target,weight= col.name ) 
+                target.rle=coverage(target,weight= weight.col ) 
                 
             }
             
 
-            # call scoreMatrix function
-            scoreMatrix(target.rle,windows,strand.aware)
+            # call ScoreMatrix function
+            ScoreMatrix(target.rle,windows,strand.aware)
 })
 
 
-#' @aliases scoreMatrix,character,GRanges-method
-#' @rdname scoreMatrix-methods
-setMethod("scoreMatrix",signature("character","GRanges"),
+#' @aliases ScoreMatrix,character,GRanges-method
+#' @rdname ScoreMatrix-methods
+setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows,strand.aware){
             
             if(!file.exists(target)){
@@ -215,19 +215,21 @@ setMethod("scoreMatrix",signature("character","GRanges"),
             
             covs=coverage(alns) # get coverage vectors
             
-            scoreMatrix(covs,windows,strand.aware)
+            ScoreMatrix(covs,windows,strand.aware)
           })
 
 
 # ---------------------------------------------------------------------------- #
-#' visual representation of scoreMatrix using a heatmap 
+#' visual representation of ScoreMatrix using a heatmap 
 #' The rows can be reordered using one factor and one numeric vector
 #'
-#' @param mat a \code{scoreMatrix} object
+#' @param mat a \code{ScoreMatrix} object
 #' @param fact a \code{factor} of length equal to \code{nrow(mat)}. Unused factor levels are dropped
-#' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, which is going to be used for ordering of the rows
+#' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, 
+#'        which is going to be used for ordering of the rows
 #' @param shift shift the start coordinate of the x axis (plot starts at -shift)
-#' @param mat.cols a vector of colors used for plotting of the heatmap. Default colors range from lightgray to darkblue.
+#' @param mat.cols a vector of colors used for plotting of the heatmap. 
+#'        Default colors range from lightgray to darkblue.
 #' @param fact.cols a vector of colors used for plotting of the factor key
 #' @param xlab x axis label
 #' @param ylab y axis label
@@ -239,8 +241,8 @@ setMethod("scoreMatrix",signature("character","GRanges"),
 #' @examples
 #'   data(cage)
 #'   data(promoters)
-#'   myMat2=scoreMatrix(target=cage,windows=promoters,
-#'                         col.name="tpm",strand.aware=TRUE)
+#'   myMat2=ScoreMatrix(target=cage,windows=promoters,
+#'                         weight.col="tpm",strand.aware=TRUE)
 #'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #'   heatMatrix(myMat2,fact=)
 #' 
@@ -259,9 +261,9 @@ setGeneric("heatMatrix", function(mat,
                                   class.names=NULL, use.names=FALSE, ...) 
                                   standardGeneric("heatMatrix") )
 
-#' @aliases heatMatrix,scoreMatrix-method
+#' @aliases heatMatrix,ScoreMatrix-method
 #' @rdname heatMatrix-methods
-setMethod("heatMatrix", signature("scoreMatrix"),
+setMethod("heatMatrix", signature("ScoreMatrix"),
 		  function(mat, fact, add.sep, 
                ord.vec, shift, mat.cols, 
                fact.cols, xlab, ylab, 
@@ -317,7 +319,7 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 			# plots the main matrix
       
 			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
-            col=mat.cols, , oma=c(0,0,0,0),
+            col=mat.cols, oma=c(0,0,0,0),
             useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
 			classnum = table(fact)
 			rowsep = cumsum(classnum)
@@ -349,14 +351,13 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 
 # ---------------------------------------------------------------------------- #
 #' Bins the columns of a matrix using a user provided function 
-
-#' @param mat a \code{scoreMatrix} object
+#'
+#' @param mat a \code{ScoreMatrix} object
 #' @param nbins a \code{integer} number of bins in the final matrix
 #' @param fun  a \code{character} vector representing the function to be used for bining
-
-#' @usage binMatrix(mat, nbins=NULL, fun='mean', ...)
-#' @return \code(scoreMatrix) object
-
+#'
+#' @return \code{ScoreMatrix} object
+#'
 #' @docType methods
 #' @rdname binMatrix-methods
 #' @export
@@ -364,7 +365,7 @@ setGeneric("binMatrix",
               function(mat, nbins=NULL, fun='mean', ...)
                 standardGeneric("binMatrix") )
 
-setMethod("binMatrix", signature("scoreMatrix"),
+setMethod("binMatrix", signature("ScoreMatrix"),
 			function(mat, nbins=NULL, fun='mean', ...){
 		  
 				if(is.null(nbins))
@@ -378,24 +379,23 @@ setMethod("binMatrix", signature("scoreMatrix"),
 				coord = binner(1, ncol(mat), nbins)
 				bmat = mapply(function(a,b)apply(mat[,a:b],1,fun), coord[1,], coord[2,])
 										
-				return(new("scoreMatrix", bmat))
+				return(new("ScoreMatrix", bmat))
 		 }
 )
 
 
 # ---------------------------------------------------------------------------- #
 #' Scales the values in the matrix by rows and/or columns
-
-#' @param mat a \code{scoreMatrix} object
+#'
+#' @param mat a \code{ScoreMatrix} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
-
-#' @usage scaleScoreMatrix(sml, columns=FALSE, rows=TRUE, ...)
-#' @return \code(scoreMatrix) object
-
+#'
+#' @return \code{ScoreMatrix} object
+#'
 #' @docType methods
-#' @rdname scoreMatrix-methods
+#' @rdname ScoreMatrix-methods
 #' @export
 setGeneric("scaleScoreMatrix", 
                 function(mat, 
@@ -404,7 +404,7 @@ setGeneric("scaleScoreMatrix",
                          ...) 
                         standardGeneric("scaleScoreMatrix") )
 
-setMethod("scaleScoreMatrix", signature("scoreMatrix"),
+setMethod("scaleScoreMatrix", signature("ScoreMatrix"),
           function(mat, columns, rows, scalefun, ...){
             
             if(!is.function(scalefun))
@@ -416,6 +416,6 @@ setMethod("scaleScoreMatrix", signature("scoreMatrix"),
             if(rows)
               mat = scalefun(mat)
             
-            return(new("scoreMatrix", mat))
+            return(new("ScoreMatrix", mat))
           }
 )

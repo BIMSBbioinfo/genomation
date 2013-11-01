@@ -1,13 +1,13 @@
 \docType{methods}
-\name{convert.bed2exons}
-\alias{convert.bed2exons}
-\alias{convert.bed2exons,data.frame-method}
-\title{convert a data frame read-in from a bed file to a GRanges object for exons}
+\name{convertBedDf}
+\alias{convertBedDf}
+\alias{convertBedDf,data.frame-method}
+\title{convert a data frame read-in from a bed file to a GRanges object}
 \usage{
-  convert.bed2exons(bed.df)
+  convertBedDf(bed)
 }
 \arguments{
-  \item{bed.df}{a data.frame where column order and content
+  \item{bed}{a data.frame where column order and content
   resembles a bed file with 12 columns}
 }
 \value{
@@ -15,10 +15,12 @@
 }
 \description{
   convert a data frame read-in from a bed file to a GRanges
-  object for exons
+  object
 }
 \note{
   one bed track per file is only accepted, the bed files
   with multiple tracks will cause en error
+
+  bed files are expected not to have header lines
 }
 

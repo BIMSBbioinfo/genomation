@@ -42,16 +42,16 @@ setMethod("show", "randomEnrichment", function(object) {
 
 
 # ---------------------------------------------------------------------------- #
-#' An S4 class for storing \code{scoreMatrix} function results
+#' An S4 class for storing \code{ScoreMatrix} function results
 #'
 #' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
-#' Each row on the scoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
+#' Each row on the ScoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
 #'
-#' @name scoreMatrix-class
-#' @rdname scoreMatrix-class
-#' @seealso \code{\link{scoreMatrix-methods}}
+#' @name ScoreMatrix-class
+#' @rdname ScoreMatrix-class
+#' @seealso \code{\link{ScoreMatrix-methods}}
 #' @export
-setClass("scoreMatrix",contains = "matrix")
+setClass("ScoreMatrix",contains = "matrix")
 
 
 # ---------------------------------------------------------------------------- #

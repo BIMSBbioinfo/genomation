@@ -24,8 +24,8 @@
   shuffled}
 
   \item{...}{other parameters to be passed to
-  \code{randomize.feature} function. This parameters
-  constrains how randomization is done.}
+  \code{randomizeFeature} function. These parameters
+  ccontrol how randomization is done.}
 }
 \value{
   returns a \code{randomEnrichment} object
@@ -40,6 +40,6 @@
   will be measured.
 }
 \seealso{
-  \code{\link{randomize.feature}}
+  \code{\link{randomizeFeature}}
 }
 

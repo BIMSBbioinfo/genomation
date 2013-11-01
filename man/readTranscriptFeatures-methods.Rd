@@ -1,10 +1,10 @@
 \docType{methods}
-\name{read.transcript.features}
-\alias{read.transcript.features}
-\alias{read.transcript.features,character-method}
-\title{function reading exon intron, promoter structure from a given bed file}
+\name{readTranscriptFeatures}
+\alias{readTranscriptFeatures}
+\alias{readTranscriptFeatures,character-method}
+\title{Function for reading exon intron and promoter structure from a given bed file}
 \usage{
-  read.transcript.features(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+  readTranscriptFeatures(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 }
 \arguments{
   \item{location}{location of the bed file with 12 or more
@@ -28,11 +28,16 @@
   exon/intron/promoter/TSS
 }
 \description{
-  function reading exon intron, promoter structure from a
-  given bed file
+  Function for reading exon intron and promoter structure
+  from a given bed file
 }
 \note{
   one bed track per file is only accepted, the bed files
   with multiple tracks will cause en error
+}
+\examples{
+my.bed12.file=my.file=system.file("extdata", "hg18.refseq.txt.Test", package = "genomation")
+  my.bed12.file
+  feats=readTranscriptFeatures(my.bed12.file)
 }
 

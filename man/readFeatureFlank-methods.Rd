@@ -1,10 +1,10 @@
 \docType{methods}
-\name{read.feature.flank}
-\alias{read.feature.flank}
-\alias{read.feature.flank,character-method}
-\title{a function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores}
+\name{readFeatureFlank}
+\alias{readFeatureFlank}
+\alias{readFeatureFlank,character-method}
+\title{A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores}
 \usage{
-  read.feature.flank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
+  readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
 }
 \arguments{
   \item{location}{for the bed file of the feature}
@@ -27,12 +27,12 @@
   flanks and one for GRanges object for the main feature.
   NOTE:This can not return a GRangesList at the moment
   because flanking regions do not have to have the same
-  column name as the feature. GRangesList elements should
+  column name as the feature.  GRangesList elements should
   resemble eachother in the column content. We can not
   satisfy that criteria for the flanks
 }
 \description{
-  a function to read-in genomic features and their upstream
+  A function to read-in genomic features and their upstream
   and downstream adjecent regions such as CpG islands and
   their shores
 }
