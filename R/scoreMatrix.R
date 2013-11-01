@@ -7,12 +7,7 @@
 getColors = function(n) {
   
   black = "#000000"
-  if (n <= 9) {
-    library(RColorBrewer)
-    c(black,brewer.pal(n-1, "Set2"))
-  } else {
-    c(black,hcl(h=seq(0,(n-2)/(n-1),length=n-1)*360,c=100,l=65,fixup=TRUE))
-  }
+  c(black,hcl(h=seq(0,(n-2)/(n-1),length=n-1)*360,c=100,l=65,fixup=TRUE))
 }
 
 # ---------------------------------------------------------------------------- #
@@ -252,8 +247,13 @@ setMethod("scoreMatrix",signature("character","GRanges"),
 #' @docType methods
 #' @rdname heatMatrix-methods
 #' @export
-setGeneric("heatMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL,
-                                  shift=0, mat.cols=NULL, fact.cols=NULL, 
+setGeneric("heatMatrix", function(mat, 
+                                  fact=NULL, 
+                                  add.sep=TRUE, 
+                                  ord.vec=NULL,
+                                  shift=0, 
+                                  mat.cols=NULL, 
+                                  fact.cols=NULL, 
                                   xlab='Position', ylab='Region', 
                                   main='Positional profile', 
                                   class.names=NULL, use.names=FALSE, ...) 
@@ -315,6 +315,7 @@ setMethod("heatMatrix", signature("scoreMatrix"),
 				}
 			}
 			# plots the main matrix
+      
 			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
             col=mat.cols, , oma=c(0,0,0,0),
             useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)

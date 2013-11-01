@@ -35,7 +35,7 @@
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE ...){
+ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE, ...){
 
 	len = length(l)
 	if(len == 0L)
@@ -304,5 +304,26 @@ setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
             sml = ScoreMatrixList(
                     lapply(sml, function(x)x[rownames(x) %in% rnames,]))
             return (sml)
+          }
+)
+
+# ---------------------------------------------------------------------------- #
+#' Reorder all elements of a ScoreMatrixList to a given ordering vector
+
+#' @param sml a \code{ScoreMatrixList} object
+#' @param ord.vec an integer vector
+#' @usage order(sml, ord.vec)
+#' @return \code(ScoreMatrixList) object
+
+#' @docType methods
+#' @rdname ScoreMatrixList-methods
+#' @export
+
+setMethod("order", signature("ScoreMatrixList"),
+          function(sml, ord.vec){
+            
+            ord.vec = as.integer(ord.vec)
+            sml = lapply(sml, function(x)x[ord.vec,])
+            return (as(sml,'ScoreMatrixList'))
           }
 )
