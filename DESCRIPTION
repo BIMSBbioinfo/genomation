@@ -4,8 +4,10 @@ Title: : R package for graphics and operations for genomic features
 Version: 0.4.3
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
-Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
-Description: A package for genomic feature analysis and annotation by extending bioconductor packages
+Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
+    <vedran.franke@gmail.com>
+Description: A package for genomic feature analysis and annotation by extending
+    bioconductor packages
 License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
@@ -16,19 +18,19 @@ Imports:
     GenomicRanges,
     IRanges,
     data.table,
-	plyr,
-	reshape2
+    plyr,
+    reshape2
 Suggests:
     testthat,
-	knitr
+    knitr
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
-  	'gffFunctions.R'
-	'findFeatureComb.R'
+    'gffFunctions.R'
+    'findFeatureComb.R'
     'randomizeFeature.R'
     'readAnnotate.R'
-	'readData.R'
+    'readData.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'

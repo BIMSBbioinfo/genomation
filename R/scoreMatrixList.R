@@ -54,9 +54,10 @@ ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE, ...){
 	  stop("granges object must be defined")
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(!all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList')) |
+	if(!all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList','GenomicRanges')) |
 	   !(all(as.character(l)) & !all(file.exists(l))))
-      stop('l is neither an RleList nor a list of files')
+      stop('l should be onw of the following: 
+           an RleList, a list of files, a list of GRanges')
 		
 	if(is.null(bin) && all(width(granges)) == unique(width(granges))){
 	  sml = lapply(l, function(x)scoreMatrix(x, granges, strand.aware))
@@ -263,7 +264,7 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname scaleScoreMatrixList-methods
+#' @rdname ScoreMatrixList-methods
 #' @export
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
@@ -297,7 +298,7 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname unionScoreMatrixList-methods
+#' @rdname ScoreMatrixList-methods
 #' @export
 setGeneric("unionScoreMatrixList", 
            function(sml)
@@ -324,7 +325,6 @@ setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
 #' @export
-
 setMethod("order", signature("ScoreMatrixList"),
           function(sml, ord.vec){
             
