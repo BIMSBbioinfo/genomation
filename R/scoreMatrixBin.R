@@ -155,11 +155,14 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @rdname ScoreMatrixBin-methods           
 #' @export
 setGeneric("ScoreMatrixBin",
-           function(target,windows,bin.num=10,bin.op="mean",
+           function(target,windows,
+                    bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
-                    weight.col=NULL,is.noCovNA=FALSE) 
+                    weight.col=NULL,is.noCovNA=FALSE, 
+                    ...) 
              standardGeneric("ScoreMatrixBin") )
 
+# ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,RleList,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
@@ -223,8 +226,45 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
             
 })
 
-
-
+# ---------------------------------------------------------------------------- #
+#' @aliases ScoreMatrixBin,character,GRanges-method
+#' @rdname ScoreMatrixBin-methods
+setMethod("ScoreMatrixBin",signature("character","GRanges"),
+          function(target, windows, bin.num, bin.op, strand.aware, 
+                   param=NULL, unique=TRUE, extend=0){
+            
+            if(!file.exists(target)){
+              stop("Indicated 'target' file does not exist\n")
+            }
+            
+            # generates the ScanBamParam object
+            if(is.null(param)){
+              param <- ScanBamParam(which=windows)  
+            }else{
+              if(class(param) == 'ScanBamParam'){
+                bamWhich(param) <- windows  
+              }else{
+                stop('param needs to be an object of clas ScanBamParam')
+              }
+            }
+            
+            # get the coverage vector for 
+            # given locations
+            alns <- readGAlignmentsFromBam(target, param=param)# read alignments
+            
+            if(unique)
+              alns = unique(alns)
+            
+            if(extend > 0){
+              resize(alns, width=extend)
+            }else{
+              stop('extend needs to be a positive integer')
+            }
+            
+            covs=coverage(alns) # get coverage vectors
+            
+            ScoreMatrixBin(covs,windows,bin.num,strand.aware)
+          })
 
 
 

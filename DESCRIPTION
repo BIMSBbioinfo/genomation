@@ -17,6 +17,7 @@ Depends:
 Imports:
     GenomicRanges,
     IRanges,
+	Rsamtools,
     data.table,
     plyr,
     reshape2

@@ -54,18 +54,18 @@ ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE, ...){
 	  stop("granges object must be defined")
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(!all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList','GenomicRanges')) |
-	   !(all(as.character(l)) & !all(file.exists(l))))
-      stop('l should be onw of the following: 
+	if(!all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList','GenomicRanges')) &
+	   !all(file.exists(l)))
+      stop('l should be one of the following: 
            an RleList, a list of files, a list of GRanges')
 		
 	if(is.null(bin) && all(width(granges)) == unique(width(granges))){
-	  sml = lapply(l, function(x)scoreMatrix(x, granges, strand.aware))
+	  sml = lapply(l, function(x)ScoreMatrix(x, granges, strand.aware))
 	  
 	} else{
 	  if(is.null(bin))
 	    bin = 10
-	  sml = lapply(l, function(x)scoreMatrixBin(x, granges, bin=bin, strand.aware))
+	  sml = lapply(l, function(x)ScoreMatrixBin(x, granges, bin.num=bin, strand.aware))
 	}
 	return(new("ScoreMatrixList",sml))
 }

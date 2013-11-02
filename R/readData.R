@@ -95,8 +95,8 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   
   # converts the . strand character to *
   sind = grepl('strand',colnames(df))
-  if(sind & !is.null(strand))
-    df[, sind] = sub('\\.', '*', sind)
+  if(any(sind) & !is.null(strand))
+    df[, sind] = sub('\\.', '*', df[,sind])
   
   g = makeGRangesFromDataFrame(
                           df, 

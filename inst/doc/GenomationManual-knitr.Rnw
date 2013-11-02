@@ -96,6 +96,7 @@ provided they are in a tabular format. In addition, BAM files can be also utiliz
 core \Rpackage(genomation) functions. These functions will read the data from 
 flat files and create GRanges or GRangesList objects.
 <<readExamples1, eval=FALSE, tidy=TRUE>>=
+library(genomation)
 file.to.read1=system.file("extdata", "chr21.CpGi.hg19.bed", package = "genomation")
 readBed(file.to.read1)
 
@@ -133,7 +134,31 @@ and visualization. Below we will demonstrate the functionality on specific use c
 % ----------------------------------------------------------------- %
 \subsection{Visualization of ChiP sequencing data}
 
-We will visualize the binding profiles of 
+We will visualize the binding profiles of 6 transcription factors around the 
+Ctcf binding sites. 
+
+In the fist step we will select the *.bam files containing mapped reads.
+<<selectBamChipseq, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+library(genomation)
+genomationDataPath = system.file('extdata',package='genomationData')
+bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+@
+
+Now we will read in the Ctcf peaks from human chromosome 21, and order them by 
+their p values.
+<<readCtcfPeaks, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+ctcf.peaks = readBroadPeak(file.path(genomationDataPath, 'wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz'))
+ctcf.peaks = ctcf.peaks[order(ctcf.peaks$pvalue)]
+@
+
+
+In order to extract the coverage values of all transcription factors around 
+chipseq peaks, we will use the \Rcode{ScoreMatrixList} function.
+<<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=20)
+
+@
+
 
 % ----------------------------------------------------------------- %
 \subsection{Annotation of bam files}

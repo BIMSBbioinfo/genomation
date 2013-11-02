@@ -1,6 +1,7 @@
 import(methods)
 import(GenomicRanges)
 import(IRanges)
+import(Rsamtools)
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)

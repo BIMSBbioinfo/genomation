@@ -202,7 +202,8 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, param=NULL){
+          function(target,windows,strand.aware, 
+                   param=NULL, unique=TRUE, extend=0){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
@@ -222,6 +223,14 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             # get the coverage vector for 
             # given locations
             alns <- readGAlignmentsFromBam(target, param=param)# read alignments
+            if(unique)
+              alns = unique(alns)
+            
+            if(extend > 0){
+              resize(alns, width=extend)
+            }else{
+              stop('extend needs to be a positive integer')
+            }
             
             covs=coverage(alns) # get coverage vectors
             
