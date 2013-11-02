@@ -111,11 +111,11 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @export
 setGeneric("ScoreMatrix",
                     function(target,windows,strand.aware=FALSE,
-                             weight.col=NULL,is.noCovNA=FALSE) 
+                             weight.col=NULL,is.noCovNA=FALSE,...) 
                                 standardGeneric("ScoreMatrix") )
 
 
-# ---------------------------------------------------------------------------- #
+
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
@@ -202,15 +202,26 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware){
+          function(target,windows,strand.aware, param=NULL){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
             }
             
+            
+            # generates the ScanBamParam object
+            if(is.null(param)){
+              param <- ScanBamParam(which=windows)  
+            }else{
+              if(class(param) == 'ScanBamParam'){
+                bamWhich(param) <- windows  
+              }else{
+                stop('param needs to be an object of clas ScanBamParam')
+              }
+            }
+            
             # get the coverage vector for 
             # given locations
-            param <- ScanBamParam(which=windows)
             alns <- readGAlignmentsFromBam(target, param=param)# read alignments
             
             covs=coverage(alns) # get coverage vectors
