@@ -113,13 +113,6 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
 }
 
 
-
-
-
-
-
-
-
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted broad peak file into a GRanges object
 #'

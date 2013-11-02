@@ -166,12 +166,12 @@ dev.off()
 
 # ---------------------------------------------------------------------------- #
 # test for plotMatrix
-m = as(matrix(rnorm(500), nrow=50), 'scoreMatrix')
+m = as(rbind(matrix(rnorm(250), nrow=50),matrix(rnorm(250, 5), nrow=50)), 'ScoreMatrix')
 rownames(m) = sample(letters, nrow(m), replace=T)
 heatMatrix(m, use.names=T)
-png(file.path('/home/members/vfranke/Tmp','pm.png'), width=1200, height=1200)
-	
-dev.off()
+heatMatrix(m, use.names=F)
+fact = factor(rep(c(1,2), each=50))
+heatMatrix(m, use.names=F, fact=fact)
 
 
 	

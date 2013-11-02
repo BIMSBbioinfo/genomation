@@ -12,7 +12,7 @@ getColors = function(n) {
 
 # ---------------------------------------------------------------------------- #
 # removes ranges that fell of the rle object
-# does not check for the correspondence of the chromosome names - always chech before using this function
+# does not check for the correspondence of the chromosome names - always check before using this function
 constrainRanges = function(target, windows){
 	
 	checkClass(target, 'SimpleRleList')
@@ -281,32 +281,17 @@ setMethod("heatMatrix", signature("ScoreMatrix"),
 				stop('shift needs to be a numeric vector of length 1')
 			# -------------------------- #
 			# default values
-			if(is.null(fact))
-				fact=as.factor(rep(1, nrow(mat)))
 			if(is.null(ord.vec))
 				ord.vec = 1:nrow(mat)	
-			if(is.null(class.names))
-				class.names = levels(fact)
 			
 			if(is.null(mat.cols)){
 				message('Using default mat.cols...\n')
 				mat.cols = colorRampPalette(c('lightgray','darkblue'), 
                                      interpolate='spline')(20)
 			}
-			if(is.null(fact.cols)){
-				message('Using default fact.cols...\n')
-				fact.cols = getColors(length(levels(fact)))
-			}
-			
-			# drops unused levels from the factor
-			fact = fact[1:length(fact), drop=TRUE]
 			
 			# -------------------------- #
 			# plots the matrix
-			mat = mat[order(as.numeric(fact), ord.vec),]
-			# par(fig=c(0,.95,0,1), mar=c(5,5,3,.5))
-			layout(matrix(c(1,2), ncol=2), widths=c(10,1))
-			par(mar=c(5,8,3,.5), oma=c(0,0,0,0))
 			AddSep = function(x, rowsep, col, sepwidth=c(0.05,0.5)){
 				for(rsep in rowsep){
 				  rect(xleft =0, 
@@ -316,35 +301,56 @@ setMethod("heatMatrix", signature("ScoreMatrix"),
                lty=1, lwd=1, col=col, border=col)
 				}
 			}
-			# plots the main matrix
       
+      if(!is.null(fact)){
+        print('using factor')
+        layout(matrix(c(1,2), ncol=2), widths=c(20,1))
+        mat = mat[order(as.numeric(fact), ord.vec),]
+      }else{
+        mat = mat[ord.vec,]
+      }
+      
+ 			par(mar=c(5,5,3,.1), oma=c(0,0,0,0))
 			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
-            col=mat.cols, oma=c(0,0,0,0),
-            useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
-			classnum = table(fact)
-			rowsep = cumsum(classnum)
-			if(add.sep == TRUE)
-				AddSep(mat, rowsep[-length(rowsep)], "black")	
-			
-			if(use.names==TRUE){
-				axis(2, at=1:nrow(mat), labels=rownames(mat), las=2)
-			}else{
-				at = round(fivenum(1:nrow(mat)))
-				axis(2, at=at, labels=at, las=2)
-			}
-			
-			
-			# plots the class designation
-			# par(fig=c(.95,1,0,1), new=TRUE, mar=c(5,.5,3,1))
-			par(mar=c(5,.5,3, max(max(nchar(class.names)/2, 5))))
-			image(x = 1:20, 
-            y = 1:nrow(mat), 
-            z=t(matrix(as.numeric(fact), nrow=length(fact), ncol=20)),
-            col = fact.cols, xaxt='n', yaxt='n', ylab='', xlab='')
-			at = classnum/2
-			at[-1] = at[-1] + at[-length(at)]
-			at = cumsum(at)
-			axis(side=4, at=at, labels=class.names, tick = F, las=2)
+			      col=mat.cols, oma=c(0,0,0,0),
+			      useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
+      if(use.names==TRUE){
+        axis(2, at=1:nrow(mat), labels=rownames(mat), las=2)
+      }else{
+        at = round(fivenum(1:nrow(mat)))
+        axis(2, at=at, labels=at, las=2)
+      }			
+      
+			if(!is.null(fact)){
+        
+			  # drops unused levels from the factor
+			  fact = fact[1:length(fact), drop=TRUE]
+        
+			  if(is.null(class.names))
+			    class.names = levels(fact)
+        
+			  if(is.null(fact.cols)){
+			    message('Using default fact.cols...\n')
+			    fact.cols = getColors(length(levels(fact)))
+			  }
+			  
+			  classnum = table(fact)
+			  rowsep = cumsum(classnum)
+			  if(add.sep == TRUE)
+			    AddSep(mat, rowsep[-length(rowsep)], "black")
+        
+        par(mar=c(5,.5,3, max(nchar(class.names)/2)))
+			  image(x = 1:10, 
+			        y = 1:nrow(mat), 
+			        z=t(matrix(as.numeric(fact), nrow=length(fact), ncol=10)),
+			        col = fact.cols, xaxt='n', yaxt='n', ylab='', xlab='',
+              oma=c(0,0,0,1))
+			  at = classnum/2
+			  at[-1] = at[-1] + at[-length(at)]
+			  at = cumsum(at)
+			  axis(side=4, at=at, labels=class.names, tick = F, las=2)
+        
+			}	
 	  }
 )
 
