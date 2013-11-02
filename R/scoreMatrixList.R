@@ -58,15 +58,22 @@ ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE, ...){
 	   !all(file.exists(l)))
       stop('l should be one of the following: 
            an RleList, a list of files, a list of GRanges')
-		
-	if(is.null(bin) && all(width(granges)) == unique(width(granges))){
-	  sml = lapply(l, function(x)ScoreMatrix(x, granges, strand.aware))
-	  
-	} else{
-	  if(is.null(bin))
-	    bin = 10
-	  sml = lapply(l, function(x)ScoreMatrixBin(x, granges, bin.num=bin, strand.aware))
-	}
+	
+  sml = list()
+  for(i in 1:length(l)){
+    
+    message(paste('reading file:',basename(l[i])))
+    
+    if(is.null(bin) && all(width(granges)) == unique(width(granges))){
+      sml[[i]] = ScoreMatrix(l[[i]], granges, strand.aware)
+      
+    } else{
+      if(is.null(bin))
+        bin = 10
+      sml[[i]] = ScoreMatrixBin(l[[i]], granges, bin.num=bin, strand.aware)
+    }  
+  }
+	
 	return(new("ScoreMatrixList",sml))
 }
 

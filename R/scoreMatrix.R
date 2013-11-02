@@ -211,10 +211,10 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             # generates the ScanBamParam object
             if(is.null(param)){
-              param <- ScanBamParam(which=windows)  
+              param <- ScanBamParam(which=reduce(windows))
             }else{
               if(class(param) == 'ScanBamParam'){
-                bamWhich(param) <- windows  
+                bamWhich(param) <- reduce(windows)
               }else{
                 stop('param needs to be an object of clas ScanBamParam')
               }
@@ -222,15 +222,15 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             # get the coverage vector for 
             # given locations
-            alns <- readGAlignmentsFromBam(target, param=param)# read alignments
+            alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
             if(unique)
               alns = unique(alns)
             
-            if(extend > 0){
+            if(extend > 0)
               resize(alns, width=extend)
-            }else{
+            if(extend < 0)
               stop('extend needs to be a positive integer')
-            }
+            
             
             covs=coverage(alns) # get coverage vectors
             
