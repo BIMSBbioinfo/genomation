@@ -1,7 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
-GenomationDevtools.R
+inst/scripts/GenomationDevtools.R
 .DS_Store
 inst/.DS_Store
 inst/extdata/.DS_Store
