@@ -208,7 +208,6 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 			      	stop("Indicated 'target' file does not exist\n")
             }
             
-            
             # generates the ScanBamParam object
             if(is.null(param)){
               param <- ScanBamParam(which=windows)  
