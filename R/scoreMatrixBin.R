@@ -66,7 +66,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	# chop windows to bins
 	functs = c("min",'mean','max','median')
 	if(!bin.op %in% functs)
-		stop(paste('Supported binning functions are', functs,'\n'))
+		stop(paste(c('Supported binning functions are', functs,'\n')))
 	if(bin.op=="min")
 	  sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
                                   IRanges::viewMins(x,na.rm=TRUE) ),use.names=F)      
@@ -230,7 +230,7 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
-          function(target, windows, bin.num, bin.op, strand.aware, 
+          function(target, windows, bin.num, bin.op='mean', strand.aware, 
                    param=NULL, unique=TRUE, extend=0){
             
             if(!file.exists(target)){
@@ -263,7 +263,11 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
 
             covs=coverage(alns) # get coverage vectors
             
-            ScoreMatrixBin(covs,windows,bin.num,bin.op,strand.aware)
+            ScoreMatrixBin(covs,
+                           windows,
+                           bin.num=bin.num,
+                           bin.op=bin.op,
+                           strand.aware=strand.aware)
           })
 
 

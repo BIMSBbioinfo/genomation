@@ -36,7 +36,7 @@
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE, ...){
+ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.aware=FALSE, ...){
 
 	len = length(l)
 	if(len == 0L)
@@ -64,13 +64,15 @@ ScoreMatrixList = function(l, granges=NULL, bin=NULL, strand.aware=FALSE, ...){
     
     message(paste('reading file:',basename(l[i])))
     
-    if(is.null(bin) && all(width(granges)) == unique(width(granges))){
-      sml[[i]] = ScoreMatrix(l[[i]], granges, strand.aware)
+    if(is.null(bin.num) && all(width(granges)) == unique(width(granges))){
+      sml[[i]] = ScoreMatrix(l[[i]], granges, strand.aware=strand.aware)
       
     } else{
-      if(is.null(bin))
-        bin = 10
-      sml[[i]] = ScoreMatrixBin(l[[i]], granges, bin.num=bin, strand.aware)
+      if(is.null(bin.num))
+        bin.num = 10
+      sml[[i]] = ScoreMatrixBin(l[[i]], granges, 
+                                bin.num=bin.num, bin.op=bin.op, 
+                                strand.aware=strand.aware)
     }  
   }
 	

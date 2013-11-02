@@ -157,7 +157,7 @@ ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
 In order to extract the coverage values of all transcription factors around 
 chipseq peaks, we will use the \Rcode{ScoreMatrixList} function.
 <<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE>>=
-sml = ScoreMatrixList(l=bam.files[1], ctcf.peaks, bin.num=20)
+sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=20)
 
 @
 
