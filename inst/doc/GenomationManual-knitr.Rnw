@@ -85,8 +85,8 @@ list.files(system.file('extdata',package='genomationData'))
 
 To see the descriptions of the files:
 <<genomationDataInfo, eval=FALSE, tidy=TRUE>>=
-r = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
-head(r)
+sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
+head(sampleInfo)
 @
 
 % ----------------------------------------------------------------- %
@@ -156,9 +156,12 @@ ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
 
 In order to extract the coverage values of all transcription factors around 
 chipseq peaks, we will use the \Rcode{ScoreMatrixList} function.
+Using the \Rcode{heatmapProfile} on our \Rcode{ScoreMatrixList}, 
+we can plot the underlying signal side by side.
 <<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE>>=
 sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=20)
-
+names(sml) = sampleInfo$sampleName[match(sampleInfo)]
+heatmapProfile(sml)
 @
 
 

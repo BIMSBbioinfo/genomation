@@ -76,6 +76,11 @@ ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.
     }  
   }
 	
+  if(class(l) %in% c('SimpleRleList', 'RleList','GenomicRanges'))
+    names(sml) = names(l)
+  if(all(is.character(l)))
+    names(sml) = basename(l)
+  
 	return(new("ScoreMatrixList",sml))
 }
 
@@ -110,7 +115,7 @@ setMethod("show", "ScoreMatrixList",
 				widths = apply(do.call(rbind, dims),2, function(x)max(nchar(x)))
 				message('scoreMatrixlist of length:', len, '\n')
 				for(i in 1:len){
-					s=sprintf(paste('%d%s ','%',widths[1],'d %',widths[2],'d\n', sep=''), 
+					s=sprintf(paste('%d%s ','%',widths[1],'d %',widths[2],'d', sep=''), 
 							i, '. scoreMatrix with dims:', dims[[i]][1], dims[[i]][2])
 					message(s)
 				}
