@@ -277,6 +277,7 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 #' @param scalefun a function object that takes as input a matrix and returns a matrix.
 #'  By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
 #'
+#' @usage scalesScoreMatrixList(sml, columns=FALSE, rows=TRUE, scalefun)
 #' @return \code{ScoreMatrixList} object
 #'
 #' @docType methods
@@ -310,7 +311,7 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' This is done using the rownames of each element in the list.
 #'
 #' @param sml a \code{ScoreMatrixList} object
-#'
+#' @usage unionScoreMatrixList(sml)
 #'
 #' @return \code{ScoreMatrixList} object
 #'
