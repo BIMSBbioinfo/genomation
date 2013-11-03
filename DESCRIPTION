@@ -20,7 +20,9 @@ Imports:
 	Rsamtools,
     data.table,
     plyr,
-    reshape2
+    reshape2,
+	methods,
+	ggplot
 Suggests:
     testthat,
     knitr

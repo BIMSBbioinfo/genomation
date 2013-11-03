@@ -34,10 +34,11 @@
 #' @export
 #' @docType methods
 #' @rdname randomizeFeature-methods
-setGeneric("randomizeFeature", function(feature,chrom.sizes=NULL,stranded=TRUE,
-keep.strand.prop=TRUE,keep.chrom=TRUE,
-exclude=NULL,include=NULL,seed=NULL,nrand=1)
-standardGeneric("randomizeFeature") )
+setGeneric("randomizeFeature", 
+                function(feature,chrom.sizes=NULL,stranded=TRUE,
+                         keep.strand.prop=TRUE,keep.chrom=TRUE,
+                         exclude=NULL,include=NULL,seed=NULL,nrand=1)
+                                standardGeneric("randomizeFeature") )
 
 #' @aliases randomizeFeature,GRanges-method
 #' @rdname randomizeFeature-methods
@@ -203,6 +204,6 @@ setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="G
 		co$set = values(rand.ranges)$set[co$queryHits]
 		co$queryHits = NULL
 		co = unique(co)
-		co = co[,length(subjectHits), by=set]
+		co = co[,length(subjectHits), by='set']
 		return(co$V1/length(target))
 })

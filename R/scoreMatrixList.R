@@ -29,9 +29,11 @@
 #'
 #' @param l:  can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
 #' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
-#' @param bin: an integer telling the number of bins to bin the score matrix
+#' @param bin.num: an integer telling the number of bins to bin the score matrix
+#' @param bin.op: an name of the function that will be used for smoothing windows of ranges
+#' @param strand.aware: a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
  
-#' @usage ScoreMatrixList(l, granges, bin)
+#' @usage ScoreMatrixList(l, granges, bin.num, bin.op, strand.aware)
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
@@ -86,7 +88,7 @@ ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.
 
 # ---------------------------------------------------------------------------- #
 # Validator
-.valid.ScoreMatrixList = function(x){
+.valid.ScoreMatrixList = function(l){
 	errors = character()
 	# checks whether all matrices are of class scoreMatrix
 	if(!all(unlist(lapply(l, function(x)class(x) == 'scoreMatrix'))))
@@ -198,18 +200,18 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 				
 				}else if(! is.null(xlab) & is.null(ylab)){
 					layout(matrix(c(2:(len+1), rep(1, len)), 
-                        ncol=len, nrow=2, byrow=T), height=c(20,1))
+                        ncol=len, nrow=2, byrow=T), heights=c(20,1))
 					.plotXYlab(xlab, 'x')
 				
 				}else if(is.null(xlab) & ! is.null(ylab)){
-					layout(matrix(1:(len+1), ncol=len+1), width=c(5,rep(20, len+1)))
+					layout(matrix(1:(len+1), ncol=len+1), widths=c(5,rep(20, len+1)))
 					.plotXYlab(ylab, 'y')
 				
 				}else if(!is.null(xlab) & !is.null(ylab)){
 					par(mar=c(0,1,0,1), oma=rep(0,4))
 					layout(matrix(c(1,3:(len+2), 0,rep(2, len)), ncol=len+1, byrow=T), 
-						   width=c(4,rep(20, len+1)), 
-						   height=c(20,1))
+						   widths=c(4,rep(20, len+1)), 
+						   heights=c(20,1))
 					.plotXYlab(ylab, 'y')
 					.plotXYlab(xlab, 'x')
 				}

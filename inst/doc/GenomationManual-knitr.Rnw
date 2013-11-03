@@ -91,6 +91,11 @@ head(sampleInfo)
 
 % ----------------------------------------------------------------- %
 \section{Data input}
+
+One of the big hindrances in computational genomics stems from the myriad of formats
+that are used to store data. Although some formats have been selected as de facto standards
+for certain kind of biological data (e.g. BAM, VCF), 
+almost all publications come with supplementary tables that do not have the same structure
 \Rpackage(genomation) has functions to read genomic features and genomic annotation 
 provided they are in a tabular format. In addition, BAM files can be also utilized in
 core \Rpackage(genomation) functions. These functions will read the data from 
@@ -139,7 +144,7 @@ Ctcf binding sites.
 
 In the fist step we will select the *.bam files containing mapped reads.
 <<selectBamChipseq, eval=TRUE, tidy=TRUE, echo=FALSE>>=
-library(genomation)
+library(genomationData)
 library(GenomicRanges)
 genomationDataPath = system.file('extdata',package='genomationData')
 bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
@@ -202,7 +207,6 @@ peaks that are located on chromosome 21 and have width 100 and 1000 bp
 library(genomationData)
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(genomationDataPath, header=T, sep='\t', stringsAsFactors=FALSE)
-names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 
 peak.files = list.files(genomationDataPath, full.names=T, pattern='Peak.gz$')
 peaks = list()
