@@ -22,7 +22,7 @@ Imports:
     plyr,
     reshape2,
 	methods,
-	ggplot
+	ggplot2
 Suggests:
     testthat,
     knitr
