@@ -283,19 +283,20 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
                     columns=FALSE, rows=TRUE, 
-                    scalefun=function(x)scale(x), 
+                    scalefun=NULL, 
                     ...) 
              standardGeneric("scaleScoreMatrixList") )
 
 setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
           function(sml, columns, rows, scalefun, ...){
             
+              
             sml = lapply(sml, function(x)
                           scaleScoreMatrix(x, 
-                                           columns=colums, 
+                                           columns=columns, 
                                            rows=rows, 
                                            scalefun=scalefun))
-            sml = ScoreMatrixList(sml)
+            sml = as(sml,'ScoreMatrixList')
             return (sml)
           }
 )

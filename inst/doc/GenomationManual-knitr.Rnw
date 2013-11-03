@@ -72,7 +72,7 @@ The pipeline for computational knowledge extraction consists of three steps: dat
 High-throughput data which will be used to show the functonality of the \Rpackage{genomation} is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage{genomationData}.\\
 To install the data package from bioconductor c/p the following lines into your R interpreter:
 
-<<genomationData, eval=FALSE>>=
+<<genomationDataLoad, eval=FALSE>>=
 library(devtools)
 install_github("genomationData",username='frenkiboy')
 @
@@ -143,29 +143,111 @@ library(genomation)
 library(GenomicRanges)
 genomationDataPath = system.file('extdata',package='genomationData')
 bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+bam.files = bam.files[!grepl('Cage', bam.files)]
 @
 
-Now we will read in the Ctcf peaks from human chromosome 21, and order them by 
-their p values.
+Firstly, we will read in the Ctcf peaks, filter regions from human chromosome 21,
+and order them by their signal values. In the end we will resize all ranges to have a uniform
+width of 500 bases, fixed on the center of the peak.
 <<readCtcfPeaks, eval=TRUE, tidy=TRUE, echo=FALSE>>=
 ctcf.peaks = readBroadPeak(file.path(genomationDataPath, 'wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz'))
-ctcf.peaks = ctcf.peaks[order(ctcf.peaks$pvalue)]
 ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
+ctcf.peaks = ctcf.peaks[order(-ctcf.peaks$signalValue)]
+ctcf.peaks = resize(ctcf.peaks, width=1000, fix='center')
 @
 
 
 In order to extract the coverage values of all transcription factors around 
-chipseq peaks, we will use the \Rcode{ScoreMatrixList} function.
+chipseq peaks, we will use the \Rcode{ScoreMatrixList} function. 
+\Rcode{ScoreMatrixList} assign names to each element of the list based on the names of the bam files. We
+will use the names of the files to find the corresponding names of each sample in the SamplesInfo.txt
 Using the \Rcode{heatmapProfile} on our \Rcode{ScoreMatrixList}, 
 we can plot the underlying signal side by side.
-<<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE>>=
-sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=20)
-names(sml) = sampleInfo$sampleName[match(sampleInfo)]
-heatmapProfile(sml)
+
+\begin{figure}
+<<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=50)
+sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
+names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
+heatmapProfile(sml, xmarks=c(-500,0,500))
+@
+\caption{Heatmap profile of unscaled coverage shows a slight colocalization of Ctcf, Rad21 and Znf143;
+option \texttt{fig.keep='last'} here.\label{fig:ctcfScoreMatrixList}}
+\end{figure}
+
+
+Because of the large range of signal values in chipseq peaks, the \Rcode{heatmapProfile} 
+will not show the true extent of colocalization. To get around this, it is advisable
+to independently scale the rows of each element in the ScoreMatrixList.
+
+\begin{figure}
+<<plotScaledProfile, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+sml.scaled = scaleScoreMatrixList(sml)
+heatmapProfile(sml.scaled, xmarks=c(-500,0,500))
+@
+\caption{Heatmap profile of scaled coverage shows much stronger colocalization of the transcription factors; nevertheless, it is evident that some of the CTCF peaks have a very weak enrichment.
+option \texttt{fig.keep='last'} here.\label{fig:plotScaledProfile}}
+\end{figure}
+
+% ----------------------------------------------------------------- %
+\subsection{Combinatorial binding of transcription factors}
+
+In the first step we will read all peak files into a GRanges list. We will use the SamplesInfo file
+from the \Rpackage{genomationData} to get he names of the samples. Four of the peak files are 
+in the Encode broadPeak format, while one is in the narrowPeak. To read
+the files, we will use the \Rcode{readGeneric} function. It enables us to select 
+from the files only columns of interest. As the last step, we will restrict ourselves to
+peaks that are located on chromosome 21 and have width 100 and 1000 bp
+<<readAllPeaks, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+library(genomationData)
+genomationDataPath = system.file('extdata',package='genomationData')
+sampleInfo = read.table(genomationDataPath, header=T, sep='\t', stringsAsFactors=FALSE)
+names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
+
+peak.files = list.files(genomationDataPath, full.names=T, pattern='Peak.gz$')
+peaks = list()
+for(i in 1:length(peak.files)){
+    file = peak.files[i]
+    name=sampleInfo$sampleName[match(basename(file),sampleInfo$fileName)]
+    message(name)
+    peaks[[name]] = readGeneric(file, meta.col=list(score=5))
+}
+peaks = GRangesList(peaks)
+peaks = peaks[seqnames(peaks) == 'chr21' & width(peaks) < 1000  & width(peaks) > 100]
+@
+
+To find the combination of binding sites we will use the \Rcode{findFeatureComb} function.
+It takes a granges list object, finds the union of the ranges and designates each
+range by the combination of overlaps from the original set.
+By default, the returned ranges will have a numeric \Rcode{class} meta data column, which designates
+the correponding combination. If you are interested in the names of the TF which make 
+the combinations, put the \Rcode{use.names=TRUE}.
+<<findFeatureComb, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+tf.comb = findFeatureComb(peaks, width=1000)
 @
 
 
+To visualize the results, we will plot the enricment of resulting regions. Before doing that we will
+order the regions by their \Rcode{class} argument.
+\begin{figure}
+<<visualizeFeatureComb, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+tf.comb = tf.comb[order(tf.comb$class)]
+bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+bam.files = bam.files[!grepl('Cage', bam.files)]
+sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20)
+names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
+sml = scaleScoreMatrixList(sml)
+heatmapProfile(sml, xmarks=c(-500,0,500))
+@
+\end{figure}
+The plot shows perfectly how misleading the peak calling process can be. 
+Although the plots show that CTFC, Rad21 and Znf143 have almost perfect colozalization,
+Peak callers have trouble identifying peaks in regions with lower enrichments and as a 
+result, we get different statistics when using overlaps.
+
 % ----------------------------------------------------------------- %
+
+
 \subsection{Annotation of bam files}
 
 

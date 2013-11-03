@@ -176,12 +176,12 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
             
             #make coverage vector  from target
             if(is.null(weight.col)){
-				target.rle=coverage(target)
+				      target.rle=coverage(target)
             }else{
-                if(! weight.col %in% names(mcols(target)) ){
+              if(! weight.col %in% names(mcols(target)) ){
                   stop("provided column 'weight.col' does not exist in tartget\n")
-                }
-                if(is.noCovNA)
+              }
+              if(is.noCovNA)
                 { # adding 1 to figure out NA columns later
                   target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
                   mat=ScoreMatrix(target.rle,windows,strand.aware)
@@ -415,7 +415,7 @@ setMethod("binMatrix", signature("ScoreMatrix"),
 #' @param mat a \code{ScoreMatrix} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
+#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
 #' @return \code{ScoreMatrix} object
 #'
@@ -425,21 +425,21 @@ setMethod("binMatrix", signature("ScoreMatrix"),
 setGeneric("scaleScoreMatrix", 
                 function(mat, 
                          columns=FALSE, rows=TRUE, 
-                         scalefun=function(x)scale(x), 
+                         scalefun=NULL, 
                          ...) 
                         standardGeneric("scaleScoreMatrix") )
 
 setMethod("scaleScoreMatrix", signature("ScoreMatrix"),
           function(mat, columns, rows, scalefun, ...){
             
-            if(!is.function(scalefun))
-              stop('scalefun needs to be a proper R function')
+            if(is.null(scalefun))
+              scalefun = function(x)(x-mean(x))/(max(x)-min(x)+1)
             
             if(columns)
-              mat = t(scalefun(t(mat)))
+              mat = apply(mat, 2, scalefun)
             
             if(rows)
-              mat = scalefun(mat)
+              mat = t(apply(mat,1,scalefun))
             
             return(new("ScoreMatrix", mat))
           }

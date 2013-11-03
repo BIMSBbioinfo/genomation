@@ -31,10 +31,8 @@ setGeneric("findFeatureComb",
 setMethod("findFeatureComb", signature("GRangesList"),
           function(gl, width, use.names, collapse.char){
           
-              # returns a vector of ones if there is only one ranges set
-              if(length(gl) == 1)
-                return(rep(1, length(gl[[1]])))
               
+                
               if(width < 0)
                 stop('width needs to be a positive integer')
               
