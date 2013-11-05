@@ -31,6 +31,7 @@ Collate:
     'getRandomEnrichment.R'
     'gffFunctions.R'
     'findFeatureComb.R'
+	'plotMatrix'
     'randomizeFeature.R'
     'readAnnotate.R'
     'readData.R'
