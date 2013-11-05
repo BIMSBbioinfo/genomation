@@ -150,7 +150,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                         weight.col="tpm",strand.aware=TRUE)
 #'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #' 
-#' @seealso \code{\link{scoreMatrix}}
+#' @seealso \code{\link{ScoreMatrix}}
 #' @docType methods
 #' @rdname ScoreMatrixBin-methods           
 #' @export

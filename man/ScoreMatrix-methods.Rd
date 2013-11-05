@@ -1,6 +1,9 @@
 \docType{methods}
 \name{ScoreMatrix}
+\alias{binMatrix}
+\alias{binMatrix,ScoreMatrix-method}
 \alias{scaleScoreMatrix}
+\alias{scaleScoreMatrix,ScoreMatrix-method}
 \alias{ScoreMatrix}
 \alias{ScoreMatrix,character,GRanges-method}
 \alias{ScoreMatrix,GRanges,GRanges-method}
@@ -37,6 +40,14 @@
 
   \item{mat}{a \code{ScoreMatrix} object}
 
+  \item{nbins}{a \code{integer} number of bins in the final
+  matrix}
+
+  \item{fun}{a \code{character} vector representing the
+  function to be used for bining}
+
+  \item{mat}{a \code{ScoreMatrix} object}
+
   \item{columns}{a \code{columns} whether to scale the
   matrix by columns. Set by default to FALSE.}
 
@@ -51,6 +62,8 @@
   returns a \code{ScoreMatrix} object
 
   \code{ScoreMatrix} object
+
+  \code{ScoreMatrix} object
 }
 \description{
   The funcion produces a base-pair resolution matrix of
@@ -63,6 +76,9 @@
   that fall off the Rle object - have the start coordinate
   < 1 or end coordinate > length(Rle) The function takes
   the intersection of names in the Rle and GRanges objects
+
+  Bins the columns of a matrix using a user provided
+  function
 
   Scales the values in the matrix by rows and/or columns
 }

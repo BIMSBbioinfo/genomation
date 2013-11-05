@@ -21,7 +21,8 @@ Imports:
     data.table,
     plyr,
     reshape2,
-	ggplot2
+	ggplot2,
+	methods
 Suggests:
     testthat,
     knitr

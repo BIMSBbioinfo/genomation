@@ -69,6 +69,6 @@ data(cage)
   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 }
 \seealso{
-  \code{\link{scoreMatrix}}
+  \code{\link{ScoreMatrix}}
 }
 

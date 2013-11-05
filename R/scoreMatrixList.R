@@ -27,18 +27,20 @@
 #' 
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l:  can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
-#' @param granges: a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
-#' @param bin.num: an integer telling the number of bins to bin the score matrix
-#' @param bin.op: an name of the function that will be used for smoothing windows of ranges
-#' @param strand.aware: a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
+#' @param l can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
+#' @param granges a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
+#' @param bin.num an integer telling the number of bins to bin the score matrix
+#' @param bin.op an name of the function that will be used for smoothing windows of ranges
+#' @param strand.aware a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
+#' @param ... other arguments that can be passed to the functio
  
-#' @usage ScoreMatrixList(l, granges, bin.num, bin.op, strand.aware)
+#' @usage ScoreMatrixList(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.aware=FALSE, ...)
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.aware=FALSE, ...){
+ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, 
+                           bin.op='mean', strand.aware=FALSE, ...){
 
 	len = length(l)
 	if(len == 0L)
@@ -270,18 +272,20 @@ setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
 # ---------------------------------------------------------------------------- #
 #' Scale the ScoreMatrixList
 #' 
-#' Scales each scoreMatrix in the ScoreMatrixList object
+#' Scales each scoreMatrix in the ScoreMatrixList object, by rows and/or columns
+#' 
 #' @param sml a \code{ScoreMatrixList} object
-#' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
+#' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun a function object that takes as input a matrix and returns a matrix.
+#' @param ... other argments that be passed to the function
 #'  By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
 #'
-#' @usage scalesScoreMatrixList(sml, columns=FALSE, rows=TRUE, scalefun)
+#' @usage scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
 #' @return \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname scaleScoreMatrixList
 #' @export
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
@@ -290,6 +294,8 @@ setGeneric("scaleScoreMatrixList",
                     ...) 
              standardGeneric("scaleScoreMatrixList") )
 
+#' @aliases scaleScoreMatrixList
+#' @rdname scaleScoreMatrixList
 setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
           function(sml, columns, rows, scalefun, ...){
             
@@ -305,7 +311,7 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 )
 
 # ---------------------------------------------------------------------------- #
-#' Get common rows from a ScoreMatrixList object
+#' Get common rows from all matrices in a ScoreMatrixList object
 #' 
 #' Returns a union of rows for each matrix in a ScoreMatrixList object. 
 #' This is done using the rownames of each element in the list.
@@ -316,18 +322,20 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
+#' @rdname unionScoreMatrixList-methods
 #' @export
 setGeneric("unionScoreMatrixList", 
            function(sml)
              standardGeneric("unionScoreMatrixList") )
 
+#' @aliases unionScoreMatrixList,ScoreMatrixList-method
+#' @rdname unionScoreMatrixList-methods
 setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
           function(sml){
             
             rnames = Reduce('union' ,lapply(sml, rownames))
-            sml = ScoreMatrixList(
-                    lapply(sml, function(x)x[rownames(x) %in% rnames,]))
+            sml = as(lapply(sml, function(x)x[rownames(x) %in% rnames,]), 
+                     'ScoreMatrixList')
             return (sml)
           }
 )
@@ -335,13 +343,12 @@ setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
 # ---------------------------------------------------------------------------- #
 #' Reorder all elements of a ScoreMatrixList to a given ordering vector
 
-#' @param sml a \code{ScoreMatrixList} object
+#' @param sml \code{ScoreMatrixList} object
 #' @param ord.vec an integer vector
 #' @usage order(sml, ord.vec)
-#' @return \code(ScoreMatrixList) object
+#' @return \code{ScoreMatrixList} object
 
 #' @docType methods
-#' @rdname ScoreMatrixList-methods
 #' @export
 setMethod("order", signature("ScoreMatrixList"),
           function(sml, ord.vec){

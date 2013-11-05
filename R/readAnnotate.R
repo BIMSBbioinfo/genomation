@@ -524,6 +524,7 @@ distance2NearestFeature<-function(g.idh,tss){
 #' @param target: A GRanges object storing chromosome locations to be annotated (e.g. chipseq peaks)
 #' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of readTranscriptFeatures function
 #' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
+#' 
 #' @usage annotateWithGeneParts(target,GRangesList.obj,strand=F)
 #' @return \code{annotationByGenicParts} object
 #' 
@@ -940,7 +941,7 @@ setMethod("plotGenicAnnotation",
 				m = reshape2::melt(data.frame(d))
 				m = melt(d)
 				
-				p <- ggplot(m, aes(x=X2, y=X1, fill=value, colour="white")) + 
+				p <- ggplot(m, aes(x='X2', y='X1', fill='value', colour="white")) + 
 					 scale_fill_gradient(low =col[1], high = col[2]) + 
 					 scale_y_discrete(limits = rownames(d)[ind] ) + 
 					 opts(axis.title.x=theme_text(colour='white'), 

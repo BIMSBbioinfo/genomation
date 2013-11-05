@@ -384,12 +384,14 @@ setMethod("heatMatrix", signature("ScoreMatrix"),
 #' @return \code{ScoreMatrix} object
 #'
 #' @docType methods
-#' @rdname binMatrix-methods
+#' @rdname ScoreMatrix-methods
 #' @export
 setGeneric("binMatrix", 
               function(mat, nbins=NULL, fun='mean', ...)
                 standardGeneric("binMatrix") )
 
+#' @aliases binMatrix,ScoreMatrix-method
+#' @rdname ScoreMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
 			function(mat, nbins=NULL, fun='mean', ...){
 		  
@@ -417,6 +419,7 @@ setMethod("binMatrix", signature("ScoreMatrix"),
 #' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
+#' @usage scaleScoreMatrix(mat, columns=FALSE, rows=TRUE, scalefun=NULL, ...)
 #' @return \code{ScoreMatrix} object
 #'
 #' @docType methods
@@ -429,6 +432,8 @@ setGeneric("scaleScoreMatrix",
                          ...) 
                         standardGeneric("scaleScoreMatrix") )
 
+#' @aliases scaleScoreMatrix,ScoreMatrix-method
+#' @rdname ScoreMatrix-methods
 setMethod("scaleScoreMatrix", signature("ScoreMatrix"),
           function(mat, columns, rows, scalefun, ...){
             
