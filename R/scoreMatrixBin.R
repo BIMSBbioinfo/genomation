@@ -230,47 +230,26 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
-          function(target, windows, bin.num, bin.op='mean', strand.aware, 
-                   param=NULL, unique=TRUE, extend=0){
+          function(target, windows, bin.num=10, 
+                   bin.op='mean', strand.aware, type, ...){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
             
-            # generates the ScanBamParam object
-            if(is.null(param)){
-              param <- ScanBamParam(which=reduce(windows))
-            }else{
-              if(class(param) == 'ScanBamParam'){
-                bamWhich(param) <- reduce(windows)  
-              }else{
-                stop('param needs to be an object of clas ScanBamParam')
-              }
-            }
+            fm = c('bam','bigWig')
+            if(!type %in% fm)
+              stop(paste('currently supported formats are', fm))
             
-            # get the coverage vector for 
-            # given locations
-            # read alignments
-            alns <- granges(readGAlignmentsFromBam(target, param=param))
+            if(type == 'bam')
+              covs = readBam(target, windows, ...)
+            if(type == 'bigWig')
+              covs = readBigWig(target, windows, ...)            
             
-            if(unique)
-              alns = unique(alns)
-            
-            if(extend > 0)
-              resize(alns, width=extend)
-            if(extend < 0)
-              stop('extend needs to be a positive integer')
-
-            covs=coverage(alns) # get coverage vectors
-            
+            # get coverage vectors
             ScoreMatrixBin(covs,
                            windows,
                            bin.num=bin.num,
                            bin.op=bin.op,
                            strand.aware=strand.aware)
           })
-
-
-
-
-

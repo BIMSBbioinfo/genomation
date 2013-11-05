@@ -261,7 +261,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type, ...){
+          function(target,windows,strand.aware, type=NULL, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
@@ -277,8 +277,6 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
               covs = readBigWig(target, windows, ...)            
             
             # get coverage vectors
-            
-            print('tusam')
             ScoreMatrix(covs,windows,strand.aware)
           })
 

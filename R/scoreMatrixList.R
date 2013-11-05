@@ -32,15 +32,15 @@
 #' @param bin.num an integer telling the number of bins to bin the score matrix
 #' @param bin.op an name of the function that will be used for smoothing windows of ranges
 #' @param strand.aware a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
-#' @param ... other arguments that can be passed to the functio
+#' @param type if l is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param ... other arguments that can be passed to the function
  
-#' @usage ScoreMatrixList(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.aware=FALSE, ...)
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
 ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, 
-                           bin.op='mean', strand.aware=FALSE, ...){
+                           bin.op='mean', strand.aware=FALSE, type=NULL,...){
 
 	len = length(l)
 	if(len == 0L)
@@ -50,8 +50,7 @@ ScoreMatrixList = function(l, granges=NULL, bin.num=NULL,
 	# checks whether the list argument contains only scoreMatrix objects
 	if(all(unlist(lapply(l, class)) == 'scoreMatrix'))
 		return(new("ScoreMatrixList",l))
-	
-	
+
   
 	# ----------------------------------------------------------------- #
 	if(is.null(granges))
@@ -63,20 +62,23 @@ ScoreMatrixList = function(l, granges=NULL, bin.num=NULL,
       stop('l should be one of the following: 
            an RleList, a list of files, a list of GRanges')
 	
+  if(all(file.exists(l)) & is.null(type))
+      stop('When providing a file, it is necessary to give the type of the file')
+  
   sml = list()
   for(i in 1:length(l)){
     
     message(paste('reading file:',basename(l[i])))
     
-    if(is.null(bin.num) && all(width(granges)) == unique(width(granges))){
-      sml[[i]] = ScoreMatrix(l[[i]], granges, strand.aware=strand.aware)
+    if(is.null(bin.num) && all(width(granges) == unique(width(granges)))){
+      sml[[i]] = ScoreMatrix(l[[i]], granges, strand.aware=strand.aware, type)
       
     } else{
       if(is.null(bin.num))
         bin.num = 10
       sml[[i]] = ScoreMatrixBin(l[[i]], granges, 
                                 bin.num=bin.num, bin.op=bin.op, 
-                                strand.aware=strand.aware)
+                                strand.aware=strand.aware, type)
     }  
   }
 	
