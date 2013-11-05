@@ -1,10 +1,8 @@
 \docType{methods}
 \name{unionScoreMatrixList}
 \alias{unionScoreMatrixList}
-\title{Get common rows from a ScoreMatrixList object}
-\usage{
-  unionScoreMatrixList(sml)
-}
+\alias{unionScoreMatrixList,ScoreMatrixList-method}
+\title{Get common rows from all matrices in a ScoreMatrixList object}
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
 }

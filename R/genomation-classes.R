@@ -31,10 +31,10 @@ setClass("randomEnrichment",
 #' @rdname show-methods
 #' @aliases show,randomEnrichment-method
 setMethod("show", "randomEnrichment", function(object) {
-  cat("orig.cnt:",object@orig.cnt,"\n")
-  cat("log2fc:",object@log2fc,"\n")
-  cat("p.value:",object@p.value,"\n")
-  cat("rand.p.value:", object@rand.p.value,"\n")
+  message("orig.cnt:",object@orig.cnt,"\n")
+  message("log2fc:",object@log2fc,"\n")
+  message("p.value:",object@p.value,"\n")
+  message("rand.p.value:", object@rand.p.value,"\n")
 })
 
 

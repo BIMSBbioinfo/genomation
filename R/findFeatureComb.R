@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-#' Find combitations of features
+#' Find combitations of genomic features
 #' 
 #' Provided a GRangesList, finds the combinations of sets of ranges. 
 #' It is mostly used to look at the combinatorics of transcription factor 
@@ -17,6 +17,7 @@
 #' @param use.names a boolean which tells the function whether to return the resulting ranges with a numeric vector which designates each class (the default), or to construct the names of each class using the names from the GRangesList
 #' @param collapse.char a character which will be used to separate the class names if use.names=TRUE. The default is ':'
 #'
+#' @usage findFeatureComb(gl, width=0, use.names=FALSE, collapse.char=':')
 #' @return a GRanges object
 #'
 #' @docType methods
@@ -26,15 +27,11 @@ setGeneric("findFeatureComb",
            function(gl, width=0, use.names=FALSE, collapse.char=':') 
              standardGeneric("findFeatureComb") )
 
-#' @aliases findFeatureComb
+#' @aliases findFeatureComb,GRanges,GRangesList,GRangesList-methods
 #' @rdname findFeatureComb-methods
 setMethod("findFeatureComb", signature("GRangesList"),
           function(gl, width, use.names, collapse.char){
           
-              # returns a vector of ones if there is only one ranges set
-              if(length(gl) == 1)
-                return(rep(1, length(gl[[1]])))
-              
               if(width < 0)
                 stop('width needs to be a positive integer')
               

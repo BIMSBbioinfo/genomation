@@ -1,18 +1,14 @@
 \docType{methods}
 \name{ScoreMatrix}
+\alias{binMatrix}
+\alias{binMatrix,ScoreMatrix-method}
 \alias{scaleScoreMatrix}
+\alias{scaleScoreMatrix,ScoreMatrix-method}
 \alias{ScoreMatrix}
 \alias{ScoreMatrix,character,GRanges-method}
 \alias{ScoreMatrix,GRanges,GRanges-method}
 \alias{ScoreMatrix,RleList,GRanges-method}
 \title{Get base-pair score for bases in each window}
-\usage{
-  ScoreMatrix(target, windows, strand.aware = FALSE,
-    weight.col = NULL, is.noCovNA = FALSE)
-
-  scaleScoreMatrix(mat, columns = FALSE, rows = TRUE,
-    scalefun = function(x) scale(x), ...)
-}
 \arguments{
   \item{target}{a \code{RleList} , \code{GRanges} or a BAM
   file to be overlapped with ranges in \code{windows}}
@@ -44,6 +40,14 @@
 
   \item{mat}{a \code{ScoreMatrix} object}
 
+  \item{nbins}{a \code{integer} number of bins in the final
+  matrix}
+
+  \item{fun}{a \code{character} vector representing the
+  function to be used for bining}
+
+  \item{mat}{a \code{ScoreMatrix} object}
+
   \item{columns}{a \code{columns} whether to scale the
   matrix by columns. Set by default to FALSE.}
 
@@ -52,11 +56,12 @@
 
   \item{scalefun}{a function object that takes as input a
   matrix and returns a matrix. By default the argument is
-  set to the R scale function with center=TRUE and
-  scale=TRUE}
+  set to (x - mean(x))/(max(x)-min(x)+1)}
 }
 \value{
   returns a \code{ScoreMatrix} object
+
+  \code{ScoreMatrix} object
 
   \code{ScoreMatrix} object
 }
@@ -71,6 +76,9 @@
   that fall off the Rle object - have the start coordinate
   < 1 or end coordinate > length(Rle) The function takes
   the intersection of names in the Rle and GRanges objects
+
+  Bins the columns of a matrix using a user provided
+  function
 
   Scales the values in the matrix by rows and/or columns
 }

@@ -4,15 +4,6 @@
 \alias{randomizeFeature}
 \alias{randomizeFeature,GRanges-method}
 \title{function that randomizes the genomic coordinates}
-\usage{
-  randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
-    keep.strand.prop=TRUE,keep.chrom=TRUE,
-    exclude=NULL,include=NULL,seed=NULL)
-
-  randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
-    keep.strand.prop=TRUE,keep.chrom=TRUE,
-    exclude=NULL,include=NULL,seed=NULL)
-}
 \arguments{
   \item{feature}{a GRanges object to be randomized}
 

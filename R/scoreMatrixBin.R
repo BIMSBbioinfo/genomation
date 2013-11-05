@@ -66,7 +66,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 	# chop windows to bins
 	functs = c("min",'mean','max','median')
 	if(!bin.op %in% functs)
-		stop(paste('Supported binning functions are', functs,'\n'))
+		stop(paste(c('Supported binning functions are', functs,'\n')))
 	if(bin.op=="min")
 	  sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
                                   IRanges::viewMins(x,na.rm=TRUE) ),use.names=F)      
@@ -109,14 +109,14 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' \code{windows} can be a predefined region such as CpG islands or gene bodies that are not necessarily equi-width.
 #' Each window will be chopped to equal number of bins based on \code{bin.num} option.
 #'
-#' @param target a \code{RleList} or a \code{modRleList} or \code{GRanges} 
+#' @param target  \code{RleList} or a \code{modRleList} or \code{GRanges} 
 #'               object to be overlapped with ranges in \code{windows}
-#' @param windows a \code{GRanges} object that contains the windows of interest. 
+#' @param windows \code{GRanges} object that contains the windows of interest. 
 #'                It could be promoters, CpG islands, exons, introns. However 
 #'                the sizes of windows does NOT have to be equal.
-#' @param bin.num A single \code{integer} value denoting how many bins there 
+#' @param bin.num single \code{integer} value denoting how many bins there 
 #'                should be for each window
-#' @param bin.op A bin operation that is either one of the following strings: 
+#' @param bin.op bin operation that is either one of the following strings: 
 #'              "max","min","mean". The operation is applied on the 
 #'              values in the bin. Defaults to "mean"
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will 
@@ -150,16 +150,19 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                         weight.col="tpm",strand.aware=TRUE)
 #'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #' 
-#' @seealso \code{\link{scoreMatrix}}
+#' @seealso \code{\link{ScoreMatrix}}
 #' @docType methods
 #' @rdname ScoreMatrixBin-methods           
 #' @export
 setGeneric("ScoreMatrixBin",
-           function(target,windows,bin.num=10,bin.op="mean",
+           function(target,windows,
+                    bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
-                    weight.col=NULL,is.noCovNA=FALSE) 
+                    weight.col=NULL,is.noCovNA=FALSE, 
+                    ...) 
              standardGeneric("ScoreMatrixBin") )
 
+# ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,RleList,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
@@ -223,8 +226,49 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
             
 })
 
+# ---------------------------------------------------------------------------- #
+#' @aliases ScoreMatrixBin,character,GRanges-method
+#' @rdname ScoreMatrixBin-methods
+setMethod("ScoreMatrixBin",signature("character","GRanges"),
+          function(target, windows, bin.num, bin.op='mean', strand.aware, 
+                   param=NULL, unique=TRUE, extend=0){
+            
+            if(!file.exists(target)){
+              stop("Indicated 'target' file does not exist\n")
+            }
+            
+            # generates the ScanBamParam object
+            if(is.null(param)){
+              param <- ScanBamParam(which=reduce(windows))
+            }else{
+              if(class(param) == 'ScanBamParam'){
+                bamWhich(param) <- reduce(windows)  
+              }else{
+                stop('param needs to be an object of clas ScanBamParam')
+              }
+            }
+            
+            # get the coverage vector for 
+            # given locations
+            # read alignments
+            alns <- granges(readGAlignmentsFromBam(target, param=param))
+            
+            if(unique)
+              alns = unique(alns)
+            
+            if(extend > 0)
+              resize(alns, width=extend)
+            if(extend < 0)
+              stop('extend needs to be a positive integer')
 
-
+            covs=coverage(alns) # get coverage vectors
+            
+            ScoreMatrixBin(covs,
+                           windows,
+                           bin.num=bin.num,
+                           bin.op=bin.op,
+                           strand.aware=strand.aware)
+          })
 
 
 

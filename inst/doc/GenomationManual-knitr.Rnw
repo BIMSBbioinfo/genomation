@@ -57,54 +57,62 @@ Recent advances in sequencing technologies have enabled a downpoor of biological
   \caption{Bulk visualization for different genomic feature datasets flowchart}
    \vspace{-20pt}
 \end{wrapfigure} 
-\Rpackage(genomation) is a toolkit for annotation and in bulk visualization of 
+\Rpackage{genomation} is a toolkit for annotation and in bulk visualization of 
 genomic features (scored or unscored) over predefined regions. The \textbf{genomic features} the package can handle can be  anything with a minimal information of chromosome,start and end. The features could have any length
-and most of the time they are associated with a score. Typical examples of such data sets include aligned 
-from reads high-throughput sequencing (HTS) experiments, percent
-methylation values for CpGs (or other cytosines), locations of transcription factor binding site motifs, and so on. On the other hand, throughout the vignette we use the phrase "genomic annotation" to refer to the regions of the genome associated
-with a potential function and do not necessarily have a score (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). These genomic annotations are usually regions on interest,
-and distribution of genomic features over/around the annotations are can make the way
-for biological interpretation of the data.
+and most of the time they are associated with a score. Typical examples of such data sets include aligned reads from high-throughput sequencing (HTS) experiments, percent
+methylation values for CpGs (or other cytosines), locations of transcription factor binding site motifs, and so on. On the other hand, throughout the vignette we use the phrase "genomic annotation" to refer to the regions of the genome associated with a potential function and do not necessarily have a score (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). These genomic annotations are usually the regions of interest, and distribution of genomic features over/around the annotations are can make the way for biological interpretation of the data.
 
 
-The pipeline for computational knowledge extraction consists of three steps: data filtering, integration of data from multiple sources or generation of predictive models and biological interpretation of produced models, which leads to novel hypotheses that can be tested in the wetlab. \Rpackage(genomation) aims to facilitate the integration of multiple sources of genomic features with genomic annotation or already published experimental results.
+The pipeline for computational knowledge extraction consists of three steps: data filtering, integration of data from multiple sources or generation of predictive models and biological interpretation of produced models, which leads to novel hypotheses that can be tested in the wetlab. \Rpackage{genomation} aims to facilitate the integration of multiple sources of genomic features with genomic annotation or already published experimental results.
+\\*
 
 % ----------------------------------------------------------------- %
 \section{Access the data}
 
-High-throughput data which will be used to show the functonality of the \Rpackage(genomation) is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage(genomationData).\\
+High-throughput data which will be used to show the functonality of the \Rpackage{genomation} is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage{genomationData}.\\
 To install the data package from bioconductor c/p the following lines into your R interpreter:
 
-<<genomationData, eval=FALSE>>=
+<<genomationDataLoad, eval=FALSE>>=
 library(devtools)
-install_github("genomationData")
+install_github("genomationData",username='frenkiboy')
 @
 
-The \Rpackage(genomationData) vignette contains a verbose description of contained files.\\
+The \Rpackage{genomationData} vignette contains a verbose description of contained files.\\
 To list the available data:
 <<listGenomationData, eval=FALSE>>=
-list.files(system.file(package='genomationData'))
+list.files(system.file('extdata',package='genomationData'))
 @
 
 To see the descriptions of the files:
 <<genomationDataInfo, eval=FALSE, tidy=TRUE>>=
-r = read.table(system.file('SampleInfo.txt',package='genomationData'),header=T, sep='\t')
-head(r)
+sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
+head(sampleInfo)
 @
 
 % ----------------------------------------------------------------- %
 \section{Data input}
-\Rpackage(genomation) has functions to read genomic features and genomic annotation 
-provided they are in a tabular format. In addition, BAM files can be also utilized in
-core \Rpackage(genomation) functions. These functions will read the data from 
-flat files and create GRanges or GRangesList objects.
+
+One of larger hindrances in computational genomics stems from the myriad of formats
+that are used to store the data. Although some formats have been selected as de facto standards
+for specific kind of biological data (e.g. BAM, VCF), 
+almost all publications come with supplementary tables that do not have the same structure, 
+but hold similar information. The tables usually have a tabular format, contain the location
+of elements in genomic coordinates and various metadata colums. 
+\Rpackage(genomation) contais functions to read genomic features and genomic annotation 
+provided they are in a tabular format. These functions will read the data from 
+flat files into GRanges or GRangesList objects.
+
+\Rcode{readGeneric} is the workhorse of the 
 <<readExamples1, eval=FALSE, tidy=TRUE>>=
+library(genomation)
 file.to.read1=system.file("extdata", "chr21.CpGi.hg19.bed", package = "genomation")
-readBed(file.to.read1)
+readGeneric(file.to.read1)
 
 readBroadPeak()
 
-readGeneric()
+readNarrowPeak()
+
+
 @
 There are specific functions to read genomic annotation from flat bed files.
 <<readExamples2, eval=FALSE, tidy=TRUE>>=
@@ -136,8 +144,119 @@ and visualization. Below we will demonstrate the functionality on specific use c
 % ----------------------------------------------------------------- %
 \subsection{Visualization of ChiP sequencing data}
 
+We will visualize the binding profiles of 6 transcription factors around the 
+Ctcf binding sites. 
+
+In the fist step we will select the *.bam files containing mapped reads.
+<<selectBamChipseq, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+library(genomationData)
+library(GenomicRanges)
+genomationDataPath = system.file('extdata',package='genomationData')
+bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+bam.files = bam.files[!grepl('Cage', bam.files)]
+@
+
+Firstly, we will read in the Ctcf peaks, filter regions from human chromosome 21,
+and order them by their signal values. In the end we will resize all ranges to have a uniform
+width of 500 bases, fixed on the center of the peak.
+<<readCtcfPeaks, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+ctcf.peaks = readBroadPeak(file.path(genomationDataPath, 'wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz'))
+ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
+ctcf.peaks = ctcf.peaks[order(-ctcf.peaks$signalValue)]
+ctcf.peaks = resize(ctcf.peaks, width=1000, fix='center')
+@
+
+
+In order to extract the coverage values of all transcription factors around 
+chipseq peaks, we will use the \Rcode{ScoreMatrixList} function. 
+\Rcode{ScoreMatrixList} assign names to each element of the list based on the names of the bam files. We
+will use the names of the files to find the corresponding names of each sample in the SamplesInfo.txt
+Using the \Rcode{heatmapProfile} on our \Rcode{ScoreMatrixList}, 
+we can plot the underlying signal side by side.
+
+\begin{figure}
+<<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=50)
+sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
+names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
+heatmapProfile(sml, xmarks=c(-500,0,500))
+@
+\caption{Heatmap profile of unscaled coverage shows a slight colocalization of Ctcf, Rad21 and Znf143;
+option \texttt{fig.keep='last'} here.\label{fig:ctcfScoreMatrixList}}
+\end{figure}
+
+
+Because of the large range of signal values in chipseq peaks, the \Rcode{heatmapProfile} 
+will not show the true extent of colocalization. To get around this, it is advisable
+to independently scale the rows of each element in the ScoreMatrixList.
+
+\begin{figure}
+<<plotScaledProfile, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+sml.scaled = scaleScoreMatrixList(sml)
+heatmapProfile(sml.scaled, xmarks=c(-500,0,500))
+@
+\caption{Heatmap profile of scaled coverage shows much stronger colocalization of the transcription factors; nevertheless, it is evident that some of the CTCF peaks have a very weak enrichment.
+option \texttt{fig.keep='last'} here.\label{fig:plotScaledProfile}}
+\end{figure}
 
 % ----------------------------------------------------------------- %
+\subsection{Combinatorial binding of transcription factors}
+
+In the first step we will read all peak files into a GRanges list. We will use the SamplesInfo file
+from the \Rpackage{genomationData} to get he names of the samples. Four of the peak files are 
+in the Encode broadPeak format, while one is in the narrowPeak. To read
+the files, we will use the \Rcode{readGeneric} function. It enables us to select 
+from the files only columns of interest. As the last step, we will restrict ourselves to
+peaks that are located on chromosome 21 and have width 100 and 1000 bp
+<<readAllPeaks, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+library(genomationData)
+genomationDataPath = system.file('extdata',package='genomationData')
+sampleInfo = read.table(genomationDataPath, header=T, sep='\t', stringsAsFactors=FALSE)
+
+peak.files = list.files(genomationDataPath, full.names=T, pattern='Peak.gz$')
+peaks = list()
+for(i in 1:length(peak.files)){
+    file = peak.files[i]
+    name=sampleInfo$sampleName[match(basename(file),sampleInfo$fileName)]
+    message(name)
+    peaks[[name]] = readGeneric(file, meta.col=list(score=5))
+}
+peaks = GRangesList(peaks)
+peaks = peaks[seqnames(peaks) == 'chr21' & width(peaks) < 1000  & width(peaks) > 100]
+@
+
+To find the combination of binding sites we will use the \Rcode{findFeatureComb} function.
+It takes a granges list object, finds the union of the ranges and designates each
+range by the combination of overlaps from the original set.
+By default, the returned ranges will have a numeric \Rcode{class} meta data column, which designates
+the correponding combination. If you are interested in the names of the TF which make 
+the combinations, put the \Rcode{use.names=TRUE}.
+<<findFeatureComb, eval=TRUE, tidy=TRUE, echo=FALSE>>=
+tf.comb = findFeatureComb(peaks, width=1000)
+@
+
+
+To visualize the results, we will plot the enricment of resulting regions. Before doing that we will
+order the regions by their \Rcode{class} argument.
+\begin{figure}
+<<visualizeFeatureComb, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+tf.comb = tf.comb[order(tf.comb$class)]
+bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+bam.files = bam.files[!grepl('Cage', bam.files)]
+sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20)
+names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
+sml = scaleScoreMatrixList(sml)
+heatmapProfile(sml, xmarks=c(-500,0,500))
+@
+\end{figure}
+The plot shows perfectly how misleading the peak calling process can be. 
+Although the plots show that CTFC, Rad21 and Znf143 have almost perfect colozalization,
+Peak callers have trouble identifying peaks in regions with lower enrichments and as a 
+result, we get different statistics when using overlaps.
+
+% ----------------------------------------------------------------- %
+
+
 \subsection{Annotation of bam files}
 
 

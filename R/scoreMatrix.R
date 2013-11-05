@@ -7,17 +7,12 @@
 getColors = function(n) {
   
   black = "#000000"
-  if (n <= 9) {
-    library(RColorBrewer)
-    c(black,brewer.pal(n-1, "Set2"))
-  } else {
-    c(black,hcl(h=seq(0,(n-2)/(n-1),length=n-1)*360,c=100,l=65,fixup=TRUE))
-  }
+  c(black,hcl(h=seq(0,(n-2)/(n-1),length=n-1)*360,c=100,l=65,fixup=TRUE))
 }
 
 # ---------------------------------------------------------------------------- #
 # removes ranges that fell of the rle object
-# does not check for the correspondence of the chromosome names - always chech before using this function
+# does not check for the correspondence of the chromosome names - always check before using this function
 constrainRanges = function(target, windows){
 	
 	checkClass(target, 'SimpleRleList')
@@ -70,9 +65,9 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' have the start coordinate < 1 or end coordinate > length(Rle)
 #' The function takes the intersection of names in the Rle and GRanges objects
 #'
-#' @param target a \code{RleList} , \code{GRanges} or a BAM file
+#' @param target \code{RleList} , \code{GRanges} or a BAM file
 #'  to be overlapped with ranges in \code{windows}
-#' @param windows a \code{GRanges} object that contains the windows of interest. 
+#' @param windows \code{GRanges} object that contains the windows of interest. 
 #'                It could be promoters, CpG islands, exons, introns. 
 #'                However the sizes of windows have to be equal.
 #' @param strand.aware If TRUE (default: FALSE), the strands of the
@@ -116,11 +111,11 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' @export
 setGeneric("ScoreMatrix",
                     function(target,windows,strand.aware=FALSE,
-                             weight.col=NULL,is.noCovNA=FALSE) 
+                             weight.col=NULL,is.noCovNA=FALSE,...) 
                                 standardGeneric("ScoreMatrix") )
 
 
-# ---------------------------------------------------------------------------- #
+
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
@@ -181,12 +176,12 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
             
             #make coverage vector  from target
             if(is.null(weight.col)){
-				target.rle=coverage(target)
+				      target.rle=coverage(target)
             }else{
-                if(! weight.col %in% names(mcols(target)) ){
+              if(! weight.col %in% names(mcols(target)) ){
                   stop("provided column 'weight.col' does not exist in tartget\n")
-                }
-                if(is.noCovNA)
+              }
+              if(is.noCovNA)
                 { # adding 1 to figure out NA columns later
                   target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
                   mat=ScoreMatrix(target.rle,windows,strand.aware)
@@ -207,16 +202,35 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware){
+          function(target,windows,strand.aware, 
+                   param=NULL, unique=TRUE, extend=0){
             
             if(!file.exists(target)){
-				stop("Indicated 'target' file does not exist\n")
+			      	stop("Indicated 'target' file does not exist\n")
+            }
+            
+            # generates the ScanBamParam object
+            if(is.null(param)){
+              param <- ScanBamParam(which=reduce(windows))
+            }else{
+              if(class(param) == 'ScanBamParam'){
+                bamWhich(param) <- reduce(windows)
+              }else{
+                stop('param needs to be an object of clas ScanBamParam')
+              }
             }
             
             # get the coverage vector for 
             # given locations
-            param <- ScanBamParam(which=windows)
-            alns <- readGAlignmentsFromBam(target, param=param)# read alignments
+            alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
+            if(unique)
+              alns = unique(alns)
+            
+            if(extend > 0)
+              resize(alns, width=extend)
+            if(extend < 0)
+              stop('extend needs to be a positive integer')
+            
             
             covs=coverage(alns) # get coverage vectors
             
@@ -224,146 +238,25 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
           })
 
 
-# ---------------------------------------------------------------------------- #
-#' visual representation of ScoreMatrix using a heatmap 
-#' The rows can be reordered using one factor and one numeric vector
-#'
-#' @param mat a \code{ScoreMatrix} object
-#' @param fact a \code{factor} of length equal to \code{nrow(mat)}. Unused factor levels are dropped
-#' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, 
-#'        which is going to be used for ordering of the rows
-#' @param shift shift the start coordinate of the x axis (plot starts at -shift)
-#' @param mat.cols a vector of colors used for plotting of the heatmap. 
-#'        Default colors range from lightgray to darkblue.
-#' @param fact.cols a vector of colors used for plotting of the factor key
-#' @param xlab x axis label
-#' @param ylab y axis label
-#' @param main plot name
-#' @param class.names names for each factor class - has to have the same lenght as \code{levels(fact)}
-#' @param ... other options to be passed to functions (obsolete at the moment)
-#' @return nothing
-#' 
-#' @examples
-#'   data(cage)
-#'   data(promoters)
-#'   myMat2=ScoreMatrix(target=cage,windows=promoters,
-#'                         weight.col="tpm",strand.aware=TRUE)
-#'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
-#'   heatMatrix(myMat2,fact=)
-#' 
-#' @docType methods
-#' @rdname heatMatrix-methods
-#' @export
-setGeneric("heatMatrix", function(mat, fact=NULL, add.sep=TRUE, ord.vec=NULL,
-                                  shift=0, mat.cols=NULL, fact.cols=NULL, 
-                                  xlab='Position', ylab='Region', 
-                                  main='Positional profile', 
-                                  class.names=NULL, use.names=FALSE, ...) 
-                                  standardGeneric("heatMatrix") )
-
-#' @aliases heatMatrix,ScoreMatrix-method
-#' @rdname heatMatrix-methods
-setMethod("heatMatrix", signature("ScoreMatrix"),
-		  function(mat, fact, add.sep, 
-               ord.vec, shift, mat.cols, 
-               fact.cols, xlab, ylab, 
-               main, class.names, use.names, ...){
-			
-			# -------------------------- #
-			# parameter checking
-			if(!is.null(fact) & length(fact) != nrow(mat))
-				stop('Given factor does not have the same length as the matrix')
-			if(!is.null(fact) & !is.factor(fact))
-				stop('fact need to be an object of class factor')
-			if(!is.null(ord.vec) & length(fact) != nrow(mat))
-				stop('Given ordering vector does not have the same length as the matrix')
-			if(!is.numeric(shift) | length(shift) > 1)
-				stop('shift needs to be a numeric vector of length 1')
-			# -------------------------- #
-			# default values
-			if(is.null(fact))
-				fact=as.factor(rep(1, nrow(mat)))
-			if(is.null(ord.vec))
-				ord.vec = 1:nrow(mat)	
-			if(is.null(class.names))
-				class.names = levels(fact)
-			
-			if(is.null(mat.cols)){
-				message('Using default mat.cols...\n')
-				mat.cols = colorRampPalette(c('lightgray','darkblue'), 
-                                     interpolate='spline')(20)
-			}
-			if(is.null(fact.cols)){
-				message('Using default fact.cols...\n')
-				fact.cols = getColors(length(levels(fact)))
-			}
-			
-			# drops unused levels from the factor
-			fact = fact[1:length(fact), drop=TRUE]
-			
-			# -------------------------- #
-			# plots the matrix
-			mat = mat[order(as.numeric(fact), ord.vec),]
-			# par(fig=c(0,.95,0,1), mar=c(5,5,3,.5))
-			layout(matrix(c(1,2), ncol=2), widths=c(10,1))
-			par(mar=c(5,8,3,.5), oma=c(0,0,0,0))
-			AddSep = function(x, rowsep, col, sepwidth=c(0.05,0.5)){
-				for(rsep in rowsep){
-				  rect(xleft =0, 
-               ybottom= (rsep), 
-               xright=ncol(x)+1,  
-               ytop = (rsep+1) - sepwidth[2], 
-               lty=1, lwd=1, col=col, border=col)
-				}
-			}
-			# plots the main matrix
-			image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
-            col=mat.cols, oma=c(0,0,0,0),
-            useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
-			classnum = table(fact)
-			rowsep = cumsum(classnum)
-			if(add.sep == TRUE)
-				AddSep(mat, rowsep[-length(rowsep)], "black")	
-			
-			if(use.names==TRUE){
-				axis(2, at=1:nrow(mat), labels=rownames(mat), las=2)
-			}else{
-				at = round(fivenum(1:nrow(mat)))
-				axis(2, at=at, labels=at, las=2)
-			}
-			
-			
-			# plots the class designation
-			# par(fig=c(.95,1,0,1), new=TRUE, mar=c(5,.5,3,1))
-			par(mar=c(5,.5,3, max(max(nchar(class.names)/2, 5))))
-			image(x = 1:20, 
-            y = 1:nrow(mat), 
-            z=t(matrix(as.numeric(fact), nrow=length(fact), ncol=20)),
-            col = fact.cols, xaxt='n', yaxt='n', ylab='', xlab='')
-			at = classnum/2
-			at[-1] = at[-1] + at[-length(at)]
-			at = cumsum(at)
-			axis(side=4, at=at, labels=class.names, tick = F, las=2)
-	  }
-)
-
 
 # ---------------------------------------------------------------------------- #
 #' Bins the columns of a matrix using a user provided function 
 #'
-#' @param mat a \code{ScoreMatrix} object
-#' @param nbins a \code{integer} number of bins in the final matrix
-#' @param fun  a \code{character} vector representing the function to be used for bining
+#' @param mat \code{ScoreMatrix} object
+#' @param nbins \code{integer} number of bins in the final matrix
+#' @param fun \code{character} vector representing the function to be used for bining
 #'
 #' @return \code{ScoreMatrix} object
 #'
 #' @docType methods
-#' @rdname binMatrix-methods
+#' @rdname scaleScoreMatrix-methods
 #' @export
 setGeneric("binMatrix", 
               function(mat, nbins=NULL, fun='mean', ...)
                 standardGeneric("binMatrix") )
 
+#' @aliases binMatrix,ScoreMatrix-method
+#' @rdname scaleScoreMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
 			function(mat, nbins=NULL, fun='mean', ...){
 		  
@@ -386,34 +279,37 @@ setMethod("binMatrix", signature("ScoreMatrix"),
 # ---------------------------------------------------------------------------- #
 #' Scales the values in the matrix by rows and/or columns
 #'
-#' @param mat a \code{ScoreMatrix} object
-#' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
-#' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun a function object that takes as input a matrix and returns a matrix. By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
+#' @param mat \code{ScoreMatrix} object
+#' @param columns \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
+#' @param rows  \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
+#' @param scalefun function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
+#' @usage scaleScoreMatrix(mat, columns=FALSE, rows=TRUE, scalefun=NULL, ...)
 #' @return \code{ScoreMatrix} object
 #'
 #' @docType methods
-#' @rdname ScoreMatrix-methods
+#' @rdname scaleScoreMatrix-methods
 #' @export
 setGeneric("scaleScoreMatrix", 
                 function(mat, 
                          columns=FALSE, rows=TRUE, 
-                         scalefun=function(x)scale(x), 
+                         scalefun=NULL, 
                          ...) 
                         standardGeneric("scaleScoreMatrix") )
 
+#' @aliases scaleScoreMatrix,ScoreMatrix-method
+#' @rdname scaleScoreMatrix-methods
 setMethod("scaleScoreMatrix", signature("ScoreMatrix"),
           function(mat, columns, rows, scalefun, ...){
             
-            if(!is.function(scalefun))
-              stop('scalefun needs to be a proper R function')
+            if(is.null(scalefun))
+              scalefun = function(x)(x-mean(x))/(max(x)-min(x)+1)
             
             if(columns)
-              mat = t(scalefun(t(mat)))
+              mat = apply(mat, 2, scalefun)
             
             if(rows)
-              mat = scalefun(mat)
+              mat = t(apply(mat,1,scalefun))
             
             return(new("ScoreMatrix", mat))
           }

@@ -3,11 +3,6 @@
 \alias{annotateWithGeneParts}
 \alias{annotateWithGeneParts,GRanges,GRangesList-method}
 \title{Function to annotate given GRanges object with promoter, exon, intron & intergenic ranges}
-\usage{
-  annotateWithGeneParts(target,GRangesList.obj,strand=F)
-
-  annotateWithGeneParts(target, GRangesList.obj, strand=F)
-}
 \arguments{
   \item{target:}{A GRanges object storing chromosome
   locations to be annotated (e.g. chipseq peaks)}

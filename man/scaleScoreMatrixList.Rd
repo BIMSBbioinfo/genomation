@@ -1,7 +1,6 @@
 \docType{methods}
 \name{scaleScoreMatrixList}
 \alias{scaleScoreMatrixList}
-\alias{scaleScoreMatrixList,ScoreMatrixList-method}
 \title{Scale the ScoreMatrixList}
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}

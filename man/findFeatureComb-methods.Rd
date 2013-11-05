@@ -1,11 +1,8 @@
 \docType{methods}
 \name{findFeatureComb}
 \alias{findFeatureComb}
-\title{Find combitations of features}
-\usage{
-  findFeatureComb(gl, width = 0, use.names = FALSE,
-    collapse.char = ":")
-}
+\alias{findFeatureComb,GRanges,GRangesList,GRangesList-methods}
+\title{Find combitations of genomic features}
 \arguments{
   \item{gl}{a \code{GRangesList} object, containing ranges
   for which represent regions enriched for transcription

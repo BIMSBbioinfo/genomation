@@ -3,9 +3,6 @@
 \alias{convertBedDf}
 \alias{convertBedDf,data.frame-method}
 \title{convert a data frame read-in from a bed file to a GRanges object}
-\usage{
-  convertBedDf(bed)
-}
 \arguments{
   \item{bed}{a data.frame where column order and content
   resembles a bed file with 12 columns}

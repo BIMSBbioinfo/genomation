@@ -1,14 +1,10 @@
 \docType{methods}
 \name{ScoreMatrixBin}
 \alias{ScoreMatrixBin}
+\alias{ScoreMatrixBin,character,GRanges-method}
 \alias{ScoreMatrixBin,GRanges,GRanges-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
 \title{Get bin score for bins on each window}
-\usage{
-  ScoreMatrixBin(target, windows, bin.num = 10,
-    bin.op = "mean", strand.aware = FALSE,
-    weight.col = NULL, is.noCovNA = FALSE)
-}
 \arguments{
   \item{target}{a \code{RleList} or a \code{modRleList} or
   \code{GRanges} object to be overlapped with ranges in
@@ -73,6 +69,6 @@ data(cage)
   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 }
 \seealso{
-  \code{\link{scoreMatrix}}
+  \code{\link{ScoreMatrix}}
 }
 
