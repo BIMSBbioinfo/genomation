@@ -90,9 +90,9 @@ test_that("ScoreMatrix BigWig works"
 	test_bw <- file.path(test_path, "test.bw")
 	b = import(test_bw, asRangedData=F)
 
-	s = seq(1, 1000, 20)
-	g = GRanges(rep('chr2', length(s)), IRanges(s, width=50))
-	s = ScoreMatrix(test_bw, g, type='bigWig')
+  st = seq(200, 300, 20)
+  g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
+  s = ScoreMatrix(test_bw, g, type='bigWig')
 
 	m = matrix(-1, ncol=10, nrow=6)
 	m[6,-1] = -0.75

@@ -36,7 +36,7 @@ getViewsBin = function(target, windows, bin.num){
 	# subtract 1 so next start pos is not identical to  current end pos
   # keep window rank from original "windows" GRanges object
 	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
-                    IRanges(start=coord[,1],end=coord[,2]-1)) 
+                    IRanges(start=coord[,1],end=coord[,2])) 
 	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
 	
   # convert sub-windows to RangesList to be fed into coverage()
@@ -45,7 +45,8 @@ getViewsBin = function(target, windows, bin.num){
   
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
-	if(length(chrs)==0) stop("There are no common chromosomes/spaces to do overlap")
+	if(length(chrs)==0)
+    stop("There are no common chromosomes/spaces to do overlap")
 
   # get views on your windows
 	my.vList = Views(target[chrs], win.list[chrs] )
@@ -178,7 +179,6 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
 				windows = windows[!wi]
 			}
 	
-			
 			# gets the view list
 			my.vList = getViewsBin(target, windows, bin.num)
 			

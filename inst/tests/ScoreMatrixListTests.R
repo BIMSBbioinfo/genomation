@@ -30,16 +30,37 @@ test_that("ScoreMatrixList BigWig works"
 	library(rtracklayer)
 	test_path <- system.file("tests", package = "rtracklayer")
 	test_bw <- file.path(test_path, "test.bw")
-	b = import(test_bw, asRangedData=F)
 
-	s = seq(1, 1000, 20)
-	g = GRanges(rep('chr2', length(s)), IRanges(s, width=50))
+  st = seq(200, 300, 20)
+  g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
 	s = ScoreMatrixList(c(test_bw, test_bw), g, type='bigWig')
 
 	m = matrix(-1, ncol=10, nrow=6)
 	m[6,-1] = -0.75
 	rownames(m) = 1:6
 	m = as(m, 'ScoreMatrix')
+	l = as(list(test.bw=m, test.bw=m), 'ScoreMatrixList')
+	expect_equal(s, l)
+)
+
+test_that("ScoreMatrixList Bin BigWig works"
+	library(rtracklayer)
+	test_path <- system.file("tests", package = "rtracklayer")
+	test_bw <- file.path(test_path, "test.bw")
+
+  st = seq(200, 300, 20)
+  g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
+  b = import(test_bw, asRangedData=FALSE, which=g)
+  covs = coverage(b, weight=b$score)        
+  s = ScoreMatrixBin(covs, g, bin.num=5)
+          
+  s = ScoreMatrixList(c(test_bw, test_bw), g,bin.num=5, type='bigWig')
+
+	m = matrix(-1, ncol=10, nrow=6)
+	m[6,-1] = -0.75
+	rownames(m) = 1:6
+	m = as(m, 'ScoreMatrix')
+  m = binMatrix(m, bin.num=5)
 	l = as(list(test.bw=m, test.bw=m), 'ScoreMatrixList')
 	expect_equal(s, l)
 )

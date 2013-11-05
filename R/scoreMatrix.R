@@ -261,12 +261,13 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type=NULL, ...){
+          function(target,windows,strand.aware, type, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
             }
             
+            print(type)
             fm = c('bam','bigWig')
             if(!type %in% fm)
               stop(paste('currently supported formats are', fm))
@@ -301,17 +302,17 @@ setGeneric("binMatrix",
 #' @aliases binMatrix,ScoreMatrix-method
 #' @rdname scaleScoreMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
-			function(mat, nbins=NULL, fun='mean', ...){
+			function(mat, bin.num=NULL, fun='mean', ...){
 		  
-				if(is.null(nbins))
+				if(is.null(bin.num))
 					return(mat)
 					
-				if(nbins > ncol(mat))
+				if(bin.num > ncol(mat))
 					stop("number of given bins is bigger 
                 than the number of matrix columns")
 		  
 				fun = match.fun(fun)
-				coord = binner(1, ncol(mat), nbins)
+				coord = binner(1, ncol(mat), bin.num)
 				bmat = mapply(function(a,b)apply(mat[,a:b],1,fun), coord[1,], coord[2,])
 										
 				return(new("ScoreMatrix", bmat))
