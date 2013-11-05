@@ -1,0 +1,45 @@
+\docType{methods}
+\name{getRandomEnrichment}
+\alias{getRandomEnrichment}
+\alias{getRandomEnrichment,GRanges,GRanges-method}
+\title{get enrichment based on randomized feature overlap}
+\usage{
+  getRandomEnrichment(target,query,randomizations=1000,rand.set=NULL,...)
+}
+\arguments{
+  \item{target}{a \code{GRanges} object to be overlapped
+  with \code{query}}
+
+  \item{query}{a \code{GRanges} object that will be
+  randomly placed across the genome and overlap of these
+  random regions with \code{target} will be the background
+  distribution of association between \code{target} and
+  \code{query}.}
+
+  \item{rand.set}{instead of randomly placing features in
+  \code{query} one can supply an already shuffled set of
+  \code{query} genomic features.}
+
+  \item{randomizations}{number of times the features to be
+  shuffled}
+
+  \item{...}{other parameters to be passed to
+  \code{randomizeFeature} function. These parameters
+  ccontrol how randomization is done.}
+}
+\value{
+  returns a \code{randomEnrichment} object
+}
+\description{
+  This function measures the association between two
+  genomic features by randomizing one feature and counting
+  the overlaps in randomized sets. That is to say,
+  \code{query} feature will be randomly distributed over
+  the genome (constrained by provided options), and the
+  overlap of \code{target} with these randomized features
+  will be measured.
+}
+\seealso{
+  \code{\link{randomizeFeature}}
+}
+

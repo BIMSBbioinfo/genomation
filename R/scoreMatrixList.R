@@ -233,7 +233,7 @@ setMethod("order", signature("ScoreMatrixList"),
 
 # ---------------------------------------------------------------------------- #
 #' @aliases binMatrix,ScoreMatrixList-method
-#' @rdname binScoreMatrix-methods
+#' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrixList"),
           function(x, bin.num=NULL, fun='mean', ...){
             
