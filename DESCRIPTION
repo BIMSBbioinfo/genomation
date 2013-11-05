@@ -22,7 +22,8 @@ Imports:
     plyr,
     reshape2,
 	ggplot2,
-	methods
+	methods,
+	rtracklayer
 Suggests:
     testthat,
     knitr

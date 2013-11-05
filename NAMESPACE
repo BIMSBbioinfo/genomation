@@ -3,6 +3,7 @@ import(GenomicRanges)
 import(IRanges)
 import(Rsamtools)
 import(ggplot2)
+import(rtracklayer)
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)
