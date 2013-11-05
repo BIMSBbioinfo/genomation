@@ -2,6 +2,9 @@
 \name{scaleScoreMatrixList}
 \alias{scaleScoreMatrixList}
 \title{Scale the ScoreMatrixList}
+\usage{
+  scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
+}
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
 

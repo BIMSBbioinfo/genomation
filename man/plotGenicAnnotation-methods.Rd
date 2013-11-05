@@ -3,6 +3,10 @@
 \alias{plotGenicAnnotation}
 \alias{plotGenicAnnotation,annotationByFeature-method}
 \title{Plots the enrichment of each feature in the set in the gene annotation}
+\usage{
+  plotGenicAnnotation(l, cluster = FALSE,
+    col = c("white", "cornflowerblue"), ...)
+}
 \arguments{
   \item{l}{a \code{list} of \code{annotationByGenicParts}
   objects}

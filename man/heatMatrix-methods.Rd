@@ -4,6 +4,13 @@
 \alias{heatMatrix,ScoreMatrix-method}
 \title{visual representation of ScoreMatrix using a heatmap
 The rows can be reordered using one factor and one numeric vector}
+\usage{
+  heatMatrix(mat, fact = NULL, add.sep = TRUE,
+    ord.vec = NULL, shift = 0, mat.cols = NULL,
+    fact.cols = NULL, xlab = "Position", ylab = "Region",
+    main = "Positional profile", class.names = NULL,
+    use.names = FALSE, ...)
+}
 \arguments{
   \item{mat}{a \code{ScoreMatrix} object}
 

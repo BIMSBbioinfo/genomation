@@ -175,7 +175,8 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' This is done using the rownames of each element in the list.
 #'
 #' @param sml a \code{ScoreMatrixList} object
-#' @usage unionScoreMatrixList(sml)
+#' @param reorder if TRUE \code{ScoreMatrix} objects in the list are sorted
+#'                based on their common row ids.
 #'
 #' @return \code{ScoreMatrixList} object
 #'
@@ -183,17 +184,25 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' @rdname unionScoreMatrixList-methods
 #' @export
 setGeneric("unionScoreMatrixList", 
-           function(sml)
+           function(sml,reorder=FALSE)
              standardGeneric("unionScoreMatrixList") )
 
 #' @aliases unionScoreMatrixList,ScoreMatrixList-method
 #' @rdname unionScoreMatrixList-methods
 setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
-          function(sml){
+          function(sml,reorder){
             
             rnames = Reduce('union' ,lapply(sml, rownames))
-            sml = as(lapply(sml, function(x)x[rownames(x) %in% rnames,]), 
+            if(reorder){
+              sml = as(lapply(sml, function(x){ 
+                                  x=x[rownames(x) %in% rnames,]
+                                  x[order(rownames(x)),]
+                                  }), 
                      'ScoreMatrixList')
+            }else{
+              sml = as(lapply(sml, function(x)x[rownames(x) %in% rnames,]), 
+                       'ScoreMatrixList')              
+            }
             return (sml)
           }
 )

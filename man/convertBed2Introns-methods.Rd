@@ -3,6 +3,9 @@
 \alias{convertBed2Introns}
 \alias{convertBed2Introns,data.frame-method}
 \title{convert a data frame read-in from a bed file to a GRanges object for introns}
+\usage{
+  convertBed2Introns(bed.df)
+}
 \arguments{
   \item{bed.df}{a data.frame where column order and content
   resembles a bed file with 12 columns}

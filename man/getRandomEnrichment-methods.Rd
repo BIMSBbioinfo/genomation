@@ -3,6 +3,9 @@
 \alias{getRandomEnrichment}
 \alias{getRandomEnrichment,GRanges,GRanges-method}
 \title{get enrichment based on randomized feature overlap}
+\usage{
+  getRandomEnrichment(target,query,randomizations=1000,rand.set=NULL,...)
+}
 \arguments{
   \item{target}{a \code{GRanges} object to be overlapped
   with \code{query}}

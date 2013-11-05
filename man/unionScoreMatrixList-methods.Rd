@@ -3,8 +3,14 @@
 \alias{unionScoreMatrixList}
 \alias{unionScoreMatrixList,ScoreMatrixList-method}
 \title{Get common rows from all matrices in a ScoreMatrixList object}
+\usage{
+  unionScoreMatrixList(sml, reorder = FALSE)
+}
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
+
+  \item{reorder}{if TRUE \code{ScoreMatrix} objects in the
+  list are sorted based on their common row ids.}
 }
 \value{
   \code{ScoreMatrixList} object

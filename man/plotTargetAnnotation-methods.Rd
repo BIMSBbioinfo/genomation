@@ -3,6 +3,10 @@
 \alias{plotTargetAnnotation}
 \alias{plotTargetAnnotation,annotationByFeature-method}
 \title{Plot annotation categories from annotationByGenicParts or annotationByFeature}
+\usage{
+  plotTargetAnnotation(x, precedence = TRUE,
+    col = rainbow(length(x@annotation)), ...)
+}
 \arguments{
   \item{x}{a \code{annotationByFeature} or
   \code{annotationByGenicParts} object}
