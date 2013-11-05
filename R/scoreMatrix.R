@@ -286,34 +286,36 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' Bins the columns of a matrix using a user provided function 
 #'
-#' @param mat \code{ScoreMatrix} object
-#' @param nbins \code{integer} number of bins in the final matrix
-#' @param fun \code{character} vector representing the function to be used for bining
+#' @param x \code{ScoreMatrix} or a \code{ScoreMatrixList} object
+#' @param bin.num \code{integer} number of bins in the final matrix
+#' @param fun \code{character} vector or an anonymous function that will be used for binning
 #'
-#' @return \code{ScoreMatrix} object
+#' @return \code{ScoreMatrix} or \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname scaleScoreMatrix-methods
+#' @rdname bineMatrix-methods
 #' @export
 setGeneric("binMatrix", 
-              function(mat, nbins=NULL, fun='mean', ...)
+              function(x, bin.num=NULL, fun='mean', ...)
                 standardGeneric("binMatrix") )
 
 #' @aliases binMatrix,ScoreMatrix-method
-#' @rdname scaleScoreMatrix-methods
+#' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
-			function(mat, bin.num=NULL, fun='mean', ...){
+			function(x, bin.num=NULL, fun='mean', ...){
 		  
 				if(is.null(bin.num))
-					return(mat)
+					return(x)
 					
-				if(bin.num > ncol(mat))
+				if(bin.num > ncol(x))
 					stop("number of given bins is bigger 
                 than the number of matrix columns")
 		  
-				fun = match.fun(fun)
-				coord = binner(1, ncol(mat), bin.num)
-				bmat = mapply(function(a,b)apply(mat[,a:b],1,fun), coord[1,], coord[2,])
+        if(is.character(fun))
+				  fun = match.fun(fun)
+        
+				coord = binner(1, ncol(x), bin.num)
+				bmat = mapply(function(a,b)apply(x[,a:b],1,fun), coord[1,], coord[2,])
 										
 				return(new("ScoreMatrix", bmat))
 		 }
