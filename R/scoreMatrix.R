@@ -48,6 +48,64 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
                class.name, 
                '\n', sep=''))
 }
+
+
+# ---------------------------------------------------------------------------- #
+# given a big bam path reads the big wig file into a RleList
+# to be used by ScoreMatrix:char,GRanges
+readBam = function(target, windows, param=NULL, unique=TRUE, extend=0, ...){
+ 
+  # generates the ScanBamParam object
+  if(is.null(param)){
+    param <- ScanBamParam(which=reduce(windows))
+  }else{
+    if(class(param) == 'ScanBamParam'){
+      bamWhich(param) <- reduce(windows)
+    }else{
+      stop('param needs to be an object of clas ScanBamParam')
+    }
+  }
+  
+  # get the coverage vector for 
+  # given locations
+  alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
+  if(unique)
+    alns = unique(alns)
+  
+  if(extend > 0)
+    resize(alns, width=extend)
+  if(extend < 0)
+    stop('extend needs to be a positive integer')
+  
+  covs=coverage(alns)
+  return(covs)
+  
+}
+
+# ---------------------------------------------------------------------------- #
+# given a big wig path reads the big wig file into a RleList
+# to be used by ScoreMatrix:char,GRanges
+readBigWig = function(file, windows=NULL, ...){
+  
+  
+  if(class(windows) != 'GRanges')
+      stop('windows argument needs to be a GRanges object')
+  
+  
+  if(is.null(windows)){
+    bw = import(file, asRangedData = FALSE)
+  }else{
+    bw = import(file, asRangedData = FALSE, which=windows)
+  }
+  if(length(bw) == 0)
+    stop('There are no ranges selected')
+  
+  covs = coverage(bw, weight=bw$score)
+  return(covs)
+}
+
+
+
 #######################################
 # S4 functions
 #######################################
@@ -119,7 +177,7 @@ setGeneric("ScoreMatrix",
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
-          function(target,windows,strand.aware){
+          function(target,windows,strand.aware,...){
             
    #check if all windows are equal length
     if( length(unique(width(windows))) >1 ){
@@ -131,7 +189,8 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 		
    
   	# fetches the windows and the scores
-    myViews=Views(target,as(windows,"RangesList")) # get subsets of RleList
+    chrs = intersect(names(target), as.character(unique(seqnames(windows))))
+    myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
     
     #  get a list of matrices from Views object
     #  operation below lists a matrix for each chromosome
@@ -202,38 +261,23 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, 
-                   param=NULL, unique=TRUE, extend=0){
+          function(target,windows,strand.aware, type, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
             }
             
-            # generates the ScanBamParam object
-            if(is.null(param)){
-              param <- ScanBamParam(which=reduce(windows))
-            }else{
-              if(class(param) == 'ScanBamParam'){
-                bamWhich(param) <- reduce(windows)
-              }else{
-                stop('param needs to be an object of clas ScanBamParam')
-              }
-            }
+            print(type)
+            fm = c('bam','bigWig')
+            if(!type %in% fm)
+              stop(paste('currently supported formats are', fm))
             
-            # get the coverage vector for 
-            # given locations
-            alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
-            if(unique)
-              alns = unique(alns)
+            if(type == 'bam')
+              covs = readBam(target, windows, ...)
+            if(type == 'bigWig')
+              covs = readBigWig(target, windows, ...)            
             
-            if(extend > 0)
-              resize(alns, width=extend)
-            if(extend < 0)
-              stop('extend needs to be a positive integer')
-            
-            
-            covs=coverage(alns) # get coverage vectors
-            
+            # get coverage vectors
             ScoreMatrix(covs,windows,strand.aware)
           })
 
@@ -242,34 +286,36 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' Bins the columns of a matrix using a user provided function 
 #'
-#' @param mat \code{ScoreMatrix} object
-#' @param nbins \code{integer} number of bins in the final matrix
-#' @param fun \code{character} vector representing the function to be used for bining
+#' @param x \code{ScoreMatrix} or a \code{ScoreMatrixList} object
+#' @param bin.num \code{integer} number of bins in the final matrix
+#' @param fun \code{character} vector or an anonymous function that will be used for binning
 #'
-#' @return \code{ScoreMatrix} object
+#' @return \code{ScoreMatrix} or \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname scaleScoreMatrix-methods
+#' @rdname bineMatrix-methods
 #' @export
 setGeneric("binMatrix", 
-              function(mat, nbins=NULL, fun='mean', ...)
+              function(x, bin.num=NULL, fun='mean', ...)
                 standardGeneric("binMatrix") )
 
 #' @aliases binMatrix,ScoreMatrix-method
-#' @rdname scaleScoreMatrix-methods
+#' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
-			function(mat, nbins=NULL, fun='mean', ...){
+			function(x, bin.num=NULL, fun='mean', ...){
 		  
-				if(is.null(nbins))
-					return(mat)
+				if(is.null(bin.num))
+					return(x)
 					
-				if(nbins > ncol(mat))
+				if(bin.num > ncol(x))
 					stop("number of given bins is bigger 
                 than the number of matrix columns")
 		  
-				fun = match.fun(fun)
-				coord = binner(1, ncol(mat), nbins)
-				bmat = mapply(function(a,b)apply(mat[,a:b],1,fun), coord[1,], coord[2,])
+        if(is.character(fun))
+				  fun = match.fun(fun)
+        
+				coord = binner(1, ncol(x), bin.num)
+				bmat = mapply(function(a,b)apply(x[,a:b],1,fun), coord[1,], coord[2,])
 										
 				return(new("ScoreMatrix", bmat))
 		 }

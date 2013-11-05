@@ -32,58 +32,62 @@
 #' @param bin.num an integer telling the number of bins to bin the score matrix
 #' @param bin.op an name of the function that will be used for smoothing windows of ranges
 #' @param strand.aware a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
-#' @param ... other arguments that can be passed to the functio
+#' @param type if l is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param ... other arguments that can be passed to the function
  
-#' @usage ScoreMatrixList(l, granges=NULL, bin.num=NULL, bin.op='mean', strand.aware=FALSE, ...)
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(l, granges=NULL, bin.num=NULL, 
-                           bin.op='mean', strand.aware=FALSE, ...){
+ScoreMatrixList = function(target, windows=NULL, bin.num=NULL, 
+                           bin.op='mean', strand.aware=FALSE, type,...){
 
-	len = length(l)
+	len = length(target)
 	if(len == 0L)
-		stop('list argument is empty')
+		stop('target argument is empty')
   
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(l, class)) == 'scoreMatrix'))
+	if(all(unlist(lapply(target, class)) == 'scoreMatrix'))
 		return(new("ScoreMatrixList",l))
-	
-	
+
   
 	# ----------------------------------------------------------------- #
-	if(is.null(granges))
-	  stop("granges object must be defined")
+	if(is.null(windows))
+	  stop("windows of class GRanges must be defined")
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(!all(unlist(lapply(l, class)) %in% c('SimpleRleList', 'RleList','GenomicRanges')) &
-	   !all(file.exists(l)))
-      stop('l should be one of the following: 
+	if(!all(unlist(lapply(target, class)) %in% c('SimpleRleList', 'RleList','GRanges')) &
+	   !all(file.exists(target)))
+      stop('target should be one of the following: 
            an RleList, a list of files, a list of GRanges')
 	
+  if(all(file.exists(target)) & is.null(type))
+      stop('When providing a file, it is necessary to give the type of the file')
+  
   sml = list()
-  for(i in 1:length(l)){
+  for(i in 1:length(target)){
     
-    message(paste('reading file:',basename(l[i])))
+    message(paste('reading file:',basename(target[i])))
     
-    if(is.null(bin.num) && all(width(granges)) == unique(width(granges))){
-      sml[[i]] = ScoreMatrix(l[[i]], granges, strand.aware=strand.aware)
+    if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
+      sml[[i]] = ScoreMatrix(target[[i]], windows, strand.aware=strand.aware, 
+                             type=type)
       
     } else{
       if(is.null(bin.num))
         bin.num = 10
-      sml[[i]] = ScoreMatrixBin(l[[i]], granges, 
+      sml[[i]] = ScoreMatrixBin(target[[i]], windows, 
                                 bin.num=bin.num, bin.op=bin.op, 
-                                strand.aware=strand.aware)
+                                strand.aware=strand.aware, type=type)
     }  
   }
 	
-  if(class(l) %in% c('SimpleRleList', 'RleList','GenomicRanges'))
-    names(sml) = names(l)
-  if(all(is.character(l)))
-    names(sml) = basename(l)
+  if(class(target) %in% c('SimpleRleList', 'RleList','GenomicRanges'))
+    names(sml) = names(target)
+  if(all(is.character(target)))
+    names(sml) = basename(target)
+  
   
 	return(new("ScoreMatrixList",sml))
 }
@@ -223,5 +227,20 @@ setMethod("order", signature("ScoreMatrixList"),
             ord.vec = as.integer(ord.vec)
             sml = lapply(sml, function(x)x[ord.vec,])
             return (as(sml,'ScoreMatrixList'))
+          }
+)
+
+
+# ---------------------------------------------------------------------------- #
+#' @aliases binMatrix,ScoreMatrixList-method
+#' @rdname binScoreMatrix-methods
+setMethod("binMatrix", signature("ScoreMatrixList"),
+          function(x, bin.num=NULL, fun='mean', ...){
+            
+            if(is.null(bin.num))
+              return(x)
+             
+            return(new("ScoreMatrix", 
+                       lapply(x, function(y)binMatrix(y, bin.num=bin.num, fun=fun))))
           }
 )
