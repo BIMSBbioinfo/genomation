@@ -3,6 +3,11 @@
 \alias{unionScoreMatrixList}
 \alias{unionScoreMatrixList,ScoreMatrixList-method}
 \title{Get common rows from all matrices in a ScoreMatrixList object}
+\usage{
+  unionScoreMatrixList(sml)
+
+  \S4method{unionScoreMatrixList}{ScoreMatrixList}(sml)
+}
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
 }

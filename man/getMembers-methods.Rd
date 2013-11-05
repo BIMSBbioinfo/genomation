@@ -3,6 +3,11 @@
 \alias{getMembers}
 \alias{getMembers,annotationByFeature-method}
 \title{Get the membership slot of annotationByFeature}
+\usage{
+  getMembers(x)
+
+  \S4method{getMembers}{annotationByFeature}(x)
+}
 \arguments{
   \item{x}{a \code{annotationByFeature} object}
 }

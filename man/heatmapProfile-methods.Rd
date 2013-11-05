@@ -3,6 +3,15 @@
 \alias{heatmapProfile}
 \alias{heatmapProfile,ScoreMatrixList-method}
 \title{Plot functions for score matrix list}
+\usage{
+  heatmapProfile(mat.list, mat.cols=NULL, ...)
+
+  \S4method{heatmapProfile}{ScoreMatrixList}(mat.list,
+    mat.cols = NULL, xmarks = NULL, ymarks = NULL,
+    y.at = NULL, xcex = 1.5, ycex = 1.5, cex.main = 3,
+    mar = NULL, use.names = T, xlab = NULL, ylab = NULL,
+    ...)
+}
 \arguments{
   \item{mat.list}{a \code{ScoreMatrixList} object}
 

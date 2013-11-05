@@ -1,7 +1,14 @@
 \docType{methods}
 \name{scaleScoreMatrixList}
 \alias{scaleScoreMatrixList}
+\alias{scaleScoreMatrixList,ScoreMatrixList-method}
 \title{Scale the ScoreMatrixList}
+\usage{
+  scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
+
+  \S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml,
+    columns = FALSE, rows = TRUE, scalefun = NULL, ...)
+}
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
 

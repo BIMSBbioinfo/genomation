@@ -1,24 +1,44 @@
 \docType{methods}
 \name{ScoreMatrixBin}
 \alias{ScoreMatrixBin}
-\alias{ScoreMatrixBin,character,GRanges-method}
 \alias{ScoreMatrixBin,GRanges,GRanges-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
+\alias{ScoreMatrixBin,character,GRanges-method}
 \title{Get bin score for bins on each window}
+\usage{
+  ScoreMatrixBin(target, windows, bin.num = 10,
+    bin.op = "mean", strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE, ...)
+
+  \S4method{ScoreMatrixBin}{RleList,GRanges}(target,
+    windows, bin.num = 10, bin.op = "mean",
+    strand.aware = FALSE, weight.col = NULL,
+    is.noCovNA = FALSE, ...)
+
+  \S4method{ScoreMatrixBin}{GRanges,GRanges}(target,
+    windows, bin.num = 10, bin.op = "mean",
+    strand.aware = FALSE, weight.col = NULL,
+    is.noCovNA = FALSE, ...)
+
+  \S4method{ScoreMatrixBin}{character,GRanges}(target,
+    windows, bin.num = 10, bin.op = "mean",
+    strand.aware = FALSE, weight.col = NULL,
+    is.noCovNA = FALSE, ...)
+}
 \arguments{
-  \item{target}{a \code{RleList} or a \code{modRleList} or
+  \item{target}{\code{RleList} or a \code{modRleList} or
   \code{GRanges} object to be overlapped with ranges in
   \code{windows}}
 
-  \item{windows}{a \code{GRanges} object that contains the
+  \item{windows}{\code{GRanges} object that contains the
   windows of interest.  It could be promoters, CpG islands,
   exons, introns. However the sizes of windows does NOT
   have to be equal.}
 
-  \item{bin.num}{A single \code{integer} value denoting how
+  \item{bin.num}{single \code{integer} value denoting how
   many bins there should be for each window}
 
-  \item{bin.op}{A bin operation that is either one of the
+  \item{bin.op}{bin operation that is either one of the
   following strings: "max","min","mean". The operation is
   applied on the values in the bin. Defaults to "mean"}
 

@@ -48,6 +48,64 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
                class.name, 
                '\n', sep=''))
 }
+
+
+# ---------------------------------------------------------------------------- #
+# given a big bam path reads the big wig file into a RleList
+# to be used by ScoreMatrix:char,GRanges
+readBam = function(target, windows, param=NULL, unique=TRUE, extend=0, ...){
+ 
+  # generates the ScanBamParam object
+  if(is.null(param)){
+    param <- ScanBamParam(which=reduce(windows))
+  }else{
+    if(class(param) == 'ScanBamParam'){
+      bamWhich(param) <- reduce(windows)
+    }else{
+      stop('param needs to be an object of clas ScanBamParam')
+    }
+  }
+  
+  # get the coverage vector for 
+  # given locations
+  alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
+  if(unique)
+    alns = unique(alns)
+  
+  if(extend > 0)
+    resize(alns, width=extend)
+  if(extend < 0)
+    stop('extend needs to be a positive integer')
+  
+  covs=coverage(alns)
+  return(covs)
+  
+}
+
+# ---------------------------------------------------------------------------- #
+# given a big wig path reads the big wig file into a RleList
+# to be used by ScoreMatrix:char,GRanges
+readBigWig = function(file, windows=NULL, ...){
+  
+  
+  if(class(windows) != 'GRanges')
+      stop('windows argument needs to be a GRanges object')
+  
+  
+  if(is.null(windows)){
+    bw = import(file, asRangedData = FALSE)
+  }else{
+    bw = import(file, asRangedData = FALSE, which=windows)
+  }
+  if(length(bw) == 0)
+    stop('There are no ranges selected')
+  
+  covs = coverage(bw, weight=bw$score)
+  return(covs)
+}
+
+
+
 #######################################
 # S4 functions
 #######################################
@@ -119,7 +177,7 @@ setGeneric("ScoreMatrix",
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
-          function(target,windows,strand.aware){
+          function(target,windows,strand.aware,...){
             
    #check if all windows are equal length
     if( length(unique(width(windows))) >1 ){
@@ -131,7 +189,8 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 		
    
   	# fetches the windows and the scores
-    myViews=Views(target,as(windows,"RangesList")) # get subsets of RleList
+    chrs = intersect(names(target), as.character(unique(seqnames(windows))))
+    myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
     
     #  get a list of matrices from Views object
     #  operation below lists a matrix for each chromosome
@@ -202,38 +261,24 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, 
-                   param=NULL, unique=TRUE, extend=0){
+          function(target,windows,strand.aware, type, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
             }
             
-            # generates the ScanBamParam object
-            if(is.null(param)){
-              param <- ScanBamParam(which=reduce(windows))
-            }else{
-              if(class(param) == 'ScanBamParam'){
-                bamWhich(param) <- reduce(windows)
-              }else{
-                stop('param needs to be an object of clas ScanBamParam')
-              }
-            }
+            fm = c('bam','bigWig')
+            if(!type %in% fm)
+              stop(paste('currently supported formats are', fm))
             
-            # get the coverage vector for 
-            # given locations
-            alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
-            if(unique)
-              alns = unique(alns)
+            if(type == 'bam')
+              covs = readBam(target, windows, ...)
+            if(type == 'bigWig')
+              covs = readBigWig(target, windows, ...)            
             
-            if(extend > 0)
-              resize(alns, width=extend)
-            if(extend < 0)
-              stop('extend needs to be a positive integer')
+            # get coverage vectors
             
-            
-            covs=coverage(alns) # get coverage vectors
-            
+            print('tusam')
             ScoreMatrix(covs,windows,strand.aware)
           })
 

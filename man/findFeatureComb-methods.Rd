@@ -2,7 +2,15 @@
 \name{findFeatureComb}
 \alias{findFeatureComb}
 \alias{findFeatureComb,GRanges,GRangesList,GRangesList-methods}
+\alias{findFeatureComb,GRangesList-method}
 \title{Find combitations of genomic features}
+\usage{
+  findFeatureComb(gl, width=0, use.names=FALSE,
+    collapse.char=':')
+
+  \S4method{findFeatureComb}{GRangesList}(gl, width = 0,
+    use.names = FALSE, collapse.char = ":")
+}
 \arguments{
   \item{gl}{a \code{GRangesList} object, containing ranges
   for which represent regions enriched for transcription

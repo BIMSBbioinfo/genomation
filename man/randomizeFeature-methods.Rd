@@ -4,6 +4,20 @@
 \alias{randomizeFeature}
 \alias{randomizeFeature,GRanges-method}
 \title{function that randomizes the genomic coordinates}
+\usage{
+  randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
+    keep.strand.prop=TRUE,keep.chrom=TRUE,
+    exclude=NULL,include=NULL,seed=NULL)
+
+  \S4method{randomizeFeature}{GRanges}(feature,
+    chrom.sizes = NULL, stranded = TRUE,
+    keep.strand.prop = TRUE, keep.chrom = TRUE,
+    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
+
+  randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
+    keep.strand.prop=TRUE,keep.chrom=TRUE,
+    exclude=NULL,include=NULL,seed=NULL)
+}
 \arguments{
   \item{feature}{a GRanges object to be randomized}
 
