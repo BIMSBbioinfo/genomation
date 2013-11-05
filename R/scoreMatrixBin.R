@@ -36,7 +36,7 @@ getViewsBin = function(target, windows, bin.num){
 	# subtract 1 so next start pos is not identical to  current end pos
   # keep window rank from original "windows" GRanges object
 	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
-                    IRanges(start=coord[,1],end=coord[,2]-1)) 
+                    IRanges(start=coord[,1],end=coord[,2])) 
 	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
 	
   # convert sub-windows to RangesList to be fed into coverage()
@@ -45,7 +45,8 @@ getViewsBin = function(target, windows, bin.num){
   
 	#check if there are common chromsomes
 	chrs  = intersect(names(win.list), names(target))
-	if(length(chrs)==0) stop("There are no common chromosomes/spaces to do overlap")
+	if(length(chrs)==0)
+    stop("There are no common chromosomes/spaces to do overlap")
 
   # get views on your windows
 	my.vList = Views(target[chrs], win.list[chrs] )
@@ -178,7 +179,6 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
 				windows = windows[!wi]
 			}
 	
-			
 			# gets the view list
 			my.vList = getViewsBin(target, windows, bin.num)
 			
@@ -230,47 +230,26 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
-          function(target, windows, bin.num, bin.op='mean', strand.aware, 
-                   param=NULL, unique=TRUE, extend=0){
+          function(target, windows, bin.num=10, 
+                   bin.op='mean', strand.aware, type, ...){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
             
-            # generates the ScanBamParam object
-            if(is.null(param)){
-              param <- ScanBamParam(which=reduce(windows))
-            }else{
-              if(class(param) == 'ScanBamParam'){
-                bamWhich(param) <- reduce(windows)  
-              }else{
-                stop('param needs to be an object of clas ScanBamParam')
-              }
-            }
+            fm = c('bam','bigWig')
+            if(!type %in% fm)
+              stop(paste('currently supported formats are', fm))
             
-            # get the coverage vector for 
-            # given locations
-            # read alignments
-            alns <- granges(readGAlignmentsFromBam(target, param=param))
+            if(type == 'bam')
+              covs = readBam(target, windows, ...)
+            if(type == 'bigWig')
+              covs = readBigWig(target, windows, ...)            
             
-            if(unique)
-              alns = unique(alns)
-            
-            if(extend > 0)
-              resize(alns, width=extend)
-            if(extend < 0)
-              stop('extend needs to be a positive integer')
-
-            covs=coverage(alns) # get coverage vectors
-            
+            # get coverage vectors
             ScoreMatrixBin(covs,
                            windows,
                            bin.num=bin.num,
                            bin.op=bin.op,
                            strand.aware=strand.aware)
           })
-
-
-
-
-

@@ -7,7 +7,7 @@
     strand = NULL, meta.col = NULL,
     keep.all.metadata = FALSE, zero.based = FALSE,
     remove.unsual = FALSE, header = FALSE, skip = 0,
-    sep = "\t")
+    sep = "\\t")
 }
 \arguments{
   \item{file}{location of the file, a character string such
