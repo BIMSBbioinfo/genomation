@@ -231,7 +231,7 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
-                   bin.op='mean', strand.aware, type, ...){
+                   bin.op='mean', strand.aware, type,  ...){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")

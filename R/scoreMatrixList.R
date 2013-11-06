@@ -40,7 +40,7 @@
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
 ScoreMatrixList = function(target, windows=NULL, bin.num=NULL, 
-                           bin.op='mean', strand.aware=FALSE, type,...){
+                           bin.op='mean', strand.aware=FALSE, ...){
 
 	len = length(target)
 	if(len == 0L)
@@ -69,17 +69,16 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
   for(i in 1:length(target)){
     
     message(paste('reading file:',basename(target[i])))
-    
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
-      sml[[i]] = ScoreMatrix(target[[i]], windows, strand.aware=strand.aware, 
-                             type=type)
+      sml[[i]] = ScoreMatrix(target[[i]], windows, strand.aware=strand.aware 
+                             , ...)
       
     } else{
       if(is.null(bin.num))
         bin.num = 10
       sml[[i]] = ScoreMatrixBin(target[[i]], windows, 
                                 bin.num=bin.num, bin.op=bin.op, 
-                                strand.aware=strand.aware, type=type)
+                                strand.aware=strand.aware, ...)
     }  
   }
 	
@@ -233,6 +232,7 @@ setMethod("order", signature("ScoreMatrixList"),
 
 # ---------------------------------------------------------------------------- #
 #' @aliases binMatrix,ScoreMatrixList-method
+
 #' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrixList"),
           function(x, bin.num=NULL, fun='mean', ...){
