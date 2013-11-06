@@ -293,7 +293,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @return \code{ScoreMatrix} or \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname bineMatrix-methods
+#' @rdname binMatrix-methods
 #' @export
 setGeneric("binMatrix", 
               function(x, bin.num=NULL, fun='mean', ...)
