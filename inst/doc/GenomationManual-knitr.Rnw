@@ -176,7 +176,7 @@ we can plot the underlying signal side by side.
 
 \begin{figure}
 <<ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
-sml = ScoreMatrixList(l=bam.files, ctcf.peaks, bin.num=50)
+sml = ScoreMatrixList(bam.files, ctcf.peaks, bin.num=50, type='bam')
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 heatmapProfile(sml, xmarks=c(-500,0,500))
@@ -243,7 +243,7 @@ order the regions by their \Rcode{class} argument.
 tf.comb = tf.comb[order(tf.comb$class)]
 bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
 bam.files = bam.files[!grepl('Cage', bam.files)]
-sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20)
+sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20, type='bam')
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 sml = scaleScoreMatrixList(sml)
 heatmapProfile(sml, xmarks=c(-500,0,500))

@@ -53,7 +53,8 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 # ---------------------------------------------------------------------------- #
 # given a big bam path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
-readBam = function(target, windows, param=NULL, unique=TRUE, extend=0, ...){
+readBam = function(target, windows, param=NULL, 
+                   unique=TRUE, extend=0, rpm=FALSE, ...){
  
   # generates the ScanBamParam object
   if(is.null(param)){
@@ -77,7 +78,15 @@ readBam = function(target, windows, param=NULL, unique=TRUE, extend=0, ...){
   if(extend < 0)
     stop('extend needs to be a positive integer')
   
+  
   covs=coverage(alns)
+  
+  if(rpm){
+    message('Normalizing to rpm ...')
+    total = 1e6/sum(countBam(BamFile(target))$records)
+    covs = covs * total
+  }
+  
   return(covs)
   
 }
@@ -228,6 +237,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 
 
 
+# ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
@@ -257,17 +267,16 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
             ScoreMatrix(target.rle,windows,strand.aware)
 })
 
-
+# ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type, ...){
+          function(target,windows,strand.aware, type, tmp=FALSE, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
             }
             
-            print(type)
             fm = c('bam','bigWig')
             if(!type %in% fm)
               stop(paste('currently supported formats are', fm))
@@ -321,6 +330,17 @@ setMethod("binMatrix", signature("ScoreMatrix"),
 		 }
 )
 
+# ---------------------------------------------------------------------------- #
+# show Methods
+#' @rdname show-methods
+#' 
+setMethod("show", "ScoreMatrix",
+          function(object){
+            dims = dim(object)
+            
+            s=sprintf("  %s %d %d", "scoreMatrix with dims:", dims[1], dims[2])
+            message(s)  
+          })
 
 # ---------------------------------------------------------------------------- #
 #' Scales the values in the matrix by rows and/or columns
