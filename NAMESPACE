@@ -58,7 +58,7 @@ exportMethods(ScoreMatrix)
 exportMethods(ScoreMatrixBin)
 exportMethods(scaleScoreMatrix)
 exportMethods(scaleScoreMatrixList)
-exportMethods(unionScoreMatrixList)
+exportMethods(intersectScoreMatrixList)
 export(gffToGRanges)
 export(ScoreMatrixList)
 
