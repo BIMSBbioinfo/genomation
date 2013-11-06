@@ -27,12 +27,11 @@
 #' 
 #' Construct a list of scoreMatrixObjects that can be used for plotting
 #'
-#' @param l can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
-#' @param granges a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
-#' @param bin.num an integer telling the number of bins to bin the score matrix
-#' @param bin.op an name of the function that will be used for smoothing windows of ranges
-#' @param strand.aware a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
-#' @param type if l is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param target can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
+#' @param windows \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
+#' @param bin.num integer telling the number of bins to bin the score matrix
+#' @param bin.op name of the function that will be used for smoothing windows of ranges
+#' @param strand.aware boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
 #' @param ... other arguments that can be passed to the function
  
 #' @return returns a \code{ScoreMatrixList} object
@@ -49,7 +48,7 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
 	if(all(unlist(lapply(target, class)) == 'scoreMatrix'))
-		return(new("ScoreMatrixList",l))
+		return(new("ScoreMatrixList",target))
 
   
 	# ----------------------------------------------------------------- #
@@ -62,7 +61,7 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
       stop('target should be one of the following: 
            an RleList, a list of files, a list of GRanges')
 	
-  if(all(file.exists(target)) & is.null(type))
+  if(all(file.exists(target)) & is.null(...$type))
       stop('When providing a file, it is necessary to give the type of the file')
   
   sml = list()
@@ -215,7 +214,6 @@ setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
 
 #' @param sml \code{ScoreMatrixList} object
 #' @param ord.vec an integer vector
-#' @usage order(sml, ord.vec)
 #' @return \code{ScoreMatrixList} object
 
 #' @docType methods

@@ -153,6 +153,7 @@ readBigWig = function(file, windows=NULL, ...){
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG methylation
 #'                   values.
+#' @param ... further arguments that control the behaviour of ScoreMatrixList on various input formats (e.g.a param argument containing a ScanBamParam object, when working with bam files)
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
@@ -241,7 +242,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
-          function(target,windows,strand.aware,weight.col,is.noCovNA){
+          function(target,windows,strand.aware,weight.col,is.noCovNA,...){
             
             #make coverage vector  from target
             if(is.null(weight.col)){
@@ -268,10 +269,12 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 })
 
 # ---------------------------------------------------------------------------- #
+#' @param type if l is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param tpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type, tmp=FALSE, ...){
+          function(target,windows,strand.aware, type, rpm=FALSE, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
@@ -350,7 +353,6 @@ setMethod("show", "ScoreMatrix",
 #' @param rows  \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
-#' @usage scaleScoreMatrix(mat, columns=FALSE, rows=TRUE, scalefun=NULL, ...)
 #' @return \code{ScoreMatrix} object
 #'
 #' @docType methods
@@ -359,14 +361,13 @@ setMethod("show", "ScoreMatrix",
 setGeneric("scaleScoreMatrix", 
                 function(mat, 
                          columns=FALSE, rows=TRUE, 
-                         scalefun=NULL, 
-                         ...) 
+                         scalefun=NULL) 
                         standardGeneric("scaleScoreMatrix") )
 
 #' @aliases scaleScoreMatrix,ScoreMatrix-method
 #' @rdname scaleScoreMatrix-methods
 setMethod("scaleScoreMatrix", signature("ScoreMatrix"),
-          function(mat, columns, rows, scalefun, ...){
+          function(mat, columns, rows, scalefun){
             
             if(is.null(scalefun))
               scalefun = function(x)(x-mean(x))/(max(x)-min(x)+1)

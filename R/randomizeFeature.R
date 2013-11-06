@@ -26,9 +26,6 @@
 #'        features. If not provided the whole genome is used, as defined using the chrom.sizes parameter.
 #' @param seed random number generator seed
 #' @param nrand number of randomizations (default:1)
-#' @usage randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
-#'                          keep.strand.prop=TRUE,keep.chrom=TRUE,
-#'                          exclude=NULL,include=NULL,seed=NULL)
 #' @return returns a GRanges object which is randomized version of the feature, along with a "set" column in the metadata which designates to which iteration of the randomization the range belong.
 
 #' @export

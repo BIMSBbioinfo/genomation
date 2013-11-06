@@ -28,6 +28,7 @@ setClass("randomEnrichment",
 
 
 #' show method for some of the genomation classes
+#' @param object object of class randomEnrichment
 #' @rdname show-methods
 #' @aliases show,randomEnrichment-method
 setMethod("show", "randomEnrichment", function(object) {
