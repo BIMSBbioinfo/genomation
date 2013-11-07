@@ -40,16 +40,53 @@ test_that("scoreMatrix works",
 		gr6 = GRanges(rep(c('chr1','chr4'), each=2), IRanges(c(-1,8,1,5),c(1,10,3,7)))
 		expect_error(scoreMatrix(rl, gr6), "All windows fell have coordinates outside chromosome boundaries")
 		
-		#7. for modRle
-		gm = GRanges(rep(c('chr1','chr2'), each=4), IRanges(rep(2:5, times=2), rep(3:6, times=2)))
-		values(gm)$weight = rep(2:3, 4)
-		mc = modCoverage(gm, 'weight', multiply=1, add=0)
-		grm = GRanges(rep(c('chr1','chr2'), each=2), IRanges(rep(c(1,3), 2), rep(c(3,5), 2)))
-		
-		m7 = as(matrix(c(0, 2, 5, 5, 5, 5, 0, 2, 5, 5, 5, 5), ncol=3, byrow=T), 'scoreMatrix')
-		rownames(m7) = 1:4
-		expect_equal(scoreMatrix(mc, grm), m7)
 	})
+
+# ---------------------------------------------------------------------------- #
+test_that("scoreMatrix:GRanges, GRanges works",
+{
+          target = GRanges(rep(c(1,2),each=6), IRanges(rep(c(1,2,3,7,8,9), times=2), width=5))
+          values(target)$weight = rep(c(1,2),each=6)
+          windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
+          
+          
+          # normal function works
+          s1 = ScoreMatrix(target=target, windows=windows)
+          m1 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
+          rownames(m1) = 1:4
+          m1 = as(m1, 'ScoreMatrix')
+          expect_equal(s1,m1)
+          
+          # function with weight col works
+          s2 = ScoreMatrix(target=target, windows=windows, weight.col='weight')
+          m2 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
+          m2[3:4,] = m2[3:4,]*2
+          rownames(m2) = 1:4
+          m2 = as(m2, 'ScoreMatrix')
+          expect_equal(s2,m2)      
+})
+
+
+# ---------------------------------------------------------------------------- #
+test_that("scoreMatrix:character, GRanges works",
+{
+  target = GRanges(rep(c(1,2),each=6), IRanges(rep(c(1,2,3,7,8,9), times=2), width=5))
+  values(target)$weight = rep(c(1,2),each=6)
+  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
+  
+ 
+  
+  # function with weight col works
+  s2 = ScoreMatrix(target=target, windows=windows, weight.col='weight')
+  m2 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
+  m2[3:4,] = m2[3:4,]*2
+  rownames(m2) = 1:4
+  m2 = as(m2, 'ScoreMatrix')
+  expect_equal(s2,m2)
+  
+  
+  
+})
 	
 # ---------------------------------------------------------------------------- #
 # test for removeOffRanges
@@ -58,7 +95,7 @@ test_that("constrainRanges work",
 		target= RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
 		gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,8),c(3,7,3,10)))
 		gt1 = GRanges(c('chr1','chr1','chr2'), IRanges(c(1,5,1),c(3,7,3)))
-		expect_identical(removeOffRanges(target, gr1), gt1)
+		expect_identical(constrainRanges(target, gr1), gt1)
 	}
 )
 
@@ -90,9 +127,9 @@ test_that("ScoreMatrix BigWig works"
 	test_bw <- file.path(test_path, "test.bw")
 	b = import(test_bw, asRangedData=F)
 
-  st = seq(200, 300, 20)
-  g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
-  s = ScoreMatrix(test_bw, g, type='bigWig')
+	st = seq(200, 300, 20)
+	g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
+	s = ScoreMatrix(test_bw, g, type='bigWig')
 
 	m = matrix(-1, ncol=10, nrow=6)
 	m[6,-1] = -0.75
@@ -100,3 +137,26 @@ test_that("ScoreMatrix BigWig works"
 	m = as(m, 'ScoreMatrix')
 	expect_equal(s, m)
 )
+
+
+# ---------------------------------------------------------------------------- #
+test_that("scaleScoreMatrix works"
+          s = as(matrix(1:9, ncol=3),'ScoreMatrix')
+          
+          s1=scaleScoreMatrix(s, rows=T, columns=F)
+          s2=scaleScoreMatrix(s, rows=F, columns=T)
+          s3=scaleScoreMatrix(s, rows=T, columns=T)
+          
+          m1 = as(matrix(c(rep(-0.4285714,3),rep(0,3), rep(0.4285714,3)), 
+                         nrow=3),'ScoreMatrix')
+          m2 = as(matrix(c(rep(-0.3333333,3),rep(0,3), rep(0.3333333,3)), 
+                         nrow=3, byrow=T),'ScoreMatrix')
+          m3 = as(matrix(0,nrow=3,ncol=3),'ScoreMatrix')
+          
+          expect_equal(s1,m1)
+          expect_equal(s2,m2)
+          expect_equal(s3,m3)
+)
+
+
+        

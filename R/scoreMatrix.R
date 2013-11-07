@@ -270,11 +270,11 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 
 # ---------------------------------------------------------------------------- #
 #' @param type if l is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
-#' @param tpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
+#' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type, ...){
+          function(target,windows,strand.aware, type,rpm, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
