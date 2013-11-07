@@ -274,7 +274,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type, rpm=FALSE, ...){
+          function(target,windows,strand.aware, type, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
