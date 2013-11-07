@@ -6,6 +6,12 @@
 \title{Bins the columns of a matrix using a user provided function}
 \usage{
   binMatrix(x, bin.num = NULL, fun = "mean", ...)
+
+  \S4method{binMatrix}{ScoreMatrix}(x, bin.num = NULL,
+    fun = "mean", ...)
+
+  \S4method{binMatrix}{ScoreMatrixList}(x, bin.num = NULL,
+    fun = "mean", ...)
 }
 \arguments{
   \item{x}{\code{ScoreMatrix} or a \code{ScoreMatrixList}

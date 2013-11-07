@@ -1,3 +1,10 @@
+
+* new plotting functions for visualization of ScoreMatrix and ScoreMatrixList
+
+* ScoreMatrix constructor can deal with a variety of inputs, including BAM and wig
+
+
+
 genomation 0.2.1
 --------------
 

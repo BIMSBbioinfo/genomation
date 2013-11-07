@@ -1,0 +1,74 @@
+\docType{methods}
+\name{plotMeta}
+\alias{plotMeta}
+\title{Line plot(s) for meta-region profiles}
+\usage{
+  plotMeta(mat, overlay = TRUE, profile.names = NULL,
+    xcoords = NULL, meta.rescale = FALSE,
+    line.col = ifelse(is.list(x), list(rainbow(length(x))), "black")[[1]],
+    ylim = NULL, ylab = "average score", xlab = "bases",
+    ...)
+}
+\arguments{
+  \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList}
+  object. If it is a \code{ScoreMatrixList} object, all
+  matrices in the ScoreMatrixList should have the same
+  number of columns.}
+
+  \item{overlay}{If TRUE multiple profiles will be
+  overlayed in the same plot (Default:TRUE). If FALSE, and
+  mat is a ScoreMatrixList, consider using
+  par(mfrow=c(1,length(mat))) to see the plots from all
+  matrices at once.}
+
+  \item{profile.names}{a character vector for names of the
+  profiles. The order should be same as the as the order of
+  ScoreMatrixList.}
+
+  \item{xcoords}{a numeric vector which designates relative
+  base positions of the meta-region profiles.  For example,
+  for a 2001 column ScoreMatrix, xcoord=-1000:1000
+  indicates relative positions of each column in the score
+  matrix. If NULL (Default), xcoords equals to 1:ncol(mat)}
+
+  \item{meta.rescale}{if TRUE meta-region profiles are
+  scaled to 0 to 1 range by subracting the min from
+  profiles and dividing them by max-min.}
+
+  \item{line.col}{color of lines for the meta-region
+  profiles. Defaults to colors from \code{rainbow()}
+  function.}
+
+  \item{ylim}{same as \code{ylim} at \code{\link{plot}}
+  function.  if NULL ylim is estimated from all meta-region
+  profiles.}
+
+  \item{ylab}{same as \code{ylab} at \code{\link{plot}}
+  function.  Default: "average score"}
+
+  \item{xlab}{same as \code{xlab} at \code{\link{plot}}
+  function.  Default: "bases"}
+
+  \item{...}{other options to \code{\link{plot}}}
+}
+\value{
+  returns the meta-region profiles invisibly as a matrix.
+}
+\description{
+  Function calculates meta-profile(s) from a ScoreMatrix or
+  a ScoreMatrixList, then produces a line plot or a set of
+  line plots for meta-region profiles
+}
+\examples{
+data(cage)
+data(promoters)
+scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+
+data(cpgi)
+scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+
+# create a new ScoreMatrixList
+x=new("ScoreMatrixList",list(scores1,scores2))
+plotMeta(mat=x,overlay=TRUE,main="my plotowski")
+}
+

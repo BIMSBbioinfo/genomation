@@ -188,10 +188,10 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' @export
 setGeneric("intersectScoreMatrixList", 
            function(sml,reorder=FALSE)
-             standardGeneric("unionScoreMatrixList") )
+             standardGeneric("intersectScoreMatrixList") )
 
 #' @aliases intersectScoreMatrixList,ScoreMatrixList-method
-#' @rdname intersectMatrixList-methods
+#' @rdname intersectScoreMatrixList-methods
 setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
           function(sml,reorder){
             
