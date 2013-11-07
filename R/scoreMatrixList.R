@@ -173,7 +173,7 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 # ---------------------------------------------------------------------------- #
 #' Get common rows from all matrices in a ScoreMatrixList object
 #' 
-#' Returns a union of rows for each matrix in a ScoreMatrixList object. 
+#' Returns a intersection of rows for each matrix in a ScoreMatrixList object. 
 #' This is done using the rownames of each element in the list.
 #'
 #' @param sml a \code{ScoreMatrixList} object
@@ -183,18 +183,18 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #'
 #' @docType methods
-#' @rdname unionScoreMatrixList-methods
+#' @rdname intersectScoreMatrixList-methods
 #' @export
-setGeneric("unionScoreMatrixList", 
+setGeneric("intersectScoreMatrixList", 
            function(sml,reorder=FALSE)
              standardGeneric("unionScoreMatrixList") )
 
-#' @aliases unionScoreMatrixList,ScoreMatrixList-method
-#' @rdname unionScoreMatrixList-methods
-setMethod("unionScoreMatrixList", signature("ScoreMatrixList"),
+#' @aliases intersectScoreMatrixList,ScoreMatrixList-method
+#' @rdname intersectMatrixList-methods
+setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
           function(sml,reorder){
             
-            rnames = Reduce('union' ,lapply(sml, rownames))
+            rnames = Reduce('intersect' ,lapply(sml, rownames))
             if(reorder){
               sml = as(lapply(sml, function(x){ 
                                   x=x[rownames(x) %in% rnames,]
