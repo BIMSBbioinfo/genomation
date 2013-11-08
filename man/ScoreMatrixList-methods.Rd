@@ -4,7 +4,9 @@
 \title{Make ScoreMatrixList from multiple targets}
 \usage{
   ScoreMatrixList(targets, windows = NULL, bin.num = NULL,
-    bin.op = "mean", strand.aware = FALSE, ...)
+    bin.op = "mean", strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE, type = "",
+    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 }
 \arguments{
   \item{targets}{can be a list of \code{scoreMatrix}
@@ -29,12 +31,34 @@
   - strand (e.g. when plotting enrichment around
   transcription start sites)}
 
+  \item{weight.col}{if the object is \code{GRanges} object
+  a numeric column in meta data part can be used as
+  weights. This is particularly useful when genomic regions
+  have scores other than their coverage values, such as
+  percent methylation, conservation scores, GC content,
+  etc.}
+
+  \item{is.noCovNA}{(Default:FALSE) if TRUE,and if 'target'
+  is a GRanges object with 'weight.col' provided, the bases
+  that are uncovered will be preserved as NA in the
+  returned object. This useful for situations where you can
+  not have coverage all over the genome, such as CpG
+  methylation values.}
+
   \item{type}{if \code{targets} is a character vector of
   file paths, then type designates the type of the
   corresponding files (bam or bigWig)}
 
-  \item{...}{other arguments that can be passed to the
-  function}
+  \item{rpm}{boolean telling whether to normalize the
+  coverage to per milion reads. FALSE by default.}
+
+  \item{unique}{boolean which tells the function to remove
+  duplicated reads based on chr, start, end and strand}
+
+  \item{extend}{numeric which tells the function to extend
+  the reads to width=extend}
+
+  \item{param}{ScanBamParam object}
 }
 \value{
   returns a \code{ScoreMatrixList} object
@@ -45,5 +69,16 @@
   This object can be visualized using
   \code{multiHeatMatrix}, \code{heatMeta} or
   \code{plotMeta}
+}
+\examples{
+# visualize the distribution of cage clusters and cpg islands around promoters
+ data(cage)
+ data(cpgi)
+ data(promoters)
+
+ cage$tpm = NULL
+ target = GRangesList(cage=cage, cpgi=cpgi)
+ sml = ScoreMatrixList(target, promoters, bin.num=10, strand.aware=TRUE)
+ multiHeatMatrix(sml)
 }
 

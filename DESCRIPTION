@@ -23,7 +23,9 @@ Imports:
     reshape2,
 	ggplot2,
 	methods,
-	rtracklayer
+	rtracklayer,
+  gridBase,
+  impute
 Suggests:
     testthat,
     knitr

@@ -20,4 +20,17 @@
   Reorder all elements of a ScoreMatrixList to a given
   ordering vector
 }
+\examples{
+data(cage)
+ data(cpgi)
+ data(promoters)
+
+ cage$tpm = NULL
+ target = GRangesList(cage=cage, cpgi=cpgi)
+ sml = ScoreMatrixList(target, promoters, bin.num=10)
+ kmeans.clust = kmeans(sml$cage,3)
+
+ sml.ordered = orderBy(sml, kmeans.clust$cluster)
+ multiHeatMatrix(sml.ordered)
+}
 

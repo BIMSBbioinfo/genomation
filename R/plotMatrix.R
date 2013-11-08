@@ -129,7 +129,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
         col=col,yaxt="n",ylab="",xlab=xlab,main=main,
         cex.lab=cex.lab,cex.axis=cex.axis)
   if(!is.null(profile.names)){
-    axis(side=4,at=1:nrow(img),label=rev(profile.names),
+    axis(side=4,at=1:nrow(img),labels=rev(profile.names),
          las=2,cex.axis=cex.axis)
   }
   
@@ -151,7 +151,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
   #current.viewport()
   current.vpTree()
   rng=range(img)
-  .heatLegendY(min=rng[1],max=rng[2],col=col,
+  .heatLegendY(min=rng[1],max=rng[2],cols=col,
                legend.name=legend.name,main=TRUE,cex.legend=cex.legend,
                cex.lab=cex.lab)
   popViewport(2) # remove the legend VP
@@ -215,7 +215,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #' 
 plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
                    meta.rescale=FALSE,
-                   line.col=ifelse(is.list(x),list(rainbow(length(x))),"black")[[1]],
+                   line.col=ifelse(is.list(mat),list(rainbow(length(mat))),"black")[[1]],
                    ylim=NULL,ylab="average score",xlab="bases",...){
   
   # check class
