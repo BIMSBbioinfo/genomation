@@ -57,7 +57,6 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			
 			#checks whether the chromosome sizes are defined, if not uses the end coordinates of features
 			if(is.null(chrom.sizes)){
-				message('Using feature chromosome sizes ...')
 				chrom.sizes=list()
 				chrs=as.character(unique(seqnames(feature)))
 				my.starts=c()
@@ -91,7 +90,6 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			exclude = exclude[seqnames(exclude) %in% chrs]
 			
 			# defines the regions that can be sampled from
-			message('Creating allowed regions...\n')
 			r = sapply(chrom.sizes, function(x)Rle(0, x))
 			re = sapply(names(r), function(x){a=r[[x]];a[ranges(include[seqnames(include) == x])]= 1;a})
 			if(length(exclude) > 0)
@@ -99,11 +97,9 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			names(re) = names(chrom.sizes)
 			
 			# loops over the chromosome and constructs the defined set of ranges
-			message('Looping over the chromosomes...\n')
 			glist = list()
 			for(chr in chrs){
 			
-				message(chr,'\r')
 				# gets the indices of the features on the chromosome
 				ind = seqnames(feature) == chr
 				
@@ -129,7 +125,6 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 					strand(g) = sample(as.character(strand(feature[ind])))
 				glist[[chr]] = g
 			}
-			message('Returning the final GRanges object...\n')	
 			return(unlist(GRangesList(glist)))
 })
 

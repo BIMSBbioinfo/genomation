@@ -45,40 +45,40 @@ test_that("ScoreMatrix: RleList, GRanges works",
 # ---------------------------------------------------------------------------- #
 test_that("ScoreMatrix:GRanges, GRanges works",
 {
-          target = GRanges(rep(c(1,2),each=6), 
-                           IRanges(rep(c(1,2,3,7,8,9), times=2), width=5),
-                           weight = rep(c(1,2),each=6))
-          windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
-                            strand=c('-','+','-','+'))
+  target = GRanges(rep(c(1,2),each=6), 
+                   IRanges(rep(c(1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=6))
+  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+                    strand=c('-','+','-','+'))
           
-          # -----------------------------------------------#
-          # usage
-          # normal function works
-          s1 = ScoreMatrix(target=target, windows=windows)
-          m1 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
-          rownames(m1) = 1:4
-          m1 = as(m1, 'ScoreMatrix')
-          expect_equal(s1,m1)
+  # -----------------------------------------------#
+  # usage
+  # normal function works
+  s1 = ScoreMatrix(target=target, windows=windows)
+  m1 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
+  rownames(m1) = 1:4
+  m1 = as(m1, 'ScoreMatrix')
+  expect_equal(s1,m1)
           
-          # function with weight col works
-          s2 = ScoreMatrix(target=target, windows=windows, weight.col='weight')
-          m2 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
-          m2[3:4,] = m2[3:4,]*2
-          rownames(m2) = 1:4
-          m2 = as(m2, 'ScoreMatrix')
-          expect_equal(s2,m2)  
+  # function with weight col works
+  s2 = ScoreMatrix(target=target, windows=windows, weight.col='weight')
+  m2 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
+  m2[3:4,] = m2[3:4,]*2
+  rownames(m2) = 1:4
+  m2 = as(m2, 'ScoreMatrix')
+  expect_equal(s2,m2)  
           
-          #strand aware
-          s3 = ScoreMatrix(target=target, windows=windows, strand.aware=T)
-          m3 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
-          rownames(m3) = 1:4
-          m3[c(1,3),] = rev(m3[c(1,3),])
-          m3 = as(m3, 'ScoreMatrix')
-          expect_equal(s3,m3)
+  #strand aware
+  s3 = ScoreMatrix(target=target, windows=windows, strand.aware=T)
+  m3 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
+  rownames(m3) = 1:4
+  m3[c(1,3),] = rev(m3[c(1,3),])
+  m3 = as(m3, 'ScoreMatrix')
+  expect_equal(s3,m3)
           
-          # -----------------------------------------------#
-          # errors
-          expect_error(ScoreMatrix(target, windows, weight.col=''))
+  # -----------------------------------------------#
+  # errors
+  expect_error(ScoreMatrix(target, windows, weight.col=''))
           
 })
 
@@ -96,7 +96,7 @@ test_that("ScoreMatrix:character, GRanges works",
   # -----------------------------------------------#
   # usage
   # bam file
-  bam.file = system.file('extdata/test.bam', package='genomation')
+  bam.file = system.file('tests/test.bam', package='genomation')
   s1 = ScoreMatrix(bam.file, windows, type='bam')
   m1 = ScoreMatrix(target, windows)
   expect_equal(s1,m1)
@@ -117,11 +117,7 @@ test_that("ScoreMatrix:character, GRanges works",
   m4 = ScoreMatrix(resize(unique(target), width=1), windows)
   expect_equal(s4,m4)
   
-  #bigWig file - does not work on windows
-  #bw.file = system.file('extdata/test.bw', package='genomation')
-  #s5 = ScoreMatrix(bw.file, windows, type='bigWig')
-  #m5 = ScoreMatrix(target, windows)
-  #expect_equal(s1,m1)
+  
   # -----------------------------------------------#
   # errors
   # error upon not specifying the file
@@ -135,9 +131,7 @@ test_that("ScoreMatrix:character, GRanges works",
 # ---------------------------------------------------------------------------- #
 test_that("ScoreMatrix:character, GRanges, type='bigWig' works".
 {
-  library(rtracklayer)
-  test_path <- system.file("tests", package = "rtracklayer")
-  test_bw <- file.path(test_path, "test.bw")
+  test_bw <- system.file("tests/test.bw", package = "genomation")
   b = import(test_bw, asRangedData=F)
           
   st = seq(200, 300, 20)

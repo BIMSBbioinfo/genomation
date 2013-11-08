@@ -106,7 +106,7 @@ test_that("ScoreMatrixBin:character, GRanges works",
   # -----------------------------------------------#
   # usage
   # bam file
-  bam.file = system.file('extdata/test.bam', package='genomation')
+  bam.file = system.file('tests/test.bam', package='genomation')
   s1 = ScoreMatrixBin(bam.file, windows, type='bam', bin.num=2)
   m1 = ScoreMatrixBin(target, windows, bin.num=2)
   expect_equal(s1,m1)
@@ -127,11 +127,8 @@ test_that("ScoreMatrixBin:character, GRanges works",
   m4 = ScoreMatrixBin(resize(unique(target), width=1), windows, bin.num=2)
   expect_equal(s4,m4)
   
-  #bigWig file - does not work on windows
-  #bw.file = system.file('extdata/test.bw', package='genomation')
-  #s5 = ScoreMatrix(bw.file, windows, type='bigWig')
-  #m5 = ScoreMatrix(target, windows)
-  #expect_equal(s1,m1)
+  #bigWig file - missing
+  
   # -----------------------------------------------#
   # errors
   # error upon not specifying the file
@@ -144,9 +141,7 @@ test_that("ScoreMatrixBin:character, GRanges works",
 # ---------------------------------------------------------------------------- #
 test_that("ScoreMatrix:character, GRanges, type='bigWig' works".
 {
-  library(rtracklayer)
-  test_path <- system.file("tests", package = "rtracklayer")
-  test_bw <- file.path(test_path, "test.bw")
+  test_path <- system.file("tests/test.bw", package = "genomation")
   b = import(test_bw, asRangedData=F)
   
   st = seq(200, 300, 20)

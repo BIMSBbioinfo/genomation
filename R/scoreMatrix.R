@@ -179,7 +179,7 @@ readBigWig = function(target, windows=NULL, ...){
 #'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
 #'  
 #' # when target is a bigWig file
-#'  bw.file = system.file('extdata/test.bw', package='genomation')
+#'  bw.file = system.file('tests/test.bw', package='rtracklayer')
 #'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
 #'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bigWig') 
 #'  
