@@ -20,6 +20,12 @@
 #' @usage findFeatureComb(gl, width=0, use.names=FALSE, collapse.char=':')
 #' @return a GRanges object
 #'
+#'@examples
+#' g = GRanges(paste('chr',rep(1:2, each=3), sep=''), IRanges(rep(c(1,5,9), times=2), width=3))
+#' gl = GRangesList(g1=g, g2=g[2:5], g3=g[3:4])
+#' findFeatureComb(gl)
+#' findFeatureComb(gl, use.names=TRUE)
+#'
 #' @docType methods
 #' @rdname findFeatureComb-methods
 #' @export
@@ -56,8 +62,8 @@ setMethod("findFeatureComb", signature("GRangesList"),
                 # selects only unique representatives of combinations
                 do = do[!duplicated(do.comb),]
                 # pastes names of individual sets
-                cnames = apply(do, 1, function(x)paste(cnames[x == 1]), 
-                                                  collapse=collapse.char)
+                cnames = apply(do, 1, function(x)paste(cnames[x == 1], 
+                                                  collapse=collapse.char))
                 
                 # designates each reduced set by the combination of overlapping ranges
                 r$class = cnames[match(do.comb, unique(do.comb))]
