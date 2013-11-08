@@ -77,9 +77,18 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
 	if(len == 0L)
 		stop('target argument is empty')
   
+  # this checks whether we can work with the corresponding target object class set
+  list.ind = grepl('list', class(target)) | grepl('List', class(target))
+	if(len > 1L & !list.ind){
+	  if(all(is.character(target)) && !all(file.exists(target)))
+	    stop('target argument is neither a list like object (e.g. GRangesList),
+            nor a set of files') 
+	}
+	     
+  
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(target, class)) == 'scoreMatrix'))
+	if(all(unlist(lapply(target, class)) == 'ScoreMatrix'))
 		return(new("ScoreMatrixList",target))
 
   
@@ -88,12 +97,11 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
 	  stop("windows of class GRanges must be defined")
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(!all(unlist(lapply(target, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
-    if(all(is.character(target)) && !all(file.exists(target))){
+	if(list.ind & 
+       !all(unlist(lapply(target, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
       stop('target should be one of the following: 
-           an RleList, a list of files, a list of GRanges')
-    }
-	} 
+           an RleList, list of Rle, GRangesList, a list of GRanges objects')
+	}  
 	   
   if(all(is.character(target)) && is.null(type) && all(file.exists(target)))
       stop('When providing a file, it is necessary to give the type of the file')
