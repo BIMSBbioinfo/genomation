@@ -1,280 +1,1241 @@
-# ---------------------------------------------------------------------------- #
-#' Plot functions for score matrix list
+# functions for plotting metaProfiles:
+
+
+# default color scheme for heatmaps
+
+#.jets <- colorRampPalette(c("#334b8e", "#456ca7", "#71c6cd", "#8fc56c", 
+#                           "#f3e92b","#e6762b","#d9272a"))
+.jets<-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+                          "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+
+
+#' Heatmap for meta-region profiles
 #' 
-#' Functions plot a ScoreMatrixList object as a panel of heatmaps
+#' Function calculates meta-profile(s) from a ScoreMatrix or a ScoreMatrixList, then
+#' produces a heatmap or a set of stacked heatmaps for meta-region profiles
 #'
-#' @param mat.list a \code{ScoreMatrixList} object
-#' @param mat.cols colors to be used for plotting
-#' @param xmarks an integer number to lable the thick marks on the x axis of each heatmap.
-#'  By default it takes the values of -ncol/2, 0, ncol/2
-#' @param ymarks a vector of that will lable the thick marks on the y axis
-#' @param y.at a numeric vector that will specify the positions of the thick marks on the y axis
-#' @param xcex, ycex an integer number which controls the character expansion on x and y axis
-#' @param cex.main an integer number which controls the character expansion of the plot label
-#' @param mar a vector of length 5 which controls the size of the margins. 
-#' The order is the following: below, left, up, right, spacing between consecutive plots
-#' @param use.names whether to use the names of the ScoreMatrixList object to label each plot
-#' @param main whether to use the names of the ScoreMatrixList object to label each plot
-#' @param xlab, ylab name to be used for the x/y axis 
-#' @param ... other options (obselete for now)
-
-#' @usage heatmapProfile(mat.list, mat.cols=NULL, ...)
-
+#' @param mat \code{ScoreMatrix} or \code{ScoreMatrixList} to be plotted 
+#' @param profile.names a character vector for names of profiles. If NULL, 
+#'                      the names
+#'                      will be taken from names(mat) if mat is a 
+#'                      \code{ScoreMatrixList} object.
+#' @param xcoords a vector of numbers showing relative positions of the bases or 
+#'                windows. It must match the number of columns in the \code{ScoreMatrix}
+#'                For example: if there are 2001 elements in the matrices which
+#'                are base-pair resolution 
+#'                and they are centered around an anchor point like TSS, the xcoords
+#'                argument should be -1000:1000. This argument is used to plot
+#'                accurate x-axis labels for the plots.If NULL it will be equal
+#'                to 1:ncol(mat).
+#' @param meta.rescale if TRUE meta-region profiles are scaled to 0 to 1 range by
+#'                     subracting the min from profiles and dividing them by 
+#'                     max-min.                
+#' @param col a vector of color pallete. 
+#'        color scheme to be used. If NULL, a version of jet colors will be
+#'            used.
+#' @param legend.name a character label plotted next to the legend
+#' @param cex.legend  A numerical value giving the amount by which 
+#'                    legend axis marks should be magnified relative to the default
+#' @param xlab label a character string for x-axis
+#' @param main a character string for the plot title
+#' @param cex.lab  A numerical value giving the amount by which 
+#'                    axis labels (including 'legend.name') 
+#'                    should be magnified relative to the default.
+#' @param cex.axis  A numerical value giving the amount by which 
+#'                    axis marks should be magnified relative to the default
+#' 
+#' @return returns meta-profile matrix invisibly.
+#' 
+#' 
 #' @examples
-#'  l = lapply(seq(20, 40,5), function(x)as(matrix(rpois(1000, x), ncol=25), 'scoreMatrix'))
-#'  
-#'  
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#' data(cpgi)
+#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#' 
+#' x=new("ScoreMatrixList",list(scores1,scores2))
+#' heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
+#'          cex.axis=0.9)
+#' @import gridBase
+#' @export
+#' 
+heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
+                   meta.rescale=FALSE,
+                   legend.name=NULL,cex.legend=1,xlab=NULL,
+                   main="",cex.lab=1,cex.axis=1){
+  
+  # check class
+  if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
+    stop("mat is not ScoreMatrix or ScoreMatrixList\n")
+  
+  
+  
+  # get meta profiles by taking the mean
+  if( class(mat)=="ScoreMatrix" ){
+    metas=list(colMeans(mat,na.rm=TRUE))
+    
+  }else if( class(mat)=="ScoreMatrixList" ){
+    metas=lapply(mat,function(a) colMeans(a,na.rm=TRUE) )
+    
+  }  
+  
+  # if the ncols of matrices do not match do not plot anything
+  if(length(unique(sapply(metas,length))) != 1){
+    stop("ScoreMatrix number of columns do not match\n",
+         "Try using binMatrix to make matrices with large number of columns",
+         "equal to the smaller ones\n")
+  }
+  
+  # get the default xcoordinates to plot
+  if(!is.null(xcoords)){
+    
+    # if it is a two element vector of start and end coordinates 
+    # of the first and the last column of the matrix
+    if(length(xcoords)==2 & xcoords[1]<xcoords[2]){
+      xcoords=seq(xcoords[1],xcoords[2],length.out=length(metas[[1]]) )
+    }
+    
+    if(length(xcoords) != length(metas[[1]])) 
+      stop("xcoords has wrong length: ",length(xcoords)," \n",
+           "it should be equal to the number of columns of ScoreMatrices\n",
+           "which is: ",length(metas[[1]]),"\n")    
+  }else{
+    xcoords=1:length(metas[[1]])
+  }
+  
+  
+  # try to get profile names from names of ScoreMatrixList
+  if(is.null(profile.names) & !is.null(names(mat)) & class(mat)=="ScoreMatrixList" )
+  {
+    profile.names=  names(mat)
+  }
+  # if user wants scaling
+  if(meta.rescale){
+    metas=lapply(metas,function(x) (x-min(x))/(max(x)-min(x)  )  )
+  }
+  
+  img=do.call("rbind",metas)
+  
+  if(is.null(col)){
+    col=.jets(100)
+  }
+  
+  marOrg=par()$mar # get original parMar to be used later
+  marNew=marOrg
+  marNew[4]=6.1
+  par(mar=marNew)
+  image(x=xcoords,y=1:nrow(img),z=t(img[nrow(img):1,]),useRaster=TRUE,
+        col=col,yaxt="n",ylab="",xlab=xlab,main=main,
+        cex.lab=cex.lab,cex.axis=cex.axis)
+  if(!is.null(profile.names)){
+    axis(side=4,at=1:nrow(img),label=rev(profile.names),
+         las=2,cex.axis=cex.axis)
+  }
+  
+  #plot.new()
+  vps <- baseViewports()
+  pushViewport(vps$figure) # get the plot viewport from base graphics
+  # showViewport(current.viewport());current.vpTree()
+  #grid.text(c("one"),
+  #          x=unit(1, "native"), y=unit(2, "native"),
+  #          just="right", rot=60)
+  
+  if(par()$mar[2]<4.1){
+    warning("left margin of the plot (set by mar in par()) should not be less then 4.1 lines")
+  }
+  # make view port for the legend
+  legendVp <- viewport(width=unit(1, "lines"), height=unit(0.4, "npc"),
+                       x = unit(3, "lines"), y = unit(0.5, "npc"),just="left")
+  pushViewport(legendVp) # push the legend VP
+  #current.viewport()
+  current.vpTree()
+  rng=range(img)
+  .heatLegendY(min=rng[1],max=rng[2],col=col,
+               legend.name=legend.name,main=TRUE,cex.legend=cex.legend,
+               cex.lab=cex.lab)
+  popViewport(2) # remove the legend VP
+  current.vpTree()         
+  par(mar=marOrg)              
+  
+  invisible(metas)
+}
+
+
+#' Line plot(s) for meta-region profiles
+#' 
+#' Function calculates meta-profile(s) from a ScoreMatrix or a ScoreMatrixList, then
+#' produces a line plot or a set of line plots for meta-region profiles
+#' 
+#' @param mat \code{ScoreMatrix} or \code{ScoreMatrixList} object. If it is a 
+#' \code{ScoreMatrixList} object, all matrices in the ScoreMatrixList should have 
+#' the same number of 
+#' columns.
+#' @param overlay If TRUE multiple profiles will be overlayed in the same plot
+#'                (Default:TRUE). If FALSE, and mat is a ScoreMatrixList, consider
+#'                using par(mfrow=c(1,length(mat)))  to see the plots from all
+#'                matrices at once.
+#' @param profile.names a character vector for names of the profiles. The order
+#'        should be same as the as the order of ScoreMatrixList.
+#' @param xcoords a numeric vector which designates 
+#'        relative base positions of the meta-region profiles.
+#'        For example, for a 2001 column ScoreMatrix, xcoord=-1000:1000 indicates
+#'        relative positions of each column in the score matrix. If NULL (Default),
+#'        xcoords equals to 1:ncol(mat) 
+#' @param meta.rescale if TRUE meta-region profiles are scaled to 0 to 1 range by
+#'                     subracting the min from profiles and dividing them by max-min.
+#' @param line.col color of lines for the meta-region profiles. Defaults to colors from
+#'        \code{rainbow()} function.
+#' @param ylim same as \code{ylim} at \code{\link{plot}} function. 
+#'             if NULL ylim is estimated from all meta-region profiles.
+#' @param ylab same as \code{ylab} at \code{\link{plot}} function. 
+#'             Default: "average score"
+#' @param xlab same as \code{xlab} at \code{\link{plot}} function. 
+#'             Default: "bases"
+#' @param ... other options to \code{\link{plot}}
+#' 
+#' @return returns the meta-region profiles invisibly as a matrix.
+#' 
+#' @examples
+#' 
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#'
+#' data(cpgi)
+#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#' 
+#' # create a new ScoreMatrixList
+#' x=new("ScoreMatrixList",list(scores1,scores2))
+#' plotMeta(mat=x,overlay=TRUE,main="my plotowski")
+#' 
 #' @export
 #' @docType methods
-#' @rdname heatmapProfile-methods
-setGeneric("heatmapProfile", 
-           function(mat.list, mat.cols=NULL, xmarks=NULL, 
-                    ymarks=NULL, y.at=NULL, xcex=1.5, 
-                    ycex=1.5, cex.main=3, mar=NULL, 
-                    use.names=T, xlab=NULL, ylab=NULL, ...)
-             standardGeneric("heatmapProfile"))
+#' @rdname plotMeta
+#' 
+plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
+                   meta.rescale=FALSE,
+                   line.col=ifelse(is.list(x),list(rainbow(length(x))),"black")[[1]],
+                   ylim=NULL,ylab="average score",xlab="bases",...){
+  
+  # check class
+  if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
+    stop("mat is not ScoreMatrix or ScoreMatrixList\n")
+  
+  
+  
+  # get meta profiles by taking the mean
+  if( class(mat)=="ScoreMatrix" ){
+    metas=list(colMeans(mat,na.rm=TRUE))
+    if(is.null(ylim))myrange=range(metas[[1]])
+  }else if( class(mat)=="ScoreMatrixList" ){
+    metas=lapply(mat,function(a) colMeans(a,na.rm=TRUE) )
+    if(is.null(ylim))myrange=range(unlist(metas))
+  }  
+  
+  # if the ncols of matrices do not match do not plot anything
+  if(length(unique(sapply(metas,length))) != 1){
+    stop("ScoreMatrix number of columns do not match\n",
+         "Try using binMatrix to make matrices with high number of columns",
+         "equal\n")
+  }
+  
+  
+  # get the default xcoordinates to plot
+  if(!is.null(xcoords)){
+    
+    # if it is a two element vector of start and end coordinates 
+    # of the first and the last column of the matrix
+    if(length(xcoords)==2 & xcoords[1]<xcoords[2]){
+      xcoords=seq(xcoords[1],xcoords[2],length.out=length(metas[[1]]) )
+    }
+    
+    if(length(xcoords) != length(metas[[1]])) 
+      stop("xcoords has wrong length: ",length(xcoords)," \n",
+           "it should be equal to the number of columns of ScoreMatrices\n",
+           "which is: ",length(metas[[1]]),"\n")    
+  }else{
+    xcoords=1:length(metas[[1]])
+  }
+  
+  if(meta.rescale){
+    metas=lapply(metas,function(x) (x-min(x))/(max(x)-min(x)  )  )
+    myrange=c(0,1.1)
+  }
+  
+  
+  
+  # if ylim is not NULL, change the ranges to plot to ylim
+  if(!is.null(ylim))myrange=ylim
+  
+  marOrg=par()$mar # get original parMar to be used later
+  marNew=marOrg
+  marNew[4]=6.1
+  par(mar=marNew) # extend right margin for the legend
+  par(xpd=TRUE) # do this so that you can plot legend out of the plotting box
+  if(overlay & length(metas)>1){
+    # plot overlayed lines
+    plot(xcoords,metas[[1]],type="l",col=line.col[1],
+         ylim=myrange,ylab=ylab,xlab=xlab,...)
+    for(i in 2:length(metas) ){
+      lines(xcoords,metas[[i]],col=line.col[i])
+    }
+    
+    # if profile names are given, plot them as legend
+    if(!is.null(profile.names))
+      legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
+             ,fill=line.col,bty="n")
+  }else{ # plot things one by one, in this case user must use par
+    
+    for(i in 1:length(metas) ){
+      plot(metas[[i]],type="l",col=line.col[i],
+           ylim=myrange,ylab=ylab,xlab=xlab,...)
+    }
+  }
+  # revert par shit to its original state
+  par(xpd=FALSE)
+  par(mar=marOrg)
+  
+  invisible(do.call("rbind",metas))
+}
 
-#' @aliases heatmapProfile,ScoreMatrixList-method
-#' @rdname heatmapProfile-methods
-setMethod("heatmapProfile", signature(mat.list="ScoreMatrixList"),
-          function(mat.list, mat.cols, xmarks, 
-                   ymarks, y.at, xcex, ycex, 
-                   cex.main, mar, use.names, xlab, ylab, ...){
-            
-            dims = unlist(lapply(mat.list, nrow))
-            if(!length(unique(dims)) == 1)
-              stop('ScoreMatrixList does not contain matrices with the same number of rows')
-            
-            
-            # default matrix colors
-            if(is.null(mat.cols))
-              mat.cols = colorRampPalette(c('lightgray','darkblue'), 
-                                          interpolate='spline')(20)
-            
-            
-            # checks the margin parameter
-            if(is.null(mar)){
-              mar = rep(3, 5)
-            }else if(! length(mar) == 5 | !all(is.numeric(mar))){
-              stop('mar is not of length 5')
-            }
-            
-            if(use.names)
-              main = names(mat.list)
-            
-            
-            # gets the dimension of the matrices
-            ncols = unlist(lapply(mat.list, ncol))
-            nrow = nrow(mat.list[[1]])
-            len = length(mat.list)
-            
-            # sets the layout
-            if(is.null(xlab) & is.null(ylab)){
-              layout(matrix(1:len, ncol=len))
-              
-            }else if(! is.null(xlab) & is.null(ylab)){
-              layout(matrix(c(2:(len+1), rep(1, len)), 
-                            ncol=len, nrow=2, byrow=T), heights=c(20,1))
-              .plotXYlab(xlab, 'x')
-              
-            }else if(is.null(xlab) & ! is.null(ylab)){
-              layout(matrix(1:(len+1), ncol=len+1), widths=c(5,rep(20, len+1)))
-              .plotXYlab(ylab, 'y')
-              
-            }else if(!is.null(xlab) & !is.null(ylab)){
-              par(mar=c(0,1,0,1), oma=rep(0,4))
-              layout(matrix(c(1,3:(len+2), 0,rep(2, len)), ncol=len+1, byrow=T), 
-                     widths=c(4,rep(20, len+1)), 
-                     heights=c(20,1))
-              .plotXYlab(ylab, 'y')
-              .plotXYlab(xlab, 'x')
-            }
-            
-            # gets the tick marks labels and positions
-            if(is.null(xmarks))
-              xmarks = c(-ncols[1]/2, 0, ncols[1]/2)
-            xpos = seq(1, ncols[1], length.out=length(xmarks))
-            
-            # sets the thick marks and labels on the y axis
-            if(is.null(ymarks)){
-              ymarks = round(fivenum(1:nrow))
-            }
-            if(is.null(y.at)){
-              y.at = round(fivenum(1:nrow))
-            }
-            if(length(ymarks) != length(y.at))
-              stop('ymarks and y.at do not have the same length')
-            if(!is.null(y.at)){
-              if(!is.numeric(y.at)){
-                stop('y.at need to be a numeric variable')
-              }
-              if(any((y.at < 1) | (y.at > nrow))){
-                stop('y.at values are outside of the matrix dimension')
-              }
-            }
-            
-            # plots the heatmaps
-            for(i in 1:len){
-              message('Plotting matrix: ', i,'\r')
-              # sets the margins for each plot
-              if(i == 1){	
-                par(mar=c(mar[c(1,2,3)], mar[5]/2))
-                
-              }else if(i == len){
-                par(mar=c(mar[1], mar[5]/2, mar[3], mar[4]))
-              }else{
-                par(mar=c(mar[1], mar[5]/2, mar[3], mar[5]/2))
-              }
-              
-              image(x=1:ncols[1], y=1:nrow, z=t(mat.list[[i]]), 
-                    main=main[i], cex.main=cex.main, col=mat.cols,
-                    yaxt='n', xaxt='n', xlab='', ylab='', useRaster=T, ...)
-              if(i==1){
-                axis(2, at=y.at, las=2, cex.lab=2, labels=ymarks, cex.axis=ycex)
-              }
-              
-              axis(1, at=xpos, labels=xmarks, cex.axis=xcex)
-            }
-            message('\nPlotting done\n')
-            
-          }
-)
+# put a y axis legend
+.heatLegendY<-function(min,max,cols,legend.name,main=TRUE,cex.legend=1,
+                       cex.lab=1){
+  
+  # get value range as a vector of 100
+  vals=seq(min,max,length.out=100)
+  rng <- range(vals, na.rm = TRUE) # get min/mqx
+  m <- (vals - min)/(max-min) # get normalized range
+  rasta= rgb(colorRamp(cols)(m), max = 255) # get color for each element of range
+  
+  grid.raster( rev(rasta), interpolate=FALSE,height = unit(1, "npc"),
+               width=unit(1, "npc")) # make the legend
+  # make legend ticks
+  at = seq(0,1,length.out=5); label = seq(min,max,length.out=5)
+  
+  #make the axis of the legend
+  grid.yaxis(at=at,label=formatC(label,digits=2,format="g"),main=main,
+             edits=gEdit("labels", rot=90,hjust=0.5),
+             gp=gpar(cex=cex.legend)) # make axis for legend
+  my.x = -2
+  if(main==FALSE) 
+    my.x=3.4
+  grid.text(legend.name,rot=90,x=unit(my.x, "npc"),gp=gpar(cex=cex.lab))
+  
+}
+
+.heatLegendX<-function(min,max,cols,legend.name,main=TRUE,cex.legend=1,
+                       cex.lab=1,hjust=0,vjust=0){
+  
+  # get value range as a vector of 100
+  vals=seq(min,max,length.out=100)
+  rng <- range(vals, na.rm = TRUE) # get min/mqx
+  m <- (vals - min)/(max-min) # get normalized range
+  rasta= rgb(colorRamp(cols)(m), max = 255) # get color for each element of range
+  
+  grid.raster( matrix((rasta),nrow=1), interpolate=FALSE,height = unit(1, "npc"),
+               width=unit(1, "npc")) # make the legend
+  # make legend ticks
+  label = pretty(c(min,max),n=5);at = seq(0,1,length.out=length(label)); 
+  
+  #make the axis of the legend
+  grid.xaxis(at=at,label=label,main=main,
+             edits=gEdit("labels",hjust=hjust,vjust=vjust),
+             gp=gpar(cex=cex.legend)) # make axis for legend
+  my.y = -3
+  grid.text(legend.name,y=unit(my.y, "npc"),gp=gpar(cex=cex.lab))
+  
+}
+
+# convert a matrix or vector to color matrix
+# to be used in grid.raster()
+.convertToColors <- function(mat,cols) {
+  # Produce 'normalized' version of matrix, with values ranging from 0 to 1
+  rng <- range(mat, na.rm = TRUE)
+  m <- (mat - rng[1])/(diff(rng))
+  # Convert to a matrix of sRGB color strings
+  #m2 <- m; class(m2) <- "character"
+  m2<-matrix("transparent",ncol=ncol(m),nrow=nrow(m))
+  m2[!is.na(m)] <- rgb(colorRamp(cols)(m[!is.na(m)]), max = 255)
+  #m2[is.na(m)] <- "transparent"
+  return(m2)
+}
+
+# make a heatmap from a given matrix using grid.raster()
+.gridHeat<-function(mat,col,xcoords,xlab,cex.lab,cex.axis,angle=0,
+                    hjust=0,vjust=0){
+  
+  mat2=.convertToColors(mat,col)
+  ras=grid.raster(mat2,interpolate = FALSE, width= unit(1, "npc"),
+                  height=unit(1, "npc"))
+  
+  # make legend ticks
+  at = seq(0,1,length.out=5); label = seq(min(xcoords),max(xcoords)
+                                          ,length.out=5)
+  
+  ax=grid.xaxis(at=at,label=formatC(label,digits=4,format="g"),
+                edits=gEdit("labels", rot=angle,hjust=hjust,vjust=vjust),
+                gp=gpar(cex=cex.axis)) # make axis for legend
+  
+  grid.text(xlab,y=unit(-2.5, "lines"),gp=gpar(cex=cex.lab)) 
+  #grid.draw(ax)
+}
 
 
+.rowSideCol<-function(group.vector,group.names=NULL,group.col=NULL,cex.lab=1){
+  
+  if( is.null(group.col) ){
+    cols=rainbow(length(unique(group.vector)))
+    img=cols[factor(group.vector,levels=unique(group.vector))]
+  }else{
+    img=group.col[factor(group.vector,levels=unique(group.vector))]    
+  }
+  grid.raster(img,interpolate = FALSE, width= unit(1, "npc"),
+              height=unit(1, "npc"))
+  
+  # segment heights calculated from group.vector
+  # will be used to put group names in the middle of the segment
+  segh=as.vector(table(factor(group.vector,levels=unique(group.vector))))
+  name.coord=1-((cumsum(segh)-(segh/2))/sum(segh)) # NPC coord
+  
+  if( is.null(group.names)){
+    grid.text(unique(group.vector), y=unit(name.coord,"npc"), 
+              x = unit(-0.5, "lines"),
+              gp=gpar(cex=cex.lab),just="right")
+  }else{
+    grid.text(group.names[unique(group.vector)], y=unit(name.coord,"npc"),
+              x = unit(-0.5, "lines"),
+              gp=gpar(cex=cex.lab),just="right")    
+  }
+  
+}
 
 
-
-# ---------------------------------------------------------------------------- #
-#' visual representation of ScoreMatrix using a heatmap 
-#' The rows can be reordered using one factor and one numeric vector
-#'
+#' Draw a heatmap of a given ScoreMatrix object
+#' 
+#' 
+#' The function makes a heatmap out of given \code{ScoreMatrix} object. If desired
+#' it can use clustering using k-means and plot cluster color codes as a sidebar. 
+#' In addition, user can define groups of rows using 'group' argument.
+#' 
 #' @param mat a \code{ScoreMatrix} object
-#' @param fact a \code{factor} of length equal to \code{nrow(mat)}. Unused factor levels are dropped
-#' @param ord.vec a \code{vector} of class \code{numeric} of the same length as mat, 
-#'        which is going to be used for ordering of the rows
-#' @param shift shift the start coordinate of the x axis (plot starts at -shift)
-#' @param mat.cols a vector of colors used for plotting of the heatmap. 
-#'        Default colors range from lightgray to darkblue.
-#' @param fact.cols a vector of colors used for plotting of the factor key
-#' @param xlab x axis label
-#' @param ylab y axis label
-#' @param main plot name
-#' @param class.names names for each factor class - has to have the same lenght as \code{levels(fact)}
-#' @param ... other options to be passed to functions (obsolete at the moment)
-#' @return nothing
-#' 
+#' @param grid  if TRUE, grid graphics will be used. if FALSE, base graphics
+#'               will be used on the top level, so users can use par(mfrow)
+#'               or par(mfcol) prior to calling the function. Default:FALSE              
+#' @param col   a vector of colors, such as the ones created by heat.colors(10).
+#'              If NULL (which is default), jet color scheme (common in matlab
+#'              plots) will be used.
+#' @param xcoords a vector of numbers showing relative positions of the bases or 
+#'                windows. It must match the number of columns in the \code{ScoreMatrix}. 
+#'                Alternatively, it could be a numeric vector of two elements. Such
+#'                as c(0,100) showing the relative start and end coordinates of the first
+#'                and last column of the \code{ScoreMatrix} object.
+#'
+#' @param group a list of vectors of row numbers or a factor. This grouping is
+#'              used for rowside colors of the heatmap. If it is a list,
+#'              each element of the list must be a vector of row numbers. Names
+#'              of the elements of the list will be used as names of groups. 
+#'              If \code{group} is a factor
+#'              , it's length must match the number of rows of the matrix, and 
+#'              factor levels will be used as the names of the groups in the plot.
+#
+#'               
+#' @param group.col a vector of color names to be used at the rowside colors if
+#'                  \code{group} argument is given or \code{kmeans=TRUE}
+#' @param order    Logical indicating if the rows should be ordered or not 
+#'                 (Default:FALSE). If \code{order=TRUE} the matrix will be ordered
+#'                 with rowSums(mat) values in descending order. If kmeans=TRUE
+#'                 or \code{group} argument is provided, first the groups/clusters
+#'                 will be ordered in descending order of sums of rows then, everything
+#'                 within the clusters will be ordered by sums of rows.
+#' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
+#'                  determines the upper and lower percentile values to limit the 
+#'                  extreme values. For example, c(0,99) will limit the values to
+#'                  only 99th percentile, everything above the 99 percentile will 
+#'                  be equalized to the value of 99th percentile.This is useful 
+#'                  for visualization of matrices that have outliers.
+#' @param kmeans    Logical indicating if kmeans clustering should be done on the 
+#'                  rows or not (Default:FALSE).
+#' @param k     Defaults to 3. It designates the number of clusters to be returned
+#'              by kmeans clustering.
+#' @param main a character string for the plot title
+#' @param legend.name name of the lengend to be plotted under the axis of the legend.
+#' @param legend.name a character label plotted next to the legend
+#' @param cex.legend  A numerical value giving the amount by which 
+#'                    legend axis marks should be magnified relative to the default
+#' @param xlab label a character string for x-axis of the heatmap
+#' @param cex.lab  A numerical value giving the amount by which 
+#'                    axis labels (including 'legend.name') 
+#'                    should be magnified relative to the default.
+#' @param cex.main  A numerical value giving the amount by which 
+#'                    plot title should be magnified  
+#' @param cex.axis  A numerical value giving the amount by which 
+#'                    axis marks should be magnified relative to the default
+#' @param newpage logical indicating if \code{grid.newpage()} function should be
+#'                invoked if \code{grid=TRUE}.
+#'                
+#' @return
+#'  returns kmeans clustering result invisibly, if kmeans=TRUE
+#'                                    
 #' @examples
-#'   data(cage)
-#'   data(promoters)
-#'   myMat2=ScoreMatrix(target=cage,windows=promoters,
-#'                         weight.col="tpm",strand.aware=TRUE)
-#'   plot(colMeans(myMat2,na.rm=TRUE),type="l")
-#'   heatMatrix(myMat2,fact=)
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#'                     weight.col="tpm")
+#'
+#'
+#'
+#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#'           xcoords=-1000:1000,
+#'           cex.legend=0.8,main="GAGE clusters on promoters",cex.lab=1,
+#'           cex.axis=0.9,grid=FALSE)
+#'
+#' set.seed(1000)
+#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#'           xcoords=-1000:1000,kmeans=TRUE,k=3,
+#'           cex.legend=0.8,main="GAGE clusters on promoters",cex.lab=1,
+#'           cex.axis=0.9,grid=FALSE)
+#'           
+#' @import impute           
+#' @import gridBase
 #' 
-#' @docType methods
-#' @rdname heatMatrix-methods
+#' 
 #' @export
-setGeneric("heatMatrix", function(mat, 
-                                  fact=NULL, 
-                                  add.sep=TRUE, 
-                                  ord.vec=NULL,
-                                  shift=0, 
-                                  mat.cols=NULL, 
-                                  fact.cols=NULL, 
-                                  xlab='Position', ylab='Region', 
-                                  main='Positional profile', 
-                                  class.names=NULL, use.names=FALSE, ...) 
-  standardGeneric("heatMatrix") )
+#' @rdname heatMatrix
+heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
+                     group=NULL,group.col=NULL,order=FALSE,
+                     winsorize=c(0,100),
+                     kmeans=FALSE,k=3,
+                     main="",legend.name=NULL,cex.legend=1,xlab=NULL,cex.main=1,
+                     cex.lab=1,cex.axis=1,newpage=TRUE
+){
+  
+  if( class(mat) !="ScoreMatrix" ){stop("'mat' is not a ScoreMatrix object\n")}
+  
+  mat2=mat@.Data # get the matrix class, some operations are not transitive
+  
+  # if this is changed, a rowSide color map will be drawn
+  # setting kmeans or group.list will populate this vector
+  # and this function will check on its value later on
+  # to decide to plot rowside colors or not
+  group.vector=NULL
+  group.names=NULL # will be plotted as annotation if filled in later
+  
+  
+  # this can set extreme values to given percentile
+  # better for visualization
+  # alternative is to take log or sth
+  # but that should be done prior to heatMatrix
+  if(winsorize[2]<100 | winsorize[1]>0){
+    hi.th=quantile(mat2,winsorize[2]/100,na.rm=TRUE)
+    lo.th=quantile(mat2,winsorize[1]/100,na.rm=TRUE)
+    mat2[mat2>hi.th]=hi.th
+    mat2[mat2<lo.th]=lo.th
+    
+  }
+  
+  # do kmeans if requested
+  if(kmeans){
+    
+    # impute values if there are NAs
+    if(any(is.na(mat2)) ) {
+      mat3=impute.knn(mat2 ,k = 10, 
+                      rowmax = 0.5, colmax = 0.8, 
+                      maxp = 1500)$data
+      clu=kmeans(mat3,c=k)
+    }
+    else{
+      # cluster 
+      clu=kmeans(mat2,c=k)
+    }
+    
+    # get group.vector centers, will be used at ordering later
+    group.vector=clu$cluster
+    kcenters=clu$centers
+    
+    # order things by clusters only
+    mat2=mat2[order(group.vector),]
+    group.vector=group.vector[order(group.vector)]
+    
+    # if user wants to order
+    if(order){
+      
+      # replicate center value for each cluster
+      g.factor=factor(group.vector,levels=unique(group.vector))
+      cent.val=rowSums(kcenters,na.rm=TRUE)[g.factor]
+      
+      # order by centers,cluster id, and do ordering within clusters
+      my.order=order(-cent.val,group.vector,-rowSums(mat2,na.rm=TRUE))
+      
+      # commence the new order: Novus Ordo Seclorum
+      mat2=mat2[my.order,]
+      group.vector=group.vector[my.order]
+    }
+    
+    group.names=unique(group.vector) # to be used for the rowSide colors
+  }
+  
+  
+  # check conditions of group.list
+  # group must not have duplicated numbers
+  # warn if total number group elements is below nrow(mat)
+  if(!is.null(group)  & !kmeans){
+    
+    # if group is a list of rowids, row numbers for original windows argument
+    if(is.list(group)){
+      # group must not have duplicated numbers
+      win.numbs=(lapply(group, function(x) unique(x) ))
+      win.vec=unlist(win.numbs)
+      if(any(table(unlist(win.numbs))>1)){
+        stop("'group' containing a list must not have duplicated numbers\n")
+      }
+      row.ids=rownames(mat2) # get row ids from the matrix
+      group.vector=rep(0,length(row.ids)) # make a starting vector of zeros
+      for(i in 1:length(win.numbs)){
+        group.vector[row.ids %in% win.numbs[[i]] ]=i # make group vector
+      }
+      
+      # if list has names, take it as group.names
+      # group.names will be plotted with rowSide colors
+      if(!is.null(names(group))){
+        group.names=names(group)
+      }
+      
+      # stop if total number group elements is below nrow(mat)
+      if(all(group.vector==0)){
+        stop("None of the elements in 'group' are a part of rownames(mat) \n")
+      }
+      
+      # warn if total number group elements is below nrow(mat)
+      if(any(group.vector==0)){
+        warning("Number of elements in 'group' argument is less then nrow(mat) \n",
+                "Dropping rows from 'mat' that are not contained in 'group'\n")
+        mat2=mat2[group.vector>0,]
+        group.vector=group.vector[group.vector>0]
+      }       
+      
+      
+    }
+    else if(is.factor(group)){
+      
+      # check if the length is same as nrow(mat)
+      if(length(group)==nrow(mat)){
+        stop("'group' is a factor, and its length should be equal to nrow(mat)\n")
+      }
+      # arrange factor levels by the order of appeareance
+      group=factor(as.character(group),levels=as.character(unique(group)))
+      group.names=levels(group)
+      levels(group)=1:length(levels(group))
+      group.vector=as.numeric(group)
+    }else{
+      stop("'group' must be a factor or a list\n")
+    }
+    
+    
+    
+    # order things by clusters only
+    mat2=mat2[order(group.vector),]
+    group.vector=group.vector[order(group.vector)]
+    
+    
+    
+    if(order){
+      my.order=order(group.vector,-rowSums(mat2,na.rm=TRUE))
+      
+      # commence the new order: Novus Ordo Seclorum
+      mat2=mat2[my.order,]
+      group.vector=group.vector[my.order]
+    }
+    
+  }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
+    mat2=mat2[order(-rowSums(mat2,na.rm=TRUE)),]
+  }
+  
+  
+  # THE PLOTTING STARTS HERE with ordered mat2
+  if(!grid){
+    plot.new()
+    vps <- baseViewports()
+    pushViewport(vps$figure) # get the plot viewport from base graphics
+    
+  }else{
+    if(newpage)
+      grid.newpage()
+  }
+  
+  # get the default/given xcoordinates to plot
+  if(!is.null(xcoords) & is.vector(xcoords)){
+    
+    # if it is a two element vector of start and end coordinates 
+    # of the first and the last column of the matrix
+    if(length(xcoords)==2 & xcoords[1]<xcoords[2]){
+      xcoords=seq(xcoords[1],xcoords[2],length.out=ncol(mat2) )
+    }
+    
+    if(length(xcoords) != ncol(mat2) ) 
+      stop("xcoords has wrong length: ",length(xcoords)," \n",
+           " it should be equal to the number of columns of ScoreMatrix\n",
+           " which is",ncol(mat2),"\n")    
+  }else{
+    xcoords=1:ncol(mat2)
+  }
+  
+  # get heatcolor scale
+  if(is.null(col)){
+    
+    col=.jets(100)
+  }
+  
+  
+  
+  
+  # make legend viewport
+  legendVp <- viewport(width=unit(0.7, "lines"), height=unit(0.4, "npc"),
+                       x = unit(0.71, "npc"), y = unit(0.5, "npc"),just="left")
+  pushViewport(legendVp)
+  #grid.rect()
+  rng=range(mat2,na.rm=TRUE)
+  # make the legend 
+  .heatLegendY(min=rng[1],max=rng[2],
+               col,legend.name,main=FALSE,cex.legend,
+               cex.lab)
+  popViewport()
+  
+  
+  
+  # make heatmap viewport
+  heatHeightNPC=0.7
+  heatVp <- viewport(width=unit(0.5, "npc"), height=unit(heatHeightNPC, "npc"),
+                     x = unit(0.2, "npc"), y = unit(0.5, "npc"),just="left")
+  pushViewport(heatVp) # push the heatmap VP
+  .gridHeat(mat2,col,xcoords,xlab,cex.lab,cex.axis,hjust=0.5) # make the heat  
+  #upViewport(1) # up one level current.vpTree()
+  popViewport()
+  
+  
+  # make side colors
+  if(!is.null(group.vector)){
+    sideVp <- viewport(width=unit(0.05, "npc"), height=unit(heatHeightNPC, "npc"),
+                       x = unit(0.145, "npc"), y = unit(0.5, "npc"),just="left")
+    pushViewport(sideVp) # push the viewport
+    
+    grid.rect()
+    
+    # make the rowside colors and labels
+    .rowSideCol(group.vector,group.names=group.names,
+                group.col=group.col,cex.lab=cex.lab)
+    
+    popViewport()
+  }
+  
+  # make the title
+  #title.y=convertY(unit(0.85, "npc"), "lines")
+  title.y=unit(0.9, "npc")
+  grid.text(main, y=title.y, 
+            x = unit(0.45, "npc"),
+            gp=gpar(cex=cex.main))
+  
+  #return groups if k-means==TRUE
+  if(kmeans){
+    invisible(clu$cluster) 
+  }
+  if(!grid)popViewport()
+}
 
-#' @aliases heatMatrix,ScoreMatrix-method
-#' @rdname heatMatrix-methods
-setMethod("heatMatrix", signature("ScoreMatrix"),
-          function(mat, fact, add.sep, 
-                   ord.vec, shift, mat.cols, 
-                   fact.cols, xlab, ylab, 
-                   main, class.names, use.names, ...){
-            
-            # -------------------------- #
-            # parameter checking
-            if(!is.null(fact) & length(fact) != nrow(mat))
-              stop('Given factor does not have the same length as the matrix')
-            if(!is.null(fact) & !is.factor(fact))
-              stop('fact need to be an object of class factor')
-            if(!is.null(ord.vec) & length(fact) != nrow(mat))
-              stop('Given ordering vector does not have the same length as the matrix')
-            if(!is.numeric(shift) | length(shift) > 1)
-              stop('shift needs to be a numeric vector of length 1')
-            # -------------------------- #
-            # default values
-            if(is.null(ord.vec))
-              ord.vec = 1:nrow(mat)	
-            
-            if(is.null(mat.cols)){
-              message('Using default mat.cols...\n')
-              mat.cols = colorRampPalette(c('lightgray','darkblue'), 
-                                          interpolate='spline')(20)
-            }
-            
-            # -------------------------- #
-            # plots the matrix
-            AddSep = function(x, rowsep, col, sepwidth=c(0.05,0.5)){
-              for(rsep in rowsep){
-                rect(xleft =0, 
-                     ybottom= (rsep), 
-                     xright=ncol(x)+1,  
-                     ytop = (rsep+1) - sepwidth[2], 
-                     lty=1, lwd=1, col=col, border=col)
-              }
-            }
-            
-            if(!is.null(fact)){
-              print('using factor')
-              layout(matrix(c(1,2), ncol=2), widths=c(20,1))
-              mat = mat[order(as.numeric(fact), ord.vec),]
-            }else{
-              mat = mat[ord.vec,]
-            }
-            
-            par(mar=c(5,5,3,.1), oma=c(0,0,0,0))
-            image(x=1:ncol(mat) - shift, y=1:nrow(mat), z=t(as.matrix(mat)), 
-                  col=mat.cols, oma=c(0,0,0,0),
-                  useRaster=TRUE, xlab=xlab, ylab=ylab, main=main, axes=FALSE)
-            if(use.names==TRUE){
-              axis(2, at=1:nrow(mat), labels=rownames(mat), las=2)
-            }else{
-              at = round(fivenum(1:nrow(mat)))
-              axis(2, at=at, labels=at, las=2)
-            }			
-            
-            if(!is.null(fact)){
-              
-              # drops unused levels from the factor
-              fact = fact[1:length(fact), drop=TRUE]
-              
-              if(is.null(class.names))
-                class.names = levels(fact)
-              
-              if(is.null(fact.cols)){
-                message('Using default fact.cols...\n')
-                fact.cols = getColors(length(levels(fact)))
-              }
-              
-              classnum = table(fact)
-              rowsep = cumsum(classnum)
-              if(add.sep == TRUE)
-                AddSep(mat, rowsep[-length(rowsep)], "black")
-              
-              par(mar=c(5,.5,3, max(nchar(class.names)/2)))
-              image(x = 1:10, 
-                    y = 1:nrow(mat), 
-                    z=t(matrix(as.numeric(fact), nrow=length(fact), ncol=10)),
-                    col = fact.cols, xaxt='n', yaxt='n', ylab='', xlab='',
-                    oma=c(0,0,0,1))
-              at = classnum/2
-              at[-1] = at[-1] + at[-length(at)]
-              at = cumsum(at)
-              axis(side=4, at=at, labels=class.names, tick = F, las=2)
-              
-            }	
-          }
-)
+
+# winsorize a matrix using percentile ranges
+.winsorize<-function(mat,rng){
+  hi.th=quantile(mat,rng[2]/100,na.rm=TRUE)
+  lo.th=quantile(mat,rng[1]/100,na.rm=TRUE)
+  mat[mat>hi.th]=hi.th
+  mat[mat<lo.th]=lo.th
+  mat
+}
+
+#' Draw multiple heatmaps from a ScoreMatrixList object
+#' 
+#' The function plots multiple heatmaps for a ScoreMatrixList object side by side.
+#' Each matrix can have different color schemes but it is essential that each matrix
+#' is obtained from same regions or neighbouring regions. 
+#' 
+#' @param sml a \code{ScoreMatrixList} object
+#' @param grid  if TRUE, grid graphics will be used. if FALSE, base graphics
+#'               will be used on the top level, so users can use par(mfrow)
+#'               or par(mfcol) prior to calling the function. Default:FALSE   
+#' @param col    a color palette or list of color palettes, such as
+#'               list(heat.colors(10),topo.colors(10)). If it is a list,
+#'               it is length must match the number of matrices to be plotted.
+#'               If it is a single palette
+#'               every heatmap will have the same colors.
+#' @param xcoords a vector of numbers showing relative positions of the bases or 
+#'                windows or a list of vectors. 
+#'                The elements of the list must match the number of columns in the
+#'                corresponding \code{ScoreMatrix}. 
+#'                Alternatively, the elements could be a numeric vector of two elements. Such
+#'                as c(0,100) showing the relative start and end coordinates of the first
+#'                and last column of the \code{ScoreMatrix} object. The remaining
+#'                coordinates will be automatically matched in this case. If the
+#'                argument is not a list but a single vector, then all heatmaps
+#'                will have the same coordinate on their x-axis.
+#'                
+#' @param group a list of vectors of row numbers or a factor. The rows will be 
+#'              reordered to match their grouping. The grouping is
+#'              used for rowside colors of the heatmap. If it is a list,
+#'              each element of the list must be a vector of row numbers. Names
+#'              of the elements of the list will be used as names of groups. 
+#'              If \code{group} is a factor
+#'              , it's length must match the number of rows of the matrix, and 
+#'              factor levels will be used as the names of the groups in the plot.
+#
+#'               
+#' @param group.col a vector of color names to be used at the rowside colors if
+#'                  \code{group} argument is given or \code{kmeans=TRUE}
+#' @param order    Logical indicating if the rows should be ordered or not 
+#'                 (Default:FALSE). If \code{order=TRUE} the matrix will be ordered
+#'                 with rowSums of all matrices in descending order. If kmeans=TRUE
+#'                 or \code{group} argument is provided, first the groups/clusters
+#'                 will be ordered in descending order by the sums of rows, then everything
+#'                 within the clusters will be ordered by the sums of rows.
+#'
+#' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
+#'                  determines the upper and lower percentile values to limit the 
+#'                  extreme values. For example, c(0,99) will limit the values to
+#'                  only 99th percentile for a matrix, 
+#'                  everything above the 99 percentile will 
+#'                  be equalized to the value of 99th percentile.This is useful 
+#'                  for visualization of matrices that have outliers.
+#' @param kmeans    Logical indicating if kmeans clustering should be done on the 
+#'                  rows or not (Default:FALSE).
+#' @param k     Defaults to 3. It designates the number of clusters to be returned
+#'              by kmeans clustering.
+#' @param column.scale Logical indicating if matrices should be scaled or not,
+#'                     prior to k-means clustering or ordering. Setting this
+#'                     to TRUE scales the columns of the 
+#'                     matrices using,
+#'                     \code{scale()} function. scaled columns are only used for
+#'                     clustering or ordering. Original scores are displayed for heatmaps.
+#' @param matrix.main a vector of strings for the titles of the heatmaps. If NULL
+#'                    titles will be obtained from names of the \code{ScoreMatrix}
+#'                    objects in the \code{ScoreMatrixList} objects.
+#'                    
+#' @param legend.name a vector of legend labels to be plotted with legends
+#'                    of each heatmap. If it is a length 1 vector, all heatmaps
+#'                    will have the same legend label.
+#' @param cex.legend  A numerical value giving the amount by which 
+#'                    legend axis marks should be magnified relative to the default
+#' 
+#' @param xlab  a vector of character strings for x-axis labels of the heatmaps. 
+#'              if it is length 1, all heatmaps will have the same label.
+#' @param cex.lab  A numerical value giving the amount by which 
+#'                    axis labels (including 'legend.name') 
+#'                    should be magnified relative to the default.
+#' @param cex.main  A numerical value giving the amount by which 
+#'                    plot title should be magnified  
+#' @param cex.axis  A numerical value giving the amount by which 
+#'                    axis marks should be magnified relative to the default
+#' @param newpage logical indicating if \code{grid.newpage()} function should be
+#'                invoked if \code{grid=TRUE}.
+#' 
+#' @return
+#'  returns kmeans clustering result invisibly, if kmeans=TRUE
+#'  
+#' @examples
+#' 
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#' 
+#' data(cpgi)
+#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#' 
+#' sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+
+#' multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
+#' 
+#' # use with K-means
+#' multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#'                 winsorize=c(0,99),
+#'                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' 
+#' # use different colors
+#' library(RColorBrewer)
+#' col.cage= brewer.pal(9,"Blues")
+#' col.cpgi= brewer.pal(9,"YlGn")
+#' multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#'                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
+#'                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' 
+#' 
+#' @import impute           
+#' @import gridBase
+#' 
+#' 
+#' @export
+#'
+multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
+                          group=NULL,group.col=NULL,order=FALSE,
+                          winsorize=c(0,100),
+                          kmeans=FALSE,k=3,column.scale=TRUE,
+                          matrix.main=NULL,legend.name=NULL,cex.legend=0.8,
+                          xlab=NULL,
+                          cex.lab=1, cex.main=1,cex.axis=0.8,newpage=TRUE)
+{
+  
+  if( class(sml) !="ScoreMatrixList" ){stop("'sml' is not a ScoreMatrix object\n")}
+  
+  # check if col and xcoords are lists
+  # if so their number should be equal to the number of matrices
+  if(is.list(col) & length(col) != length(sml)){
+    stop("'col' is a list and its length does not match the length of ScoreMatrixList\n")
+    col=NULL
+  }
+  
+  if( is.list(xcoords) & length(xcoords) != length(sml) ){
+    stop("'xcoords' is a list and its length does not match the length of ScoreMatrixList\n")
+    xcoords=NULL
+  }
+  
+  # check legend.name argument if , it is a vector
+  if(!is.null(legend.name) & length(legend.name)>1 & length(legend.name) != length(sml)){
+    stop("'legend.name' should match the length of the 'sml' ",
+         "if it is not a length 1 vector\n")
+  }else if (length(legend.name)==1){
+    legend.name=rep(legend.name,length(sml))
+  }
+  
+  # check xlab argument and set it
+  if(!is.null(xlab) & length(xlab)>1 & length(xlab) != length(sml)){
+    stop("'xlab' should match the length of the 'sml' ",
+         "if it is not a length 1 vector\n")
+  }else if (length(xlab)==1){
+    xlab=rep(xlab,length(sml))
+  } 
+  
+  #check number of rows if they match or not
+  # if not, warn and run unionScoreMatrixList
+  if( length(unique(sapply(sml,nrow)))>1  ){
+    warning("\nThe row numbers are different\n",
+            "attempting to get common rows and to reorder rows\n",
+            "using 'unionScoreMatrixList()'\n")
+    sml=intersectScoreMatrixList(sml,reorder=TRUE)
+  }
+  
+  
+  
+  mat.list=lapply(sml,function(x) x) # get the matrix class, some operations are not transitive
+  
+  
+  # if this is changed, a rowSide color map will be drawn
+  # setting kmeans or group.list will populate this vector
+  # and this function will check on its value later on
+  # to decide to plot rowside colors or not
+  group.vector=NULL
+  group.names=NULL # will be plotted as annotation if filled in later
+  
+  
+  # this can set extreme values to given percentile
+  # better for visualization
+  # alternative is to take log or sth
+  # but that should be done prior to heatMatrix
+  if(winsorize[2]<100 | winsorize[1]>0){
+    
+    mat.list=lapply(mat.list,function(x) .winsorize(x,winsorize) )
+    
+  }
+  
+  
+  # if order | kmeans is true
+  # make a one large matrix by cbind
+  if(kmeans | order){
+    mat2=do.call("cbind",mat.list)
+    if(column.scale){
+      mat2=scale(mat2)
+      mat2[is.nan(mat2)]=0
+    }
+  }
+  
+  # do kmeans if requested
+  if(kmeans){
+    
+    
+    # impute values if there are NAs
+    if(any(is.na(mat2)) ) {
+      mat3=impute.knn(mat2 ,k = 10, 
+                      rowmax = 0.5, colmax = 0.8, 
+                      maxp = 1500)$data
+      clu=kmeans(mat3,c=k)
+    }
+    else{
+      # cluster 
+      clu=kmeans(mat2,c=k)
+    }
+    
+    # get group.vector centers, will be used at ordering later
+    group.vector=clu$cluster
+    kcenters=clu$centers
+    
+    # order things by clusters only
+    mat.list=lapply(mat.list,function(x) x[order(group.vector),])
+    group.vector=group.vector[order(group.vector)]
+    
+    # if user wants to order
+    if(order){
+      
+      # replicate center value for each cluster
+      g.factor=factor(group.vector,levels=unique(group.vector))
+      cent.val=rowSums(kcenters,na.rm=TRUE)[g.factor]
+      
+      # order by centers,cluster id, and do ordering within clusters
+      my.order=order(-cent.val,group.vector,-rowSums(mat2,na.rm=TRUE))
+      
+      # commence the new order: Novus Ordo Seclorum
+      mat.list=lapply(mat.list,function(x) x[order(my.order),])
+      group.vector=group.vector[my.order]
+    }
+    
+    group.names=unique(group.vector) # to be used for the rowSide colors
+  }
+  
+  
+  # check conditions of group.list
+  # group must not have duplicated numbers
+  # warn if total number group elements is below nrow(mat)
+  if(!is.null(group)  & !kmeans){
+    
+    # if group is a list of rowids, row numbers for original windows argument
+    if(is.list(group)){
+      # group must not have duplicated numbers
+      win.numbs=(lapply(group, function(x) unique(x) ))
+      win.vec=unlist(win.numbs)
+      if(any(table(unlist(win.numbs))>1)){
+        stop("'group' containing a list must not have duplicated numbers\n")
+      }
+      row.ids=rownames(mat.list[[1]]) # get row ids from the matrix
+      group.vector=rep(0,length(row.ids)) # make a starting vector of zeros
+      for(i in 1:length(win.numbs)){
+        group.vector[row.ids %in% win.numbs[[i]] ]=i # make group vector
+      }
+      
+      # if list has names, take it as group.names
+      # group.names will be plotted with rowSide colors
+      if(!is.null(names(group))){
+        group.names=names(group)
+      }
+      
+      # stop if total number group elements is below nrow(mat)
+      if(all(group.vector==0)){
+        stop("None of the elements in 'group' are a part of rownames(mat) \n")
+      }
+      
+      # warn if total number group elements is below nrow(mat)
+      if(any(group.vector==0)){
+        warning("Number of elements in 'group' argument is less then nrow(mat) \n",
+                "Dropping rows from 'mat' that are not contained in 'group'\n")
+        
+        mat.list=lapply(mat.list,function(x) x[group.vector>0,])
+        group.vector=group.vector[group.vector>0]
+      }       
+      
+      
+    }
+    else if(is.factor(group)){
+      
+      # check if the length is same as nrow(mat)
+      if(length(group)==nrow(mat.list[[1]])){
+        stop("'group' is a factor, and its length should be equal to nrow(mat)\n")
+      }
+      # arrange factor levels by the order of appeareance
+      group=factor(as.character(group),levels=as.character(unique(group)))
+      group.names=levels(group)
+      levels(group)=1:length(levels(group))
+      group.vector=as.numeric(group)
+    }else{
+      stop("'group' must be a factor or a list\n")
+    }
+    
+    
+    
+    # order things by clusters only
+    mat.list=lapply(mat.list,function(x) x[order(group.vector),])
+    group.vector=group.vector[order(group.vector)]
+    
+    
+    
+    if(order){
+      
+      # get cbound matrix for ordering
+      mat2=do.call("cbind",mat.list)
+      if(column.scale){
+        mat2=scale(mat2)
+        mat2[is.nan(mat2)]=0
+      }
+      my.order=order(group.vector,-rowSums(mat2,na.rm=TRUE))
+      
+      # commence the new order: Novus Ordo Seclorum
+      mat.list=lapply(mat.list,function(x) x[my.order,])
+      group.vector=group.vector[my.order]
+    }
+    
+  }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
+    
+    # get cbound matrix for ordering
+    mat2=do.call("cbind",mat.list)
+    if(column.scale){
+      mat2=scale(mat2)
+      mat2[is.nan(mat2)]=0
+    }
+    my.order=order(-rowSums(mat2,na.rm=TRUE))
+    mat.list=lapply(mat.list,function(x) x[my.order,])
+  }
+  
+  
+  # THE PLOTTING STARTS HERE with ordered mat.list
+  if(!grid){
+    plot.new()
+    vps <- baseViewports()
+    pushViewport(vps$figure) # get the plot viewport from base graphics
+    
+  }else{
+    if(newpage)
+      grid.newpage()
+  }
+  
+  # try to get matrix names from names of ScoreMatrixList
+  if(is.null(matrix.main) & !is.null(names(sml)) & class(sml)=="ScoreMatrixList" )
+  {
+    matrix.main=  names(sml)
+  }else if(!is.null(matrix.main) & length(matrix.main) != length(sml)){
+    warning("'matrix.main' length does not match to the 'sml' length\n",
+            "setting it to NULL")
+    matrix.main=NULL
+    
+  }
+  
+  # calculate the width of heatmaps and everything else relative to that
+  l.sml=length(mat.list) # get length of matrix
+  # get the npc width of the heatmap
+  # this will be our rudder when plotting
+  # every coordinate and dimension will be relative to this value
+  hw=40*(1-(convertX( unit(4,"lines"),"npc",valueOnly=TRUE)) )/(l.sml*44+7)
+  hh=0.7 # this heatmap height in NPC
+  hy=0.6 # heatmap y coordinate on the plot
+  
+  # if group.vector is not NULL, plot the rowside colors
+  # make side colors
+  if(!is.null(group.vector)){
+    sideVp <- viewport(width=unit(hw/8, "npc"), height=unit(hh, "npc"),
+                       x = convertX( unit(4,"lines"),"npc"), 
+                       y = unit(hy, "npc"),just="left")
+    pushViewport(sideVp) # push the viewport
+    
+    grid.rect()
+    
+    # make the rowside colors and labels
+    .rowSideCol(group.vector,group.names=group.names,
+                group.col=group.col,cex.lab=cex.lab)
+    
+    popViewport()
+  }
+  
+  # heatmap start coordinates
+  heat.startCoord=convertX( unit(4,"lines"),"npc",valueOnly=TRUE) + (hw/8) + (hw/20)
+  
+  for(i in 1:length(mat.list)){
+    
+    
+    # cxcoords stands for current xcoords
+    if(is.list(xcoords)){
+      cxcoords=xcoords[[i]]
+    }else if( is.vector(xcoords) | is.null(xcoords) ){
+      cxcoords=xcoords   
+    }
+    else if(!is.null(xcoords)){
+      warning("xcoords should be a vector or a list or NULL,nothing else!!\n",
+              "setting xcoords to NULL")
+      cxcoords=NULL
+    }
+    
+    # if it is a two element vector of start and end coordinates 
+    # of the first and the last column of the matrix
+    if(length(cxcoords)==2){
+      cxcoords=seq(cxcoords[1],cxcoords[2],length.out=ncol(mat.list[[i]]))
+    }
+    
+    # ccol: stands for current.color
+    if(is.list(col)){
+      ccol=col[[i]]
+    }else if(is.vector(col) | is.null(col) ){
+      ccol=col
+    }else if(!is.null(col)){
+      warning("col should be a vector or a list or NULL,nothing else!!\n",
+              "setting colors to default")
+      ccol=NULL
+    }
+    
+    
+    # get the default/given xcoordinates to plot
+    if(!is.null(cxcoords)){
+      if(length(cxcoords) != ncol( mat.list[[i]] ) ) 
+        stop("xcoords has wrong length: ",length(cxcoords)," \n",
+             " it should be equal to the number of columns of ScoreMatrix\n",
+             " which is",ncol(mat.list[[i]]),"\n")    
+    }else{
+      cxcoords=1:ncol( mat.list[[i]] )
+    }
+    
+    # get heatcolor scale
+    if(is.null(ccol)) 
+      ccol=.jets(100)
+    
+    
+    # make heatmap viewport
+    heatVp <- viewport(width=unit(hw, "npc"), height=unit(hh, "npc"),
+                       x =unit(heat.startCoord,"npc"), 
+                       y = unit(hy, "npc"),just="left")
+    
+    
+    pushViewport(heatVp) # push the heatmap VP
+    grid.rect()
+    .gridHeat(mat.list[[i]],ccol,cxcoords,xlab[i],cex.lab,cex.axis,
+              angle=60,hjust=0.5,vjust=-0.5) # make the heat  
+    #upViewport(1) # up one level current.vpTree()
+    popViewport()
+    
+    # make the legend viewport
+    legendVp <- viewport(width=unit(hw*0.7, "npc"), 
+                         height=unit(0.5, "lines"),
+                         x =unit(heat.startCoord+hw*0.15,"npc"), 
+                         y = unit(0.1, "npc"),
+                         just="left")
+    pushViewport(legendVp)
+    grid.rect()
+    
+    rng=range(mat.list[[i]],na.rm=TRUE)
+    # make the legend 
+    .heatLegendX(min=rng[1],max=rng[2],
+                 ccol,legend.name[i],main=TRUE,cex.legend,
+                 cex.lab,vjust=-0.5,hjust=0.5)
+    popViewport()
+    
+    if(!is.null(matrix.main)){
+      title.y=unit(0.96, "npc")
+      grid.text(matrix.main[i], y=title.y, 
+                x = unit(heat.startCoord+hw*0.5,"npc"),
+                gp=gpar(cex=cex.main),just="bottom")
+    }
+    
+    # update start coord for next one
+    heat.startCoord=heat.startCoord+ hw+ (hw/20)
+    
+  }
+  
+  if(!grid){
+    popViewport()
+  }
+  
+  if(kmeans){
+    invisible(clu$cluster)
+  }
+  
+}
