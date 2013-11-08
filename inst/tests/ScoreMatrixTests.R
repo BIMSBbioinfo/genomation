@@ -47,7 +47,7 @@ test_that("ScoreMatrix:GRanges, GRanges works",
 {
           target = GRanges(rep(c(1,2),each=6), 
                            IRanges(rep(c(1,2,3,7,8,9), times=2), width=5),
-                           values(target)$weight = rep(c(1,2),each=6))
+                           weight = rep(c(1,2),each=6))
           windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
                             strand=c('-','+','-','+'))
           
@@ -132,22 +132,23 @@ test_that("ScoreMatrix:character, GRanges works",
   
 })
 
-
 # ---------------------------------------------------------------------------- #
-test_that("binMatrix works",
+test_that("ScoreMatrix:characger, GRanges, type='bigWig' works".
 {
-  target = GRanges(rep(c(1,2),each=7), 
-                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-                   weight = rep(c(1,2),each=7), 
-                   strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
-  s = ScoreMatrix(target, windows)
-  bin = binMatrix(sm, bin.num=2)
-  
-  m = as(cbind(rowMeans(s[,1:3]), rowMeans(s[,3:5])),'ScoreMatrix')
-  expect_equal(bin, m)
-  
-  
+  library(rtracklayer)
+  test_path <- system.file("tests", package = "rtracklayer")
+  test_bw <- file.path(test_path, "test.bw")
+  b = import(test_bw, asRangedData=F)
+          
+  st = seq(200, 300, 20)
+  g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
+  s = ScoreMatrix(test_bw, g, type='bigWig')
+          
+  m = matrix(-1, ncol=10, nrow=6)
+  m[6,-1] = -0.75
+  rownames(m) = 1:6
+  m = as(m, 'ScoreMatrix')
+  expect_equal(s, m)
 })
 
 	
@@ -164,7 +165,8 @@ test_that("constrainRanges works",
 
 # ---------------------------------------------------------------------------- #
 # test for binMatrix
-test_that("binMatrix works"
+test_that("binMatrix works",
+{
 	m1 = as(matrix(rep(1:4, 4), ncol=4), 'ScoreMatrix')
 	
 	# no binning
@@ -172,54 +174,37 @@ test_that("binMatrix works"
 	
 	# nbins 2, default function
 	mb1 = as(matrix(c(1,1,2,2,3,3,4,4), ncol=2, byrow=T), 'ScoreMatrix')
-	expect_identical(binMatrix(m1, nbins=2), mb1)
+	expect_identical(binMatrix(m1, bin.num=2), mb1)
 	
 	# nbins 5
-	expect_error(binMatrix(m1, nbins=5), "number of given bins is bigger than the number of matrix columns")
+	expect_error(binMatrix(m1, bin.num=5))
 	
 	# nbins 2, not default function
 	m2 = as(matrix(rep(1:4, 4), ncol=4, byrow=T), 'ScoreMatrix')
 	mb2 = as(matrix(rep(c(2,4), 4), ncol=2, byrow=T), 'ScoreMatrix')
-	expect_equal(binMatrix(m2, nbins=2, max), mb2)	
-)
-
-# ---------------------------------------------------------------------------- #
-test_that("ScoreMatrix BigWig works"
-	library(rtracklayer)
-	test_path <- system.file("tests", package = "rtracklayer")
-	test_bw <- file.path(test_path, "test.bw")
-	b = import(test_bw, asRangedData=F)
-
-	st = seq(200, 300, 20)
-	g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
-	s = ScoreMatrix(test_bw, g, type='bigWig')
-
-	m = matrix(-1, ncol=10, nrow=6)
-	m[6,-1] = -0.75
-	rownames(m) = 1:6
-	m = as(m, 'ScoreMatrix')
-	expect_equal(s, m)
-)
+	expect_equal(binMatrix(m2, bin.num=2, max), mb2)	
+})
 
 
 # ---------------------------------------------------------------------------- #
-test_that("scaleScoreMatrix works"
-          s = as(matrix(1:9, ncol=3),'ScoreMatrix')
+test_that("scaleScoreMatrix works",
+{
+  s = as(matrix(1:9, ncol=3),'ScoreMatrix')
           
-          s1=scaleScoreMatrix(s, rows=T, columns=F)
-          s2=scaleScoreMatrix(s, rows=F, columns=T)
-          s3=scaleScoreMatrix(s, rows=T, columns=T)
+  s1=scaleScoreMatrix(s, rows=T, columns=F)
+  m1 = as(matrix(c(rep(-0.4285714,3),rep(0,3), rep(0.4285714,3)), 
+                 nrow=3),'ScoreMatrix')
+  expect_equal(s1,m1)
           
-          m1 = as(matrix(c(rep(-0.4285714,3),rep(0,3), rep(0.4285714,3)), 
-                         nrow=3),'ScoreMatrix')
-          m2 = as(matrix(c(rep(-0.3333333,3),rep(0,3), rep(0.3333333,3)), 
-                         nrow=3, byrow=T),'ScoreMatrix')
-          m3 = as(matrix(0,nrow=3,ncol=3),'ScoreMatrix')
+  s2=scaleScoreMatrix(s, rows=F, columns=T)
+  m2 = as(matrix(c(rep(-0.3333333,3),rep(0,3), rep(0.3333333,3)), 
+                 nrow=3, byrow=T),'ScoreMatrix')
+  expect_equal(s2,m2)
           
-          expect_equal(s1,m1)
-          expect_equal(s2,m2)
-          expect_equal(s3,m3)
-)
+  s3=scaleScoreMatrix(s, rows=T, columns=T)
+  m3 = as(matrix(0,nrow=3,ncol=3),'ScoreMatrix')
+  expect_equal(s3,m3)
+})
 
 
         

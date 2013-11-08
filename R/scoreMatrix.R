@@ -15,7 +15,7 @@ getColors = function(n) {
 # does not check for the correspondence of the chromosome names - always check before using this function
 constrainRanges = function(target, windows){
 	
-	checkClass(target, 'SimpleRleList')
+  checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
 	checkClass(windows, 'GRanges')
 	
 	mcols(windows)$X_rank = 1:length(windows)
@@ -41,11 +41,11 @@ constrainRanges = function(target, windows){
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 
 	fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
-	if(!class(x) == class.name)
+	if(!class(x) %in% class.name)
 		stop(paste(fun.name,': ', 
                var.name, 
                ' is not of class: ', 
-               class.name, 
+               paste(class.name, collapse=' '), 
                '\n', sep=''))
 }
 
@@ -94,7 +94,7 @@ readBam = function(target, windows, rpm=FALSE,
 # ---------------------------------------------------------------------------- #
 # given a big wig path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
-readBigWig = function(file, windows=NULL, ...){
+readBigWig = function(target, windows=NULL, ...){
   
   
   if(class(windows) != 'GRanges')
@@ -102,9 +102,9 @@ readBigWig = function(file, windows=NULL, ...){
   
   
   if(is.null(windows)){
-    bw = import(file, asRangedData = FALSE)
+    bw = import(target, asRangedData = FALSE)
   }else{
-    bw = import(file, asRangedData = FALSE, which=windows)
+    bw = import(target, asRangedData = FALSE, which=windows)
   }
   if(length(bw) == 0)
     stop('There are no ranges selected')
@@ -155,9 +155,9 @@ readBigWig = function(file, windows=NULL, ...){
 #'                   values.
 #' @param type if target is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
-#' @param param ScanBamParam object 
 #' @param unique boolean which tells the function to remove duplicated reads based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
+#' @param param ScanBamParam object 
 #' @param ... further arguments that control the behaviour of ScoreMatrixList on various input formats (e.g.a param argument containing a ScanBamParam object, when working with bam files)
 #' 
 #' @return returns a \code{ScoreMatrix} object
@@ -384,6 +384,14 @@ setMethod("show", "ScoreMatrix",
 #' @param scalefun function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
 #' @return \code{ScoreMatrix} object
+#'
+#' @examples
+#' 
+#' # scale the rows of a scoreMatrix object
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), weight = rep(c(1,2),each=7), strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
+#' sm = ScoreMatrix(target, windows)
+#' ssm = scaleScoreMatrix(sm, rows=TRUE)
 #'
 #' @docType methods
 #' @rdname scaleScoreMatrix-methods
