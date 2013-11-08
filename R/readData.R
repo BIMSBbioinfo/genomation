@@ -63,9 +63,10 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #'
 #' @examples
 #'  my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
-#'  readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
+#'  refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
 #'                       meta.col=list(score=5,name=4),
 #'                      keep.all.metadata=FALSE, zero.based=TRUE)
+#'  head(refseq)
 #'
 #' @export
 #' @docType methods
@@ -120,6 +121,13 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
 #' @usage readBroadPeak(file)
 #' @return a GRanges object
 #'
+#' @examples
+#' library(genomationData)
+#' broad.peak.file = list.files(system.file('extdata', package='genomationData'), 
+#'                              full.names=T, pattern='broadPeak')[1]
+#' broad.peak = readBroadPeak(broad.peak.file)
+#' head(broad.peak)
+#'
 #' @docType methods
 #' @rdname readBroadPeak
 #' @export
@@ -141,7 +149,14 @@ readBroadPeak<-function(file){
 #' @param file a abosulte or relative path to a bed file formatted by the Encode narrowPeak standard
 #' @usage readNarrowPeak(file)
 #' @return a GRanges object
-#'        
+#'
+#' @examples
+#' library(genomationData)
+#' narrow.peak.file = list.files(system.file('extdata', package='genomationData'), 
+#'                              full.names=T, pattern='narrowPeak')
+#' narrow.peak = readBroadPeak(narrow.peak.file)
+#' head(narrow.peak)
+#'
 #' @docType methods
 #' @rdname readNarrowPeak
 #' @export
@@ -165,14 +180,18 @@ readNarrowPeak<-function(file){
 #' A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores
 #'
 #' @param location for the bed file of the feature 
-#' @param flank    number of basepairs for the flanking regions
-#' @param clean    If set to TRUE, flanks overlapping with other main features will be trimmed
+#' @param flank number of basepairs for the flanking regions
+#' @param clean If set to TRUE, flanks overlapping with other main features will be trimmed
 #' @param remove.unsual  remove chromsomes with unsual names random, Un and antyhing with "_" character
 #' @param feature.flank.name the names for feature and flank ranges, it should be a character vector of length 2. example: c("CpGi","shores")
 #' @usage  readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
 #' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object for the main feature.
 #'   NOTE:This can not return a GRangesList at the moment because flanking regions do not have to have the same column name as the feature.
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
+#'
+#' @examples
+#'  cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
+#'  cgi.shores = readFeatureFlank(cgi.path)
 #'
 #' @export
 #' @docType methods
@@ -212,10 +231,11 @@ setMethod("readFeatureFlank",
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #' 
 #' @examples
-#'   my.bed12.file=my.file=system.file("extdata", "hg18.refseq.txt.Test", package = "genomation")
+#'   my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #'   my.bed12.file
-#'   feats=readTranscriptFeatures(my.bed12.file) 
-#'
+#'   feats = readTranscriptFeatures(my.bed12.file) 
+#'   names(feats)
+#'   sapply(feats, head)
 #' @export
 #' @docType methods
 #' @rdname readTranscriptFeatures-methods
@@ -295,3 +315,60 @@ setMethod("readTranscriptFeatures",
             message('Outputting the final GRangesList...\r\n')
             GRangesList(exons=exons,introns=introns,promoters=prom,TSSes=tssg)
           })
+
+
+# ---------------------------------------------------------------------------- #
+#' Converts a gff formated data.frame into a GenomicRanges object. 
+#' The GenomicRanges object needs to be properly formated for the function to work.
+#' @param gff.file path to a gff formatted file
+#' @param split.group boolean, whether to split the 9th column of the file
+#' @param split.char character that is used as a separator of the 9th column. ';' by default
+#' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
+#' @return returns a \code{GenomicRanges} object
+#' 
+#' @examples
+#' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
+#' gff = gffToGRanges(gff.file, split.group=TRUE)
+#' 
+#' 
+#' @docType methods
+#' @export
+gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL){
+  
+  gff = readGeneric(gff.file, 
+                    chr=1,
+                    start=4,
+                    end=5, 
+                    strand=7,
+                    meta.col=list(source=2,
+                                  feature=3,
+                                  score=6,
+                                  frame=8,
+                                  group=9))
+  
+  if(split.group){
+    message('splitting the group.column...')
+    group = strsplit(gff$group, '\\s+')
+    gnames = group[[1]][seq(1,length(group[[1]]),2)]
+    gids = seq(2,length(group[[1]]),2)
+    group = data.frame(do.call(rbind, 
+                              lapply(group, 
+                                     function(x)gsub(split.char,'',x[gids]))), 
+                       stringsAsFactors=FALSE)
+    colnames(group) = gnames
+    gff$group = NULL
+    values(gff) = cbind(values(gff), group)
+  }
+  
+  if(!is.null(filter)){		
+    if(filter %in% gff$feature){
+      message("Filtering", filter, "features...\n")
+      gff = gff[gff$feature == filter,]
+    }else{
+      stop("The given feature is not present in the gff file")
+    }
+  }
+  
+  return(gff)
+}
+

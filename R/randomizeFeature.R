@@ -26,9 +26,6 @@
 #'        features. If not provided the whole genome is used, as defined using the chrom.sizes parameter.
 #' @param seed random number generator seed
 #' @param nrand number of randomizations (default:1)
-#' @usage randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
-#'                          keep.strand.prop=TRUE,keep.chrom=TRUE,
-#'                          exclude=NULL,include=NULL,seed=NULL)
 #' @return returns a GRanges object which is randomized version of the feature, along with a "set" column in the metadata which designates to which iteration of the randomization the range belong.
 
 #' @export
@@ -60,7 +57,6 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			
 			#checks whether the chromosome sizes are defined, if not uses the end coordinates of features
 			if(is.null(chrom.sizes)){
-				message('Using feature chromosome sizes ...')
 				chrom.sizes=list()
 				chrs=as.character(unique(seqnames(feature)))
 				my.starts=c()
@@ -94,7 +90,6 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			exclude = exclude[seqnames(exclude) %in% chrs]
 			
 			# defines the regions that can be sampled from
-			message('Creating allowed regions...\n')
 			r = sapply(chrom.sizes, function(x)Rle(0, x))
 			re = sapply(names(r), function(x){a=r[[x]];a[ranges(include[seqnames(include) == x])]= 1;a})
 			if(length(exclude) > 0)
@@ -102,11 +97,9 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 			names(re) = names(chrom.sizes)
 			
 			# loops over the chromosome and constructs the defined set of ranges
-			message('Looping over the chromosomes...\n')
 			glist = list()
 			for(chr in chrs){
 			
-				message(chr,'\r')
 				# gets the indices of the features on the chromosome
 				ind = seqnames(feature) == chr
 				
@@ -132,7 +125,6 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 					strand(g) = sample(as.character(strand(feature[ind])))
 				glist[[chr]] = g
 			}
-			message('Returning the final GRanges object...\n')	
 			return(unlist(GRangesList(glist)))
 })
 

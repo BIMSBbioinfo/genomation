@@ -15,7 +15,7 @@ getColors = function(n) {
 # does not check for the correspondence of the chromosome names - always check before using this function
 constrainRanges = function(target, windows){
 	
-	checkClass(target, 'SimpleRleList')
+  checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
 	checkClass(windows, 'GRanges')
 	
 	mcols(windows)$X_rank = 1:length(windows)
@@ -41,11 +41,11 @@ constrainRanges = function(target, windows){
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 
 	fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
-	if(!class(x) == class.name)
+	if(!class(x) %in% class.name)
 		stop(paste(fun.name,': ', 
                var.name, 
                ' is not of class: ', 
-               class.name, 
+               paste(class.name, collapse=' '), 
                '\n', sep=''))
 }
 
@@ -53,15 +53,15 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 # ---------------------------------------------------------------------------- #
 # given a big bam path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
-readBam = function(target, windows, param=NULL, 
-                   unique=TRUE, extend=0, rpm=FALSE, ...){
+readBam = function(target, windows, rpm=FALSE,
+                   unique=FALSE, extend=0, param=NULL, ...){
  
   # generates the ScanBamParam object
   if(is.null(param)){
-    param <- ScanBamParam(which=reduce(windows))
+    param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE))
   }else{
     if(class(param) == 'ScanBamParam'){
-      bamWhich(param) <- reduce(windows)
+      bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
     }else{
       stop('param needs to be an object of clas ScanBamParam')
     }
@@ -74,7 +74,7 @@ readBam = function(target, windows, param=NULL,
     alns = unique(alns)
   
   if(extend > 0)
-    resize(alns, width=extend)
+    alns = resize(alns, width=extend, fix='start')
   if(extend < 0)
     stop('extend needs to be a positive integer')
   
@@ -94,7 +94,7 @@ readBam = function(target, windows, param=NULL,
 # ---------------------------------------------------------------------------- #
 # given a big wig path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
-readBigWig = function(file, windows=NULL, ...){
+readBigWig = function(target, windows=NULL, ...){
   
   
   if(class(windows) != 'GRanges')
@@ -102,9 +102,9 @@ readBigWig = function(file, windows=NULL, ...){
   
   
   if(is.null(windows)){
-    bw = import(file, asRangedData = FALSE)
+    bw = import(target, asRangedData = FALSE)
   }else{
-    bw = import(file, asRangedData = FALSE, which=windows)
+    bw = import(target, asRangedData = FALSE, which=windows)
   }
   if(length(bw) == 0)
     stop('There are no ranges selected')
@@ -153,32 +153,50 @@ readBigWig = function(file, windows=NULL, ...){
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG methylation
 #'                   values.
+#' @param type if target is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
+#' @param unique boolean which tells the function to remove duplicated reads based on chr, start, end and strand
+#' @param extend numeric which tells the function to extend the reads to width=extend
+#' @param param ScanBamParam object 
+#' @param ... further arguments that control the behaviour of ScoreMatrixList on various input formats (e.g.a param argument containing a ScanBamParam object, when working with bam files)
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
 #' @examples
 #' 
 #' # When target is GRanges
-#'          data(cage)
-#'          data(promoters)
-#'          scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#'                                  weight.col="tpm")
-#'                                  
+#'  data(cage)
+#'  data(promoters)
+#'  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#'                                  weight.col="tpm")                                
 #' # When target is RleList
-#' covs=coverage(cage)
-#' scores2=ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
+#' covs = coverage(cage)
+#' scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
 #' 
-#'  
 #' # When target is a bam file
-#'  # bamfile="example.bam"
-#'  # scores3=ScoreMatrix(target=bamfile,windows=promoters,strand.aware=TRUE) 
+#'  bam.file = system.file('extdata/test.bam', package='genomation')
+#'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
+#'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
+#'  
+#' # when target is a bigWig file
+#'  bw.file = system.file('tests/test.bw', package='rtracklayer')
+#'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
+#'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bigWig') 
 #'  
 #' @docType methods
 #' @rdname ScoreMatrix-methods           
 #' @export
 setGeneric("ScoreMatrix",
-                    function(target,windows,strand.aware=FALSE,
-                             weight.col=NULL,is.noCovNA=FALSE,...) 
+                    function(target,windows,
+                             strand.aware=FALSE,
+                             weight.col=NULL,
+                             is.noCovNA=FALSE,
+                             type='',
+                             rpm=FALSE, 
+                             unique=FALSE, 
+                             extend=0,
+                             param=NULL,
+                             ...) 
                                 standardGeneric("ScoreMatrix") )
 
 
@@ -241,7 +259,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
-          function(target,windows,strand.aware,weight.col,is.noCovNA){
+          function(target, windows, strand.aware, weight.col,is.noCovNA,...){
             
             #make coverage vector  from target
             if(is.null(weight.col)){
@@ -271,7 +289,8 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows,strand.aware, type, tmp=FALSE, ...){
+          function(target,windows, strand.aware, type='', 
+                   rpm=FALSE, unique=FALSE, extend=0, param=NULL, ...){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
@@ -279,12 +298,18 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             fm = c('bam','bigWig')
             if(!type %in% fm)
-              stop(paste('currently supported formats are', fm))
+              stop(paste(c('currently supported formats are', fm)))
+            
+            if(type == 'bam' & !grepl('bam$',target))
+              warning('you have set type="bam", but the designated file does not have .bam extension')
+            if(type == 'bigWig' & !grepl('bw$',target))
+              warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
             if(type == 'bam')
-              covs = readBam(target, windows, ...)
+              covs = readBam(target, windows, rpm=rpm, unique=unique, 
+                             extend=extend, param=param)
             if(type == 'bigWig')
-              covs = readBigWig(target, windows, ...)            
+              covs = readBigWig(target=target, windows=windows, ...)            
             
             # get coverage vectors
             ScoreMatrix(covs,windows,strand.aware)
@@ -300,6 +325,14 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @param fun \code{character} vector or an anonymous function that will be used for binning
 #'
 #' @return \code{ScoreMatrix} or \code{ScoreMatrixList} object
+#'
+#' @examples
+#' 
+#' # binning the columns in a ScoreMatrix object
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), weight = rep(c(1,2),each=7), strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
+#' sm = ScoreMatrix(target, windows)
+#' bin = binMatrix(sm, bin.num=2)
 #'
 #' @docType methods
 #' @rdname binMatrix-methods
@@ -350,8 +383,15 @@ setMethod("show", "ScoreMatrix",
 #' @param rows  \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
-#' @usage scaleScoreMatrix(mat, columns=FALSE, rows=TRUE, scalefun=NULL, ...)
 #' @return \code{ScoreMatrix} object
+#'
+#' @examples
+#' 
+#' # scale the rows of a scoreMatrix object
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), weight = rep(c(1,2),each=7), strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
+#' sm = ScoreMatrix(target, windows)
+#' ssm = scaleScoreMatrix(sm, rows=TRUE)
 #'
 #' @docType methods
 #' @rdname scaleScoreMatrix-methods
@@ -359,14 +399,13 @@ setMethod("show", "ScoreMatrix",
 setGeneric("scaleScoreMatrix", 
                 function(mat, 
                          columns=FALSE, rows=TRUE, 
-                         scalefun=NULL, 
-                         ...) 
+                         scalefun=NULL) 
                         standardGeneric("scaleScoreMatrix") )
 
 #' @aliases scaleScoreMatrix,ScoreMatrix-method
 #' @rdname scaleScoreMatrix-methods
 setMethod("scaleScoreMatrix", signature("ScoreMatrix"),
-          function(mat, columns, rows, scalefun, ...){
+          function(mat, columns, rows, scalefun){
             
             if(is.null(scalefun))
               scalefun = function(x)(x-mean(x))/(max(x)-min(x)+1)

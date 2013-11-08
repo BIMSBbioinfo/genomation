@@ -30,7 +30,6 @@ Suggests:
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
-    'gffFunctions.R'
     'findFeatureComb.R'
 	'plotMatrix.R'
     'randomizeFeature.R'

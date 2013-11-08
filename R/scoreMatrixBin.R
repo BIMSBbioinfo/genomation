@@ -135,6 +135,13 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
+
+#' @param type if target is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
+#' @param unique boolean which tells the function to remove duplicated reads based on chr, start, end and strand
+#' @param extend numeric which tells the function to extend the reads to width=extend
+#' @param param ScanBamParam object 
+#' @param ... further arguments that control the behaviour of ScoreMatrixList on various input formats (e.g.a param argument containing a ScanBamParam object, when working with bam files)
 #'                   
 #'                                                 
 #' @return returns a \code{scoreMatrix} object
@@ -159,7 +166,12 @@ setGeneric("ScoreMatrixBin",
            function(target,windows,
                     bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
-                    weight.col=NULL,is.noCovNA=FALSE, 
+                    weight.col=NULL,is.noCovNA=FALSE,
+                    type='',
+                    rpm=FALSE,
+                    unique=FALSE,
+                    extend=0,
+                    param=NULL,
                     ...) 
              standardGeneric("ScoreMatrixBin") )
 
@@ -175,8 +187,10 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
 			# checks whether some windows are shorter than the wanted window size
 			wi = IRanges::width(windows) < bin.num
 			if(any(wi)){
-				warning('supplied GRanges object contains ranges of width < number of bins')
 				windows = windows[!wi]
+        if(length(windows) == 0)
+          stop('all supplied windows have width < number of bins')
+				warning('supplied GRanges object contains ranges of width < number of bins')
 			}
 	
 			# gets the view list
@@ -186,7 +200,6 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
 			mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
 			new("ScoreMatrix",mat)
 })
-
 
 
 # ---------------------------------------------------------------------------- #
@@ -231,7 +244,8 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @rdname ScoreMatrixBin-methods
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
-                   bin.op='mean', strand.aware, type,  ...){
+                   bin.op='mean', strand.aware, 
+                   type, rpm, unique, extend, param,  ...){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
@@ -239,12 +253,18 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             
             fm = c('bam','bigWig')
             if(!type %in% fm)
-              stop(paste('currently supported formats are', fm))
+              stop(paste(c('currently supported formats are', fm)))
+            
+            if(type == 'bam' & !grepl('bam$',target))
+              warning('you have set type="bam", but the designated file does not have .bam extension')
+            if(type == 'bigWig' & !grepl('bw$',target))
+              warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
             if(type == 'bam')
-              covs = readBam(target, windows, ...)
+              covs = readBam(target, windows, rpm=rpm, unique=unique, 
+                             extend=extend, param=param)
             if(type == 'bigWig')
-              covs = readBigWig(target, windows, ...)            
+              covs = readBigWig(target=target, windows=windows, ...)        
             
             # get coverage vectors
             ScoreMatrixBin(covs,
