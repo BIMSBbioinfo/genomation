@@ -320,13 +320,15 @@ setMethod("readTranscriptFeatures",
 # ---------------------------------------------------------------------------- #
 #' Converts a gff formated data.frame into a GenomicRanges object. 
 #' The GenomicRanges object needs to be properly formated for the function to work.
-#' @param gff.file a path to a gff formatted file
+#' @param gff.file path to a gff formatted file
+#' @param split.group boolean, whether to split the 9th column of the file
+#' @param split.char character that is used as a separator of the 9th column. ';' by default
 #' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
 #' @return returns a \code{GenomicRanges} object
 #' 
 #' @examples
 #' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
-#' gff = gffToGRanges(gff.file)
+#' gff = gffToGRanges(gff.file, split.group=TRUE)
 #' 
 #' 
 #' @docType methods
