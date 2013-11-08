@@ -15,7 +15,7 @@
 #'  data(cage)
 #'  data(cpgi)
 #'  
-#'  enr = getRandomEnrichment(cage, cpgi, randomizations=100)
+#'  enr = getRandomEnrichment(cage, cpgi, randomizations=50)
 #' 
 #' 
 #' @export
