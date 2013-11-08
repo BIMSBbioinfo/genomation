@@ -153,12 +153,17 @@ readBigWig = function(target, windows=NULL, ...){
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG methylation
 #'                   values.
-#' @param type if target is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
-#' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
-#' @param unique boolean which tells the function to remove duplicated reads based on chr, start, end and strand
+#' @param type if target is a character vector of file paths, then type designates
+#'              the type of the corresponding files (bam or bigWig)
+#' @param rpm boolean telling whether to normalize the coverage to per milion 
+#'                    reads. FALSE by default.
+#' @param unique boolean which tells the function to remove duplicated reads 
+#'              based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
-#' @param ... further arguments that control the behaviour of ScoreMatrixList on various input formats (e.g.a param argument containing a ScanBamParam object, when working with bam files)
+#' @param ... further arguments that control the behaviour of ScoreMatrixList 
+#'            on various input formats (e.g.a param argument containing a 
+#'            ScanBamParam object, when working with bam files)
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
