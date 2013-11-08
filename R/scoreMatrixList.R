@@ -23,15 +23,25 @@
 }
 
 # ---------------------------------------------------------------------------- #
-#' ScoreMatrixList constructor
+#' Make ScoreMatrixList from multiple targets
 #' 
-#' Construct a list of scoreMatrixObjects that can be used for plotting
+#' The function constructs a list of \code{ScoreMatrix} objects in the form
+#' of \code{ScoreMatrixList} object. This object can be visualized using 
+#' \code{multiHeatMatrix}, \code{heatMeta} or \code{plotMeta}
 #'
-#' @param target can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
-#' @param windows \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
-#' @param bin.num integer telling the number of bins to bin the score matrix
-#' @param bin.op name of the function that will be used for smoothing windows of ranges
-#' @param strand.aware boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
+#' @param targets can be a list of \code{scoreMatrix} objects, that are coerced 
+#'        to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a 
+#'        character vector specifying the locations of mulitple bam files that 
+#'        are used to construct the \code{scoreMatrixList}. If l is either a 
+#'        RleList object or a character vector of files, it is obligatory to 
+#'        give a granges argument.
+#' @param windows \code{GenomicRanges} containing viewpoints for the scoreMatrix 
+#'        or ScoreMatrixList functions
+#' @param bin.num an integer telling the number of bins to bin the score matrix
+#' @param bin.op an name of the function that will be used for smoothing windows of ranges
+#' @param strand.aware a boolean telling the function whether to reverse the 
+#'        coverage of ranges that come from - strand (e.g. when plotting 
+#'        enrichment around transcription start sites)
 #' @param weight.col if the object is \code{GRanges} object a numeric column
 #'                 in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
@@ -44,13 +54,13 @@
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
 #'                    
-#' @param type if target is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param type if \code{targets} is a character vector of file paths, then type 
+#'        designates the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
 #' @param unique boolean which tells the function to remove duplicated reads based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
-#' @param param ScanBamParam object 
-#' @param ... other arguments that can be passed to the function
- 
+#' @param param ScanBamParam object  
+#'
 #' @return returns a \code{ScoreMatrixList} object
 #' 
 #' @examples
@@ -68,19 +78,18 @@
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(target, windows=NULL, bin.num=NULL, 
+ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, weight.col=NULL, 
                            is.noCovNA=FALSE, type='', rpm=FALSE, unique=FALSE, 
-                           extend=0, param=NULL, ...){
-
-	len = length(target)
+                           extend=0, param=NULL){
+	len = length(targets)
 	if(len == 0L)
 		stop('target argument is empty')
   
-  # this checks whether we can work with the corresponding target object class set
-  list.ind = grepl('list', class(target)) | grepl('List', class(target))
+	# this checks whether we can work with the corresponding target object class set
+	list.ind = grepl('list', class(targets)) | grepl('List', class(targets))
 	if(len > 1L & !list.ind){
-	  if(all(is.character(target)) && !all(file.exists(target)))
+	  if(all(is.character(target)) && is.null(type) && all(file.exists(target)))
 	    stop('target argument is neither a list like object (e.g. GRangesList),
             nor a set of files') 
 	}
@@ -88,9 +97,8 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
   
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(target, class)) == 'ScoreMatrix'))
-		return(new("ScoreMatrixList",target))
-
+	if(all(unlist(lapply(targets, class)) == 'scoreMatrix'))
+		return(new("ScoreMatrixList",targets))
   
 	# ----------------------------------------------------------------- #
 	if(is.null(windows))
@@ -98,27 +106,26 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
 	if(list.ind & 
-       !all(unlist(lapply(target, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
-      stop('target should be one of the following: 
-           an RleList, list of Rle, GRangesList, a list of GRanges objects')
+       !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
+			stop('target should be one of the following:
+					an RleList, list of Rle, GRangesList, a list of GRanges objects')
 	}  
-	   
-  if(all(is.character(target)) && is.null(type) && all(file.exists(target)))
+	     
+	if(all(file.exists(targets)) & is.null(type))
       stop('When providing a file, it is necessary to give the type of the file')
-  
-	if(all(is.character(target))){
-	  names = basename(target)
+	
+	# gets the names for the resulting list
+	if(all(is.character(targets))){
+	  names = basename(targets)
 	}else{
-	  names = names(target)
+	  names = names(targets)
 	}
-  
   
   sml = list()
   for(i in 1:length(target)){
-    
     message(paste('working on:',names[i]))
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
-      sml[[i]] = ScoreMatrix(target[[i]], windows=windows, 
+      sml[[i]] = ScoreMatrix(targets[[i]], windows=windows, 
                              strand.aware=strand.aware,
                              weight.col=weight.col, 
                              is.noCovNA=is.noCovNA,
@@ -126,13 +133,13 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
                              rpm=rpm,
                              unique=unique,
                              extend=extend,
-                             param=param,
-                             , ...)
+                             param=param)
       
     } else{
       if(is.null(bin.num))
         bin.num = 10
-      sml[[i]] = ScoreMatrixBin(target[[i]], windows=windows, 
+
+      sml[[i]] = ScoreMatrixBin(targets[[i]], windows=windows, 
                                 bin.num=bin.num, 
                                 bin.op=bin.op,
                                 strand.aware=strand.aware,
@@ -142,14 +149,11 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
                                 rpm=rpm,
                                 unique=unique,
                                 extend=extend,
-                                param=param,
-                                ...)
+                                param=param)
     }  
   }
-    
- 
   names(sml) = names
-	return(new("ScoreMatrixList",sml))
+  return(new("ScoreMatrixList",sml))
 }
 
 # ---------------------------------------------------------------------------- #
@@ -194,7 +198,7 @@ setMethod("show", "ScoreMatrixList",
 # ---------------------------------------------------------------------------- #
 #' Scale the ScoreMatrixList
 #' 
-#' Scales each scoreMatrix in the ScoreMatrixList object, by rows and/or columns
+#' Scales each ScoreMatrix in the ScoreMatrixList object, by rows and/or columns
 #' 
 #' @param sml a \code{ScoreMatrixList} object
 #' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE
@@ -313,19 +317,19 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #'  sml = ScoreMatrixList(target, promoters, bin.num=10)
 #'  kmeans.clust = kmeans(sml$cage,3)
 #'  
-#'  sml.ordered = orderScoreMatrixList(sml, kmeans.clust$cluster)
+#'  sml.ordered = orderBy(sml, kmeans.clust$cluster)
 #'  multiHeatMatrix(sml.ordered)
 #' 
 #' @docType methods
-#' @rdname orderScoreMatrixList-methods
+#' @rdname orderBy-methods
 #' @export
-setGeneric("orderScoreMatrixList", 
-           function(sml,ord.vec=NULL)
-             standardGeneric("orderScoreMatrixList") )#' 
-  
-#' @docType orderScoreMatrixList-methods
-#' @export
-setMethod("orderScoreMatrixList", signature("ScoreMatrixList"),
+setGeneric("orderBy", 
+           function(sml,ord.vec)
+             standardGeneric("orderBy") )
+
+#' @aliases orderBy,ScoreMatrixList-method
+#' @rdname orderBy-methods
+setMethod("orderBy", signature("ScoreMatrixList"),
           function(sml, ord.vec){
             
             if(is.null(ord.vec))
