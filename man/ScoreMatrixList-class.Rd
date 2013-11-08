@@ -7,6 +7,6 @@
   object
 }
 \seealso{
-  \code{\link{ScoreMatrixList-methods}}
+  \code{\link{ScoreMatrixList}}
 }
 

@@ -3,13 +3,13 @@
 \alias{ScoreMatrixList}
 \title{Make ScoreMatrixList from multiple targets}
 \usage{
-  ScoreMatrixList(targets, windows = NULL, bin.num = NULL,
+  ScoreMatrixList(target, windows = NULL, bin.num = NULL,
     bin.op = "mean", strand.aware = FALSE,
     weight.col = NULL, is.noCovNA = FALSE, type = "",
     rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 }
 \arguments{
-  \item{targets}{can be a list of \code{scoreMatrix}
+  \item{target}{can be a list of \code{scoreMatrix}
   objects, that are coerced to the \code{ScoreMatrixList},
   a list of \code{RleList} objects, or a character vector
   specifying the locations of mulitple bam files that are
@@ -45,18 +45,19 @@
   not have coverage all over the genome, such as CpG
   methylation values.}
 
-  \item{type}{if \code{targets} is a character vector of
+  \item{type}{if \code{target} is a character vector of
   file paths, then type designates the type of the
   corresponding files (bam or bigWig)}
 
   \item{rpm}{boolean telling whether to normalize the
-  coverage to per milion reads. FALSE by default.}
+  coverage to per milion reads.  FALSE by default.}
 
   \item{unique}{boolean which tells the function to remove
   duplicated reads based on chr, start, end and strand}
 
   \item{extend}{numeric which tells the function to extend
-  the reads to width=extend}
+  the features ( i.e aligned reads) to total length
+  ofwidth+extend}
 
   \item{param}{ScanBamParam object}
 }

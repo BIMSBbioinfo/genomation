@@ -29,7 +29,7 @@
 #' of \code{ScoreMatrixList} object. This object can be visualized using 
 #' \code{multiHeatMatrix}, \code{heatMeta} or \code{plotMeta}
 #'
-#' @param targets can be a list of \code{scoreMatrix} objects, that are coerced 
+#' @param target can be a list of \code{scoreMatrix} objects, that are coerced 
 #'        to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a 
 #'        character vector specifying the locations of mulitple bam files that 
 #'        are used to construct the \code{scoreMatrixList}. If l is either a 
@@ -54,11 +54,15 @@
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
 #'                    
-#' @param type if \code{targets} is a character vector of file paths, then type 
+#' @param type if \code{target} is a character vector of file paths, then type 
 #'        designates the type of the corresponding files (bam or bigWig)
-#' @param rpm boolean telling whether to normalize the coverage to per milion reads. FALSE by default.
-#' @param unique boolean which tells the function to remove duplicated reads based on chr, start, end and strand
-#' @param extend numeric which tells the function to extend the reads to width=extend
+#' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
+#'            FALSE by default.
+#' @param unique boolean which tells the function to remove duplicated reads 
+#'                       based on chr, start, end and strand
+#' @param extend numeric which tells the function to extend the features
+#'               ( i.e aligned reads) to total
+#'               length ofwidth+extend
 #' @param param ScanBamParam object  
 #'
 #' @return returns a \code{ScoreMatrixList} object
@@ -78,16 +82,16 @@
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
+ScoreMatrixList = function(target, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, weight.col=NULL, 
                            is.noCovNA=FALSE, type='', rpm=FALSE, unique=FALSE, 
                            extend=0, param=NULL){
-	len = length(targets)
+	len = length(target)
 	if(len == 0L)
 		stop('target argument is empty')
   
 	# this checks whether we can work with the corresponding target object class set
-	list.ind = grepl('list', class(targets)) | grepl('List', class(targets))
+	list.ind = grepl('list', class(target)) | grepl('List', class(target))
 	if(len > 1L & !list.ind){
 	  if(all(is.character(target)) && is.null(type) && all(file.exists(target)))
 	    stop('target argument is neither a list like object (e.g. GRangesList),
@@ -97,8 +101,8 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
   
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(targets, class)) == 'scoreMatrix'))
-		return(new("ScoreMatrixList",targets))
+	if(all(unlist(lapply(target, class)) == 'scoreMatrix'))
+		return(new("ScoreMatrixList",target))
   
 	# ----------------------------------------------------------------- #
 	if(is.null(windows))
@@ -106,26 +110,26 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
 	if(list.ind & 
-       !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
+       !all(unlist(lapply(target, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
 			stop('target should be one of the following:
 					an RleList, list of Rle, GRangesList, a list of GRanges objects')
 	}  
 	     
-	if(all(file.exists(targets)) & is.null(type))
+	if(all(file.exists(target)) & is.null(type))
       stop('When providing a file, it is necessary to give the type of the file')
 	
 	# gets the names for the resulting list
-	if(all(is.character(targets))){
-	  names = basename(targets)
+	if(all(is.character(target))){
+	  names = basename(target)
 	}else{
-	  names = names(targets)
+	  names = names(target)
 	}
   
   sml = list()
   for(i in 1:length(target)){
     message(paste('working on:',names[i]))
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
-      sml[[i]] = ScoreMatrix(targets[[i]], windows=windows, 
+      sml[[i]] = ScoreMatrix(target[[i]], windows=windows, 
                              strand.aware=strand.aware,
                              weight.col=weight.col, 
                              is.noCovNA=is.noCovNA,
@@ -139,7 +143,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
       if(is.null(bin.num))
         bin.num = 10
 
-      sml[[i]] = ScoreMatrixBin(targets[[i]], windows=windows, 
+      sml[[i]] = ScoreMatrixBin(target[[i]], windows=windows, 
                                 bin.num=bin.num, 
                                 bin.op=bin.op,
                                 strand.aware=strand.aware,

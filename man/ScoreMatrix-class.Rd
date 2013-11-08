@@ -9,6 +9,6 @@
   promoters) and columns are values across those regions.
 }
 \seealso{
-  \code{\link{ScoreMatrix-methods}}
+  \code{\link{ScoreMatrix}}
 }
 
