@@ -307,7 +307,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   vals=seq(min,max,length.out=100)
   rng <- range(vals, na.rm = TRUE) # get min/mqx
   m <- (vals - min)/(max-min) # get normalized range
-  rasta= rgb(colorRamp(cols)(m), max = 255) # get color for each element of range
+  rasta= rgb(colorRamp(cols)(m), maxColorValue= 255) # get color for each element of range
   
   grid.raster( rev(rasta), interpolate=FALSE,height = unit(1, "npc"),
                width=unit(1, "npc")) # make the legend
@@ -332,7 +332,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   vals=seq(min,max,length.out=100)
   rng <- range(vals, na.rm = TRUE) # get min/mqx
   m <- (vals - min)/(max-min) # get normalized range
-  rasta= rgb(colorRamp(cols)(m), max = 255) # get color for each element of range
+  rasta= rgb(colorRamp(cols)(m), maxColorValue = 255) # get color for each element of range
   
   grid.raster( matrix((rasta),nrow=1), interpolate=FALSE,height = unit(1, "npc"),
                width=unit(1, "npc")) # make the legend
@@ -357,7 +357,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   # Convert to a matrix of sRGB color strings
   #m2 <- m; class(m2) <- "character"
   m2<-matrix("transparent",ncol=ncol(m),nrow=nrow(m))
-  m2[!is.na(m)] <- rgb(colorRamp(cols)(m[!is.na(m)]), max = 255)
+  m2[!is.na(m)] <- rgb(colorRamp(cols)(m[!is.na(m)]), maxColorValue = 255)
   #m2[is.na(m)] <- "transparent"
   return(m2)
 }
