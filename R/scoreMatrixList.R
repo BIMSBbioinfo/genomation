@@ -23,33 +23,45 @@
 }
 
 # ---------------------------------------------------------------------------- #
-#' ScoreMatrixList constructor
+#' Make ScoreMatrixList from multiple targets
 #' 
-#' Construct a list of scoreMatrixObjects that can be used for plotting
-#'
-#' @param l can be a list of \code{scoreMatrix} objects, that are coerced to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a character vector specifying the locations of mulitple bam files that are used to construct the \code{scoreMatrixList}. If l is either a RleList object or a character vector of files, it is obligatory to give a granges argument.
-#' @param granges a \code{GenomicRanges} containing viewpoints for the scoreMatrix or ScoreMatrixList functions
+#' The function constructs a list of \code{ScoreMatrix} objects in the form
+#' of \code{ScoreMatrixList} object. This object can be visualized using 
+#' \code{multiHeatMatrix}, \code{heatMeta} or \code{plotMeta}
+#' 
+#' 
+#' @param targets can be a list of \code{scoreMatrix} objects, that are coerced 
+#'        to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a 
+#'        character vector specifying the locations of mulitple bam files that 
+#'        are used to construct the \code{scoreMatrixList}. If l is either a 
+#'        RleList object or a character vector of files, it is obligatory to 
+#'        give a granges argument.
+#' @param windows \code{GenomicRanges} containing viewpoints for the scoreMatrix 
+#'        or ScoreMatrixList functions
 #' @param bin.num an integer telling the number of bins to bin the score matrix
 #' @param bin.op an name of the function that will be used for smoothing windows of ranges
-#' @param strand.aware a boolean telling the function whether to reverse the coverage of ranges that come from - strand (e.g. when plotting enrichment around transcription start sites)
-#' @param type if l is a character vector of file paths, then type designates the type of the corresponding files (bam or bigWig)
+#' @param strand.aware a boolean telling the function whether to reverse the 
+#'        coverage of ranges that come from - strand (e.g. when plotting 
+#'        enrichment around transcription start sites)
+#' @param type if \code{targets} is a character vector of file paths, then type 
+#'        designates the type of the corresponding files (bam or bigWig)
 #' @param ... other arguments that can be passed to the function
  
 #' @return returns a \code{ScoreMatrixList} object
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(target, windows=NULL, bin.num=NULL, 
+ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, ...){
 
-	len = length(target)
+	len = length(targets)
 	if(len == 0L)
 		stop('target argument is empty')
   
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(target, class)) == 'scoreMatrix'))
-		return(new("ScoreMatrixList",l))
+	if(all(unlist(lapply(targets, class)) == 'scoreMatrix'))
+		return(new("ScoreMatrixList",targets))
 
   
 	# ----------------------------------------------------------------- #
@@ -62,7 +74,7 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
       stop('target should be one of the following: 
            an RleList, a list of files, a list of GRanges')
 	
-  if(all(file.exists(target)) & is.null(type))
+  if(all(file.exists(targets)) & is.null(type))
       stop('When providing a file, it is necessary to give the type of the file')
   
   sml = list()
@@ -70,22 +82,22 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
     
     message(paste('reading file:',basename(target[i])))
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
-      sml[[i]] = ScoreMatrix(target[[i]], windows, strand.aware=strand.aware 
+      sml[[i]] = ScoreMatrix(targets[[i]], windows, strand.aware=strand.aware 
                              , ...)
       
     } else{
       if(is.null(bin.num))
         bin.num = 10
-      sml[[i]] = ScoreMatrixBin(target[[i]], windows, 
+      sml[[i]] = ScoreMatrixBin(targets[[i]], windows, 
                                 bin.num=bin.num, bin.op=bin.op, 
                                 strand.aware=strand.aware, ...)
     }  
   }
 	
   if(class(target) %in% c('SimpleRleList', 'RleList','GenomicRanges'))
-    names(sml) = names(target)
-  if(all(is.character(target)))
-    names(sml) = basename(target)
+    names(sml) = names(targets)
+  if(all(is.character(targets)))
+    names(sml) = basename(targets)
   
   
 	return(new("ScoreMatrixList",sml))
@@ -215,12 +227,17 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 
 #' @param sml \code{ScoreMatrixList} object
 #' @param ord.vec an integer vector
-#' @usage order(sml, ord.vec)
 #' @return \code{ScoreMatrixList} object
-
 #' @docType methods
+#' @rdname orderBy-methods
 #' @export
-setMethod("order", signature("ScoreMatrixList"),
+setGeneric("orderBy", 
+           function(sml,ord.vec)
+             standardGeneric("orderBy") )
+
+#' @aliases orderBy,ScoreMatrixList-method
+#' @rdname orderBy-methods
+setMethod("orderBy", signature("ScoreMatrixList"),
           function(sml, ord.vec){
             
             ord.vec = as.integer(ord.vec)

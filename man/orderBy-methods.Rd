@@ -1,9 +1,12 @@
 \docType{methods}
-\name{order,ScoreMatrixList-method}
-\alias{order,ScoreMatrixList-method}
+\name{orderBy}
+\alias{orderBy}
+\alias{orderBy,ScoreMatrixList-method}
 \title{Reorder all elements of a ScoreMatrixList to a given ordering vector}
 \usage{
-  order(sml, ord.vec)
+  orderBy(sml, ord.vec)
+
+  \S4method{orderBy}{ScoreMatrixList}(sml, ord.vec)
 }
 \arguments{
   \item{sml}{\code{ScoreMatrixList} object}

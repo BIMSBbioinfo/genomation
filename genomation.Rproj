@@ -14,5 +14,6 @@ LaTeX: pdfLaTeX
 
 BuildType: Package
 PackageInstallArgs: --no-multiarch
+PackageBuildArgs: --no-build-vignettes
 PackageCheckArgs: --no-examples --no-manual --no-build-vignettes --no-examples --no-vignettes
 PackageRoxygenize: rd
