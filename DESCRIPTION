@@ -28,7 +28,9 @@ Imports:
   impute
 Suggests:
     testthat,
-    knitr
+    knitr,
+    RColorBrewer,
+    genomationData
 Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
