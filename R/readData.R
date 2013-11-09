@@ -72,8 +72,8 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @docType methods
 #' @rdname readGeneric
 readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL, 
-                      keep.all.metadata=FALSE, zero.based=FALSE, remove.unsual=FALSE,
-                      header=FALSE, skip=0,sep="\t"){
+                      keep.all.metadata=FALSE, zero.based=FALSE, 
+                      remove.unsual=FALSE, header=FALSE, skip=0,sep="\t"){
               
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
@@ -81,29 +81,31 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   # make a list of new column names, and their column numbers
   col.names1=list(chr=chr,start=start,end=end,strand=strand)
   col.names=c(col.names1,meta.col) # put the meta colums if any
-  
+    
   # check if col number exceeds dimensions of the original df.
   if( max(unlist(col.names)) > ncol(df) ) 
     stop("Number of columns is lower than designated number of columns by ",
          "meta.col,chr,start,end or strand arguments\n")
-  
+    
   # change the col names to the ones given by meta.col and chr,str,end,strand
   colnames(df)[unlist(col.names)] = names(unlist(col.names))
-  
+    
   # converts the . strand character to *
   sind = grepl('strand',colnames(df))
   if(any(sind) & !is.null(strand))
     df[, sind] = sub('\\.', '*', df[,sind])
-  
+    
   # removes nonstandard chromosome names
   if(remove.unsual)
     df = df[grep("_", as.character(df$chr),invert=T),]
+  }
   
   g = makeGRangesFromDataFrame(
                           df, 
                           keep.extra.columns=FALSE, 
                           starts.in.df.are.0based=zero.based,
                           ignore.strand=is.null(strand))
+  
   if(keep.all.metadata){
     mcols(g)=df[,-unlist(col.names1),drop=FALSE]
   }else if(!is.null(meta.col)){
