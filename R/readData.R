@@ -78,10 +78,6 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
-  # removes nonstandard chromosome names
-  if(remove.unsual)
-    df = df[grep("_", as.character(df[,1]),invert=T),]
-  
   # make a list of new column names, and their column numbers
   col.names1=list(chr=chr,start=start,end=end,strand=strand)
   col.names=c(col.names1,meta.col) # put the meta colums if any
@@ -98,6 +94,10 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   sind = grepl('strand',colnames(df))
   if(any(sind) & !is.null(strand))
     df[, sind] = sub('\\.', '*', df[,sind])
+  
+  # removes nonstandard chromosome names
+  if(remove.unsual)
+    df = df[grep("_", as.character(df$chr),invert=T),]
   
   g = makeGRangesFromDataFrame(
                           df, 

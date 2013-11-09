@@ -89,6 +89,18 @@ sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomatio
 head(sampleInfo)
 @
 
+Basic annotation data and processed experimental data can be found within the \Rpackage{genomation} package.
+The data can be accesed throught the \Rcode{data} command or located in the extdata folder. 
+<<genomationInfo, eval=FALSE, tidy=TRUE>>=
+library(genomation)
+data(cage)
+data(cpgi)
+
+list.files(system.file('extdata', package='genomation'))
+@
+
+
+
 % ----------------------------------------------------------------- %
 \section{Data input}
 
@@ -102,18 +114,41 @@ of elements in genomic coordinates and various metadata colums.
 provided they are in a tabular format. These functions will read the data from 
 flat files into GRanges or GRangesList objects.
 
-\Rcode{readGeneric} is the workhorse of the 
-<<readExamples1, eval=FALSE, tidy=TRUE>>=
+\Rcode{readGeneric} is the workhorse of the genomation package. It is a function
+developed specifically for input of genomic data in tabular formats, and their conversion
+to a GRanges object. 
+By default, the function persumes that the file is a standard .bed file containing columns chr, start, end.
+<<readGeneric1, eval=FALSE, tidy=TRUE>>=
 library(genomation)
-file.to.read1=system.file("extdata", "chr21.CpGi.hg19.bed", package = "genomation")
-readGeneric(file.to.read1)
-
-readBroadPeak()
-
-readNarrowPeak()
-
-
+tab.file1=system.file("extdata/tab1.bed", package = "genomation")
+readGeneric(tab.file1)
 @
+
+If the file contains meta data columns (as in extended bed format), 
+it is possible to read all or some of the additional columns.
+To select columns which you want to read in, use the \Rcode{meta.col} argument 
+<<readGeneric2, eval=FALSE, tidy=TRUE>>=
+readGeneric(tab.file1, keep.all.metadata=TRUE)
+
+readGeneric(tab.file1, meta.col = list(CpGnum=4))
+@
+
+If the file contains header, the function will automatically recognize the 
+columns using the header names.
+<<readGeneric3, eval=FALSE, tidy=TRUE>>=
+readGeneric(tab.file1, header=TRUE, keep.all.metadata=TRUE)
+@
+
+
+If the files have permutted columns, such that the first three do not represent
+chromosome, start and end, you can select an arbitrary set of columns using the
+chr, start and end arguments.
+<<readGeneric4, eval=FALSE, tidy=TRUE>>=
+tab.file2=system.file("extdata/tab2.bed", package = "genomation")
+readGeneric(tab.file2, chr=3, start=2, end=1)
+@
+
+
 There are specific functions to read genomic annotation from flat bed files.
 <<readExamples2, eval=FALSE, tidy=TRUE>>=
 # reading genes stored as a BED files
