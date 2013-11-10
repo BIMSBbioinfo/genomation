@@ -77,16 +77,23 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
                       skip=0, sep="\t"){
               
   # removes the track header
-  track=scan(file, n=1, what='character')                    
+  track=scan(file, n=1, what='character', sep='\n', quiet=TRUE)                    
   if(grepl('^>',track))
     skip = max(1, skip)
+  
+  # if header = FALSE, checks whether a header line exists, and skips it
+  if(header==FALSE){
+    line = read.table(file, nrows=1, stringsAsFactors=FALSE)
+    if(all(sapply(line, class) == 'character'))
+      skip = max(1, skip)
+  }
   
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
   # make a list of new column names, and their column numbers
   col.names1=list(chr=chr,start=start,end=end,strand=strand)
-  col.names=c(col.names1,meta.col) # put the meta colums if any
+  col.names=c(col.names1, meta.col) # put the meta colums if any
     
   # check if col number exceeds dimensions of the original df.
   if( max(unlist(col.names)) > ncol(df) ) 
@@ -105,7 +112,6 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   if(remove.unsual)
     df = df[grep("_", as.character(df$chr),invert=T),]
   
-  print(sapply(df, class))
   g = makeGRangesFromDataFrame(
                           df, 
                           keep.extra.columns=FALSE, 
