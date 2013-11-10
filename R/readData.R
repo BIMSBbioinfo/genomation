@@ -73,8 +73,14 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @rdname readGeneric
 readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL, 
                       keep.all.metadata=FALSE, zero.based=FALSE, 
-                      remove.unsual=FALSE, header=FALSE, skip=0,sep="\t"){
+                      remove.unsual=FALSE, header=FALSE, 
+                      skip=0, sep="\t"){
               
+  # removes the track header
+  track=scan(file, n=1, what='character')                    
+  if(grepl('^>',track))
+    skip = max(1, skip)
+  
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
@@ -98,8 +104,8 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   # removes nonstandard chromosome names
   if(remove.unsual)
     df = df[grep("_", as.character(df$chr),invert=T),]
-  }
   
+  print(sapply(df, class))
   g = makeGRangesFromDataFrame(
                           df, 
                           keep.extra.columns=FALSE, 
