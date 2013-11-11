@@ -70,11 +70,11 @@ The pipeline for computational knowledge extraction consists of three steps: dat
 \section{Access the data}
 
 High-throughput data which will be used to show the functonality of the \Rpackage{genomation} is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage{genomationData}.\\
-To install the data package from bioconductor c/p the following lines into your R interpreter:
-
+To install the \Rpackage{genomation} and the complementary data package the from the github repository c/p the following lines into your R interpreter:
 <<genomationDataLoad, eval=FALSE>>=
 library(devtools)
 install_github("genomationData",username='frenkiboy')
+install_github("genomation",username='frenkiboy')
 @
 
 The \Rpackage{genomationData} vignette contains a verbose description of contained files.\\
@@ -230,9 +230,9 @@ a set of exons warned us that some of the ranges had width less than 50 bp and
 were removed from the set.
 
 To simultaneously work on multiple files you can use the \Rcode{ScoreMatrixList}
-function. The function also has 2 obligatory arguments \code{targets} and \code{windows}.
+function. The function likewise has 2 obligatory arguments \code{targets} and \code{windows}.
 While the \code{windows} is the same as in \Rcode{ScoreMatrix}, the targets argument
-is used to represent results from multiple experiments. 
+is contains results from multiple experiments. 
 It can be in one of the three formats: a list of RleLists, a list of GRanges (or a GRangesList object), 
 or a character vector designating a set of .bam files.
 <<ScoreMatrixList, eval=FALSE, tidy=TRUE>>=
@@ -245,7 +245,39 @@ targets = list(cage=cage, cpgi=cpgi)
 sm = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50)
 @
 
+If all of the windows have the same width \Rcode{ScoreMatrixList} will use the
+\Rcode{ScoreMatrix} function. That can be overridden by explicity specifying the 
+\code{bin.num} argument, as we did in the example.
 
+\subsection{Visualization of multiple genomic experiments}
+
+There are 2 basic modes of visualization of enrichment over windows: either as a heatmap, 
+or as a line grap. \Rcode{heatMatrix]}, \Rcode{plotMeta} and \Rcode{multiHeatMatrix} are functions for visualization of \Rcode{ScoreMatrix} and \Rcode{ScoreMatrixList} objects.
+
+We will plot the distribution of CAGE tags around promoters on human chr21.
+<<heatMatrix1, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+data(cage)
+data(promoters)
+sm = ScoreMatrix(target=cage, windows=promoters)
+
+par(mfrow=c(1,2))
+heatMatrix(sm, xcoords=c(-1000, 1000))
+plotMeta(sm, xcoords=c(-1000, 1000))
+par(mfrow=c(1,1))
+@
+
+
+The \Rcode{heatMatrix} function can also take a list of numeric vectors designating row names, or a factor variable that represent our annotation over the windows.
+<<heatMatrix2, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
+data(cage)
+data(promoters)
+data(cpgi)
+
+sm = ScoreMatrix(target=cage, windows=promoters, strand.aware=TRUE)
+cpg.ind = which(countOverlaps(promoters, cpgi)>0)
+nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
+heatMatrix(sm, xcoords=c(-1000, 1000), group=list(cpgi=cpg.ind, nocpg=nocpg.ind))
+@
 
 % ----------------------------------------------------------------- %
 \section{Annotation of genomic features}

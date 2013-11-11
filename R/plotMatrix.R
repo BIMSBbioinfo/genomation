@@ -8,7 +8,7 @@
 .jets<-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
                           "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
 
-
+# ---------------------------------------------------------------------------- #
 #' Heatmap for meta-region profiles
 #' 
 #' Function calculates meta-profile(s) from a ScoreMatrix or a ScoreMatrixList, then
@@ -161,7 +161,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
   invisible(metas)
 }
 
-
+# ---------------------------------------------------------------------------- #
 #' Line plot(s) for meta-region profiles
 #' 
 #' Function calculates meta-profile(s) from a ScoreMatrix or a ScoreMatrixList, then
@@ -414,7 +414,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   
 }
 
-
+# ---------------------------------------------------------------------------- #
 #' Draw a heatmap of a given ScoreMatrix object
 #' 
 #' 
@@ -490,13 +490,13 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #'
 #' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
 #'           xcoords=-1000:1000,
-#'           cex.legend=0.8,main="GAGE clusters on promoters",cex.lab=1,
+#'           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
 #'           cex.axis=0.9,grid=FALSE)
 #'
 #' set.seed(1000)
 #' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
 #'           xcoords=-1000:1000,kmeans=TRUE,k=3,
-#'           cex.legend=0.8,main="GAGE clusters on promoters",cex.lab=1,
+#'           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
 #'           cex.axis=0.9,grid=FALSE)
 #'           
 #' @import impute           
@@ -755,6 +755,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   mat
 }
 
+# ---------------------------------------------------------------------------- #
 #' Draw multiple heatmaps from a ScoreMatrixList object
 #' 
 #' The function plots multiple heatmaps for a ScoreMatrixList object side by side.
