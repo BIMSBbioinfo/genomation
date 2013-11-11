@@ -5,9 +5,6 @@
 \title{Function to get upstream and downstream adjecent regions to a genomic feature such as CpG islands}
 \usage{
   getFlanks(grange,flank=2000,clean=T)
-
-  \S4method{getFlanks}{GRanges}(grange, flank = 2000,
-    clean = T)
 }
 \arguments{
   \item{grange}{GRanges object for the feature}

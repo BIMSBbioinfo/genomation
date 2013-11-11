@@ -205,11 +205,15 @@ setMethod("show", "ScoreMatrixList",
 #' Scales each ScoreMatrix in the ScoreMatrixList object, by rows and/or columns
 #' 
 #' @param sml a \code{ScoreMatrixList} object
-#' @param columns a \code{columns} whether to scale the matrix by columns. Set by default to FALSE
-#' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun a function object that takes as input a matrix and returns a matrix.
+#' @param columns a \code{columns} whether to scale the matrix by columns. 
+#'               Set by default to FALSE
+#' @param rows  a \code{rows} Whether to scale the matrix by rows. Set by default 
+#'            to TRUE
+#' @param scalefun a function object that takes as input a matrix and returns a 
+#'        matrix.
 #' @param ... other argments that be passed to the function
-#'  By default  the argument is set to the R scale function with center=TRUE and scale=TRUE
+#'  By default  the argument is set to the R scale function with center=TRUE and 
+#'  scale=TRUE
 #'
 #' @usage scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
 #' @return \code{ScoreMatrixList} object
@@ -229,6 +233,7 @@ setMethod("show", "ScoreMatrixList",
 #' @docType methods
 #' @rdname scaleScoreMatrixList
 #' @export
+
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
                     columns=FALSE, rows=TRUE, 
@@ -236,7 +241,7 @@ setGeneric("scaleScoreMatrixList",
                     ...) 
              standardGeneric("scaleScoreMatrixList") )
 
-#' @aliases scaleScoreMatrixList
+#' @aliases scaleScoreMatrixList,ScoreMatrixList-method
 #' @rdname scaleScoreMatrixList
 setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
           function(sml, columns, rows, scalefun, ...){
@@ -352,7 +357,7 @@ setMethod("orderBy", signature("ScoreMatrixList"),
 #' @aliases binMatrix,ScoreMatrixList-method
 #' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrixList"),
-          function(x, bin.num=NULL, fun='mean', ...){
+          function(x, bin.num=NULL, fun='mean'){
             
             if(is.null(bin.num))
               return(x)

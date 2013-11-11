@@ -23,10 +23,14 @@
 #' @param exclude A GRanges object where no randomized feature should overlap,
 #'        can be gaps or unmappable regions in the genome as an example.
 #' @param include A GRanges object which defines the boundaries of randomized
-#'        features. If not provided the whole genome is used, as defined using the chrom.sizes parameter.
+#'        features. If not provided the whole genome is used, as defined using 
+#'        the chrom.sizes parameter.
 #' @param seed random number generator seed
 #' @param nrand number of randomizations (default:1)
-#' @return returns a GRanges object which is randomized version of the feature, along with a "set" column in the metadata which designates to which iteration of the randomization the range belong.
+#' 
+#' @return returns a GRanges object which is randomized version of the feature, 
+#' along with a "set" column in the metadata which designates to which iteration 
+#' of the randomization the range belong.
 
 #' @export
 #' @docType methods
@@ -155,19 +159,20 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 #'        features
 #' @param seed random number generator seed
 #' @param nrand number of randomizations (default:1)
-#' @usage randomizeFeature(feature,chrom.sizes=NULL,stranded=TRUE,
-#'                          keep.strand.prop=TRUE,keep.chrom=TRUE,
-#'                          exclude=NULL,include=NULL,seed=NULL)
+#'
+#'
 #' @return returns a GRanges object which is randomized version of the feature
 #' @export
 #' @docType methods
-#' @rdname randomizeFeature-methods
+#' @rdname calculateOverlapSignificance-methods
 setGeneric("calculateOverlapSignificance", 
 				function(target, feature, chrom.sizes=NULL, stranded=TRUE,
 						 keep.strand.prop=TRUE, keep.chrom=TRUE,
 						 exclude=NULL, include=NULL, seed=NULL, nrand=1)
 				standardGeneric("calculateOverlapSignificance") )
 
+#' @aliases calculateOverlapSignificance,GRanges,GRanges-method
+#' @rdname calculateOverlapSignificance-methods
 setMethod("calculateOverlapSignificance", signature(target="GRanges", feature="GRanges"),
 			function( target,
 					  feature,

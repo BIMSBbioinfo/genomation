@@ -6,10 +6,6 @@
 \usage{
   plotTargetAnnotation(x, precedence = TRUE,
     col = rainbow(length(x@annotation)), ...)
-
-  \S4method{plotTargetAnnotation}{annotationByFeature}(x,
-    precedence = TRUE, col = rainbow(length(x@annotation)),
-    ...)
 }
 \arguments{
   \item{x}{a \code{annotationByFeature} or

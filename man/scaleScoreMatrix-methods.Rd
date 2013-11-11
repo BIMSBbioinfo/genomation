@@ -6,9 +6,6 @@
 \usage{
   scaleScoreMatrix(mat, columns = FALSE, rows = TRUE,
     scalefun = NULL)
-
-  \S4method{scaleScoreMatrix}{ScoreMatrix}(mat,
-    columns = FALSE, rows = TRUE, scalefun = NULL)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} object}
@@ -20,7 +17,7 @@
   rows. Set by default to TRUE}
 
   \item{scalefun}{function object that takes as input a
-  matrix and returns a matrix. By default the argument is
+  matrix and returns a matrix.  By default the argument is
   set to (x - mean(x))/(max(x)-min(x)+1)}
 }
 \value{
@@ -31,8 +28,11 @@
 }
 \examples{
 # scale the rows of a scoreMatrix object
-target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), weight = rep(c(1,2),each=7), strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
+target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+          weight = rep(c(1,2),each=7),
+          strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5),
+          strand=c('-','+','-','+'))
 sm = ScoreMatrix(target, windows)
 ssm = scaleScoreMatrix(sm, rows=TRUE)
 }

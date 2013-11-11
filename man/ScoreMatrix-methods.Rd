@@ -1,30 +1,15 @@
 \docType{methods}
 \name{ScoreMatrix}
 \alias{ScoreMatrix}
+\alias{ScoreMatrix,character,GRanges-method}
 \alias{ScoreMatrix,GRanges,GRanges-method}
 \alias{ScoreMatrix,RleList,GRanges-method}
-\alias{ScoreMatrix,character,GRanges-method}
 \title{Get base-pair score for bases in each window}
 \usage{
   ScoreMatrix(target, windows, strand.aware = FALSE,
     weight.col = NULL, is.noCovNA = FALSE, type = "",
     rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
     ...)
-
-  \S4method{ScoreMatrix}{RleList,GRanges}(target, windows,
-    strand.aware = FALSE, weight.col = NULL,
-    is.noCovNA = FALSE, type = "", rpm = FALSE,
-    unique = FALSE, extend = 0, param = NULL, ...)
-
-  \S4method{ScoreMatrix}{GRanges,GRanges}(target, windows,
-    strand.aware = FALSE, weight.col = NULL,
-    is.noCovNA = FALSE, type = "", rpm = FALSE,
-    unique = FALSE, extend = 0, param = NULL, ...)
-
-  \S4method{ScoreMatrix}{character,GRanges}(target,
-    windows, strand.aware = FALSE, weight.col = NULL,
-    is.noCovNA = FALSE, type = "", rpm = FALSE,
-    unique = FALSE, extend = 0, param = NULL, ...)
 }
 \arguments{
   \item{target}{\code{RleList} , \code{GRanges} or a BAM

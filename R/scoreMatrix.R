@@ -334,8 +334,11 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @examples
 #' 
 #' # binning the columns in a ScoreMatrix object
-#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), weight = rep(c(1,2),each=7), strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#' weight = rep(c(1,2),each=7), 
+#' strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#' strand=c('-','+','-','+'))
 #' sm = ScoreMatrix(target, windows)
 #' bin = binMatrix(sm, bin.num=2)
 #'
@@ -343,13 +346,13 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @rdname binMatrix-methods
 #' @export
 setGeneric("binMatrix", 
-              function(x, bin.num=NULL, fun='mean', ...)
+              function(x, bin.num=NULL, fun='mean')
                 standardGeneric("binMatrix") )
 
 #' @aliases binMatrix,ScoreMatrix-method
 #' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
-			function(x, bin.num=NULL, fun='mean', ...){
+			function(x, bin.num=NULL, fun='mean'){
 		  
 				if(is.null(bin.num))
 					return(x)
@@ -386,15 +389,19 @@ setMethod("show", "ScoreMatrix",
 #' @param mat \code{ScoreMatrix} object
 #' @param columns \code{columns} whether to scale the matrix by columns. Set by default to FALSE.
 #' @param rows  \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
-#' @param scalefun function object that takes as input a matrix and returns a matrix. By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
+#' @param scalefun function object that takes as input a matrix and returns a matrix. 
+#'         By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
 #'
 #' @return \code{ScoreMatrix} object
 #'
 #' @examples
 #' 
 #' # scale the rows of a scoreMatrix object
-#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), weight = rep(c(1,2),each=7), strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), strand=c('-','+','-','+'))
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#'           weight = rep(c(1,2),each=7), 
+#'           strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#'           strand=c('-','+','-','+'))
 #' sm = ScoreMatrix(target, windows)
 #' ssm = scaleScoreMatrix(sm, rows=TRUE)
 #'

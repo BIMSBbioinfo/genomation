@@ -6,8 +6,6 @@
 \title{Get distance to nearest TSS and gene id from annotationByGenicParts}
 \usage{
   getAssociationWithTSS(x)
-
-  \S4method{getAssociationWithTSS}{annotationByGenicParts}(x)
 }
 \arguments{
   \item{x}{a \code{annotationByGenicParts} object}

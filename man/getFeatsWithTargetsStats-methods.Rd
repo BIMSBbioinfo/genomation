@@ -5,9 +5,6 @@
 \title{Get the percentage/count of annotation features overlapping with target features from annotationByFeature}
 \usage{
   getFeatsWithTargetsStats(x,percentage=TRUE)
-
-  \S4method{getFeatsWithTargetsStats}{annotationByFeature}(x,
-    percentage = TRUE)
 }
 \arguments{
   \item{x}{a \code{annotationByFeature} object}

@@ -5,9 +5,6 @@
 \title{Get common rows from all matrices in a ScoreMatrixList object}
 \usage{
   intersectScoreMatrixList(sml, reorder = FALSE)
-
-  \S4method{intersectScoreMatrixList}{ScoreMatrixList}(sml,
-    reorder = FALSE)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}

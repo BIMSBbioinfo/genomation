@@ -1,15 +1,18 @@
 \docType{methods}
-\name{randomizeFeature}
-\alias{randomizeFeature}
-\alias{randomizeFeature,GRanges-method}
-\title{function that randomizes the genomic coordinates}
+\name{calculateOverlapSignificance}
+\alias{calculateOverlapSignificance}
+\alias{calculateOverlapSignificance,GRanges,GRanges-method}
+\title{function that calculates the significance of overlaps of two sets of features using randomization}
 \usage{
-  randomizeFeature(feature, chrom.sizes = NULL,
-    stranded = TRUE, keep.strand.prop = TRUE,
-    keep.chrom = TRUE, exclude = NULL, include = NULL,
-    seed = NULL, nrand = 1)
+  calculateOverlapSignificance(target, feature,
+    chrom.sizes = NULL, stranded = TRUE,
+    keep.strand.prop = TRUE, keep.chrom = TRUE,
+    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
 }
 \arguments{
+  \item{target}{a GRanges object for which the overlap
+  needs to be calculates}
+
   \item{feature}{a GRanges object to be randomized}
 
   \item{chrom.sizes}{sizes of chromosomes as a named vector
@@ -33,9 +36,7 @@
   in the genome as an example.}
 
   \item{include}{A GRanges object which defines the
-  boundaries of randomized features. If not provided the
-  whole genome is used, as defined using the chrom.sizes
-  parameter.}
+  boundaries of randomized features}
 
   \item{seed}{random number generator seed}
 
@@ -43,18 +44,17 @@
 }
 \value{
   returns a GRanges object which is randomized version of
-  the feature, along with a "set" column in the metadata
-  which designates to which iteration of the randomization
-  the range belong.
+  the feature
 }
 \description{
-  This function randomly distributes the coordinates of
-  genomic features which is stored in a \code{GRanges}
-  object. The randomization can be constrained by supplied
-  arguments. The function is still in Beta mode - the
-  regions can overlap excluded regions, and the randomized
-  regions are not disjoint. Please take care that the
-  excluded and included regions are not too strict when
-  compared to the total width of the ranges.
+  This function calculates the significance of overlaps of
+  two sets of features using randomization. #' It returns a
+  distributon of overlaps of a target set with a given
+  randomized feature set. The randomization can be
+  constrained by supplied arguments. The function is still
+  in Beta mode - the regions can overlap excluded regions,
+  and the randomized regions are not disjoint. Please take
+  care that the excluded and included regions are not too
+  strict when compared to the total width of the ranges.
 }
 

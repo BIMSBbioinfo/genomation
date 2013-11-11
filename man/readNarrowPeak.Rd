@@ -17,9 +17,8 @@
   into a GRanges object
 }
 \examples{
-library(genomationData)
-narrow.peak.file = list.files(system.file('extdata', package='genomationData'),
-                             full.names=T, pattern='narrowPeak')
+narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
+
 narrow.peak = readBroadPeak(narrow.peak.file)
 head(narrow.peak)
 }

@@ -4,10 +4,10 @@
 \title{Read a tabular file and convert it to GRanges.}
 \usage{
   readGeneric(file, chr = 1, start = 2, end = 3,
-    strand = NULL, meta.col = NULL,
+    strand = NULL, meta.cols = NULL,
     keep.all.metadata = FALSE, zero.based = FALSE,
     remove.unsual = FALSE, header = FALSE, skip = 0,
-    sep = "\\t")
+    sep = "\t")
 }
 \arguments{
   \item{file}{location of the file, a character string such
@@ -25,17 +25,17 @@
   \item{strand}{number of the column that has strand
   information, only -/+ is accepted (Default:NULL)}
 
-  \item{meta.col}{named \code{list} that maps column
+  \item{meta.cols}{named \code{list} that maps column
   numbers to meta data columns.  e.g. list(name=5,
   score=10), which means 5th column will be named "name",
   and 10th column will be named "score" and their contents
   will be a part of the returned GRanges object.  If header
-  = TRUE, meta.col parameter will over-write the column
+  = TRUE, meta.cols parameter will over-write the column
   names given by the header line of the data frame.}
 
   \item{keep.all.metadata}{\code{logical} determining if
   the extra columns ( the ones that are not designated by
-  chr,start,end,strand and meta.col arguments ) should be
+  chr,start,end,strand and meta.cols arguments ) should be
   kept or not. (Default:FALSE)}
 
   \item{zero.based}{a boolean which tells whether the
@@ -49,7 +49,7 @@
   \item{header}{whether the original file contains a header
   line which designates the column names. If \code{TRUE}
   header will be used to construct column names. These
-  names can be over written by meta.col argument.}
+  names can be over written by meta.cols argument.}
 
   \item{skip}{number of lines to skip. If there is a header
   line(s) you do not wish to include you can use skip
@@ -72,7 +72,7 @@
 \examples{
 my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
  refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
-                      meta.col=list(score=5,name=4),
+                      meta.cols=list(score=5,name=4),
                      keep.all.metadata=FALSE, zero.based=TRUE)
  head(refseq)
 }

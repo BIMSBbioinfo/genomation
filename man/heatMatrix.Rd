@@ -66,9 +66,6 @@
 
   \item{main}{a character string for the plot title}
 
-  \item{legend.name}{name of the lengend to be plotted
-  under the axis of the legend.}
-
   \item{legend.name}{a character label plotted next to the
   legend}
 

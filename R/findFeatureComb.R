@@ -33,7 +33,7 @@ setGeneric("findFeatureComb",
            function(gl, width=0, use.names=FALSE, collapse.char=':') 
              standardGeneric("findFeatureComb") )
 
-#' @aliases findFeatureComb,GRanges,GRangesList,GRangesList-methods
+#' @aliases findFeatureComb,GRangesList-method
 #' @rdname findFeatureComb-methods
 setMethod("findFeatureComb", signature("GRangesList"),
           function(gl, width, use.names, collapse.char){

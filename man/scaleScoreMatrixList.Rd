@@ -5,15 +5,12 @@
 \title{Scale the ScoreMatrixList}
 \usage{
   scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
-
-  \S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml,
-    columns = FALSE, rows = TRUE, scalefun = NULL, ...)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
 
   \item{columns}{a \code{columns} whether to scale the
-  matrix by columns. Set by default to FALSE}
+  matrix by columns.  Set by default to FALSE}
 
   \item{rows}{a \code{rows} Whether to scale the matrix by
   rows. Set by default to TRUE}

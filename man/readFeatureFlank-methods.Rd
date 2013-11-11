@@ -5,10 +5,6 @@
 \title{A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores}
 \usage{
   readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
-
-  \S4method{readFeatureFlank}{character}(location,
-    remove.unsual = T, flank = 2000, clean = T,
-    feature.flank.name = NULL)
 }
 \arguments{
   \item{location}{for the bed file of the feature}

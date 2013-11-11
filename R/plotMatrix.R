@@ -460,7 +460,6 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #' @param k     Defaults to 3. It designates the number of clusters to be returned
 #'              by kmeans clustering.
 #' @param main a character string for the plot title
-#' @param legend.name name of the lengend to be plotted under the axis of the legend.
 #' @param legend.name a character label plotted next to the legend
 #' @param cex.legend  A numerical value giving the amount by which 
 #'                    legend axis marks should be magnified relative to the default
@@ -859,7 +858,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' 
 #' # use different colors
-#' library(RColorBrewer)
+#' require(RColorBrewer)
 #' col.cage= brewer.pal(9,"Blues")
 #' col.cpgi= brewer.pal(9,"YlGn")
 #' multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),

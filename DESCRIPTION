@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: : R package for graphics and operations for genomic features
-Version: 0.4.4
+Version: 0.4.5
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
@@ -29,9 +29,9 @@ Imports:
 Suggests:
     testthat,
     knitr,
-    RColorBrewer,
-    genomationData
+    RColorBrewer
 Collate:
+    'documentData.R'
     'genomation-classes.R'
     'getRandomEnrichment.R'
     'findFeatureComb.R'

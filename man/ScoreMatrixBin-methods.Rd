@@ -1,9 +1,9 @@
 \docType{methods}
 \name{ScoreMatrixBin}
 \alias{ScoreMatrixBin}
+\alias{ScoreMatrixBin,character,GRanges-method}
 \alias{ScoreMatrixBin,GRanges,GRanges-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
-\alias{ScoreMatrixBin,character,GRanges-method}
 \title{Get bin score for bins on each window}
 \usage{
   ScoreMatrixBin(target, windows, bin.num = 10,
@@ -11,24 +11,6 @@
     weight.col = NULL, is.noCovNA = FALSE, type = "",
     rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
     ...)
-
-  \S4method{ScoreMatrixBin}{RleList,GRanges}(target,
-    windows, bin.num = 10, bin.op = "mean",
-    strand.aware = FALSE, weight.col = NULL,
-    is.noCovNA = FALSE, type = "", rpm = FALSE,
-    unique = FALSE, extend = 0, param = NULL, ...)
-
-  \S4method{ScoreMatrixBin}{GRanges,GRanges}(target,
-    windows, bin.num = 10, bin.op = "mean",
-    strand.aware = FALSE, weight.col = NULL,
-    is.noCovNA = FALSE, type = "", rpm = FALSE,
-    unique = FALSE, extend = 0, param = NULL, ...)
-
-  \S4method{ScoreMatrixBin}{character,GRanges}(target,
-    windows, bin.num = 10, bin.op = "mean",
-    strand.aware = FALSE, weight.col = NULL,
-    is.noCovNA = FALSE, type = "", rpm = FALSE,
-    unique = FALSE, extend = 0, param = NULL, ...)
 }
 \arguments{
   \item{target}{\code{RleList} or a \code{modRleList} or
@@ -72,7 +54,7 @@
   files (bam or bigWig)}
 
   \item{rpm}{boolean telling whether to normalize the
-  coverage to per milion reads. FALSE by default.}
+  coverage to per milion reads.  FALSE by default.}
 
   \item{unique}{boolean which tells the function to remove
   duplicated reads based on chr, start, end and strand}

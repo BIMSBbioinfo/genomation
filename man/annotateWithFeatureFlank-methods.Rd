@@ -5,10 +5,6 @@
 \title{Function to annotate a given GRanges object with promoter,exon,intron & intergenic values}
 \usage{
   annotateWithFeatureFlank(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE)
-
-  \S4method{annotateWithFeatureFlank}{GRanges,GRanges,GRanges}(target,
-    feature, flank, feature.name = "feat",
-    flank.name = "flank", strand = FALSE)
 }
 \arguments{
   \item{target}{a granges object storing chromosome

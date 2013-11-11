@@ -140,7 +140,7 @@ multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 
 # use different colors
-library(RColorBrewer)
+require(RColorBrewer)
 col.cage= brewer.pal(9,"Blues")
 col.cpgi= brewer.pal(9,"YlGn")
 multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
