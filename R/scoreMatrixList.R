@@ -29,7 +29,7 @@
 #' of \code{ScoreMatrixList} object. This object can be visualized using 
 #' \code{multiHeatMatrix}, \code{heatMeta} or \code{plotMeta}
 #'
-#' @param target can be a list of \code{scoreMatrix} objects, that are coerced 
+#' @param targets can be a list of \code{scoreMatrix} objects, that are coerced 
 #'        to the \code{ScoreMatrixList}, a list of \code{RleList} objects, or a 
 #'        character vector specifying the locations of mulitple bam files that 
 #'        are used to construct the \code{scoreMatrixList}. If l is either a 
@@ -48,13 +48,13 @@
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
 #' @param is.noCovNA (Default:FALSE)
-#'                  if TRUE,and if 'target' is a GRanges object with 'weight.col'
+#'                  if TRUE,and if 'targets' is a GRanges object with 'weight.col'
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
 #'                    
-#' @param type if \code{target} is a character vector of file paths, then type 
+#' @param type if \code{targets} is a character vector of file paths, then type 
 #'        designates the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
 #'            FALSE by default.
@@ -75,23 +75,23 @@
 #'  data(promoters)
 #'  
 #'  cage$tpm = NULL
-#'  target = GRangesList(cage=cage, cpgi=cpgi)
-#'  sml = ScoreMatrixList(target, promoters, bin.num=10, strand.aware=TRUE)
+#'  targets = GRangesList(cage=cage, cpgi=cpgi)
+#'  sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
 #'  multiHeatMatrix(sml)
 #' 
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
-ScoreMatrixList = function(target, windows=NULL, bin.num=NULL, 
+ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, weight.col=NULL, 
                            is.noCovNA=FALSE, type='', rpm=FALSE, unique=FALSE, 
                            extend=0, param=NULL){
-	len = length(target)
+	len = length(targets)
 	if(len == 0L)
-		stop('target argument is empty')
+		stop('targets argument is empty')
   
-	# this checks whether we can work with the corresponding target object class set
-	list.ind = grepl('list', class(target)) | grepl('List', class(target))
+	# this checks whether we can work with the corresponding targets object class set
+	list.ind = grepl('list', class(targets)) | grepl('List', class(targets))
 	if(len > 1L & !list.ind){
 	  if(all(is.character(targets)) && is.null(type) && all(file.exists(targets)))
 	    stop('targets argument is neither a list like object (e.g. GRangesList),
@@ -101,40 +101,34 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
   
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(target, class)) == 'scoreMatrix'))
-		return(new("ScoreMatrixList",target))
+	if(all(unlist(lapply(targets, class)) == 'scoreMatrix'))
+		return(new("ScoreMatrixList",targets))
   
 	# ----------------------------------------------------------------- #
 	if(is.null(windows))
 	  stop("windows of class GRanges must be defined")
   
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-	if(list.ind & 
-<<<<<<< HEAD
-       !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
-			stop('targets should be one of the following:
-=======
-       !all(unlist(lapply(target, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
-			stop('target should be one of the following:
->>>>>>> 29242053d0dc2ad011420e1828cc8ddacc056999
-					an RleList, list of Rle, GRangesList, a list of GRanges objects')
+	if(list.ind & !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
+			stop('targets should be one of the following: an RleList, list of Rle, 
+           GRangesList, a list of GRanges objects')
 	}  
 	     
-	if(all(file.exists(target)) & is.null(type))
+	if(all(file.exists(targets)) & is.null(type))
       stop('When providing a file, it is necessary to give the type of the file')
 	
 	# gets the names for the resulting list
-	if(all(is.character(target))){
-	  names = basename(target)
+	if(all(is.character(targets))){
+	  names = basename(targets)
 	}else{
-	  names = names(target)
+	  names = names(targets)
 	}
   
   sml = list()
   for(i in 1:length(targets)){
     message(paste('working on:',names[i]))
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
-      sml[[i]] = ScoreMatrix(target[[i]], windows=windows, 
+      sml[[i]] = ScoreMatrix(targets[[i]], windows=windows, 
                              strand.aware=strand.aware,
                              weight.col=weight.col, 
                              is.noCovNA=is.noCovNA,
@@ -148,7 +142,7 @@ ScoreMatrixList = function(target, windows=NULL, bin.num=NULL,
       if(is.null(bin.num))
         bin.num = 10
 
-      sml[[i]] = ScoreMatrixBin(target[[i]], windows=windows, 
+      sml[[i]] = ScoreMatrixBin(targets[[i]], windows=windows, 
                                 bin.num=bin.num, 
                                 bin.op=bin.op,
                                 strand.aware=strand.aware,
@@ -229,8 +223,8 @@ setMethod("show", "ScoreMatrixList",
 #'  data(promoters)
 #'  
 #'  cage$tpm = NULL
-#'  target = GRangesList(cage=cage, cpgi=cpgi)
-#'  sml = ScoreMatrixList(target, promoters, bin.num=10, strand.aware=TRUE)
+#'  targets = GRangesList(cage=cage, cpgi=cpgi)
+#'  sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
 #'  sml.scaled = scaleScoreMatrixList(sml, rows=TRUE)
 #'  multiHeatMatrix(sml) 
 #'
@@ -327,8 +321,8 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #'  data(promoters)
 #' 
 #'  cage$tpm = NULL
-#'  target = GRangesList(cage=cage, cpgi=cpgi)
-#'  sml = ScoreMatrixList(target, promoters, bin.num=10)
+#'  targets = GRangesList(cage=cage, cpgi=cpgi)
+#'  sml = ScoreMatrixList(targets, promoters, bin.num=10)
 #'  kmeans.clust = kmeans(sml$cage,3)
 #'  
 #'  sml.ordered = orderBy(sml, kmeans.clust$cluster)

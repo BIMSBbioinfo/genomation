@@ -71,7 +71,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @export
 #' @docType methods
 #' @rdname readGeneric
-readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL, 
+readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL, 
                       keep.all.metadata=FALSE, zero.based=FALSE, 
                       remove.unsual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
@@ -387,7 +387,7 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL,
   
   if(!is.null(filter)){		
     if(filter %in% gff$feature){
-      message("Filtering", filter, "features...\n")
+      message(paste("Filtering", filter, "features...\n"))
       gff = gff[gff$feature == filter,]
     }else{
       stop("The given feature is not present in the gff file")

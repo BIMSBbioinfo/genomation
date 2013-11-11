@@ -215,8 +215,11 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #' 
 plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
                    meta.rescale=FALSE,
-                   line.col=ifelse(is.list(mat),list(rainbow(length(mat))),"black")[[1]],
+                   line.col=NULL,
                    ylim=NULL,ylab="average score",xlab="bases",...){
+  
+  if(is.null(line.col))
+    line.col=ifelse(is.list(mat),list(rainbow(length(mat))),"black")[[1]]
   
   # check class
   if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))

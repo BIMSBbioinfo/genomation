@@ -193,28 +193,58 @@ of data over predefined windows.
 
 \subsection{Extration of data over predefined winows}
 
-\Rcode{scoreMatrix} and \Rcode{scoreMatrixBin} are functions used to extract 
-data over predefined windows. \Rcode{scoreMatrix} is used when all of the windows
+\Rcode{ScoreMatrix} and \Rcode{ScoreMatrixBin} are functions used to extract 
+data over predefined windows. \Rcode{ScoreMatrix} is used when all of the windows
 have the same width, such as an area around the transcription start site, while the
-\Rcode{scoreMatrixBin} is designed for use with windows of unequal width (e.g. methylation
-over cpg islands)
+\Rcode{ScoreMatrixBin} is designed for use with windows of unequal width 
+(e.g. enrichment of methylation over exons).
 Both functions have 2 main arguments: \Rcode{target} and 
 \Rcode{windows}. \Rcode{target} is the data that we want to extract, while the \Rcode{windows}
 represents the regions over which we want to see the enrichment. The target data
 can be in 3 forms: a GRanges, a RLeList or a path to an indexed .bam file.
+The \Rcode{windows} must be GRanges object.
 
-As an example we will extrat the density of cage tags around the promoters in 
-the human genome
-<<extractCAGE, eval=FALSE, tidy=TRUE>>=
+As an example we will extract the density of cage tags around the promoters on 
+the human chromosome 21.
+<<ScoreMatrixExample, eval=FALSE, tidy=TRUE>>=
 data(cage)
 data(promoters)
-
 sm = ScoreMatrix(target=cage, windows=promoters)
 sm
 @
 
 
+\Rcode{ScoreMatrixBin} function has an additional \Rcode{bin.num} argument which
+specifies by how many bins will each window be represented (ie. it converts windows
+of unequal width into ones of equal width.). By default, the binning function is set
+to \Rcode{mean}.
+<<ScoreMatrixBinExample, eval=FALSE, tidy=TRUE>>=
+data(cage)
+gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
+exons = gffToGRanges(gff.file, filter='exon')
+sm = ScoreMatrixBin(target=cage, windows=exons, bin.num=50)
+@
 
+As you can see, running \Rcode{ScoreMatrixBin} with \Rcode{bin.num=50} on 
+a set of exons warned us that some of the ranges had width less than 50 bp and
+were removed from the set.
+
+To simultaneously work on multiple files you can use the \Rcode{ScoreMatrixList}
+function. The function also has 2 obligatory arguments \code{targets} and \code{windows}.
+While the \code{windows} is the same as in \Rcode{ScoreMatrix}, the targets argument
+is used to represent results from multiple experiments. 
+It can be in one of the three formats: a list of RleLists, a list of GRanges (or a GRangesList object), 
+or a character vector designating a set of .bam files.
+<<ScoreMatrixList, eval=FALSE, tidy=TRUE>>=
+library(genomationData)
+data(promoters)
+data(cpgi)
+data(cage)
+
+cage$tpm = NULL
+targets = list(cage=cage, cpgi=cpge)
+sm = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50)
+@
 
 
 
