@@ -14,6 +14,10 @@ LaTeX: pdfLaTeX
 
 BuildType: Package
 PackageInstallArgs: --no-multiarch
+<<<<<<< HEAD
 PackageBuildArgs: --no-build-vignettes --no-vignettes
+=======
+PackageBuildArgs: --no-build-vignettes
+>>>>>>> 29242053d0dc2ad011420e1828cc8ddacc056999
 PackageCheckArgs: --no-examples --no-manual --no-build-vignettes --no-vignettes
 PackageRoxygenize: rd

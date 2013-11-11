@@ -519,14 +519,23 @@ distance2NearestFeature<-function(g.idh,tss){
 
 
 # ---------------------------------------------------------------------------- #
-#' Function to annotate given GRanges object with promoter, exon, intron & intergenic ranges
-#'
-#' @param target: A GRanges object storing chromosome locations to be annotated (e.g. chipseq peaks)
-#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of readTranscriptFeatures function
-#' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
+#' Annotate given  object with promoter, exon, intron and intergenic regions
 #' 
-#' @usage annotateWithGeneParts(target,GRangesList.obj,strand=F)
-#' @return \code{annotationByGenicParts} object
+#' The function annotates \code{GRangesList} or \code{GRanges} object as 
+#' overlapping with promoter,exon,intron or intergenic regions.
+#'
+#' @param target A \code{\link{GRanges}} or \code{\link{GRangesList}}
+#'                object storing chromosome locations
+#'                to be annotated (e.g. chipseq peaks)
+#' @param GRangesList.obj A GRangesList object containing GRanges object for
+#'      promoter, exons, introns and TSSes, or simply output of 
+#'      readTranscriptFeatures function
+#' @param strand If set to TRUE, annotation features and target features will be 
+#'        overlapped based on strand  (def:FALSE)
+#' 
+#' @return \code{annotationByGenicParts} object or a list of 
+#'         \code{annotationByGenicParts}
+#'         objects if target is a  \code{\link{GRangesList}} object.
 #' 
 #' @export
 #' @docType methods
@@ -560,18 +569,8 @@ setMethod("annotateWithGeneParts",
 })
 
 
-# ---------------------------------------------------------------------------- #
-#'Given a GRangesList object it annotates each Range with gene annotation
-#'
-#' @param target: A GRangesList object storing chromosome locations to be annotated (e.g. chipseq peaks from multiple experiments)
-#' @param GRangesList.obj: A GRangesList object containing GRanges object for promoter, exons, introns and TSSes, or simply output of readTranscriptFeatures function
-#' @param strand: If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FALSE)
-#'
-#' @usage annotateWithGeneParts(target, GRangesList.obj, strand=F)
-#' @return \code{annotationByGenicParts} object
-#' @export
-#'
-#' @docType methods
+
+#' @aliases annotateWithGeneParts,GRangesList,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts",
 		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
@@ -905,11 +904,15 @@ setMethod("plotTargetAnnotation",
 #' Plots the enrichment of each feature in the set in the gene annotation
 #'
 #' This function plots a heatmap of enrichment of each range in given gene feature
+#' 
 #' @param l a \code{list} of  \code{annotationByGenicParts} objects
-#' @param cluster TRUE/FALSE. If TRUE the heatmap is going to be clustered using hierarchical clustering
-#' @param col a vector of two colors that will be used for interpolation. The first color is the lowest one, the second is the highest one
+#' @param cluster TRUE/FALSE. If TRUE the heatmap is going to be clustered 
+#'        using hierarchical clustering
+#' @param col a vector of two colors that will be used for interpolation. 
+#'        The first color is the lowest one, the second is the highest one
 
-#' usage  plotGenicAnnotation(l, cluster=FALSE, col=c('white','cornflowerblue'),...)
+#' usage  plotGenicAnnotation(l, cluster=FALSE, 
+#'        col=c('white','cornflowerblue'),...)
 #' 
 #' @export
 #' @docType methods
@@ -917,8 +920,7 @@ setMethod("plotTargetAnnotation",
 setGeneric("plotGenicAnnotation", 
                   function(l, 
                            cluster=FALSE, 
-                           col=c('white','cornflowerblue'), 
-                           ...)
+                           col=c('white','cornflowerblue'))
                     standardGeneric("plotGenicAnnotation"))
 
 #' @rdname plotGenicAnnotation-methods
@@ -926,7 +928,7 @@ setGeneric("plotGenicAnnotation",
 #' @aliases plotGenicAnnotation,annotationByFeature-method
 setMethod("plotGenicAnnotation", 
 			signature(l="list"),
-			function(l, cluster, col, ...){
+			function(l, cluster, col){
 			
 				if(!all(unlist(lapply(l, class)) == "annotationByGenicParts"))
 					stop("All elements of the input list need to be annotationByGenicParts-class")

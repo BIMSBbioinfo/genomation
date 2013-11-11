@@ -50,7 +50,7 @@ setMethod("show", "randomEnrichment", function(object) {
 #'
 #' @name ScoreMatrix-class
 #' @rdname ScoreMatrix-class
-#' @seealso \code{\link{ScoreMatrix-methods}}
+#' @seealso \code{\link{ScoreMatrix}}
 #' @export
 setClass("ScoreMatrix",contains = "matrix")
 
@@ -62,7 +62,7 @@ setClass("ScoreMatrix",contains = "matrix")
 #'
 #' @name ScoreMatrixList-class
 #' @rdname ScoreMatrixList-class
-#' @seealso \code{\link{ScoreMatrixList-methods}}
+#' @seealso \code{\link{ScoreMatrixList}}
 #' @export
 setClass("ScoreMatrixList", 
 			contains = "list"

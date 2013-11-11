@@ -31,16 +31,16 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @param strand number of the column that has strand information, only -/+
 #'               is accepted (Default:NULL)
 #'               
-#' @param meta.col  named \code{list} that maps column numbers to 
+#' @param meta.cols  named \code{list} that maps column numbers to 
 #'                   meta data columns. 
 #'                   e.g. list(name=5, score=10), which means 5th column will be
 #'                   named "name", and 10th column will be named "score" and their
 #'                   contents will be a part of the returned GRanges object. 
-#'                   If header = TRUE, meta.col parameter will over-write the 
+#'                   If header = TRUE, meta.cols parameter will over-write the 
 #'                   column names given by the header line of the data frame.
 #'                   
 #' @param keep.all.metadata \code{logical} determining if the extra columns (
-#'        the ones that are not designated by chr,start,end,strand and meta.col
+#'        the ones that are not designated by chr,start,end,strand and meta.cols
 #'        arguments )
 #'        should be kept or not. (Default:FALSE)
 #'        
@@ -53,7 +53,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #'        
 #' @param header whether the original file contains a header line
 #'  which designates the column names. If \code{TRUE} header will be used to 
-#'  construct column names. These names can be over written by meta.col argument.
+#'  construct column names. These names can be over written by meta.cols argument.
 #' @param skip number of lines to skip. If there is a header line(s) you do not
 #'        wish to include you can use skip argument to skip that line.
 #' @param sep a single character which designates the separator in the file. 
@@ -64,7 +64,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @examples
 #'  my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
 #'  refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
-#'                       meta.col=list(score=5,name=4),
+#'                       meta.cols=list(score=5,name=4),
 #'                      keep.all.metadata=FALSE, zero.based=TRUE)
 #'  head(refseq)
 #'
@@ -75,7 +75,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
                       keep.all.metadata=FALSE, zero.based=FALSE, 
                       remove.unsual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
-              
+
   # removes the track header
   track=scan(file, n=1, what='character', sep='\n', quiet=TRUE)                    
   if(grepl('^>',track))
@@ -93,14 +93,14 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
   
   # make a list of new column names, and their column numbers
   col.names1=list(chr=chr,start=start,end=end,strand=strand)
-  col.names=c(col.names1, meta.col) # put the meta colums if any
-    
+  col.names=c(col.names1,meta.cols) # put the meta colums if any
+  
   # check if col number exceeds dimensions of the original df.
   if( max(unlist(col.names)) > ncol(df) ) 
     stop("Number of columns is lower than designated number of columns by ",
-         "meta.col,chr,start,end or strand arguments\n")
-    
-  # change the col names to the ones given by meta.col and chr,str,end,strand
+         "meta.cols,chr,start,end or strand arguments\n")
+  
+  # change the col names to the ones given by meta.cols and chr,str,end,strand
   colnames(df)[unlist(col.names)] = names(unlist(col.names))
     
   # converts the . strand character to *
@@ -118,10 +118,17 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
                           starts.in.df.are.0based=zero.based,
                           ignore.strand=is.null(strand))
   
+  # this names can not be column names in meta-data
+  black.names=c("seqnames", "ranges", "strand", "seqlevels", "seqlengths",
+                "isCircular", "start", "end", "width", "element")
+  
+
   if(keep.all.metadata){
-    mcols(g)=df[,-unlist(col.names1),drop=FALSE]
-  }else if(!is.null(meta.col)){
-    mcols(g)=df[,unlist(meta.col),drop=FALSE]
+    my.mcols = df[,-unlist(col.names1),drop=FALSE]
+    mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
+  }else if(!is.null(meta.cols)){
+    my.mcols=df[,unlist(meta.cols),drop=FALSE]
+    mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
   }
     
   return(g)
@@ -136,9 +143,9 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.col=NULL,
 #' @return a GRanges object
 #'
 #' @examples
-#' library(genomationData)
-#' broad.peak.file = list.files(system.file('extdata', package='genomationData'), 
-#'                              full.names=T, pattern='broadPeak')[1]
+#' 
+#' broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
+#'                            
 #' broad.peak = readBroadPeak(broad.peak.file)
 #' head(broad.peak)
 #'
@@ -149,7 +156,7 @@ readBroadPeak<-function(file){
           
             g = readGeneric(file,
                             strand=6,
-                            meta.col=list(name=4,
+                            meta.cols=list(name=4,
                                           score=5,
                                           signalValue=7,
                                           pvalue=8,
@@ -160,14 +167,15 @@ readBroadPeak<-function(file){
         
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted narrowPeak file into a GRanges object
-#' @param file a abosulte or relative path to a bed file formatted by the Encode narrowPeak standard
+#' @param file a abosulte or relative path to a bed file formatted by the Encode 
+#'             narrowPeak standard
 #' @usage readNarrowPeak(file)
 #' @return a GRanges object
 #'
 #' @examples
-#' library(genomationData)
-#' narrow.peak.file = list.files(system.file('extdata', package='genomationData'), 
-#'                              full.names=T, pattern='narrowPeak')
+#' 
+#' narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
+#'                  
 #' narrow.peak = readBroadPeak(narrow.peak.file)
 #' head(narrow.peak)
 #'
@@ -178,7 +186,7 @@ readNarrowPeak<-function(file){
                       
             g = readGeneric(file,
                             strand=6,
-                            meta.col=list(name=4,
+                            meta.cols=list(name=4,
                                           score=5,
                                           signalValue=7,
                                           pvalue=8,
@@ -356,7 +364,7 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL,
                     start=4,
                     end=5, 
                     strand=7,
-                    meta.col=list(source=2,
+                    meta.cols=list(source=2,
                                   feature=3,
                                   score=6,
                                   frame=8,

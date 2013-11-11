@@ -129,7 +129,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
         col=col,yaxt="n",ylab="",xlab=xlab,main=main,
         cex.lab=cex.lab,cex.axis=cex.axis)
   if(!is.null(profile.names)){
-    axis(side=4,at=1:nrow(img),label=rev(profile.names),
+    axis(side=4,at=1:nrow(img),labels=rev(profile.names),
          las=2,cex.axis=cex.axis)
   }
   
@@ -151,7 +151,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
   #current.viewport()
   current.vpTree()
   rng=range(img)
-  .heatLegendY(min=rng[1],max=rng[2],col=col,
+  .heatLegendY(min=rng[1],max=rng[2],cols=col,
                legend.name=legend.name,main=TRUE,cex.legend=cex.legend,
                cex.lab=cex.lab)
   popViewport(2) # remove the legend VP
@@ -215,7 +215,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #' 
 plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
                    meta.rescale=FALSE,
-                   line.col=ifelse(is.list(x),list(rainbow(length(x))),"black")[[1]],
+                   line.col=ifelse(is.list(mat),list(rainbow(length(mat))),"black")[[1]],
                    ylim=NULL,ylab="average score",xlab="bases",...){
   
   # check class
@@ -307,7 +307,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   vals=seq(min,max,length.out=100)
   rng <- range(vals, na.rm = TRUE) # get min/mqx
   m <- (vals - min)/(max-min) # get normalized range
-  rasta= rgb(colorRamp(cols)(m), max = 255) # get color for each element of range
+  rasta= rgb(colorRamp(cols)(m), maxColorValue= 255) # get color for each element of range
   
   grid.raster( rev(rasta), interpolate=FALSE,height = unit(1, "npc"),
                width=unit(1, "npc")) # make the legend
@@ -332,7 +332,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   vals=seq(min,max,length.out=100)
   rng <- range(vals, na.rm = TRUE) # get min/mqx
   m <- (vals - min)/(max-min) # get normalized range
-  rasta= rgb(colorRamp(cols)(m), max = 255) # get color for each element of range
+  rasta= rgb(colorRamp(cols)(m), maxColorValue = 255) # get color for each element of range
   
   grid.raster( matrix((rasta),nrow=1), interpolate=FALSE,height = unit(1, "npc"),
                width=unit(1, "npc")) # make the legend
@@ -357,7 +357,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   # Convert to a matrix of sRGB color strings
   #m2 <- m; class(m2) <- "character"
   m2<-matrix("transparent",ncol=ncol(m),nrow=nrow(m))
-  m2[!is.na(m)] <- rgb(colorRamp(cols)(m[!is.na(m)]), max = 255)
+  m2[!is.na(m)] <- rgb(colorRamp(cols)(m[!is.na(m)]), maxColorValue = 255)
   #m2[is.na(m)] <- "transparent"
   return(m2)
 }
@@ -460,7 +460,6 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #' @param k     Defaults to 3. It designates the number of clusters to be returned
 #'              by kmeans clustering.
 #' @param main a character string for the plot title
-#' @param legend.name name of the lengend to be plotted under the axis of the legend.
 #' @param legend.name a character label plotted next to the legend
 #' @param cex.legend  A numerical value giving the amount by which 
 #'                    legend axis marks should be magnified relative to the default
@@ -859,7 +858,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' 
 #' # use different colors
-#' library(RColorBrewer)
+#' require(RColorBrewer)
 #' col.cage= brewer.pal(9,"Blues")
 #' col.cpgi= brewer.pal(9,"YlGn")
 #' multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),

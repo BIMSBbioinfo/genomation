@@ -18,7 +18,8 @@ importMethodsFrom("rtracklayer", import)
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
 
-
+importFrom("impute",impute.knn)
+importFrom("gridBase",baseViewports)
 importFrom("data.table", data.table)
 importFrom("plyr",rbind.fill)
 importFrom("reshape2", melt)
