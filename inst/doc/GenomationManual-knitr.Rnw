@@ -236,13 +236,12 @@ is used to represent results from multiple experiments.
 It can be in one of the three formats: a list of RleLists, a list of GRanges (or a GRangesList object), 
 or a character vector designating a set of .bam files.
 <<ScoreMatrixList, eval=FALSE, tidy=TRUE>>=
-library(genomationData)
 data(promoters)
 data(cpgi)
 data(cage)
 
 cage$tpm = NULL
-targets = list(cage=cage, cpgi=cpge)
+targets = list(cage=cage, cpgi=cpgi)
 sm = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50)
 @
 

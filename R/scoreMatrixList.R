@@ -101,7 +101,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
   
 	# ----------------------------------------------------------------- #
 	# checks whether the list argument contains only scoreMatrix objects
-	if(all(unlist(lapply(targets, class)) == 'scoreMatrix'))
+	if(all(unlist(lapply(targets, class)) == 'ScoreMatrix'))
 		return(new("ScoreMatrixList",targets))
   
 	# ----------------------------------------------------------------- #
@@ -114,7 +114,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
            GRangesList, a list of GRanges objects')
 	}  
 	     
-	if(all(file.exists(targets)) & is.null(type))
+	if(!list.ind && all(file.exists(targets)) && is.null(type))
       stop('When providing a file, it is necessary to give the type of the file')
 	
 	# gets the names for the resulting list
