@@ -159,7 +159,7 @@ head(gff)
 
 In order to split the last column of the gff file, use the \Rcode{split.group=TRUE}
 argument.
-<<readGff1, eval=FALSE, tidy=TRUE>>=
+<<readGff2, eval=FALSE, tidy=TRUE>>=
 gff = gffToGRanges(gff.file, split.group=TRUE)
 head(gff)
 @
@@ -184,9 +184,9 @@ readGeneFeatures()
 % ----------------------------------------------------------------- %
 \section{Extraction and visualization of genomic data}
 
-A standard step of a computational genomics experiment is the visualization of 
-average genomic profiles over a certain predefined set of range, such as a visualization
-of enrichment of a certain histone modification around a transcription factor binding site,
+A standard step in a computational genomics experiment is the visualization of 
+average enrichment over a certain predefined set of ranges, such as a visualization
+of mean coverage of a certain histone modification around a transcription factor binding site,
 or visualization of histone positions around transcription start sites.
 \Rpackage{genomation} provides convenience functions for extraction and visualization
 of data over predefined windows.
@@ -196,7 +196,7 @@ of data over predefined windows.
 \Rcode{scoreMatrix} and \Rcode{scoreMatrixBin} are functions used to extract 
 data over predefined windows. \Rcode{scoreMatrix} is used when all of the windows
 have the same width, such as an area around the transcription start site, while the
-\Rcode{scoreMatrixBin} designed for use with windows of unequal width (e.g. methylation
+\Rcode{scoreMatrixBin} is designed for use with windows of unequal width (e.g. methylation
 over cpg islands)
 Both functions have 2 main arguments: \Rcode{target} and 
 \Rcode{windows}. \Rcode{target} is the data that we want to extract, while the \Rcode{windows}
@@ -269,7 +269,7 @@ we can plot the underlying signal side by side.
 sml = ScoreMatrixList(bam.files, ctcf.peaks, bin.num=50, type='bam')
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',package='genomationData'),header=T, sep='\t')
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
-heatmapProfile(sml, xmarks=c(-500,0,500))
+multiHeatMatrix(sml, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
 \caption{Heatmap profile of unscaled coverage shows a slight colocalization of Ctcf, Rad21 and Znf143;
 option \texttt{fig.keep='last'} here.\label{fig:ctcfScoreMatrixList}}
@@ -283,7 +283,7 @@ to independently scale the rows of each element in the ScoreMatrixList.
 \begin{figure}
 <<plotScaledProfile, eval=TRUE, tidy=TRUE, echo=FALSE, fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.keep='last'>>=
 sml.scaled = scaleScoreMatrixList(sml)
-heatmapProfile(sml.scaled, xmarks=c(-500,0,500))
+multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
 \caption{Heatmap profile of scaled coverage shows much stronger colocalization of the transcription factors; nevertheless, it is evident that some of the CTCF peaks have a very weak enrichment.
 option \texttt{fig.keep='last'} here.\label{fig:plotScaledProfile}}
@@ -301,7 +301,8 @@ peaks that are located on chromosome 21 and have width 100 and 1000 bp
 <<readAllPeaks, eval=TRUE, tidy=TRUE, echo=FALSE>>=
 library(genomationData)
 genomationDataPath = system.file('extdata',package='genomationData')
-sampleInfo = read.table(genomationDataPath, header=T, sep='\t', stringsAsFactors=FALSE)
+sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), header=T, sep='\t', stringsAsFactors=FALSE)
+
 
 peak.files = list.files(genomationDataPath, full.names=T, pattern='Peak.gz$')
 peaks = list()
@@ -335,8 +336,8 @@ bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
 bam.files = bam.files[!grepl('Cage', bam.files)]
 sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20, type='bam')
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
-sml = scaleScoreMatrixList(sml)
-heatmapProfile(sml, xmarks=c(-500,0,500))
+sml.scaled = scaleScoreMatrixList(sml)
+multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
 \end{figure}
 The plot shows perfectly how misleading the peak calling process can be. 

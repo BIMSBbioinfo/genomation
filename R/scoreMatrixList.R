@@ -89,8 +89,8 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
 	# this checks whether we can work with the corresponding target object class set
 	list.ind = grepl('list', class(targets)) | grepl('List', class(targets))
 	if(len > 1L & !list.ind){
-	  if(all(is.character(target)) && is.null(type) && all(file.exists(target)))
-	    stop('target argument is neither a list like object (e.g. GRangesList),
+	  if(all(is.character(targets)) && is.null(type) && all(file.exists(targets)))
+	    stop('targets argument is neither a list like object (e.g. GRangesList),
             nor a set of files') 
 	}
 	     
@@ -107,7 +107,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
 	# Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
 	if(list.ind & 
        !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
-			stop('target should be one of the following:
+			stop('targets should be one of the following:
 					an RleList, list of Rle, GRangesList, a list of GRanges objects')
 	}  
 	     
@@ -122,7 +122,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
 	}
   
   sml = list()
-  for(i in 1:length(target)){
+  for(i in 1:length(targets)){
     message(paste('working on:',names[i]))
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
       sml[[i]] = ScoreMatrix(targets[[i]], windows=windows, 
