@@ -338,7 +338,8 @@ setMethod("readTranscriptFeatures",
 #' @param split.group boolean, whether to split the 9th column of the file
 #' @param split.char character that is used as a separator of the 9th column. ';' by default
 #' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
-#' @return returns a \code{GenomicRanges} object
+#' @param zero.based \Rcode{boolean} whether the coordinates are 0 or 1 based. 0 is the default
+#' @return returns a \Rcode{GenomicRanges} object
 #' 
 #' @examples
 #' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
@@ -347,7 +348,8 @@ setMethod("readTranscriptFeatures",
 #' 
 #' @docType methods
 #' @export
-gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL){
+gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL, 
+                        zero.based=FALSE){
   
   gff = readGeneric(gff.file, 
                     chr=1,
@@ -358,7 +360,8 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL)
                                   feature=3,
                                   score=6,
                                   frame=8,
-                                  group=9))
+                                  group=9), 
+                    zero.based=zero.based)
   
   if(split.group){
     message('splitting the group.column...')

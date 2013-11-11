@@ -148,20 +148,75 @@ tab.file2=system.file("extdata/tab2.bed", package = "genomation")
 readGeneric(tab.file2, chr=3, start=2, end=1)
 @
 
+\Rcode{readGeneric]} function can easily be extended to read almost any kind of 
+biological data. As an example we have provided convenience functions to read the Encode
+narrowPeak and broadPeak formats, and gtf formatted files.
+<<readGff1, eval=FALSE, tidy=TRUE>>=
+gff.file=system.file("extdata/chr21.refseq.hg19.gtf", package = "genomation")
+gff = gffToGRanges(gff.file)
+head(gff)
+@
+
+In order to split the last column of the gff file, use the \Rcode{split.group=TRUE}
+argument.
+<<readGff1, eval=FALSE, tidy=TRUE>>=
+gff = gffToGRanges(gff.file, split.group=TRUE)
+head(gff)
+@
 
 There are specific functions to read genomic annotation from flat bed files.
-<<readExamples2, eval=FALSE, tidy=TRUE>>=
+\Rcode{readFeatureFlank} is a convenience function used to get the ranges flanking 
+the set of interest. As an example, it could be used to get the CpG island shores, 
+which have been shown to harbour contidion specific differential methylation
+<<readFeatureFlank, eval=FALSE, tidy=TRUE>>=
 # reading genes stored as a BED files
+cpgi.file = system.file("extdata/chr21.CpGi.hg19.bed", package = "genomation")
+cpgi.flanks = readFeatureFlank(cpgi.file)
+head(cpgi.flanks$flanks)
+@
+
+
+
+<<readGeneFeatures, eval=FALSE, tidy=TRUE>>=
 readGeneFeatures()
-
-# reading CpGi islands and shores stored as a BED files
-readFeatureFlank()
-
 @
 
 % ----------------------------------------------------------------- %
-\section{Extraction of genomic features over predefined windows}
-You can extract 
+\section{Extraction and visualization of genomic data}
+
+A standard step of a computational genomics experiment is the visualization of 
+average genomic profiles over a certain predefined set of range, such as a visualization
+of enrichment of a certain histone modification around a transcription factor binding site,
+or visualization of histone positions around transcription start sites.
+\Rpackage{genomation} provides convenience functions for extraction and visualization
+of data over predefined windows.
+
+\subsection{Extration of data over predefined winows}
+
+\Rcode{scoreMatrix} and \Rcode{scoreMatrixBin} are functions used to extract 
+data over predefined windows. \Rcode{scoreMatrix} is used when all of the windows
+have the same width, such as an area around the transcription start site, while the
+\Rcode{scoreMatrixBin} designed for use with windows of unequal width (e.g. methylation
+over cpg islands)
+Both functions have 2 main arguments: \Rcode{target} and 
+\Rcode{windows}. \Rcode{target} is the data that we want to extract, while the \Rcode{windows}
+represents the regions over which we want to see the enrichment. The target data
+can be in 3 forms: a GRanges, a RLeList or a path to an indexed .bam file.
+
+As an example we will extrat the density of cage tags around the promoters in 
+the human genome
+<<extractCAGE, eval=FALSE, tidy=TRUE>>=
+data(cage)
+data(promoters)
+
+sm = ScoreMatrix(target=cage, windows=promoters)
+sm
+@
+
+
+
+
+
 
 % ----------------------------------------------------------------- %
 \section{Annotation of genomic features}
