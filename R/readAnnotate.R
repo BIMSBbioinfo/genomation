@@ -279,8 +279,8 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 ##############################################################################
 
 #' @rdname show-methods
-#' @aliases show,annotationByGenicParts-method
-setMethod("show", "annotationByGenicParts", 
+#' @aliases show,AnnotationByGeneParts-method
+setMethod("show", "AnnotationByGeneParts", 
 			function(object) {
 
 				message("Summary of target set annotation with genic parts\n");
@@ -307,8 +307,8 @@ setMethod("show", "annotationByGenicParts",
 
 
 #' @rdname show-methods
-#' @aliases show,annotationByFeature-method
-setMethod("show", "annotationByFeature", 
+#' @aliases show,AnnotationByFeature-method
+setMethod("show", "AnnotationByFeature", 
 			function(object) {
 
 			message("summary of target set annotation with feature annotation\n")
@@ -470,8 +470,8 @@ distance2NearestFeature<-function(g.idh,tss){
 #' @param intersect.chr boolean, whether to select only chromosomes that are 
 #'        common to feature and target. FALSE by default
 #' 
-#' @return \code{annotationByGenicParts} object or a list of 
-#'         \code{annotationByGenicParts}
+#' @return \code{AnnotationByGeneParts} object or a list of 
+#'         \code{AnnotationByGeneParts}
 #'         objects if target is a  \code{\link{GRangesList}} object.
 #' 
 #' @export
@@ -507,7 +507,7 @@ setMethod("annotateWithGeneParts",
 												              strand=strand)
 			dist2TSS = distance2NearestFeature(target,feature$TSSes)
 
-			new("annotationByGenicParts",
+			new("AnnotationByGeneParts",
 				members 		= as.matrix(a.list$members),
 				annotation      = a.list$annotation,
 				precedence		= a.list$precedence,
@@ -524,10 +524,20 @@ setMethod("annotateWithGeneParts",
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts",
 		  signature(target = "GRangesList", feature= "GRangesList"),
-		  function(target, feature, strand){
+		  function(target, feature, strand, intersect.chr){
 		  
-			l = lapply(target, function(x)
-                          annotateWithGeneParts(target, feature, strand))
+        
+      l = list()
+      if(is.null(names(target)))
+          names(target) = 1:length(target)
+      for(i in 1:length(target)){
+      
+        name = names(target)[i]
+        message(paste('Working on:',name))
+        x = target[[name]]
+        l[[name]] = annotateWithGeneParts(x, feature, strand, intersect.chr)
+        
+      }                          
 			return(l)
 })
 
@@ -550,7 +560,7 @@ setMethod("annotateWithGeneParts",
 #'                      common to feature and target. FALSE by default
 #' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",
 #'                                 flank.name="flank",strand=FALSE)
-#' @return returns an \code{annotationByFeature} object
+#' @return returns an \code{AnnotationByFeature} object
 #' 
 #' @export
 #' @docType methods
@@ -575,8 +585,8 @@ setMethod( "annotateWithFeatureFlank",
         
 			  if(intersect.chr){
 			    message('intersecting chromosomes...')
-			    chrs = intersect(unique(as.characters(seqnames(target))), 
-			                     unique(as.characters(seqnames(feature))))
+			    chrs = intersect(unique(as.character(seqnames(target))), 
+			                     unique(as.character(seqnames(feature))))
 			    if(length(chrs) == 0)
 			      stop('target and feature do not have intersecting chromosomes')
 			    target=target[seqnames(target) %in% chrs]
@@ -615,7 +625,7 @@ setMethod( "annotateWithFeatureFlank",
 					names(numberOfOlapFeat) = c(feature.name,flank.name)
 					percOfOlapFeat = 100*numberOfOlapFeat/c(length(feature),length(flank) )
 
-					new("annotationByFeature",
+					new("AnnotationByFeature",
 						members         = as.matrix(memb),
 						annotation      = annotation,
 						precedence		= precedence,
@@ -643,7 +653,7 @@ setMethod( "annotateWithFeatureFlank",
 #'                      common to feature and target. FALSE by default
 
 #' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
-#' @return returns an \code{annotationByFeature} object
+#' @return returns an \code{AnnotationByFeature} object
 #' 
 #' 
 #' @examples
@@ -681,8 +691,8 @@ setMethod("annotateWithFeature",
         # selects common chromosomes for target and feature
         if(intersect.chr){
           message('intersecting chromosomes...')
-          chrs = intersect(unique(as.characters(seqnames(target))), 
-                           unique(as.characters(seqnames(feature))))
+          chrs = intersect(unique(as.character(seqnames(target))), 
+                           unique(as.character(seqnames(feature))))
           if(length(chrs) == 0)
             stop('target and feature do not have intersecting chromosomes')
           target=target[seqnames(target) %in% chrs]
@@ -701,7 +711,7 @@ setMethod("annotateWithFeature",
 				numberOfOlapFeat = c(sum(countOverlaps(feature,target)>0))
 				percOfOlapFeat = 100*numberOfOlapFeat/c(length(feature))
 
-				new("annotationByFeature",
+				new("AnnotationByFeature",
 					members         = as.matrix(memb),
 					annotation      = annotation,
 					precedence		= annotation,
@@ -712,17 +722,17 @@ setMethod("annotateWithFeature",
 })
 
 # ACCESSOR FUNCTIONS
-#annotationByFeature
-#annotationBygenicparts
+#AnnotationByFeature
+#AnnotationByGeneParts
 
 
 # ---------------------------------------------------------------------------- #
-#' Get the membership slot of annotationByFeature
+#' Get the membership slot of AnnotationByFeature
 #'
 #' Membership slot defines the overlap of target features with annotation features
 #'  For example, if a target feature overlaps with an exon
 #' 
-#' @param x a \code{annotationByFeature}  object
+#' @param x a \code{AnnotationByFeature}  object
 #' 
 #' @return matrix showing overlap of target features with annotation features. 
 #'         1 for overlap, 0 for non-overlap
@@ -734,21 +744,21 @@ setMethod("annotateWithFeature",
 #' @rdname getMembers-methods                      
 setGeneric("getMembers", def=function(x) standardGeneric("getMembers"))
 
-#' @aliases getMembers,annotationByFeature-method
+#' @aliases getMembers,AnnotationByFeature-method
 #' @rdname getMembers-methods
 setMethod("getMembers", 
-			signature(x = "annotationByFeature"),
+			signature(x = "AnnotationByFeature"),
 			function(x){
 				return(x@members)
 })
 
 # ---------------------------------------------------------------------------- #
-#' Get the percentage of target features overlapping with annotation from annotationByFeature
+#' Get the percentage of target features overlapping with annotation from AnnotationByFeature
 #'
 #' This function retrieves percentage/number of target features 
 #' overlapping with annotation
 #'  
-#' @param x a \code{annotationByFeature}  object
+#' @param x a \code{AnnotationByFeature}  object
 #' @param percentage TRUE|FALSE. If TRUE percentage of target 
 #'                   features will be returned. If FALSE, 
 #'                   number of target features will be returned
@@ -774,9 +784,9 @@ setGeneric("getTargetAnnotationStats",
                     standardGeneric("getTargetAnnotationStats"))
 
 #' @rdname getTargetAnnotationStats-methods
-#' @aliases getTargetAnnotationStats,annotationByFeature-method
+#' @aliases getTargetAnnotationStats,AnnotationByFeature-method
 setMethod("getTargetAnnotationStats", 
-			signature(x = "annotationByFeature"),
+			signature(x = "AnnotationByFeature"),
 			function(x, percentage ,precedence ){                      
 			
 			if(percentage){
@@ -797,17 +807,17 @@ setMethod("getTargetAnnotationStats",
 
 # ---------------------------------------------------------------------------- #
 #' Get the percentage/count of annotation features overlapping with target 
-#' features from annotationByFeature
+#' features from AnnotationByFeature
 #'
 #' This function retrieves percentage/number of 
 #' annotation features overlapping with targets. 
-#' For example, if \code{annotationByFeature}  object is containing 
+#' For example, if \code{AnnotationByFeature}  object is containing 
 #' statistics of differentially methylated 
 #' regions overlapping with gene annotation. This function will return 
 #' number/percentage of introns,exons and promoters
 #' overlapping with differentially methylated regions.
 #'  
-#' @param x a \code{annotationByFeature}  object
+#' @param x a \code{AnnotationByFeature}  object
 #' @param percentage TRUE|FALSE. If TRUE percentage of annotation features will 
 #'        be returned. If FALSE, number of annotation features will be returned
 #'
@@ -824,9 +834,9 @@ setGeneric("getFeatsWithTargetsStats",
 
 
 #' @rdname getFeatsWithTargetsStats-methods
-#' @aliases getFeatsWithTargetsStats,annotationByFeature-method
+#' @aliases getFeatsWithTargetsStats,AnnotationByFeature-method
 setMethod("getFeatsWithTargetsStats", 
-			signature(x = "annotationByFeature" ),
+			signature(x = "AnnotationByFeature" ),
 			function( x,percentage ){                      
 			
 				if(percentage){
@@ -838,30 +848,30 @@ setMethod("getFeatsWithTargetsStats",
 
 
 # ---------------------------------------------------------------------------- #
-#' Get distance to nearest TSS and gene id from annotationByGenicParts
+#' Get distance to nearest TSS and gene id from AnnotationByGeneParts
 #'
 #' This accessor function gets the nearest TSS, its distance to target feature,
-#' strand and name of TSS/gene from annotationByGenicParts object
+#' strand and name of TSS/gene from AnnotationByGeneParts object
 #' 
-#' @param x a \code{annotationByGenicParts}  object
+#' @param x a \code{AnnotationByGeneParts}  object
 #' 
 #' @return RETURNS a data.frame containing row number of the target features,
 #'         distance of target to nearest TSS, TSS/Gene name, TSS strand
 #' @usage getAssociationWithTSS(x)
 #' @aliases getAssociationWithTSS,-methods getAssociationWithTSS,
-#'          annotationByGenicParts-method
+#'          AnnotationByGeneParts-method
 #' @export
 #' @docType methods
-#' @rdname annotationByGenicParts-methods
+#' @rdname AnnotationByGeneParts-methods
 setGeneric("getAssociationWithTSS", 
                   function(x) 
                     standardGeneric("getAssociationWithTSS"))
 
-#' @rdname annotationByGenicParts-methods
+#' @rdname AnnotationByGeneParts-methods
 #' @docType methods
-#' @aliases getAssociationWithTSS,annotationByGenicParts-method
+#' @aliases getAssociationWithTSS,AnnotationByGeneParts-method
 setMethod("getAssociationWithTSS", 
-			signature(x = "annotationByGenicParts"),
+			signature(x = "AnnotationByGeneParts"),
 			function(x){
 				return(x@dist.to.TSS)
 })
@@ -871,18 +881,18 @@ setMethod("getAssociationWithTSS",
 # PLOTTING FUNCTIONS
 
 # ---------------------------------------------------------------------------- #
-#' Plot annotation categories from annotationByGenicParts or annotationByFeature
+#' Plot annotation categories from AnnotationByGeneParts or AnnotationByFeature
 #'
 #' This function plots a pie or bar chart for showing percentages of targets 
 #' annotated by genic parts or other query features
 #' 
-#' @param x a \code{annotationByFeature} or  
-#'        \code{annotationByGenicParts} object
+#' @param x a \code{AnnotationByFeature} or  
+#'        \code{AnnotationByGeneParts} object
 #' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation 
 #'        features when calculating numbers 
 #'        (with promoter>exon>intron precedence). 
 #'        This option is only valid when x is a 
-#'        \code{annotationByGenicParts} object
+#'        \code{AnnotationByGeneParts} object
 #' @param col a vector of colors for piechart or the bar plot
 #' @param ... graphical parameters to be passed to \code{pie} 
 #'            or \code{barplot} functions
@@ -903,14 +913,14 @@ setGeneric("plotTargetAnnotation",
 
 #' @rdname plotTargetAnnotation-methods
 #' @docType methods
-#' @aliases plotTargetAnnotation,annotationByFeature-method
+#' @aliases plotTargetAnnotation,AnnotationByFeature-method
 setMethod("plotTargetAnnotation", 
-			signature(x = "annotationByFeature"),
+			signature(x = "AnnotationByFeature"),
 			function(x,precedence,col,...){
 				
 				props=getTargetAnnotationStats(x,precedence)
 
-			if(precedence | ( is(x,"annotationByFeature") & !is(x,"annotationByGenicParts")) ){
+			if(precedence | ( is(x,"AnnotationByFeature") & !is(x,"AnnotationByGeneParts")) ){
 				slice.names=names(props)
 				names(props)=paste( paste(round(props),"%"),sep=" ")
 
@@ -930,7 +940,7 @@ setMethod("plotTargetAnnotation",
 #'
 #' This function plots a heatmap of enrichment of each range in given gene feature
 #' 
-#' @param l a \code{list} of  \code{annotationByGenicParts} objects
+#' @param l a \code{list} of  \code{AnnotationByGeneParts} objects
 #' @param cluster TRUE/FALSE. If TRUE the heatmap is going to be clustered 
 #'        using hierarchical clustering
 #' @param col a vector of two colors that will be used for interpolation. 
@@ -950,13 +960,13 @@ setGeneric("plotGeneAnnotation",
 
 #' @rdname plotGeneAnnotation-methods
 #' @docType methods
-#' @aliases plotGeneAnnotation,annotationByFeature-method
+#' @aliases plotGeneAnnotation,AnnotationByFeature-method
 setMethod("plotGeneAnnotation", 
 			signature(l="list"),
 			function(l, cluster, col){
 			
-				if(!all(unlist(lapply(l, class)) == "annotationByGenicParts"))
-					stop("All elements of the input list need to be annotationByGenicParts-class")
+				if(!all(unlist(lapply(l, class)) == "AnnotationByGeneParts"))
+					stop("All elements of the input list need to be AnnotationByGeneParts-class")
 			
 				d = data.frame(do.call(rbind, lapply(l, function(x)x@precedence)))
 				d = data.frame(SampleName=rownames(d), d)

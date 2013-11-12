@@ -100,10 +100,10 @@ setClass("ScoreMatrixList",
 #'
 #'                  \item{\code{perc.of.OlapFeat}}{vector}
 #' }
-#' @name annotationByFeature-class
-#' @rdname annotationByFeature-class
+#' @name AnnotationByFeature-class
+#' @rdname AnnotationByFeature-class
 #' @export
-setClass("annotationByFeature", 
+setClass("AnnotationByFeature", 
          representation(members  = "matrix",
                         annotation = "numeric",
                         precedence = "numeric",
@@ -133,11 +133,11 @@ setClass("annotationByFeature",
 #'
 #'                  \item{dist.to.TSS}{a data frame showing distances to TSS and gene/TSS names and strand}
 #' }
-#' @name annotationByGenicParts-class
-#' @rdname annotationByGenicParts-class
+#' @name AnnotationByGeneParts-class
+#' @rdname AnnotationByGeneParts-class
 #' @export
-setClass("annotationByGenicParts", 
-         representation(dist.to.TSS = "data.frame"), contains = "annotationByFeature")
+setClass("AnnotationByGeneParts", 
+         representation(dist.to.TSS = "data.frame"), contains = "AnnotationByFeature")
 
 
 
