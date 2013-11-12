@@ -178,7 +178,7 @@ setMethod("convertBedDf" ,
 # ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object for exons
 #'  
-#' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
+#' @param bed.df a data.frame where column order and content resembles a bed file with 12 columns
 #' @usage convertBed2Exons(bed.df)
 #' @return \code{\link{GRanges}} object
 #'
@@ -453,14 +453,16 @@ distance2NearestFeature<-function(g.idh,tss){
 #' The function annotates \code{GRangesList} or \code{GRanges} object as 
 #' overlapping with promoter,exon,intron or intergenic regions.
 #'
-#' @param target A \code{\link{GRanges}} or \code{\link{GRangesList}}
+#' @param target  \code{\link{GRanges}} or \code{\link{GRangesList}}
 #'                object storing chromosome locations
 #'                to be annotated (e.g. chipseq peaks)
-#' @param GRangesList.obj A GRangesList object containing GRanges object for
-#'      promoter, exons, introns and TSSes, or simply output of 
-#'      readTranscriptFeatures function
+#' @param feature GRangesList object containing GRanges object for
+#'                promoter, exons, introns and transcription start sites, 
+#'                or simply output of readTranscriptFeatures function
 #' @param strand If set to TRUE, annotation features and target features will be 
 #'        overlapped based on strand  (def:FALSE)
+#' @param intersect.chr boolean, whether to select only chromosomes that are 
+#'        common to feature and target. FALSE by default
 #' 
 #' @return \code{annotationByGenicParts} object or a list of 
 #'         \code{annotationByGenicParts}
@@ -470,21 +472,32 @@ distance2NearestFeature<-function(g.idh,tss){
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
 setGeneric("annotateWithGeneParts", 
-                function(target,GRangesList.obj,strand=F)
+                function(target,feature,strand=F, intersect.chr=FALSE)
                     standardGeneric("annotateWithGeneParts") )
 
 #' @aliases annotateWithGeneParts,GRanges,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts", 
-		  signature(target = "GRanges", GRangesList.obj = "GRangesList"),
-		  function(target, GRangesList.obj,strand){
+		  signature(target = "GRanges", feature = "GRangesList"),
+		  function(target, feature, strand, intersect.chr=FALSE){
 
+		  if(intersect.chr){
+		    message('intersecting chromosomes...')
+		    chrs = intersect(seqnames(target), 
+                         unique(unlist(lapply(feature), seqnames)))
+        
+		    if(length(chr) == 0)
+		      stop('target and feature do not have intersecting chromosomes')
+		    target=target[seqnames(target) %in% chrs]
+		    feature = lapply(feature, function(x)x[seqnames(x) %in% chrs])
+		  }  
+        
 			a.list = annotatGrWithGeneParts(target, 
-												GRangesList.obj$promoters,
-												GRangesList.obj$exons,
-												GRangesList.obj$introns,
-												strand=strand)
-			dist2TSS = distance2NearestFeature(target,GRangesList.obj$TSSes)
+			                                feature$promoters,
+			                                feature$exons,
+			                                feature$introns,
+												              strand=strand)
+			dist2TSS = distance2NearestFeature(target,feature$TSSes)
 
 			new("annotationByGenicParts",
 				members 		= as.matrix(a.list$members),
@@ -522,6 +535,7 @@ setMethod("annotateWithGeneParts",
 #' @param feature.name     string for the name of the feature
 #' @param flank.name     string for the name of the flanks
 #' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
+#' @param intersect.chr boolean, whether to select only chromosomes that are common to feature and target. FALSE by default
 #' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE)
 #' @return returns an \code{annotationByFeature} object
 #' 
@@ -595,8 +609,9 @@ setMethod( "annotateWithFeatureFlank",
 #' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
 #' @param extend   specifiying a positive value will extend the feature on both sides as much as \code{extend}
 #' @param feature.name name of the annotation feature. For example: H3K4me1,CpGisland etc.
+#' @param intersect.chr boolean, whether to select only chromosomes that are common to feature and target. FALSE by default
+
 #' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
-#' @usage intersect.chr boolean, whether to select only chromosomes that are common to feature and target. FALSE by default
 #' @return returns an \code{annotationByFeature} object
 #' 
 #' 
@@ -622,18 +637,19 @@ setGeneric("annotateWithFeature",
 #' @rdname annotateWithFeature-methods
 setMethod("annotateWithFeature", 
 		   signature(target = "GRanges",feature="GRanges"),
-		   function(target, feature, strand,extend,feature.name){
+		   function(target, feature, strand,extend,feature.name,intersect.chr){
 
 				if( ! strand){strand(target)="*"}
 					memb=rep(0,length(target))
 
 				if(extend>0){
-					start(feature) = start(feature)- extend
-					end(feature)   = end(feature)  + extend
+				  message('extending features...')
+          feature = resize(feature, width=(width(feature)+2*extend), fix='center')
 				}
         
         # selects common chromosomes for target and feature
         if(intersect.chr){
+          message('intersecting chromosomes...')
           chrs = intersect(seqnames(feature), seqnames(target))
           if(length(chr) == 0)
             stop('target and feature do not have intersecting chromosomes')
@@ -719,7 +735,7 @@ setGeneric("getTargetAnnotationStats",
 #' @aliases getTargetAnnotationStats,annotationByFeature-method
 setMethod("getTargetAnnotationStats", 
 			signature(x = "annotationByFeature"),
-			function(x,percentage ,precedence ){                      
+			function(x, percentage ,precedence ){                      
 			
 			if(percentage){
 				if(precedence){
@@ -804,16 +820,24 @@ setMethod("getAssociationWithTSS",
 # ---------------------------------------------------------------------------- #
 #' Plot annotation categories from annotationByGenicParts or annotationByFeature
 #'
-#' This function plots a pie or bar chart for showing percentages of targets annotated by genic parts or other query features
-#' @param x a \code{annotationByFeature} or  \code{annotationByGenicParts} object
-#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation features when calculating numbers (with promoter>exon>intron precedence). 
-#'  This option is only valid when x is a \code{annotationByGenicParts} object
+#' This function plots a pie or bar chart for showing percentages of targets 
+#' annotated by genic parts or other query features
+#' 
+#' @param x a \code{annotationByFeature} or  
+#'        \code{annotationByGenicParts} object
+#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation 
+#'        features when calculating numbers 
+#'        (with promoter>exon>intron precedence). 
+#'        This option is only valid when x is a 
+#'        \code{annotationByGenicParts} object
 #' @param col a vector of colors for piechart or the bar plot
-#' @param ... graphical parameters to be passed to \code{pie} or \code{barplot} functions
+#' @param ... graphical parameters to be passed to \code{pie} 
+#'            or \code{barplot} functions
 #'
 #' usage  plotTargetAnnotation(x,precedence=TRUE,col,...)
 #'
-#' @return plots a piechart or a barplot for percentage of the target features overlapping with annotation
+#' @return plots a piechart or a barplot for percentage of 
+#'         the target features overlapping with annotation
 #' 
 #' @export
 #' @docType methods
@@ -859,45 +883,48 @@ setMethod("plotTargetAnnotation",
 #' @param col a vector of two colors that will be used for interpolation. 
 #'        The first color is the lowest one, the second is the highest one
 
-#' usage  plotGenicAnnotation(l, cluster=FALSE, 
+#' usage  plotGeneAnnotation(l, cluster=FALSE, 
 #'        col=c('white','cornflowerblue'),...)
 #' 
 #' @export
 #' @docType methods
-#' @rdname plotGenicAnnotation-methods
-setGeneric("plotGenicAnnotation", 
+#' @rdname plotGeneAnnotation-methods
+setGeneric("plotGeneAnnotation", 
                   function(l, 
                            cluster=FALSE, 
                            col=c('white','cornflowerblue'))
-                    standardGeneric("plotGenicAnnotation"))
+                    standardGeneric("plotGeneAnnotation"))
 
-#' @rdname plotGenicAnnotation-methods
+#' @rdname plotGeneAnnotation-methods
 #' @docType methods
-#' @aliases plotGenicAnnotation,annotationByFeature-method
-setMethod("plotGenicAnnotation", 
+#' @aliases plotGeneAnnotation,annotationByFeature-method
+setMethod("plotGeneAnnotation", 
 			signature(l="list"),
 			function(l, cluster, col){
 			
 				if(!all(unlist(lapply(l, class)) == "annotationByGenicParts"))
 					stop("All elements of the input list need to be annotationByGenicParts-class")
 			
-				d = do.call(rbind, lapply(l, function(x)x@precedence))
-				
+				d = data.frame(do.call(rbind, lapply(l, function(x)x@precedence)))
+				d = data.frame(SampleName=rownames(d), d)
+        
 				ind = 1:nrow(d)
 				if(cluster == TRUE){
-					h = hclust(dist(d))
+					h = hclust(dist(d[,-1]))
 					ind = h$order
 				}
-				m = reshape2::melt(data.frame(d))
-				m = melt(d)
-				
-				p <- ggplot(m, aes(x='X2', y='X1', fill='value', colour="white")) + 
-					 scale_fill_gradient(low =col[1], high = col[2]) + 
-					 scale_y_discrete(limits = rownames(d)[ind] ) + 
-					 opts(axis.title.x=theme_text(colour='white'), 
-						  axis.text.x=theme_text(colour='black', face='bold'), 
-						  axis.text.y=theme_text(colour='black'), 
-						  axis.title.y=theme_text(colour='white', face='bold'))
-				p + geom_tile(color='white') 
+        d = data.frame(ind, d)
+				m = reshape2::melt(d, id.vars=c('ind', 'SampleName'))
+        colnames(m)[3] = 'Position'
+        
+				p = ggplot(m, aes(x=Position, y=SampleName, fill=value, colour="white")) +
+				  scale_fill_gradient(low =col[1], high = col[2]) +
+					 theme(
+              axis.title.x = element_text(colour='white'), 
+						  axis.text.x  = element_text(colour='black', face='bold'), 
+						  axis.text.y  = element_text(colour='black'), 
+						  axis.title.y = element_text(colour='white', face='bold'))
+				p = p + geom_tile(color='white')  
+        print(p)
 })
 
