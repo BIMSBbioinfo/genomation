@@ -282,16 +282,16 @@ setMethod("show", "annotationByGenicParts",
 				message("-----------------------\n\n")
 				
 				message("percentage of target features overlapping with annotation :\n")
-				print(object@annotation)
+				print(round(object@annotation,2))
 				message("\n\n")
 				
 				message("percentage of target features overlapping with annotation\n")
 				message("(with promoter > exon > intron precedence) :\n"); 
-				print(object@precedence)
+				print(round(object@precedence,2))
 				message("\n\n")
 				
 				message("percentage of annotation boundaries with feature overlap :\n")
-				print(object@perc.of.OlapFeat);
+				print(round(object@perc.of.OlapFeat,2))
 				message("\n\n")  
 				
 				message("summary of distances to the nearest TSS :\n")
@@ -311,11 +311,11 @@ setMethod("show", "annotationByFeature",
 			message("--------------\n")
 			
 			message("percentage of target features overlapping with annotation :\n")
-			print(object@annotation)
+			print(round(object@annotation,2))
 			message("\n\n")
 			
 			message("percentage of annotation boundaries with feature overlap :\n")
-			print(object@perc.of.OlapFeat)
+			print(round(object@perc.of.OlapFeat))
 			message("\n\n")  
 })
 
@@ -596,7 +596,15 @@ setMethod( "annotateWithFeatureFlank",
 #' @param extend   specifiying a positive value will extend the feature on both sides as much as \code{extend}
 #' @param feature.name name of the annotation feature. For example: H3K4me1,CpGisland etc.
 #' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
+#' @usage intersect.chr boolean, whether to select only chromosomes that are common to feature and target. FALSE by default
 #' @return returns an \code{annotationByFeature} object
+#' 
+#' 
+#' @examples
+#' data(cpgi)
+#' data(promoters)
+#' annot = annotateWithFeature(cpgi, promoters)
+#' 
 #' 
 #' @export
 #' @docType methods
@@ -606,7 +614,8 @@ setGeneric("annotateWithFeature",
                              feature,
                              strand=FALSE,
                              extend=0,
-                             feature.name="feat1") 
+                             feature.name="feat1", 
+                             intersect.chr=FALSE) 
                       standardGeneric("annotateWithFeature") )
 
 #' @aliases annotateWithFeature,GRanges,GRanges-method
@@ -622,6 +631,16 @@ setMethod("annotateWithFeature",
 					start(feature) = start(feature)- extend
 					end(feature)   = end(feature)  + extend
 				}
+        
+        # selects common chromosomes for target and feature
+        if(intersect.chr){
+          chrs = intersect(seqnames(feature), seqnames(target))
+          if(length(chr) == 0)
+            stop('target and feature do not have intersecting chromosomes')
+          target=target[seqnames(target) %in% chrs]
+          feature = feature[seqnames(feature) %in% chrs]
+        }
+        
 				memb[countOverlaps(target,feature) > 0] = 1
 
 				annotation = c( 100*sum(memb >  0)/length(memb) ,
@@ -881,8 +900,4 @@ setMethod("plotGenicAnnotation",
 						  axis.title.y=theme_text(colour='white', face='bold'))
 				p + geom_tile(color='white') 
 })
-
-# SECTION 3:
-# annotate ML objects with annotations read-in and converted to GRanges objects
-
 

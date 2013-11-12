@@ -82,34 +82,6 @@ setClass("ScoreMatrixList",
 # Annotation Classes #
 # ------------------ #
 
-
-#' An S4 class that information on overlap of target features with annotation features  
-#'
-#' This object is desgined to hold statistics and information about genomic feature overlaps
-#'          
-#' @section Slots:\describe{
-#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
-#'
-#'                  \item{\code{annotation}}{a named vector of percentages}
-#'
-#'                  \item{\code{precedence}}{a named vector of percentages}
-#'
-#'                  \item{\code{num.hierarchica}}{vector}
-#'
-#'                  \item{\code{no.of.OlapFeat}}{vector}
-#'
-#'                  \item{\code{perc.of.OlapFeat}}{vector}
-#'
-#'                  \item{dist.to.TSS}{a data frame showing distances to TSS and gene/TSS names and strand}
-#' }
-#' @name annotationByGenicParts-class
-#' @rdname annotationByGenicParts-class
-#' @export
-setClass("annotationByGenicParts", 
-         representation(dist.to.TSS = "data.frame"), contains = "annotationByFeature")
-
-
-# ---------------------------------------------------------------------------- #
 # A set of objects that will hold statistics about feature and annotation overlap
 #' An S4 class that information on overlap of target features with annotation features  
 #'
@@ -139,3 +111,33 @@ setClass("annotationByFeature",
                         num.precedence = "numeric",
                         no.of.OlapFeat = "numeric",
                         perc.of.OlapFeat = "numeric"))
+
+
+
+#' An S4 class that information on overlap of target features with annotation features  
+#'
+#' This object is desgined to hold statistics and information about genomic feature overlaps
+#'          
+#' @section Slots:\describe{
+#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
+#'
+#'                  \item{\code{annotation}}{a named vector of percentages}
+#'
+#'                  \item{\code{precedence}}{a named vector of percentages}
+#'
+#'                  \item{\code{num.hierarchica}}{vector}
+#'
+#'                  \item{\code{no.of.OlapFeat}}{vector}
+#'
+#'                  \item{\code{perc.of.OlapFeat}}{vector}
+#'
+#'                  \item{dist.to.TSS}{a data frame showing distances to TSS and gene/TSS names and strand}
+#' }
+#' @name annotationByGenicParts-class
+#' @rdname annotationByGenicParts-class
+#' @export
+setClass("annotationByGenicParts", 
+         representation(dist.to.TSS = "data.frame"), contains = "annotationByFeature")
+
+
+
