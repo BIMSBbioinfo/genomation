@@ -976,9 +976,9 @@ setMethod("plotGeneAnnotation",
 					h = hclust(dist(d[,-1]))
 					ind = h$order
 				}
-        d = data.frame(ind, d)
-				m = reshape2::melt(d, id.vars=c('ind', 'SampleName'))
-        colnames(m)[3] = 'Position'
+
+				m = reshape2::melt(d, id.vars='SampleName')
+        colnames(m)[2] = 'Position'
         
 				p = ggplot(m, aes(x=Position, y=SampleName, fill=value, colour="white")) +
 				  scale_fill_gradient(low =col[1], high = col[2]) +
@@ -986,7 +986,8 @@ setMethod("plotGeneAnnotation",
               axis.title.x = element_text(colour='white'), 
 						  axis.text.x  = element_text(colour='black', face='bold'), 
 						  axis.text.y  = element_text(colour='black'), 
-						  axis.title.y = element_text(colour='white', face='bold'))
+						  axis.title.y = element_text(colour='white', face='bold')) +
+				      ylim(as.character(d$SampleName[ind]))
 				p = p + geom_tile(color='white')  
         print(p)
 })
