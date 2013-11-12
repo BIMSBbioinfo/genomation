@@ -311,10 +311,11 @@ setMethod("show", "AnnotationByGeneParts",
 setMethod("show", "AnnotationByFeature", 
 			function(object) {
 
-			message("summary of target set annotation with feature annotation\n")
-			message(nrow(object@members))
-			message(" rows in target set\n--------------\n")
-			message("--------------\n")
+			message("Summary of target set annotation with feature annotation:\n")
+			message(" rows in target set "nrow(object@members))
+			message(" rows in feature set "nrow(object@no.of.OlapFeat))
+			message("--------------")
+		
 			
 			message("percentage of target features overlapping with annotation :\n")
 			print(round(object@annotation,2))
@@ -683,7 +684,7 @@ setMethod("annotateWithFeature",
 		   function(target, feature, strand,extend,feature.name,intersect.chr){
 
 				if(is.null(feature.name))
-          feature.name=deparse(substitute(feature))
+          feature.name= deparse(substitute(feature))
 
 				if(extend>0){
 				  message('extending features...')
@@ -702,16 +703,17 @@ setMethod("annotateWithFeature",
           feature = feature[seqnames(feature) %in% chrs]
         }
         
-				if( ! strand){strand(target)="*"}
+				if( ! strand)
+          strand(target)="*"
 				memb=rep(0,length(target))
         
 				memb[countOverlaps(target,feature) > 0] = 1
 
 				annotation = c( 100*sum(memb >  0)/length(memb) ,
-								100*sum(memb == 0)/length(memb) )
+								        100*sum(memb == 0)/length(memb) )
 				
 				num.annotation = c( sum( memb >  0),
-									sum( memb == 0) )
+									          sum( memb == 0) )
 				names(annotation) = c(feature.name, "other")
 
 				numberOfOlapFeat = c(sum(countOverlaps(feature,target)>0))
@@ -720,7 +722,7 @@ setMethod("annotateWithFeature",
 				new("AnnotationByFeature",
 					members         = as.matrix(memb),
 					annotation      = annotation,
-					precedence		= annotation,
+					precedence		  = annotation,
 					num.annotation  = num.annotation,
 					num.precedence	= num.annotation,
 					no.of.OlapFeat  = numberOfOlapFeat,
