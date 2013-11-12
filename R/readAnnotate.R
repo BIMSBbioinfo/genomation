@@ -579,7 +579,7 @@ setGeneric("annotateWithFeatureFlank",
 #' @rdname annotateWithFeatureFlank-methods
 setMethod( "annotateWithFeatureFlank", 
 			signature(target = "GRanges",feature="GRanges",flank="GRanges"),
-			function(target, feature, flank,feature.name,flank.name,strand, 
+			function(target, feature, flank, feature.name, flank.name, strand, 
                intersect.chr){
 
         
@@ -589,7 +589,7 @@ setMethod( "annotateWithFeatureFlank",
 			                     unique(as.character(seqnames(feature))))
 			    if(length(chrs) == 0)
 			      stop('target and feature do not have intersecting chromosomes')
-			    target=target[seqnames(target) %in% chrs]
+			    target  = target[seqnames(target) %in% chrs]
 			    feature = feature[seqnames(feature) %in% chrs]
 			  }
         
@@ -649,10 +649,12 @@ setMethod( "annotateWithFeatureFlank",
 #'                 sides as much as \code{extend}
 #' @param feature.name name of the annotation feature. 
 #'                     For example: H3K4me1,CpGisland etc.
+#'                     by default the name is taken from the given variable
 #' @param intersect.chr boolean, whether to select only chromosomes that are 
 #'                      common to feature and target. FALSE by default
 
-#' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
+#' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,
+#'                            feature.name="feat1", intersect.chr=FALSE)
 #' @return returns an \code{AnnotationByFeature} object
 #' 
 #' 
@@ -670,7 +672,7 @@ setGeneric("annotateWithFeature",
                              feature,
                              strand=FALSE,
                              extend=0,
-                             feature.name="feat1", 
+                             feature.name=NULL, 
                              intersect.chr=FALSE) 
                       standardGeneric("annotateWithFeature") )
 
@@ -680,12 +682,13 @@ setMethod("annotateWithFeature",
 		   signature(target = "GRanges",feature="GRanges"),
 		   function(target, feature, strand,extend,feature.name,intersect.chr){
 
-				if( ! strand){strand(target)="*"}
-					memb=rep(0,length(target))
+				if(is.null(feature.name))
+          feature.name=deparse(substitute(feature))
 
 				if(extend>0){
 				  message('extending features...')
-          feature = resize(feature, width=(width(feature)+2*extend), fix='center')
+          feature = resize(feature, width=(width(feature)+2*extend),
+                           fix='center')
 				}
         
         # selects common chromosomes for target and feature
@@ -698,6 +701,9 @@ setMethod("annotateWithFeature",
           target=target[seqnames(target) %in% chrs]
           feature = feature[seqnames(feature) %in% chrs]
         }
+        
+				if( ! strand){strand(target)="*"}
+				memb=rep(0,length(target))
         
 				memb[countOverlaps(target,feature) > 0] = 1
 
