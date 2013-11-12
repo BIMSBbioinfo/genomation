@@ -16,11 +16,11 @@
 #'                  \item{\code{rand.p.value}:}{ p-value from randomization by calculation the proportion of how many times a random number of overlap exceeds the original number of overlap}
 #'                 }
 #'
-#' @name randomEnrichment-class
-#' @rdname randomEnrichment-class
+#' @name RandomEnrichment-class
+#' @rdname RandomEnrichment-class
 #' @seealso \code{\link{getRandomEnrichment}}
 #' @export
-setClass("randomEnrichment", 
+setClass("RandomEnrichment", 
 		representation(
 			orig.cnt = "numeric", 
 			rand.olap.dist = "numeric",
@@ -31,10 +31,10 @@ setClass("randomEnrichment",
 
 
 #' show method for some of the genomation classes
-#' @param object object of class randomEnrichment
+#' @param object object of class RandomEnrichment
 #' @rdname show-methods
-#' @aliases show,randomEnrichment-method
-setMethod("show", "randomEnrichment", function(object) {
+#' @aliases show,RandomEnrichment-method
+setMethod("show", "RandomEnrichment", function(object) {
   message("orig.cnt:",object@orig.cnt,"\n")
   message("log2fc:",object@log2fc,"\n")
   message("p.value:",object@p.value,"\n")
