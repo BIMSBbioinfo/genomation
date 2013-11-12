@@ -283,48 +283,47 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 setMethod("show", "AnnotationByGeneParts", 
 			function(object) {
 
-				message("Summary of target set annotation with genic parts\n");
-				message("Rows in target set:", nrow(object@members), "\n")
-				message("-----------------------\n\n")
+				message("Summary of target set annotation with genic parts");
+				message("Rows in target set: ", nrow(object@members))
+				message("-----------------------")
 				
-				message("percentage of target features overlapping with annotation :\n")
+				message("percentage of target features overlapping with annotation:")
 				print(round(object@annotation,2))
-				message("\n\n")
+				message()
 				
-				message("percentage of target features overlapping with annotation\n")
-				message("(with promoter > exon > intron precedence) :\n"); 
+				message("percentage of target features overlapping with annotation:")
+				message("(with promoter > exon > intron precedence):"); 
 				print(round(object@precedence,2))
-				message("\n\n")
+				message()
 				
-				message("percentage of annotation boundaries with feature overlap :\n")
+				message("percentage of annotation boundaries with feature overlap:")
 				print(round(object@perc.of.OlapFeat,2))
-				message("\n\n")  
+				message()  
 				
-				message("summary of distances to the nearest TSS :\n")
+				message("summary of distances to the nearest TSS:")
 				print(summary(abs(object@dist.to.TSS[,2])))
-				message("\n")
+				message()
 })
 
 
 #' @rdname show-methods
 #' @aliases show,AnnotationByFeature-method
-setMethod("show", "AnnotationByFeature", 
-			function(object) {
-
-			message("Summary of target set annotation with feature annotation:\n")
-			message(" rows in target set "nrow(object@members))
-			message(" rows in feature set "nrow(object@no.of.OlapFeat))
-			message("--------------")
-		
-			
-			message("percentage of target features overlapping with annotation :\n")
-			print(round(object@annotation,2))
-			message("\n\n")
-			
-			message("percentage of annotation boundaries with feature overlap :\n")
-			print(round(object@perc.of.OlapFeat))
-			message("\n\n")  
+setMethod("show", "AnnotationByFeature",
+          function(object) {
+            
+            message("summary of target set annotation with feature annotation:")
+            message("Rows in target set: ",nrow(object@members))
+            message("----------------------------")
+            
+            message("percentage of target elements overlapping with features:")
+            print(round(object@annotation,2))
+            message()
+            
+            message("percentage of feature elements overlapping with target:")
+            print(round(object@perc.of.OlapFeat,2))
+            message()
 })
+
 
 
 #######################################
