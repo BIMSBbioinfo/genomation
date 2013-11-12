@@ -120,11 +120,13 @@ checkBedValidity<-function(bed.df,type="none"){
 # ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object
 #'  
-#' @param bed  a data.frame where column order and content resembles a bed file with 12 columns
+#' @param bed  a data.frame where column order and content 
+#'             resembles a bed file with 12 columns
 #' @usage convertBedDf(bed)
 #' @return \code{\link{GRanges}} object
 #'
-#' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' @note one bed track per file is only accepted, the bed 
+#'       files with multiple tracks will cause en error
 #' @note bed files are expected not to have header lines
 #'
 #' @export
@@ -206,11 +208,13 @@ setMethod("convertBed2Exons" ,
 # ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object for introns
 #'  
-#' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
+#' @param bed.df  a data.frame where column order and content 
+#'                resembles a bed file with 12 columns
 #' @usage convertBed2Introns(bed.df)
 #' @return \code{\link{GRanges}} object
 #'
-#' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' @note one bed track per file is only accepted, the bed files with 
+#'       multiple tracks will cause en error
 #'
 #' @export
 #' @docType methods
@@ -237,8 +241,10 @@ setMethod("convertBed2Introns",
 #' 
 #' @param grange GRanges object for the feature
 #' @param flank  number of basepairs for the flanking regions
-#' @param clean  If set to TRUE, flanks overlapping with other main features will be trimmed, and overlapping flanks will be removed
-#'        this will remove multiple counts when other features overlap with flanks
+#' @param clean  If set to TRUE, flanks overlapping with other main features 
+#'               will be trimmed, and overlapping flanks will be removed. 
+#'               This will remove multiple counts when other features overlap 
+#'               with flanks
 #'
 #' @usage getFlanks(grange,flank=2000,clean=T)
 #' @return GRanges object for flanking regions
@@ -479,14 +485,16 @@ setGeneric("annotateWithGeneParts",
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts", 
 		  signature(target = "GRanges", feature = "GRangesList"),
-		  function(target, feature, strand, intersect.chr=FALSE){
+		  function(target, feature, strand, intersect.chr){
 
 		  if(intersect.chr){
 		    message('intersecting chromosomes...')
-		    chrs = intersect(seqnames(target), 
-                         unique(unlist(lapply(feature), seqnames)))
+		    chrs = intersect(unique(as.character(seqnames(target))), 
+                         unique(unlist(
+                           lapply(feature, 
+                                  function(x)as.character(seqnames(x))))))
         
-		    if(length(chr) == 0)
+		    if(length(chrs) == 0)
 		      stop('target and feature do not have intersecting chromosomes')
 		    target=target[seqnames(target) %in% chrs]
 		    feature = lapply(feature, function(x)x[seqnames(x) %in% chrs])
@@ -515,11 +523,11 @@ setMethod("annotateWithGeneParts",
 #' @aliases annotateWithGeneParts,GRangesList,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts",
-		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
-		  function(target, GRangesList.obj, strand){
+		  signature(target = "GRangesList", feature= "GRangesList"),
+		  function(target, feature, strand){
 		  
 			l = lapply(target, function(x)
-                          annotateWithGeneParts(target, GRangesList.obj, strand))
+                          annotateWithGeneParts(target, feature, strand))
 			return(l)
 })
 
@@ -530,13 +538,18 @@ setMethod("annotateWithGeneParts",
 #' Function to annotate a given GRanges object with promoter,exon,intron & intergenic values
 #'  
 #' @param target    a granges object storing chromosome locations to be annotated
-#' @param feature   a granges object storing chromosome locations of a feature (can be CpG islands, ChIP-seq peaks, etc)
-#' @param flank     a granges object storing chromosome locations of the flanks of the feature
+#' @param feature   a granges object storing chromosome locations of a feature 
+#'                  (can be CpG islands, ChIP-seq peaks, etc)
+#' @param flank     a granges object storing chromosome locations of 
+#'                  the flanks of the feature
 #' @param feature.name     string for the name of the feature
 #' @param flank.name     string for the name of the flanks
-#' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
-#' @param intersect.chr boolean, whether to select only chromosomes that are common to feature and target. FALSE by default
-#' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE)
+#' @param strand   If set to TRUE, annotation features and target features 
+#'                 will be overlapped based on strand  (def:FAULT)
+#' @param intersect.chr boolean, whether to select only chromosomes that are 
+#'                      common to feature and target. FALSE by default
+#' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",
+#'                                 flank.name="flank",strand=FALSE)
 #' @return returns an \code{annotationByFeature} object
 #' 
 #' @export
@@ -548,15 +561,28 @@ setGeneric("annotateWithFeatureFlank",
                                    flank,
                                    feature.name="feat",
                                    flank.name="flank",
-                                   strand=FALSE) 
+                                   strand=FALSE, 
+                                   intersect.chr=FALSE) 
                             standardGeneric("annotateWithFeatureFlank") )
 
 #' @aliases annotateWithFeatureFlank,GRanges,GRanges,GRanges-method
 #' @rdname annotateWithFeatureFlank-methods
 setMethod( "annotateWithFeatureFlank", 
 			signature(target = "GRanges",feature="GRanges",flank="GRanges"),
-			function(target, feature, flank,feature.name,flank.name,strand){
+			function(target, feature, flank,feature.name,flank.name,strand, 
+               intersect.chr){
 
+        
+			  if(intersect.chr){
+			    message('intersecting chromosomes...')
+			    chrs = intersect(unique(as.characters(seqnames(target))), 
+			                     unique(as.characters(seqnames(feature))))
+			    if(length(chrs) == 0)
+			      stop('target and feature do not have intersecting chromosomes')
+			    target=target[seqnames(target) %in% chrs]
+			    feature = feature[seqnames(feature) %in% chrs]
+			  }
+        
 				if( ! strand )
 					strand(target) = "*"
 					memb=data.frame(matrix(rep(0,length(target)*2),ncol=2) )
@@ -605,11 +631,16 @@ setMethod( "annotateWithFeatureFlank",
 #' Function to annotate given GRanges object with a given genomic feature
 #' 
 #' @param target   a GRanges object storing chromosome locations to be annotated
-#' @param feature  a GRanges object storing chromosome locations of a feature (can be CpG islands, ChIP-seq peaks, etc)
-#' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
-#' @param extend   specifiying a positive value will extend the feature on both sides as much as \code{extend}
-#' @param feature.name name of the annotation feature. For example: H3K4me1,CpGisland etc.
-#' @param intersect.chr boolean, whether to select only chromosomes that are common to feature and target. FALSE by default
+#' @param feature  a GRanges object storing chromosome locations of a feature 
+#'                 (can be CpG islands, ChIP-seq peaks, etc)
+#' @param strand   If set to TRUE, annotation features and target features will 
+#'                 be overlapped based on strand  (def:FAULT)
+#' @param extend   specifiying a positive value will extend the feature on both 
+#'                 sides as much as \code{extend}
+#' @param feature.name name of the annotation feature. 
+#'                     For example: H3K4me1,CpGisland etc.
+#' @param intersect.chr boolean, whether to select only chromosomes that are 
+#'                      common to feature and target. FALSE by default
 
 #' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
 #' @return returns an \code{annotationByFeature} object
@@ -650,8 +681,9 @@ setMethod("annotateWithFeature",
         # selects common chromosomes for target and feature
         if(intersect.chr){
           message('intersecting chromosomes...')
-          chrs = intersect(seqnames(feature), seqnames(target))
-          if(length(chr) == 0)
+          chrs = intersect(unique(as.characters(seqnames(target))), 
+                           unique(as.characters(seqnames(feature))))
+          if(length(chrs) == 0)
             stop('target and feature do not have intersecting chromosomes')
           target=target[seqnames(target) %in% chrs]
           feature = feature[seqnames(feature) %in% chrs]
@@ -692,7 +724,8 @@ setMethod("annotateWithFeature",
 #' 
 #' @param x a \code{annotationByFeature}  object
 #' 
-#' @return RETURNS a matrix showing overlap of target features with annotation features. 1 for overlap, 0 for non-overlap
+#' @return matrix showing overlap of target features with annotation features. 
+#'         1 for overlap, 0 for non-overlap
 #' 
 #' @usage getMembers(x)
 #'
@@ -712,17 +745,26 @@ setMethod("getMembers",
 # ---------------------------------------------------------------------------- #
 #' Get the percentage of target features overlapping with annotation from annotationByFeature
 #'
-#' This function retrieves percentage/number of target features overlapping with annotation
+#' This function retrieves percentage/number of target features 
+#' overlapping with annotation
 #'  
 #' @param x a \code{annotationByFeature}  object
-#' @param percentage TRUE|FALSE. If TRUE percentage of target features will be returned. If FALSE, number of target features will be returned
-#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation features when calculating numbers (with promoter>exon>intron precedence)
-#' That means if a feature overlaps with a promoter it will be counted as promoter overlapping only, or if it is overlapping with a an exon but not a promoter, 
-#' it will be counted as exon overlapping only whether or not it overlaps with an intron.
+#' @param percentage TRUE|FALSE. If TRUE percentage of target 
+#'                   features will be returned. If FALSE, 
+#'                   number of target features will be returned
+#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation 
+#'                   features when calculating numbers 
+#'                   (with promoter>exon>intron precedence)
+#'                   
+#' That means if a feature overlaps with a promoter it will be counted as 
+#' promoter overlapping only, or if it is overlapping with a an exon 
+#' but not a promoter, #' it will be counted as exon overlapping only whether or
+#'  not it overlaps with an intron.
 #'
 #' @usage getTargetAnnotationStats(x,percentage=TRUE,precedence=TRUE)
 #'
-#' @return RETURNS  a vector of percentages or counts showing quantity of target features overlapping with annotation
+#' @return a vector of percentages or counts showing quantity of target features
+#'         overlapping with annotation
 #' 
 #' @export
 #' @docType methods
@@ -754,17 +796,24 @@ setMethod("getTargetAnnotationStats",
 
 
 # ---------------------------------------------------------------------------- #
-#' Get the percentage/count of annotation features overlapping with target features from annotationByFeature
+#' Get the percentage/count of annotation features overlapping with target 
+#' features from annotationByFeature
 #'
-#' This function retrieves percentage/number of annotation features overlapping with targets. 
-#' For example, if \code{annotationByFeature}  object is containing statistics of differentially methylated 
-#' regions overlapping with gene annotation. This function will return number/percentage of introns,exons and promoters
+#' This function retrieves percentage/number of 
+#' annotation features overlapping with targets. 
+#' For example, if \code{annotationByFeature}  object is containing 
+#' statistics of differentially methylated 
+#' regions overlapping with gene annotation. This function will return 
+#' number/percentage of introns,exons and promoters
 #' overlapping with differentially methylated regions.
 #'  
 #' @param x a \code{annotationByFeature}  object
-#' @param percentage TRUE|FALSE. If TRUE percentage of annotation features will be returned. If FALSE, number of annotation features will be returned
+#' @param percentage TRUE|FALSE. If TRUE percentage of annotation features will 
+#'        be returned. If FALSE, number of annotation features will be returned
 #'
-#' @return RETURNS  a vector of percentages or counts showing quantity of annotation features overlapping with target features
+#' @return RETURNS  a vector of percentages or counts showing quantity 
+#'         of annotation features overlapping with target features
+#'         
 #' @usage getFeatsWithTargetsStats(x,percentage=TRUE)
 #' @export
 #' @docType methods
@@ -791,12 +840,16 @@ setMethod("getFeatsWithTargetsStats",
 # ---------------------------------------------------------------------------- #
 #' Get distance to nearest TSS and gene id from annotationByGenicParts
 #'
-#' This accessor function gets the nearest TSS, its distance to target feature,strand and name of TSS/gene from annotationByGenicParts object
+#' This accessor function gets the nearest TSS, its distance to target feature,
+#' strand and name of TSS/gene from annotationByGenicParts object
+#' 
 #' @param x a \code{annotationByGenicParts}  object
 #' 
-#' @return RETURNS a data.frame containing row number of the target features,distance of target to nearest TSS, TSS/Gene name, TSS strand
+#' @return RETURNS a data.frame containing row number of the target features,
+#'         distance of target to nearest TSS, TSS/Gene name, TSS strand
 #' @usage getAssociationWithTSS(x)
-#' @aliases getAssociationWithTSS,-methods getAssociationWithTSS,annotationByGenicParts-method
+#' @aliases getAssociationWithTSS,-methods getAssociationWithTSS,
+#'          annotationByGenicParts-method
 #' @export
 #' @docType methods
 #' @rdname annotationByGenicParts-methods
