@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.10.21)  11 NOV 2013 19:50
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.10.21)  13 NOV 2013 00:08
 entering extended mode
 **GenomationManual-knitr.tex
 (D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.tex
@@ -201,7 +201,10 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 )
 \tf@toc=\write3
 
-<Figures/genomationFlowChart1.pdf, id=1, 617.58733pt x 845.0471pt>
+[1
+
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<Figures/genomationFlowChart1.pdf, id=11, 617.58733pt x 845.0471pt>
 File: Figures/genomationFlowChart1.pdf Graphic file (type pdf)
 
 <use Figures/genomationFlowChart1.pdf>
@@ -215,30 +218,36 @@ ovel hy-poth-e-sis gen-er-a-tion.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 101--103
+! LaTeX Error: There's no line here to end.
 
- []
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.100 T
+       he pipeline for computational knowledge extraction consists of three ...
 
-[1
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map} <D:/Job/Projects/Genomatio
-n/genomation/inst/doc/Figures/genomationFlowChart1.pdf>]
-Package color Info: Redefining color shadecolor on input line 110.
+[2 <D:/Job/Projects/Genomation/genomation/inst/doc/Figures/genomationFlowChart1
+.pdf>]
+Package color Info: Redefining color shadecolor on input line 109.
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 112.
-Package color Info: Redefining color shadecolor on input line 123.
-Package color Info: Redefining color shadecolor on input line 133.
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 136
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 111.
+Package color Info: Redefining color shadecolor on input line 122.
+Package color Info: Redefining color shadecolor on input line 132.
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 135
 .
-
-(C:/PROGRA~1/R/R-30~1.2/share/texmf/tex/latex\omscmtt.fd
+ (C:/PROGRA~1/R/R-30~1.2/share/texmf/tex/latex\omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 136.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 135.
 
 ! Undefined control sequence.
-l.144 The data can be accesed throught the \Rcode
+l.143 The data can be accesed throught the \Rcode
                                                  {data} command or located i...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -246,9 +255,10 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 146.
+Package color Info: Redefining color shadecolor on input line 145.
+[3]
 ! Undefined control sequence.
-l.173 \Rcode
+l.172 \Rcode
             {readGeneric} is the workhorse of the genomation package. It is ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -256,10 +266,9 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 178.
-[2]
+Package color Info: Redefining color shadecolor on input line 177.
 ! Undefined control sequence.
-l.190 ...which you want to read in, use the \Rcode
+l.189 ...which you want to read in, use the \Rcode
                                                   {meta.col} argument
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -267,21 +276,39 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 192.
-Package color Info: Redefining color shadecolor on input line 205.
-Package color Info: Redefining color shadecolor on input line 218.
+Package color Info: Redefining color shadecolor on input line 191.
+Package color Info: Redefining color shadecolor on input line 204.
+Package color Info: Redefining color shadecolor on input line 217.
 ! Undefined control sequence.
-l.227 \Rcode
-            {readGeneric]} function can easily be extended to read almost an...
+l.226 \Rcode
+            {readGeneric} function can easily be extended to read almost any...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 231.
 ! Undefined control sequence.
-l.242 ...st column of the gff file, use the \Rcode
+l.228 \code
+           {narrowPeak} and \code{broadPeak} formats, and gtf formatted files.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 \code{narrowPeak} and \code
+                                 {broadPeak} formats, and gtf formatted files.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 230.
+! Undefined control sequence.
+l.241 ...st column of the gff file, use the \Rcode
                                                   {split.group=TRUE}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -289,9 +316,9 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 245.
+Package color Info: Redefining color shadecolor on input line 244.
 ! Undefined control sequence.
-l.255 \Rcode
+l.254 \Rcode
             {readFeatureFlank} is a convenience function used to get the ran...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -299,11 +326,12 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 259.
-Package color Info: Redefining color shadecolor on input line 274.
-[3]
+Package color Info: Redefining color shadecolor on input line 258.
+[4]
+Package color Info: Redefining color shadecolor on input line 273.
+ [5]
 ! Undefined control sequence.
-l.294 \Rcode
+l.293 \Rcode
             {ScoreMatrix} and \Rcode{ScoreMatrixBin} are functions used to e...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -312,7 +340,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.294 \Rcode{ScoreMatrix} and \Rcode
+l.293 \Rcode{ScoreMatrix} and \Rcode
                                     {ScoreMatrixBin} are functions used to e...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -321,8 +349,10 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.295 data over predefined windows. \Rcode
-                                          {ScoreMatrix} is used when all of ...
+<recently read> \Rcode 
+                       
+l.296 \Rcode
+            {ScoreMatrix} is used when all of the windows
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -330,7 +360,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.297 \Rcode
+l.298 \Rcode
             {ScoreMatrixBin} is designed for use with windows of unequal width
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -339,7 +369,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.299 Both functions have 2 main arguments: \Rcode
+l.301 Both functions have 2 main arguments: \Rcode
                                                   {target} and
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -348,7 +378,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.300 \Rcode
+l.302 \Rcode
             {windows}. \Rcode{target} is the data that we want to extract, w...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -357,7 +387,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.300 \Rcode{windows}. \Rcode
+l.302 \Rcode{windows}. \Rcode
                              {target} is the data that we want to extract, w...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -366,7 +396,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.300 ...that we want to extract, while the \Rcode
+l.302 ...that we want to extract, while the \Rcode
                                                   {windows}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -375,7 +405,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.303 The \Rcode
+l.305 The \Rcode
                 {windows} must be GRanges object.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -383,9 +413,9 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 308.
+Package color Info: Redefining color shadecolor on input line 310.
 ! Undefined control sequence.
-l.320 \Rcode
+l.324 \Rcode
             {ScoreMatrixBin} function has an additional \Rcode{bin.num} argu...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -394,7 +424,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.320 ...rixBin} function has an additional \Rcode
+l.324 ...rixBin} function has an additional \Rcode
                                                   {bin.num} argument which
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -403,7 +433,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.323 to \Rcode
+l.327 to \Rcode
                {mean}.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -411,10 +441,10 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 325.
+Package color Info: Redefining color shadecolor on input line 329.
 ! Undefined control sequence.
-l.338 As you can see, running \Rcode
-                                    {ScoreMatrixBin} with \Rcode{bin.num=50} on
+l.353 Running \Rcode
+                    {ScoreMatrixBin} with \Rcode{bin.num=50} on
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -422,8 +452,8 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.338 ...unning \Rcode{ScoreMatrixBin} with \Rcode
-                                                  {bin.num=50} on
+l.353 Running \Rcode{ScoreMatrixBin} with \Rcode
+                                                {bin.num=50} on
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -431,7 +461,16 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.342 ... on multiple files you can use the \Rcode
+l.356 The rownames of the resulting \Rcode
+                                          {ScoreMatrix} object correspond
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.363 ... on multiple files you can use the \Rcode
                                                   {ScoreMatrixList}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -440,7 +479,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.343 ...likewise has 2 obligatory arguments \code
+l.364 ...ion also has 2 obligatory arguments \code
                                                   {targets} and \code{windows}.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -449,7 +488,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.343 ...gatory arguments \code{targets} and \code
+l.364 ...gatory arguments \code{targets} and \code
                                                   {windows}.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -458,7 +497,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.344 While the \code
+l.365 While the \code
                      {windows} is the same as in \Rcode{ScoreMatrix}, the ta...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -467,7 +506,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.344 ...e \code{windows} is the same as in \Rcode
+l.365 ...e \code{windows} is the same as in \Rcode
                                                   {ScoreMatrix}, the targets...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -475,9 +514,10 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 349.
+Package color Info: Redefining color shadecolor on input line 370.
+[6]
 ! Undefined control sequence.
-l.364 ...of the windows have the same width \Rcode
+l.392 ...of the windows have the same width \Rcode
                                                   {ScoreMatrixList} will use...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -486,8 +526,8 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.365 \Rcode
-            {ScoreMatrix} function. That can be overridden by explicity spec...
+l.393 \Rcode
+            {ScoreMatrix} function. That can be overridden by explicitly spe...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -495,7 +535,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.366 \code
+l.394 \code
            {bin.num} argument, as we did in the example.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -503,8 +543,13 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 392--396
+
+ []
+
 ! Undefined control sequence.
-l.371 or as a line grap. \Rcode
+l.400 or as a histogram. \Rcode
                                {heatMatrix]}, \Rcode{plotMeta} and \Rcode{mu...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -513,7 +558,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.371 ... a line grap. \Rcode{heatMatrix]}, \Rcode
+l.400 ... a histogram. \Rcode{heatMatrix]}, \Rcode
                                                   {plotMeta} and \Rcode{mult...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -522,7 +567,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.371 ...heatMatrix]}, \Rcode{plotMeta} and \Rcode
+l.400 ...heatMatrix]}, \Rcode{plotMeta} and \Rcode
                                                   {multiHeatMatrix} are func...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -531,7 +576,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.371 ...are functions for visualization of \Rcode
+l.400 ...are functions for visualization of \Rcode
                                                   {ScoreMatrix} and \Rcode{S...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -540,7 +585,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.371 ...ization of \Rcode{ScoreMatrix} and \Rcode
+l.400 ...ization of \Rcode{ScoreMatrix} and \Rcode
                                                   {ScoreMatrixList} objects.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -548,11 +593,17 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-[4]
-Package color Info: Redefining color shadecolor on input line 375.
+Package color Info: Redefining color shadecolor on input line 404.
+<inst/doc/FiguresheatMatrix1.pdf, id=68, 433.62pt x 289.08pt>
+File: inst/doc/FiguresheatMatrix1.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresheatMatrix1.pdf>
+Package pdftex.def Info: inst/doc/FiguresheatMatrix1.pdf used on input line 417
+.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
 
 ! Undefined control sequence.
-l.389 The \Rcode
+l.426 The \Rcode
                 {heatMatrix} function can also take a list of numeric vector...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -560,18 +611,166 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 391.
-Package color Info: Redefining color shadecolor on input line 427.
-[5]
-Package color Info: Redefining color shadecolor on input line 438.
+Package color Info: Redefining color shadecolor on input line 428.
+[7 <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresheatMatrix1.
+pdf>] <inst/doc/FiguresheatMatrix2.pdf, id=80, 433.62pt x 289.08pt>
+File: inst/doc/FiguresheatMatrix2.pdf Graphic file (type pdf)
 
-Overfull \hbox (10.96455pt too wide) in paragraph at lines 447--447
-[]\OT1/cmtt/m/n/10 ## Error: error in evaluating the argument 'x' in selecting 
-a method for function 'resize':
- []
+<use inst/doc/FiguresheatMatrix2.pdf>
+Package pdftex.def Info: inst/doc/FiguresheatMatrix2.pdf used on input line 448
+.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
+Package color Info: Redefining color shadecolor on input line 460.
+
+<inst/doc/FiguresheatMatrixScales.pdf, id=81, 433.62pt x 289.08pt>
+File: inst/doc/FiguresheatMatrixScales.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresheatMatrixScales.pdf>
+Package pdftex.def Info: inst/doc/FiguresheatMatrixScales.pdf used on input lin
+e 468.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
+Package color Info: Redefining color shadecolor on input line 481.
+ [8 <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresheatMatrix2
+.pdf> <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresheatMatri
+xScales.pdf>]
+<inst/doc/FiguresmultiHeatMatrix1.pdf, id=101, 433.62pt x 289.08pt>
+File: inst/doc/FiguresmultiHeatMatrix1.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresmultiHeatMatrix1.pdf>
+Package pdftex.def Info: inst/doc/FiguresmultiHeatMatrix1.pdf used on input lin
+e 495.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
+Package color Info: Redefining color shadecolor on input line 506.
+
+<inst/doc/FiguresmultiHeatMatrix2.pdf, id=102, 433.62pt x 289.08pt>
+File: inst/doc/FiguresmultiHeatMatrix2.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresmultiHeatMatrix2.pdf>
+Package pdftex.def Info: inst/doc/FiguresmultiHeatMatrix2.pdf used on input lin
+e 513.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
+
+
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.523 M
+       ore advance usage of the ScoreMatrix functions and their visualtizati...
+
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[9 <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresmultiHeatMat
+rix1.pdf> <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/Figuresmulti
+HeatMatrix2.pdf>]
+Package color Info: Redefining color shadecolor on input line 547.
 
 ! Undefined control sequence.
-l.453 chipseq peaks, we will use the \Rcode
+l.568 \Rcode
+            {intersect.chr = TRUE}, which will limit the analysis only to the
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 571.
+! Undefined control sequence.
+l.609 \Rcode
+            {readTranscriptFeatures} function. \Rcode{readTranscriptFeatures...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.609 ...{readTranscriptFeatures} function. \Rcode
+                                                  {readTranscriptFeatures} r...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.610 ...e and parses the coordinates into a \code
+                                                  {GRangesList} containing
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 613.
+[10]
+! Undefined control sequence.
+l.631 \Rcode
+            {annotateWithGeneParts} will give us the  overlap statistics bet...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.632 ...e structures. We will again use the \code
+                                                  {intersect.chr=TRUE}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 635.
+! Undefined control sequence.
+l.675 \Rcode
+            {annotateWithGeneParts} can also take a set of feature ranges as...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 679.
+[11]
+! Undefined control sequence.
+l.694 ...ge of overlap given by priority. If \code
+                                                  {cluster=TRUE}, then the f...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+Package color Info: Redefining color shadecolor on input line 697.
+<inst/doc/FiguresplotGeneAnnotation1.pdf, id=131, 433.62pt x 289.08pt>
+File: inst/doc/FiguresplotGeneAnnotation1.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresplotGeneAnnotation1.pdf>
+Package pdftex.def Info: inst/doc/FiguresplotGeneAnnotation1.pdf used on input 
+line 704.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
+
+<inst/doc/FiguresplotGeneAnnotation2.pdf, id=132, 433.62pt x 289.08pt>
+File: inst/doc/FiguresplotGeneAnnotation2.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresplotGeneAnnotation2.pdf>
+Package pdftex.def Info: inst/doc/FiguresplotGeneAnnotation2.pdf used on input 
+line 705.
+(pdftex.def)             Requested size: 231.2979pt x 154.19972pt.
+ [12 <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresplotGeneAn
+notation1.pdf> <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/Figures
+plotGeneAnnotation2.pdf>]
+Package color Info: Redefining color shadecolor on input line 732.
+Package color Info: Redefining color shadecolor on input line 747.
+
+! Undefined control sequence.
+l.761 chipseq peaks, we will use the \Rcode
                                            {ScoreMatrixList} function.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -580,7 +779,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.454 \Rcode
+l.762 \Rcode
             {ScoreMatrixList} assign names to each element of the list based...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -589,7 +788,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.456 Using the \Rcode
+l.764 Using the \Rcode
                       {heatmapProfile} on our \Rcode{ScoreMatrixList},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -598,7 +797,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.456 ... the \Rcode{heatmapProfile} on our \Rcode
+l.764 ... the \Rcode{heatmapProfile} on our \Rcode
                                                   {ScoreMatrixList},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -606,15 +805,31 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 461.
+Package color Info: Redefining color shadecolor on input line 768.
+<inst/doc/FiguresctcfScoreMatrixList.pdf, id=150, 867.24pt x 578.16pt>
+File: inst/doc/FiguresctcfScoreMatrixList.pdf Graphic file (type pdf)
 
-Underfull \hbox (badness 10000) in paragraph at lines 466--467
-[]\OT1/cmtt/m/n/10 ## Error: error in evaluating the argument 'x' in selecting 
-a method for function
- []
+<use inst/doc/FiguresctcfScoreMatrixList.pdf>
+Package pdftex.def Info: inst/doc/FiguresctcfScoreMatrixList.pdf used on input 
+line 785.
+(pdftex.def)             Requested size: 377.62642pt x 251.7534pt.
 
+
+! LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.793 \caption
+              {Heatmap profile of unscaled coverage shows a slight colocaliz...
+
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[13]
 ! Undefined control sequence.
-l.476 ...ignal values in chipseq peaks, the \Rcode
+l.796 ...ignal values in chipseq peaks, the \Rcode
                                                   {heatmapProfile}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -622,9 +837,30 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 482.
+Package color Info: Redefining color shadecolor on input line 801.
+<inst/doc/FiguresplotScaledProfile.pdf, id=155, 867.24pt x 578.16pt>
+File: inst/doc/FiguresplotScaledProfile.pdf Graphic file (type pdf)
+
+<use inst/doc/FiguresplotScaledProfile.pdf>
+Package pdftex.def Info: inst/doc/FiguresplotScaledProfile.pdf used on input li
+ne 809.
+(pdftex.def)             Requested size: 377.62642pt x 251.7534pt.
+
+
+! LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.817 \caption
+              {Heatmap profile of scaled coverage shows much stronger coloca...
+
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
 ! Undefined control sequence.
-l.500 the files, we will use the \Rcode
+l.825 the files, we will use the \Rcode
                                        {readGeneric} function. It enables us...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -632,22 +868,12 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 504.
-[6]
-Overfull \hbox (415.21103pt too wide) in paragraph at lines 511--512
-[]\OT1/cmtt/m/n/10 ## Error: Could not find a 'CompressedList' subclass for val
-ues of type 'NULLOptionalFunctionOptionalMethodCharacterORNULLDataTableORNULLFu
-nctionORNULLConstraintORNULL'[] 
- []
-
-
-Overfull \hbox (10.96455pt too wide) in paragraph at lines 513--513
-[]\OT1/cmtt/m/n/10 ## Error: unable to find an inherited method for function 's
-eqnames' for signature '"list"'[] 
- []
-
+Package color Info: Redefining color shadecolor on input line 829.
+[14 <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresctcfScoreMa
+trixList.pdf> <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/Figuresp
+lotScaledProfile.pdf>]
 ! Undefined control sequence.
-l.517 ...n of binding sites we will use the \Rcode
+l.858 ...n of binding sites we will use the \Rcode
                                                   {findFeatureComb} function.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -656,7 +882,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.520 ...eturned ranges will have a numeric \Rcode
+l.861 ...eturned ranges will have a numeric \Rcode
                                                   {class} meta data column, ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -665,7 +891,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.522 the combinations, put the \Rcode
+l.863 the combinations, put the \Rcode
                                       {use.names=TRUE}.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -673,9 +899,9 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 524.
+Package color Info: Redefining color shadecolor on input line 865.
 ! Undefined control sequence.
-l.533 order the regions by their \Rcode
+l.875 order the regions by their \Rcode
                                        {class} argument.
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -683,36 +909,39 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Package color Info: Redefining color shadecolor on input line 536.
+Package color Info: Redefining color shadecolor on input line 877.
+[15] <inst/doc/FiguresvisualizeFeatureComb.pdf, id=192, 867.24pt x 578.16pt>
+File: inst/doc/FiguresvisualizeFeatureComb.pdf Graphic file (type pdf)
 
-Underfull \hbox (badness 10000) in paragraph at lines 543--544
-[]\OT1/cmtt/m/n/10 ## Error: error in evaluating the argument 'x' in selecting 
-a method for function
- []
-
-[7] (D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.aux)
- ) 
+<use inst/doc/FiguresvisualizeFeatureComb.pdf>
+Package pdftex.def Info: inst/doc/FiguresvisualizeFeatureComb.pdf used on input
+ line 897.
+(pdftex.def)             Requested size: 377.62642pt x 251.7534pt.
+ [16 <D:/Job/Projects/Genomation/genomation/inst/doc/inst/doc/FiguresvisualizeF
+eatureComb.pdf>]
+(D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.aux) ) 
 Here is how much of TeX's memory you used:
- 1870 strings out of 493921
- 26424 string characters out of 3144872
- 90994 words of memory out of 3000000
- 5157 multiletter control sequences out of 15000+200000
+ 1925 strings out of 493921
+ 28397 string characters out of 3144872
+ 91000 words of memory out of 3000000
+ 5200 multiletter control sequences out of 15000+200000
  8746 words of font info for 32 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,6n,19p,1257b,279s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
-:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmitt10.pfb><C:
-/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Pr
-ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Progr
-am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program File
-s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files 
-(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on GenomationManual-knitr.pdf (7 pages, 487474 bytes).
+ 27i,6n,19p,706b,279s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/
+Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmitt10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86
+)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on GenomationManual-knitr.pdf (16 pages, 1322753 bytes).
 PDF statistics:
- 104 PDF objects out of 1000 (max. 8388607)
+ 243 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 56 words of extra memory for PDF output out of 10000 (max. 10000000)
 

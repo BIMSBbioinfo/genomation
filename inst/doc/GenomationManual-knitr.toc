@@ -1,12 +1,14 @@
-\contentsline {section}{\numberline {1}Introduction}{1}
-\contentsline {section}{\numberline {2}Access the data}{2}
-\contentsline {section}{\numberline {3}Data input}{2}
-\contentsline {section}{\numberline {4}Extraction and visualization of genomic data}{4}
-\contentsline {subsection}{\numberline {4.1}Extration of data over predefined winows}{4}
-\contentsline {subsection}{\numberline {4.2}Visualization of multiple genomic experiments}{5}
-\contentsline {section}{\numberline {5}Annotation of genomic features}{5}
-\contentsline {section}{\numberline {6}Use cases for genomation package}{5}
-\contentsline {subsection}{\numberline {6.1}Annotation of HTS data by functional regions}{5}
-\contentsline {subsection}{\numberline {6.2}Visualization of ChiP sequencing data}{5}
-\contentsline {subsection}{\numberline {6.3}Combinatorial binding of transcription factors}{7}
-\contentsline {subsection}{\numberline {6.4}Annotation of bam files}{7}
+\contentsline {section}{\numberline {1}Introduction}{2}
+\contentsline {section}{\numberline {2}Access the data}{3}
+\contentsline {section}{\numberline {3}Data input}{4}
+\contentsline {section}{\numberline {4}Extraction and visualization of genomic data}{6}
+\contentsline {subsection}{\numberline {4.1}Extration of data over genomic winows}{6}
+\contentsline {subsection}{\numberline {4.2}Visualization of multiple genomic experiments}{7}
+\contentsline {section}{\numberline {5}Annotation of genomic features}{10}
+\contentsline {subsection}{\numberline {5.1}Annotation by generic features}{10}
+\contentsline {subsection}{\numberline {5.2}Annotation of genomic features by gene structures}{11}
+\contentsline {section}{\numberline {6}Use cases for genomation package}{13}
+\contentsline {subsection}{\numberline {6.1}Visualization of ChiP sequencing data}{13}
+\contentsline {subsection}{\numberline {6.2}Combinatorial binding of transcription factors}{15}
+\contentsline {subsection}{\numberline {6.3}Annotation of bam files}{16}
+\contentsline {subsection}{\numberline {6.4}Annotation of HTS data by functional regions}{16}

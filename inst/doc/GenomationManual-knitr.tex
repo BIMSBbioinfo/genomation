@@ -79,46 +79,45 @@ Vedran Franke \\ \texttt{vedran.franke@gmail.com} }
 \begin{document}
 \maketitle
 \tableofcontents
-
+\newpage
 % ----------------------------------------------------------------- %
 \section{Introduction}
 
 Recent advances in sequencing technologies have enabled a downpoor of biological data. The sheer amount of data has impeeded the extraction of useful knowledge and novel hypothesis generation.
-\begin{wrapfigure}{r}{0.4\textwidth}
- \vspace{-20pt}
+\begin{wrapfigure}{r}{0.5\textwidth}
+ \vspace{-60pt}
   \begin{center}
     \includegraphics[width=0.4\textwidth]{Figures/genomationFlowChart1.pdf}
   \end{center}
   \caption{Bulk visualization for different genomic feature datasets flowchart}
-   \vspace{-20pt}
+   \vspace{-40pt}
 \end{wrapfigure} 
 \Rpackage{genomation} is a toolkit for annotation and in bulk visualization of 
-genomic features (scored or unscored) over predefined regions. The \textbf{genomic features} the package can handle can be  anything with a minimal information of chromosome,start and end. The features could have any length
-and most of the time they are associated with a score. Typical examples of such data sets include aligned reads from high-throughput sequencing (HTS) experiments, percent
-methylation values for CpGs (or other cytosines), locations of transcription factor binding site motifs, and so on. On the other hand, throughout the vignette we use the phrase "genomic annotation" to refer to the regions of the genome associated with a potential function and do not necessarily have a score (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). These genomic annotations are usually the regions of interest, and distribution of genomic features over/around the annotations are can make the way for biological interpretation of the data.
+genomic features (scored or unscored) over predefined regions. The \textbf{genomic features} which the package can handle can be anything with a minimal information of chromosome, start and end. The features could have any length and most of the time they are associated with a score. 
+Typical examples of such data sets include aligned reads from high-throughput sequencing (HTS) experiments, percent methylation values for CpGs (or other cytosines), locations of transcription factor binding , and so on. On the other hand, throughout the vignette we use the phrase "genomic annotation" to refer to the regions of the genome associated with a potential function which does not necessarily have a score (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). These genomic annotations are usually the regions of interest, and distribution of genomic features over/around the annotations are can make the way for biological interpretation of the data.
 
-
+\\
 The pipeline for computational knowledge extraction consists of three steps: data filtering, integration of data from multiple sources or generation of predictive models and biological interpretation of produced models, which leads to novel hypotheses that can be tested in the wetlab. \Rpackage{genomation} aims to facilitate the integration of multiple sources of genomic features with genomic annotation or already published experimental results.
-\\*
+\newpage
 
 % ----------------------------------------------------------------- %
 \section{Access the data}
 
-High-throughput data which will be used to show the functonality of the \Rpackage{genomation} is located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage{genomationData}.\\
+High-throughput data which will be used to show the functonality of the \Rpackage{genomation} are located in two places. The annotation and cap analysis of gene expression (CAGE) data comes prepared with the genomation package, while the raw HTS data can be found in the sister package \Rpackage{genomationData}.\\
 To install the \Rpackage{genomation} and the complementary data package the from the github repository c/p the following lines into your R interpreter:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(devtools)}
-\hlkwd{install_github}\hlstd{(}\hlstr{"genomationData"}\hlstd{,} \hlkwc{username} \hlstd{=} \hlstr{"frenkiboy"}\hlstd{)}
-\hlkwd{install_github}\hlstd{(}\hlstr{"genomation"}\hlstd{,} \hlkwc{username} \hlstd{=} \hlstr{"frenkiboy"}\hlstd{)}
+\hlkwd{install_github}\hlstd{(}\hlstr{"genomationData"}\hlstd{,} \hlkwc{username} \hlstd{=} \hlstr{"al2na"}\hlstd{)}
+\hlkwd{install_github}\hlstd{(}\hlstr{"genomation"}\hlstd{,} \hlkwc{username} \hlstd{=} \hlstr{"al2na"}\hlstd{)}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
 
-The \Rpackage{genomationData} vignette contains a verbose description of contained files.\\
-To list the available data:
+The \Rpackage{genomationData} vignette contains a verbose description of included files.\\
+To list the available data, type:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -154,7 +153,7 @@ The data can be accesed throught the \Rcode{data} command or located in the extd
 \end{kframe}
 \end{knitrout}
 
-
+\newpage
 
 
 % ----------------------------------------------------------------- %
@@ -224,9 +223,9 @@ chr, start and end arguments.
 \end{knitrout}
 
 
-\Rcode{readGeneric]} function can easily be extended to read almost any kind of 
+\Rcode{readGeneric} function can easily be extended to read almost any kind of 
 biological data. As an example we have provided convenience functions to read the Encode
-narrowPeak and broadPeak formats, and gtf formatted files.
+\code{narrowPeak} and \code{broadPeak} formats, and gtf formatted files.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -254,7 +253,7 @@ argument.
 There are specific functions to read genomic annotation from flat bed files.
 \Rcode{readFeatureFlank} is a convenience function used to get the ranges flanking 
 the set of interest. As an example, it could be used to get the CpG island shores, 
-which have been shown to harbour contidion specific differential methylation
+which have been shown to harbour condition specific differential methylation.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -278,24 +277,27 @@ which have been shown to harbour contidion specific differential methylation
 \end{kframe}
 \end{knitrout}
 
+\newpage
 
 % ----------------------------------------------------------------- %
 \section{Extraction and visualization of genomic data}
 
-A standard step in a computational genomics experiment is the visualization of 
-average enrichment over a certain predefined set of ranges, such as a visualization
-of mean coverage of a certain histone modification around a transcription factor binding site,
+A standard step in a computational genomics experiment is visualization of 
+average enrichment over a certain predefined set of ranges, such as mean coverage
+of a certain histone modification around a transcription factor binding site,
 or visualization of histone positions around transcription start sites.
-\Rpackage{genomation} provides convenience functions for extraction and visualization
-of data over predefined windows.
 
-\subsection{Extration of data over predefined winows}
+
+\subsection{Extration of data over genomic winows}
 
 \Rcode{ScoreMatrix} and \Rcode{ScoreMatrixBin} are functions used to extract 
-data over predefined windows. \Rcode{ScoreMatrix} is used when all of the windows
-have the same width, such as an area around the transcription start site, while the
+data over predefined windows.
+\\
+\Rcode{ScoreMatrix} is used when all of the windows
+have the same width, such as a designated area around the transcription start site, while the
 \Rcode{ScoreMatrixBin} is designed for use with windows of unequal width 
 (e.g. enrichment of methylation over exons).
+\\
 Both functions have 2 main arguments: \Rcode{target} and 
 \Rcode{windows}. \Rcode{target} is the data that we want to extract, while the \Rcode{windows}
 represents the regions over which we want to see the enrichment. The target data
@@ -312,13 +314,15 @@ the human chromosome 21.
 \hlstd{sm} \hlkwb{<-} \hlkwd{ScoreMatrix}\hlstd{(}\hlkwc{target} \hlstd{= cage,} \hlkwc{windows} \hlstd{= promoters)}
 \hlstd{sm}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\#\ \  scoreMatrix with dims: 1055 2001}}\end{kframe}
 \end{knitrout}
 
 
 
 \Rcode{ScoreMatrixBin} function has an additional \Rcode{bin.num} argument which
-specifies by how many bins will each window be represented (ie. it converts windows
+specifies the number of bins that will represent each windot window  (ie. it converts windows
 of unequal width into ones of equal width.). By default, the binning function is set
 to \Rcode{mean}.
 \begin{knitrout}
@@ -328,23 +332,40 @@ to \Rcode{mean}.
 \hlstd{gff.file} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"extdata/chr21.refseq.hg19.gtf"}\hlstd{,}
     \hlkwc{package} \hlstd{=} \hlstr{"genomation"}\hlstd{)}
 \hlstd{exons} \hlkwb{<-} \hlkwd{gffToGRanges}\hlstd{(gff.file,} \hlkwc{filter} \hlstd{=} \hlstr{"exon"}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Filtering exon features...}}\begin{alltt}
 \hlstd{sm} \hlkwb{<-} \hlkwd{ScoreMatrixBin}\hlstd{(}\hlkwc{target} \hlstd{= cage,} \hlkwc{windows} \hlstd{= exons,}
     \hlkwc{bin.num} \hlstd{=} \hlnum{50}\hlstd{)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: supplied GRanges object contains ranges of width < number of bins}}\begin{alltt}
+\hlstd{sm}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\#\ \  scoreMatrix with dims: 5127 50}}\end{kframe}
 \end{knitrout}
 
 
-As you can see, running \Rcode{ScoreMatrixBin} with \Rcode{bin.num=50} on 
-a set of exons warned us that some of the ranges had width less than 50 bp and
-were removed from the set.
-
+Running \Rcode{ScoreMatrixBin} with \Rcode{bin.num=50} on 
+a set of exons warned us that some of the exons are shorter than 50 bp and
+were thus removed from the set before binning. 
+The rownames of the resulting \Rcode{ScoreMatrix} object correspond
+to the ranges that were used to construct the windows (e.g. row name 10 means that the
+10th element in the target GRanges object was used to extract the data). If a certain
+rowname is not present in the ScoreMatrix object, that means that te corresponding
+range was filtered out (e.g. the range could have been on a chromosome that was not
+present in the target).
+\\
 To simultaneously work on multiple files you can use the \Rcode{ScoreMatrixList}
-function. The function likewise has 2 obligatory arguments \code{targets} and \code{windows}.
+function. The function also has 2 obligatory arguments \code{targets} and \code{windows}.
 While the \code{windows} is the same as in \Rcode{ScoreMatrix}, the targets argument
-is contains results from multiple experiments. 
+contains results from multiple experiments. 
 It can be in one of the three formats: a list of RleLists, a list of GRanges (or a GRangesList object), 
-or a character vector designating a set of .bam files.
+or a character vector designating a set of .bam or .bigWig files.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -357,63 +378,341 @@ or a character vector designating a set of .bam files.
 \hlstd{sm} \hlkwb{<-} \hlkwd{ScoreMatrixList}\hlstd{(}\hlkwc{targets} \hlstd{= targets,} \hlkwc{windows} \hlstd{= promoters,}
     \hlkwc{bin.num} \hlstd{=} \hlnum{50}\hlstd{)}
 \end{alltt}
-\end{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# working on: cage\\\#\# working on: cpgi}}\begin{alltt}
+\hlstd{sm}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# scoreMatrixlist of length:2\\\#\# \\\#\# 1. scoreMatrix with dims: 1055 50\\\#\# 2. scoreMatrix with dims: 1055 50}}\end{kframe}
 \end{knitrout}
 
 
 If all of the windows have the same width \Rcode{ScoreMatrixList} will use the
-\Rcode{ScoreMatrix} function. That can be overridden by explicity specifying the 
+\Rcode{ScoreMatrix} function. That can be overridden by explicitly specifying the 
 \code{bin.num} argument, as we did in the example.
+\\
 
 \subsection{Visualization of multiple genomic experiments}
 
 There are 2 basic modes of visualization of enrichment over windows: either as a heatmap, 
-or as a line grap. \Rcode{heatMatrix]}, \Rcode{plotMeta} and \Rcode{multiHeatMatrix} are functions for visualization of \Rcode{ScoreMatrix} and \Rcode{ScoreMatrixList} objects.
+or as a histogram. \Rcode{heatMatrix]}, \Rcode{plotMeta} and \Rcode{multiHeatMatrix} are functions for visualization of \Rcode{ScoreMatrix} and \Rcode{ScoreMatrixList} objects.
 
 We will plot the distribution of CAGE tags around promoters on human chr21.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(cage)}
+\hlkwd{data}\hlstd{(promoters)}
+\hlstd{sm} \hlkwb{<-} \hlkwd{ScoreMatrix}\hlstd{(}\hlkwc{target} \hlstd{= cage,} \hlkwc{windows} \hlstd{= promoters)}
+
+\hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{))}
+\hlkwd{heatMatrix}\hlstd{(sm,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{))}
+\hlkwd{plotMeta}\hlstd{(sm,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{))}
+\hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.49\linewidth]{inst/doc/FiguresheatMatrix1} 
+
+}
 
 
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: data set 'cage' not found\\\#\# Warning: data set 'promoters' not found}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}ScoreMatrix"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}heatMatrix"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}plotMeta"{}}}\end{kframe}
 \end{knitrout}
-
 
 
 The \Rcode{heatMatrix} function can also take a list of numeric vectors designating row names, or a factor variable that represent our annotation over the windows.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(cage)}
+\hlkwd{data}\hlstd{(promoters)}
+\hlkwd{data}\hlstd{(cpgi)}
+
+\hlstd{sm} \hlkwb{<-} \hlkwd{ScoreMatrix}\hlstd{(}\hlkwc{target} \hlstd{= cage,} \hlkwc{windows} \hlstd{= promoters,}
+    \hlkwc{strand.aware} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlstd{cpg.ind} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{countOverlaps}\hlstd{(promoters, cpgi)} \hlopt{>} \hlnum{0}\hlstd{)}
+\hlstd{nocpg.ind} \hlkwb{<-} \hlkwd{which}\hlstd{(}\hlkwd{countOverlaps}\hlstd{(promoters, cpgi)} \hlopt{==}
+    \hlnum{0}\hlstd{)}
+\hlkwd{heatMatrix}\hlstd{(sm,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{),} \hlkwc{group} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{CpGi} \hlstd{= cpg.ind,}
+    \hlkwc{noCpGi} \hlstd{= nocpg.ind))}
+
+\hlcom{# cpg.ind = factor(countOverlaps(promoters,}
+\hlcom{# cpgi)>0, levels=c('CpG','noCpG')) heatMatrix(sm,}
+\hlcom{# xcoords=c(-1000, 1000), group=cpg.ind)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.49\linewidth]{inst/doc/FiguresheatMatrix2} 
+
+}
 
 
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: data set 'cage' not found\\\#\# Warning: data set 'promoters' not found\\\#\# Warning: data set 'cpgi' not found}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}ScoreMatrix"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}countOverlaps"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}countOverlaps"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}heatMatrix"{}}}\end{kframe}
 \end{knitrout}
 
+
+Because the enrichment in windows can have a high dynamic range, it is sometimes
+convenient to scale the matrix before plotting.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{sm.scaled} \hlkwb{<-} \hlkwd{scaleScoreMatrix}\hlstd{(sm)}
+\hlkwd{heatMatrix}\hlstd{(sm.scaled,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{),} \hlkwc{group} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{CpGi} \hlstd{= cpg.ind,}
+    \hlkwc{noCpGi} \hlstd{= nocpg.ind))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.49\linewidth]{inst/doc/FiguresheatMatrixScales} 
+
+}
+
+
+
+\end{knitrout}
+
+
+
+Several experiments can be plotted in a side by side fashion using a combination
+of ScoreMatrixList and multiHeatMatrix.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{cage}\hlopt{$}\hlstd{tpm} \hlkwb{<-} \hlkwa{NULL}
+\hlstd{targets} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{cage} \hlstd{= cage,} \hlkwc{cpgi} \hlstd{= cpgi)}
+\hlstd{sml} \hlkwb{<-} \hlkwd{ScoreMatrixList}\hlstd{(}\hlkwc{targets} \hlstd{= targets,} \hlkwc{windows} \hlstd{= promoters,}
+    \hlkwc{bin.num} \hlstd{=} \hlnum{50}\hlstd{,} \hlkwc{strand.aware} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# working on: cage\\\#\# working on: cpgi}}\begin{alltt}
+\hlkwd{multiHeatMatrix}\hlstd{(sml,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.49\linewidth]{inst/doc/FiguresmultiHeatMatrix1} 
+
+}
+
+
+
+\end{knitrout}
+
+
+We can put the kmeans=TRUE to see whether there are any patterns present in the data.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{multiHeatMatrix}\hlstd{(sml,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{),} \hlkwc{kmeans} \hlstd{=} \hlnum{TRUE}\hlstd{,}
+    \hlkwc{k} \hlstd{=} \hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.49\linewidth]{inst/doc/FiguresmultiHeatMatrix2} 
+
+}
+
+
+
+\end{knitrout}
+
+
+\\
+More advance usage of the ScoreMatrix functions and their visualtization can be found in the specific
+use-cases at the end of the vignette.
+\newpage
 
 % ----------------------------------------------------------------- %
 \section{Annotation of genomic features}
 
+
+Searching for correlation between sets of genomic features is a standard exploratory
+method in computational genomics. It is usually done by looking at the overlap between 
+2 or more sets of ranges and calculating various overlap statistics. 
+\Rpackage{genomation} contains two sets of functions for annotation of ranges:
+the first one is used to facilitate the general annotation of any sets of ranges,
+while
+the second one is used to annotate a given feature with gene structures (promoter, 
+exon, intron).
+
+
+\subsection{Annotation by generic features}
+
+Firstly, we will select the broadPeak files from the \Rpackage{genomatonData} package,
+and read in the peaks for the Ctcf transcription factor
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(genomationData)}
+\hlstd{genomationDataPath} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"extdata"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"genomationData"}\hlstd{)}
+\hlstd{sampleInfo} \hlkwb{<-} \hlkwd{read.table}\hlstd{(}\hlkwd{file.path}\hlstd{(genomationDataPath,}
+    \hlstr{"SamplesInfo.txt"}\hlstd{),} \hlkwc{header} \hlstd{= T,} \hlkwc{sep} \hlstd{=} \hlstr{"\textbackslash{}t"}\hlstd{,} \hlkwc{stringsAsFactors} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+
+\hlstd{peak.files} \hlkwb{<-} \hlkwd{list.files}\hlstd{(genomationDataPath,} \hlkwc{full.names} \hlstd{= T,}
+    \hlkwc{pattern} \hlstd{=} \hlstr{"broadPeak"}\hlstd{)}
+\hlkwd{names}\hlstd{(peak.files)} \hlkwb{<-} \hlstd{sampleInfo}\hlopt{$}\hlstd{sampleName[}\hlkwd{match}\hlstd{(}\hlkwd{basename}\hlstd{(peak.files),}
+    \hlstd{sampleInfo}\hlopt{$}\hlstd{fileName)]}
+
+\hlstd{ctcf.peaks} \hlkwb{<-} \hlkwd{readBroadPeak}\hlstd{(peak.files[}\hlstr{"Ctcf"}\hlstd{])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+Now we will annotate the human the Ctcf binding sites using the CpG islands.
+Because the CpG islands are restricted to chromosomes 21 and 22, we will set the
+\Rcode{intersect.chr = TRUE}, which will limit the analysis only to the 
+chromosomes that are present in both data sets.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(cpgi)}
+\hlstd{peak.annot} \hlkwb{<-} \hlkwd{annotateWithFeature}\hlstd{(ctcf.peaks, cpgi,}
+    \hlkwc{intersect.chr} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# intersecting chromosomes...}}\begin{alltt}
+\hlstd{peak.annot}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# summary of target set annotation with feature annotation:\\\#\# Rows in target set: 3964\\\#\# ----------------------------\\\#\# percentage of target elements overlapping with features:}}\begin{verbatim}
+##  cpgi other 
+##  7.62 92.38
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# percentage of feature elements overlapping with target:}}\begin{verbatim}
+## [1] 36.94
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# }}\end{kframe}
+\end{knitrout}
+
+
+The output of the annotateWithFeature function shows three types of information:
+The total number of elements in the target dataset, the percentage of target 
+dataset that overlaps with the feature dataset. And the percentage of the feature
+elements that overlap the target.
+
+\subsection{Annotation of genomic features by gene structures}
+
+
+To find the distribution of our designated features around gene structures, 
+we will first read the transcript features from a file using the 
+\Rcode{readTranscriptFeatures} function. \Rcode{readTranscriptFeatures} reads
+a bed12 formatted file and parses the coordinates into a \code{GRangesList} containing
+four elements: exons, introns. promoters and transcription start sites (TSSes).
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{bed.file} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"extdata/chr21.refseq.hg19.bed"}\hlstd{,}
+    \hlkwc{package} \hlstd{=} \hlstr{"genomation"}\hlstd{)}
+\hlstd{gene.parts} \hlkwb{<-} \hlkwd{readTranscriptFeatures}\hlstd{(bed.file)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Reading the table...\\\#\# Calculating intron coordinates...\\\#\# Calculating exon coordinates...\\\#\# Calculating TSS coordinates...\\\#\# Calculating promoter coordinates...\\\#\# Outputting the final GRangesList...}}\end{kframe}
+\end{knitrout}
+
+
+\Rcode{annotateWithGeneParts} will give us the  overlap statistics between our 
+CTCF peaks and gene structures. We will again use the \code{intersect.chr=TRUE}
+to limit the analysis.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ctcf.annot} \hlkwb{<-} \hlkwd{annotateWithGeneParts}\hlstd{(ctcf.peaks, gene.parts,}
+    \hlkwc{intersect.chr} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# intersecting chromosomes...}}\begin{alltt}
+\hlstd{ctcf.annot}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Summary of target set annotation with genic parts\\\#\# Rows in target set: 1681\\\#\# -----------------------\\\#\# percentage of target features overlapping with annotation:}}\begin{verbatim}
+##   promoter       exon     intron intergenic 
+##       9.58      13.50      47.65      47.17
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# percentage of target features overlapping with annotation:\\\#\# (with promoter > exon > intron precedence):}}\begin{verbatim}
+##   promoter       exon     intron intergenic 
+##       9.58       7.91      35.34      47.17
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# percentage of annotation boundaries with feature overlap:}}\begin{verbatim}
+## promoter     exon   intron 
+##    38.36    15.40    29.33
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# summary of distances to the nearest TSS:}}\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0    7980   28500   66100   74700 1190000
+\end{verbatim}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# }}\end{kframe}
+\end{knitrout}
+
+
+\Rcode{annotateWithGeneParts} can also take a set of feature ranges as an argument.
+We will use the readGeneric function to load all of the broadPeak files in the
+\Rpackage{genomationData}, which we will then annotate.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{peaks} \hlkwb{<-} \hlkwd{GRangesList}\hlstd{(}\hlkwd{lapply}\hlstd{(peak.files, readGeneric))}
+\hlkwd{names}\hlstd{(peaks)} \hlkwb{<-} \hlkwd{names}\hlstd{(peak.files)}
+\hlstd{annot.list} \hlkwb{<-} \hlkwd{annotateWithGeneParts}\hlstd{(peaks, gene.parts,}
+    \hlkwc{intersect.chr} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Working on: Ctcf\\\#\# intersecting chromosomes...\\\#\# Working on: P300\\\#\# intersecting chromosomes...\\\#\# Working on: Suz12\\\#\# intersecting chromosomes...\\\#\# Working on: Rad21\\\#\# intersecting chromosomes...}}\end{kframe}
+\end{knitrout}
+
+
+Gene annotation of multiple feature objects can be visualized in a form of a heatmap, 
+where rows represent samples, columns the gene structure, and the value is the 
+percentage of overlap given by priority. If \code{cluster=TRUE}, then the function
+will use hierarhical clustering to order the heatmap.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plotGeneAnnotation}\hlstd{(annot.list)}
+\hlkwd{plotGeneAnnotation}\hlstd{(annot.list,} \hlkwc{cluster} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.49\linewidth]{inst/doc/FiguresplotGeneAnnotation1} 
+\includegraphics[width=.49\linewidth]{inst/doc/FiguresplotGeneAnnotation2} 
+
+}
+
+
+
+\end{knitrout}
+
+
+
+\newpage
 
 % ----------------------------------------------------------------- %
 \section{Use cases for genomation package}
 The genomation package provides generalizable functions for genomic data analysis
 and visualization. Below we will demonstrate the functionality on specific use cases
 
-% ----------------------------------------------------------------- %
-\subsection{Annotation of HTS data by functional regions}
 
 
 % ----------------------------------------------------------------- %
@@ -425,9 +724,13 @@ Ctcf binding sites.
 In the fist step we will select the *.bam files containing mapped reads.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: BiocGenerics\\\#\# Loading required package: parallel\\\#\# \\\#\# Attaching package: 'BiocGenerics'\\\#\# \\\#\# The following objects are masked from 'package:parallel':\\\#\# \\\#\#\ \ \ \  clusterApply, clusterApplyLB,\\\#\#\ \ \ \  clusterCall, clusterEvalQ,\\\#\#\ \ \ \  clusterExport, clusterMap, parApply,\\\#\#\ \ \ \  parCapply, parLapply, parLapplyLB,\\\#\#\ \ \ \  parRapply, parSapply, parSapplyLB\\\#\# \\\#\# The following object is masked from 'package:stats':\\\#\# \\\#\#\ \ \ \  xtabs\\\#\# \\\#\# The following objects are masked from 'package:base':\\\#\# \\\#\#\ \ \ \  anyDuplicated, append, as.data.frame,\\\#\#\ \ \ \  as.vector, cbind, colnames, duplicated,\\\#\#\ \ \ \  eval, evalq, Filter, Find, get,\\\#\#\ \ \ \  intersect, is.unsorted, lapply, Map,\\\#\#\ \ \ \  mapply, match, mget, order, paste, pmax,\\\#\#\ \ \ \  pmax.int, pmin, pmin.int, Position,\\\#\#\ \ \ \  rank, rbind, Reduce, rep.int, rownames,\\\#\#\ \ \ \  sapply, setdiff, sort, table, tapply,\\\#\#\ \ \ \  union, unique, unlist\\\#\# \\\#\# Loading required package: IRanges\\\#\# Loading required package: XVector}}\end{kframe}
+\begin{alltt}
+\hlstd{genomationDataPath} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"extdata"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"genomationData"}\hlstd{)}
+\hlstd{bam.files} \hlkwb{<-} \hlkwd{list.files}\hlstd{(genomationDataPath,} \hlkwc{full.names} \hlstd{= T,}
+    \hlkwc{pattern} \hlstd{=} \hlstr{"bam$"}\hlstd{)}
+\hlstd{bam.files} \hlkwb{<-} \hlstd{bam.files[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"Cage"}\hlstd{, bam.files)]}
+\end{alltt}
+\end{kframe}
 \end{knitrout}
 
 
@@ -436,15 +739,14 @@ and order them by their signal values. In the end we will resize all ranges to h
 width of 500 bases, fixed on the center of the peak.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}readBroadPeak"{}}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'ctcf.peaks' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'ctcf.peaks' not found}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: error in evaluating the argument 'x' in selecting a method for function 'resize': Error: object 'ctcf.peaks' not found}}\end{kframe}
+\begin{alltt}
+\hlstd{ctcf.peaks} \hlkwb{<-} \hlkwd{readBroadPeak}\hlstd{(}\hlkwd{file.path}\hlstd{(genomationDataPath,}
+    \hlstr{"wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz"}\hlstd{))}
+\hlstd{ctcf.peaks} \hlkwb{<-} \hlstd{ctcf.peaks[}\hlkwd{seqnames}\hlstd{(ctcf.peaks)} \hlopt{==} \hlstr{"chr21"}\hlstd{]}
+\hlstd{ctcf.peaks} \hlkwb{<-} \hlstd{ctcf.peaks[}\hlkwd{order}\hlstd{(}\hlopt{-}\hlstd{ctcf.peaks}\hlopt{$}\hlstd{signalValue)]}
+\hlstd{ctcf.peaks} \hlkwb{<-} \hlkwd{resize}\hlstd{(ctcf.peaks,} \hlkwc{width} \hlstd{=} \hlnum{1000}\hlstd{,} \hlkwc{fix} \hlstd{=} \hlstr{"center"}\hlstd{)}
+\end{alltt}
+\end{kframe}
 \end{knitrout}
 
 
@@ -456,40 +758,57 @@ will use the names of the files to find the corresponding names of each sample i
 Using the \Rcode{heatmapProfile} on our \Rcode{ScoreMatrixList}, 
 we can plot the underlying signal side by side.
 
-\begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{sml} \hlkwb{<-} \hlkwd{ScoreMatrixList}\hlstd{(bam.files, ctcf.peaks,} \hlkwc{bin.num} \hlstd{=} \hlnum{50}\hlstd{,}
+    \hlkwc{type} \hlstd{=} \hlstr{"bam"}\hlstd{)}
+\end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}ScoreMatrixList"{}}}
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# working on: wgEncodeBroadHistoneH1hescCtcfStdAlnRep1.chr21.bam\\\#\# working on: wgEncodeBroadHistoneH1hescP300kat3bAlnRep1.chr21.bam\\\#\# working on: wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam\\\#\# working on: wgEncodeHaibTfbsH1hescRad21V0416102AlnRep1.chr21.bam\\\#\# working on: wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam}}\begin{alltt}
+\hlstd{sampleInfo} \hlkwb{<-} \hlkwd{read.table}\hlstd{(}\hlkwd{system.file}\hlstd{(}\hlstr{"extdata/SamplesInfo.txt"}\hlstd{,}
+    \hlkwc{package} \hlstd{=} \hlstr{"genomationData"}\hlstd{),} \hlkwc{header} \hlstd{= T,} \hlkwc{sep} \hlstd{=} \hlstr{"\textbackslash{}t"}\hlstd{)}
+\hlkwd{names}\hlstd{(sml)} \hlkwb{<-} \hlstd{sampleInfo}\hlopt{$}\hlstd{sampleName[}\hlkwd{match}\hlstd{(}\hlkwd{names}\hlstd{(sml),}
+    \hlstd{sampleInfo}\hlopt{$}\hlstd{fileName)]}
+\hlkwd{multiHeatMatrix}\hlstd{(sml,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{500}\hlstd{,} \hlnum{500}\hlstd{),} \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"lightgray"}\hlstd{,}
+    \hlstr{"blue"}\hlstd{))}
+\end{alltt}
+\end{kframe}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: error in evaluating the argument 'x' in selecting a method for function 'match': Error: object 'sml' not found}}
+{\centering \includegraphics[width=.8\linewidth]{inst/doc/FiguresctcfScoreMatrixList} 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}multiHeatMatrix"{}}}\end{kframe}
+}
+
+
+
 \end{knitrout}
 
-\caption{Heatmap profile of unscaled coverage shows a slight colocalization of Ctcf, Rad21 and Znf143;
-option \texttt{fig.keep='last'} here.\label{fig:ctcfScoreMatrixList}}
-\end{figure}
-
+\caption{Heatmap profile of unscaled coverage shows a slight colocalization of Ctcf, Rad21 and Znf143.
+option.\label{fig:ctcfScoreMatrixList}}
 
 Because of the large range of signal values in chipseq peaks, the \Rcode{heatmapProfile} 
 will not show the true extent of colocalization. To get around this, it is advisable
 to independently scale the rows of each element in the ScoreMatrixList.
 
-\begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{sml.scaled} \hlkwb{<-} \hlkwd{scaleScoreMatrixList}\hlstd{(sml)}
+\hlkwd{multiHeatMatrix}\hlstd{(sml.scaled,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{500}\hlstd{,} \hlnum{500}\hlstd{),}
+    \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"lightgray"}\hlstd{,} \hlstr{"blue"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+
+{\centering \includegraphics[width=.8\linewidth]{inst/doc/FiguresplotScaledProfile} 
+
+}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}scaleScoreMatrixList"{}}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}multiHeatMatrix"{}}}\end{kframe}
 \end{knitrout}
 
-\caption{Heatmap profile of scaled coverage shows much stronger colocalization of the transcription factors; nevertheless, it is evident that some of the CTCF peaks have a very weak enrichment.
-option \texttt{fig.keep='last'} here.\label{fig:plotScaledProfile}}
-\end{figure}
+\caption{Heatmap profile of scaled coverage shows much stronger colocalization of the transcription factors; nevertheless, it is evident that some of the CTCF peaks have a very weak enrichment.\label{fig:plotScaledProfile}}
 
 % ----------------------------------------------------------------- %
 \subsection{Combinatorial binding of transcription factors}
@@ -502,15 +821,31 @@ from the files only columns of interest. As the last step, we will restrict ours
 peaks that are located on chromosome 21 and have width 100 and 1000 bp
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{genomationDataPath} \hlkwb{<-} \hlkwd{system.file}\hlstd{(}\hlstr{"extdata"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"genomationData"}\hlstd{)}
+\hlstd{sampleInfo} \hlkwb{<-} \hlkwd{read.table}\hlstd{(}\hlkwd{file.path}\hlstd{(genomationDataPath,}
+    \hlstr{"SamplesInfo.txt"}\hlstd{),} \hlkwc{header} \hlstd{= T,} \hlkwc{sep} \hlstd{=} \hlstr{"\textbackslash{}t"}\hlstd{,} \hlkwc{stringsAsFactors} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Ctcf}}
+\hlstd{peak.files} \hlkwb{<-} \hlkwd{list.files}\hlstd{(genomationDataPath,} \hlkwc{full.names} \hlstd{= T,}
+    \hlkwc{pattern} \hlstd{=} \hlstr{"Peak.gz$"}\hlstd{)}
+\hlstd{peaks} \hlkwb{<-} \hlkwd{list}\hlstd{()}
+\hlkwa{for} \hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlkwd{length}\hlstd{(peak.files)) \{}
+    \hlstd{file} \hlkwb{<-} \hlstd{peak.files[i]}
+    \hlstd{name} \hlkwb{<-} \hlstd{sampleInfo}\hlopt{$}\hlstd{sampleName[}\hlkwd{match}\hlstd{(}\hlkwd{basename}\hlstd{(file),}
+        \hlstd{sampleInfo}\hlopt{$}\hlstd{fileName)]}
+    \hlkwd{message}\hlstd{(name)}
+    \hlstd{peaks[[name]]} \hlkwb{<-} \hlkwd{readGeneric}\hlstd{(file,} \hlkwc{meta.col} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{score} \hlstd{=} \hlnum{5}\hlstd{))}
+\hlstd{\}}
+\end{alltt}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}readGeneric"{}}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: Could not find a 'CompressedList' subclass for values of type 'NULLOptionalFunctionOptionalMethodCharacterORNULLDataTableORNULLFunctionORNULLConstraintORNULL'}}
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: unable to find an inherited method for function 'seqnames' for signature '"{}list"{}'}}\end{kframe}
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Ctcf\\\#\# P300\\\#\# Suz12\\\#\# Rad21\\\#\# Znf143}}\begin{alltt}
+\hlstd{peaks} \hlkwb{<-} \hlkwd{GRangesList}\hlstd{(peaks)}
+\hlstd{peaks} \hlkwb{<-} \hlstd{peaks[}\hlkwd{seqnames}\hlstd{(peaks)} \hlopt{==} \hlstr{"chr21"} \hlopt{&} \hlkwd{width}\hlstd{(peaks)} \hlopt{<}
+    \hlnum{1000} \hlopt{&} \hlkwd{width}\hlstd{(peaks)} \hlopt{>} \hlnum{100}\hlstd{]}
+\end{alltt}
+\end{kframe}
 \end{knitrout}
 
 
@@ -522,41 +857,58 @@ the correponding combination. If you are interested in the names of the TF which
 the combinations, put the \Rcode{use.names=TRUE}.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}findFeatureComb"{}}}\end{kframe}
+\begin{alltt}
+\hlstd{tf.comb} \hlkwb{<-} \hlkwd{findFeatureComb}\hlstd{(peaks,} \hlkwc{width} \hlstd{=} \hlnum{1000}\hlstd{)}
+\end{alltt}
+\end{kframe}
 \end{knitrout}
 
 
 
 To visualize the results, we will plot the enricment of resulting regions. Before doing that we will
 order the regions by their \Rcode{class} argument.
-\begin{figure}
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{tf.comb} \hlkwb{<-} \hlstd{tf.comb[}\hlkwd{order}\hlstd{(tf.comb}\hlopt{$}\hlstd{class)]}
+\hlstd{bam.files} \hlkwb{<-} \hlkwd{list.files}\hlstd{(genomationDataPath,} \hlkwc{full.names} \hlstd{= T,}
+    \hlkwc{pattern} \hlstd{=} \hlstr{"bam$"}\hlstd{)}
+\hlstd{bam.files} \hlkwb{<-} \hlstd{bam.files[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"Cage"}\hlstd{, bam.files)]}
+\hlstd{sml} \hlkwb{<-} \hlkwd{ScoreMatrixList}\hlstd{(bam.files, tf.comb,} \hlkwc{bin.num} \hlstd{=} \hlnum{20}\hlstd{,}
+    \hlkwc{type} \hlstd{=} \hlstr{"bam"}\hlstd{)}
+\end{alltt}
 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: object 'tf.comb' not found}}
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# working on: wgEncodeBroadHistoneH1hescCtcfStdAlnRep1.chr21.bam\\\#\# working on: wgEncodeBroadHistoneH1hescP300kat3bAlnRep1.chr21.bam\\\#\# working on: wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam\\\#\# working on: wgEncodeHaibTfbsH1hescRad21V0416102AlnRep1.chr21.bam\\\#\# working on: wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam}}\begin{alltt}
+\hlkwd{names}\hlstd{(sml)} \hlkwb{<-} \hlstd{sampleInfo}\hlopt{$}\hlstd{sampleName[}\hlkwd{match}\hlstd{(}\hlkwd{names}\hlstd{(sml),}
+    \hlstd{sampleInfo}\hlopt{$}\hlstd{fileName)]}
+\hlstd{sml.scaled} \hlkwb{<-} \hlkwd{scaleScoreMatrixList}\hlstd{(sml)}
+\hlkwd{multiHeatMatrix}\hlstd{(sml.scaled,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{500}\hlstd{,} \hlnum{500}\hlstd{),}
+    \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"lightgray"}\hlstd{,} \hlstr{"blue"}\hlstd{))}
+\end{alltt}
+\end{kframe}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}ScoreMatrixList"{}}}
+{\centering \includegraphics[width=.8\linewidth]{inst/doc/FiguresvisualizeFeatureComb} 
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: error in evaluating the argument 'x' in selecting a method for function 'match': Error: object 'sml' not found}}
+}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}scaleScoreMatrixList"{}}}
 
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: could not find function "{}multiHeatMatrix"{}}}\end{kframe}
+
 \end{knitrout}
 
-\end{figure}
+
 The plot shows perfectly how misleading the peak calling process can be. 
 Although the plots show that CTFC, Rad21 and Znf143 have almost perfect colozalization,
 Peak callers have trouble identifying peaks in regions with lower enrichments and as a 
 result, we get different statistics when using overlaps.
 
 % ----------------------------------------------------------------- %
-
-
 \subsection{Annotation of bam files}
+
+
+% ----------------------------------------------------------------- %
+\subsection{Annotation of HTS data by functional regions}
+
 
 
 \end{document}
