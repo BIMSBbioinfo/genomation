@@ -186,6 +186,13 @@ setMethod("convertBedDf" ,
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #'
+#'
+#' @examples
+#' file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+#' bed12 = read.table(file)
+#' exons = convertBed2Exons(bed12)
+#' head(exons)
+#' 
 #' @export
 #' @docType methods
 #' @rdname convertBed2Exons-methods
@@ -215,6 +222,12 @@ setMethod("convertBed2Exons" ,
 #'
 #' @note one bed track per file is only accepted, the bed files with 
 #'       multiple tracks will cause en error
+#'
+#' @examples
+#' file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+#' bed12 = read.table(file)
+#' introns = convertBed2Introns(bed12)
+#' head(introns)
 #'
 #' @export
 #' @docType methods
@@ -247,6 +260,12 @@ setMethod("convertBed2Introns",
 #'               with flanks
 #'
 #' @usage getFlanks(grange,flank=2000,clean=T)
+#' 
+#' @examples
+#' data(cpgi)
+#' cpgi.flanks = getFlanks(cpgi)
+#' head(cpgi.flanks)
+#' 
 #' @return GRanges object for flanking regions
 #' @export
 #' @docType methods
@@ -474,6 +493,13 @@ distance2NearestFeature<-function(g.idh,tss){
 #'         \code{AnnotationByGeneParts}
 #'         objects if target is a  \code{\link{GRangesList}} object.
 #' 
+#' @examples
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#  cage.annot
+#' 
 #' @export
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
@@ -562,6 +588,13 @@ setMethod("annotateWithGeneParts",
 #'                                 flank.name="flank",strand=FALSE)
 #' @return returns an \code{AnnotationByFeature} object
 #' 
+#' 
+#' @examples
+#' data(cpgi)
+#' data(cage)
+#' cpgi.flanks = getFlanks(cpgi)
+#' flank.annot = annotateWithFeatureFlank(cage, cpgi, cpgi.flanks)
+#' 
 #' @export
 #' @docType methods
 #' @rdname annotateWithFeatureFlank-methods
@@ -569,7 +602,7 @@ setGeneric("annotateWithFeatureFlank",
                           function(target,
                                    feature,
                                    flank,
-                                   feature.name="feat",
+                                   feature.name=NULL,
                                    flank.name="flank",
                                    strand=FALSE, 
                                    intersect.chr=FALSE) 
@@ -582,6 +615,8 @@ setMethod( "annotateWithFeatureFlank",
 			function(target, feature, flank, feature.name, flank.name, strand, 
                intersect.chr){
 
+			  if(is.null(feature.name))
+			    feature.name= deparse(substitute(feature))
         
 			  if(intersect.chr){
 			    message('intersecting chromosomes...')
@@ -779,6 +814,13 @@ setMethod("getMembers",
 #'  not it overlaps with an intron.
 #'
 #' @usage getTargetAnnotationStats(x,percentage=TRUE,precedence=TRUE)
+#' 
+#' @examples
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#  getTargetAnnotationStats(cage.annot)
 #'
 #' @return a vector of percentages or counts showing quantity of target features
 #'         overlapping with annotation
@@ -798,15 +840,15 @@ setMethod("getTargetAnnotationStats",
 			
 			if(percentage){
 				if(precedence){
-					return(x@precedence)
+					return(round(x@precedence,2))
 				}else{
-					return(x@annotation)
+					return(round(x@annotation,2))
 				}
 			}else{
 				if(precedence){
-					return(x@num.precedence)
+					return(round(x@num.precedence,2))
 				}else{
-					return(x@num.annotation)
+					return(round(x@num.annotation,2))
 				}
 			}
 })

@@ -300,11 +300,8 @@ data(cage)
 data(promoters)
 sm = ScoreMatrix(target=cage, windows=promoters)
 
-oldmar=par()$mar
-par(oma=c(0,0,0,0))
 heatMatrix(sm, xcoords=c(-1000, 1000))
 plotMeta(sm, xcoords=c(-1000, 1000))
-par(oma = oldmar)
 @
 
 The \Rcode{heatMatrix} function can also take a list of numeric vectors 
@@ -319,9 +316,6 @@ sm = ScoreMatrix(target=cage, windows=promoters, strand.aware=TRUE)
 cpg.ind = which(countOverlaps(promoters, cpgi)>0)
 nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
 heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
-
-# cpg.ind = factor(countOverlaps(promoters, cpgi)>0, levels=c('CpG','noCpG'))
-# heatMatrix(sm, xcoords=c(-1000, 1000), group=cpg.ind)
 @
 
 Because the enrichment in windows can have a high dynamic range, it is sometimes
