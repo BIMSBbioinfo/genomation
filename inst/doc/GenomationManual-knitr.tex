@@ -81,28 +81,24 @@
 
 % ----------------------------------------------------------------- %
 \section{Introduction}
- 
 
-
-\Rpackage{genomation} is a toolkit for annotation and in bulk visualization of
-genomic features (scored or unscored) over predefined regions. 
-The \textbf{genomic features} which the package can handle can 
+\Rpackage{genomation}  is a  toolkit for annotation and in bulk visualization of
+genomic features (scored or unscored) over predefined regions.
+ The \textbf{genomic features} which the package can handle can 
 be anything with a minimal information of chromosome, start and end. 
 The features could have any length and most of the time they are 
+\begin{wrapfigure}{r}{0.35\textwidth}
+\vspace{-15pt}
+  \begin{center}
+    \includegraphics[width=0.35\textwidth]{Figures/genomationFlowChart1.pdf}
+    \caption{Bulk visualization for different genomic feature datasets flowchart}
+  \end{center}
+  \vspace{-15pt}
+\end{wrapfigure}
 associated with a score. Typical examples of such data sets include aligned  
 reads from high-throughput sequencing (HTS) experiments, percent methylation 
 values for CpGs (or other cytosines), locations of transcription factor binding, 
 and so on. On the other hand, throughout the vignette we use the phrase 
-
-\begin{wrapfigure}{t}{0.3\textwidth}
-%\vspace{-90pt}
-  \begin{center}
-    \includegraphics[width=0.3\textwidth]{Figures/genomationFlowChart1.pdf}
-    \caption{Bulk visualization for different genomic feature datasets flowchart}
-  \end{center}
-  \vspace{-40pt}
-\end{wrapfigure}
-
 "genomic annotation" to refer to the regions of the genome associated with a 
 potential function which does not necessarily have a score 
 (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). 
