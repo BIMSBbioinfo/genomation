@@ -1,0 +1,383 @@
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.10.21)  14 NOV 2013 15:36
+entering extended mode
+**GenomationManual-knitr.tex
+(D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
+abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
+croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
+lician, german, german-x-2012-05-30, greek, gujarati, hindi, hungarian, iceland
+ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
+ lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
+german-x-2012-05-30, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
+an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
+ishmax, welsh, loaded.
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\framed\framed.sty"
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip43
+\fb@frw=\dimen105
+\fb@frh=\dimen106
+\FrameRule=\dimen107
+\FrameSep=\dimen108
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\alltt.sty"
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifvtex.sty"
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count88
+\Gm@cntv=\count89
+\c@Gm@tempcnt=\count90
+\Gm@bindingoffset=\dimen109
+\Gm@wd@mp=\dimen110
+\Gm@odd@mp=\dimen111
+\Gm@even@mp=\dimen112
+\Gm@layoutwidth=\dimen113
+\Gm@layoutheight=\dimen114
+\Gm@layouthoffset=\dimen115
+\Gm@layoutvoffset=\dimen116
+\Gm@dimlist=\toks15
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.cfg"))
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\wrapfig\wrapfig.sty"
+\wrapoverhang=\dimen117
+\WF@size=\dimen118
+\c@WF@wrappedlines=\count91
+\WF@box=\box26
+\WF@everypar=\toks16
+Package: wrapfig 2003/01/31  v 3.6
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\upquote\upquote.sty"
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+)
+(D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count92
+\scratchdimen=\dimen119
+\scratchbox=\box27
+\nofMPsegments=\count93
+\nofMParguments=\count94
+\everyMPshowfont=\toks17
+\MPscratchCnt=\count95
+\MPscratchDim=\dimen120
+\MPnumerator=\count96
+\makeMPintoPDFobject=\count97
+\everyMPtoPDFconversion=\toks18
+)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+Package geometry Warning: The marginal notes overrun the paper.
+     Add 4.86812pt and more to the right margin.
+
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(71.13188pt, 472.03123pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 652.70622pt, 71.13188pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=472.03123pt
+* \textheight=652.70622pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-38.1381pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 78.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 78.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 78.
+(D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 5.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 5.
+)
+\tf@toc=\write3
+
+[1
+
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<Figures/genomationFlowChart1.pdf, id=11, 617.58733pt x 845.0471pt>
+File: Figures/genomationFlowChart1.pdf Graphic file (type pdf)
+
+<use Figures/genomationFlowChart1.pdf>
+Package pdftex.def Info: Figures/genomationFlowChart1.pdf used on input line 93
+.
+(pdftex.def)             Requested size: 165.2138pt x 226.06398pt.
+Package color Info: Redefining color shadecolor on input line 126.
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 128.
+Package color Info: Redefining color shadecolor on input line 140.
+Package color Info: Redefining color shadecolor on input line 150.
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 153
+.
+
+(C:/PROGRA~1/R/R-30~1.2/share/texmf/tex/latex\omscmtt.fd
+File: omscmtt.fd 
+)
+LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 153.
+Package color Info: Redefining color shadecolor on input line 165.
+ [2 <D:/Job/Projects/Genomation/genomation/inst/doc/Figures/genomationFlowChart
+1.pdf>]
+Package color Info: Redefining color shadecolor on input line 199.
+Package color Info: Redefining color shadecolor on input line 213.
+Package color Info: Redefining color shadecolor on input line 226.
+Package color Info: Redefining color shadecolor on input line 239.
+Package color Info: Redefining color shadecolor on input line 252.
+Package color Info: Redefining color shadecolor on input line 266.
+Package color Info: Redefining color shadecolor on input line 280.
+ [3]
+Package color Info: Redefining color shadecolor on input line 295.
+Package color Info: Redefining color shadecolor on input line 332.
+Package color Info: Redefining color shadecolor on input line 352.
+ [4]
+Package color Info: Redefining color shadecolor on input line 394.
+Package color Info: Redefining color shadecolor on input line 431.
+
+<FiguresheatMatrix11.pdf, id=62, 216.81pt x 144.54pt>
+File: FiguresheatMatrix11.pdf Graphic file (type pdf)
+
+<use FiguresheatMatrix11.pdf>
+Package pdftex.def Info: FiguresheatMatrix11.pdf used on input line 445.
+(pdftex.def)             Requested size: 216.80946pt x 144.54623pt.
+
+<FiguresheatMatrix12.pdf, id=63, 216.81pt x 144.54pt>
+File: FiguresheatMatrix12.pdf Graphic file (type pdf)
+
+<use FiguresheatMatrix12.pdf>
+Package pdftex.def Info: FiguresheatMatrix12.pdf used on input line 446.
+(pdftex.def)             Requested size: 216.80946pt x 144.54623pt.
+ [5]
+Package color Info: Redefining color shadecolor on input line 459.
+
+<FiguresheatMatrix2.pdf, id=67, 289.08pt x 216.81pt>
+File: FiguresheatMatrix2.pdf Graphic file (type pdf)
+
+<use FiguresheatMatrix2.pdf>
+Package pdftex.def Info: FiguresheatMatrix2.pdf used on input line 479.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 491.
+ [6 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresheatMatrix11.pdf> <D
+:/Job/Projects/Genomation/genomation/inst/doc/FiguresheatMatrix12.pdf> <D:/Job/
+Projects/Genomation/genomation/inst/doc/FiguresheatMatrix2.pdf>] <FiguresheatMa
+trixScales.pdf, id=91, 289.08pt x 216.81pt>
+File: FiguresheatMatrixScales.pdf Graphic file (type pdf)
+
+<use FiguresheatMatrixScales.pdf>
+Package pdftex.def Info: FiguresheatMatrixScales.pdf used on input line 499.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 512.
+
+<FiguresmultiHeatMatrix1.pdf, id=92, 325.215pt x 216.81pt>
+File: FiguresmultiHeatMatrix1.pdf Graphic file (type pdf)
+
+<use FiguresmultiHeatMatrix1.pdf>
+Package pdftex.def Info: FiguresmultiHeatMatrix1.pdf used on input line 526.
+(pdftex.def)             Requested size: 325.2142pt x 216.826pt.
+Package color Info: Redefining color shadecolor on input line 537.
+ [7 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresheatMatrixScales.pdf
+> <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresmultiHeatMatrix1.pdf>]
+
+<FiguresmultiHeatMatrix2.pdf, id=114, 325.215pt x 216.81pt>
+File: FiguresmultiHeatMatrix2.pdf Graphic file (type pdf)
+
+<use FiguresmultiHeatMatrix2.pdf>
+Package pdftex.def Info: FiguresmultiHeatMatrix2.pdf used on input line 544.
+(pdftex.def)             Requested size: 325.2142pt x 216.826pt.
+Package color Info: Redefining color shadecolor on input line 578.
+Package color Info: Redefining color shadecolor on input line 602.
+ [8 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresmultiHeatMatrix2.pdf
+>]
+Package color Info: Redefining color shadecolor on input line 644.
+Package color Info: Redefining color shadecolor on input line 666.
+ [9]
+Package color Info: Redefining color shadecolor on input line 710.
+Package color Info: Redefining color shadecolor on input line 728.
+
+<FiguresplotGeneAnnotation1.pdf, id=131, 505.89pt x 505.89pt>
+File: FiguresplotGeneAnnotation1.pdf Graphic file (type pdf)
+
+<use FiguresplotGeneAnnotation1.pdf>
+Package pdftex.def Info: FiguresplotGeneAnnotation1.pdf used on input line 735.
+
+(pdftex.def)             Requested size: 118.0078pt x 118.00417pt.
+
+<FiguresplotGeneAnnotation2.pdf, id=132, 505.89pt x 505.89pt>
+File: FiguresplotGeneAnnotation2.pdf Graphic file (type pdf)
+
+<use FiguresplotGeneAnnotation2.pdf>
+Package pdftex.def Info: FiguresplotGeneAnnotation2.pdf used on input line 736.
+
+(pdftex.def)             Requested size: 118.0078pt x 118.00417pt.
+ [10 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresplotGeneAnnotation1
+.pdf> <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresplotGeneAnnotation
+2.pdf>]
+Package color Info: Redefining color shadecolor on input line 763.
+Package color Info: Redefining color shadecolor on input line 778.
+Package color Info: Redefining color shadecolor on input line 802.
+
+<FiguresctcfScoreMatrixList.pdf, id=150, 361.35pt x 252.945pt>
+File: FiguresctcfScoreMatrixList.pdf Graphic file (type pdf)
+
+<use FiguresctcfScoreMatrixList.pdf>
+Package pdftex.def Info: FiguresctcfScoreMatrixList.pdf used on input line 819.
+
+(pdftex.def)             Requested size: 361.34912pt x 252.94438pt.
+Package color Info: Redefining color shadecolor on input line 837.
+
+<FiguresplotScaledProfile.pdf, id=151, 361.35pt x 252.945pt>
+File: FiguresplotScaledProfile.pdf Graphic file (type pdf)
+
+<use FiguresplotScaledProfile.pdf>
+Package pdftex.def Info: FiguresplotScaledProfile.pdf used on input line 845.
+(pdftex.def)             Requested size: 361.34912pt x 252.94438pt.
+Package color Info: Redefining color shadecolor on input line 869.
+ [11] [12 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresctcfScoreMatri
+xList.pdf>] [13 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresplotScal
+edProfile.pdf>]
+Package color Info: Redefining color shadecolor on input line 906.
+Package color Info: Redefining color shadecolor on input line 918.
+
+<FiguresvisualizeFeatureComb.pdf, id=192, 361.35pt x 216.81pt>
+File: FiguresvisualizeFeatureComb.pdf Graphic file (type pdf)
+
+<use FiguresvisualizeFeatureComb.pdf>
+Package pdftex.def Info: FiguresvisualizeFeatureComb.pdf used on input line 938
+.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+ [14] [15 <D:/Job/Projects/Genomation/genomation/inst/doc/FiguresvisualizeFeatu
+reComb.pdf>]
+(D:\Job\Projects\Genomation\genomation\inst\doc\GenomationManual-knitr.aux) ) 
+Here is how much of TeX's memory you used:
+ 1931 strings out of 493921
+ 28191 string characters out of 3144872
+ 96092 words of memory out of 3000000
+ 5206 multiletter control sequences out of 15000+200000
+ 9053 words of font info for 33 fonts, out of 3000000 for 9000
+ 841 hyphenation exceptions out of 8191
+ 27i,6n,19p,464b,301s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/
+Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmitt10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86
+)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on GenomationManual-knitr.pdf (15 pages, 1325161 bytes).
+PDF statistics:
+ 246 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
+

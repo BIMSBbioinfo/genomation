@@ -120,11 +120,13 @@ checkBedValidity<-function(bed.df,type="none"){
 # ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object
 #'  
-#' @param bed  a data.frame where column order and content resembles a bed file with 12 columns
+#' @param bed  a data.frame where column order and content 
+#'             resembles a bed file with 12 columns
 #' @usage convertBedDf(bed)
 #' @return \code{\link{GRanges}} object
 #'
-#' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' @note one bed track per file is only accepted, the bed 
+#'       files with multiple tracks will cause en error
 #' @note bed files are expected not to have header lines
 #'
 #' @export
@@ -178,12 +180,19 @@ setMethod("convertBedDf" ,
 # ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object for exons
 #'  
-#' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
+#' @param bed.df a data.frame where column order and content resembles a bed file with 12 columns
 #' @usage convertBed2Exons(bed.df)
 #' @return \code{\link{GRanges}} object
 #'
 #' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #'
+#'
+#' @examples
+#' file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+#' bed12 = read.table(file)
+#' exons = convertBed2Exons(bed12)
+#' head(exons)
+#' 
 #' @export
 #' @docType methods
 #' @rdname convertBed2Exons-methods
@@ -206,11 +215,19 @@ setMethod("convertBed2Exons" ,
 # ---------------------------------------------------------------------------- #
 #' convert a data frame read-in from a bed file to a GRanges object for introns
 #'  
-#' @param bed.df  a data.frame where column order and content resembles a bed file with 12 columns
+#' @param bed.df  a data.frame where column order and content 
+#'                resembles a bed file with 12 columns
 #' @usage convertBed2Introns(bed.df)
 #' @return \code{\link{GRanges}} object
 #'
-#' @note one bed track per file is only accepted, the bed files with multiple tracks will cause en error
+#' @note one bed track per file is only accepted, the bed files with 
+#'       multiple tracks will cause en error
+#'
+#' @examples
+#' file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+#' bed12 = read.table(file)
+#' introns = convertBed2Introns(bed12)
+#' head(introns)
 #'
 #' @export
 #' @docType methods
@@ -237,10 +254,18 @@ setMethod("convertBed2Introns",
 #' 
 #' @param grange GRanges object for the feature
 #' @param flank  number of basepairs for the flanking regions
-#' @param clean  If set to TRUE, flanks overlapping with other main features will be trimmed, and overlapping flanks will be removed
-#'        this will remove multiple counts when other features overlap with flanks
+#' @param clean  If set to TRUE, flanks overlapping with other main features 
+#'               will be trimmed, and overlapping flanks will be removed. 
+#'               This will remove multiple counts when other features overlap 
+#'               with flanks
 #'
 #' @usage getFlanks(grange,flank=2000,clean=T)
+#' 
+#' @examples
+#' data(cpgi)
+#' cpgi.flanks = getFlanks(cpgi)
+#' head(cpgi.flanks)
+#' 
 #' @return GRanges object for flanking regions
 #' @export
 #' @docType methods
@@ -272,123 +297,52 @@ setMethod("getFlanks", signature(grange= "GRanges"),
 # annotate granges objects with annotations that read-in and converted to GRanges objects
 ##############################################################################
 
-#######################################
-# SECTION 2: Define new classes
-#######################################
-
-# ---------------------------------------------------------------------------- #
-# A set of objects that will hold statistics about feature and annotation overlap
-#' An S4 class that information on overlap of target features with annotation features  
-#'
-#' This object is desgined to hold statistics and information about genomic feature overlaps
-#'          
-#' @section Slots:\describe{
-#'            	    \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
-#'
-#'                  \item{\code{annotation}}{a named vector of percentages}
-#'
-#'                  \item{\code{precedence}}{a named vector of percentages}
-#'
-#'                  \item{\code{num.hierarchica}}{vector}
-#'
-#'                  \item{\code{no.of.OlapFeat}}{vector}
-#'
-#'                  \item{\code{perc.of.OlapFeat}}{vector}
-#' }
-#' @name annotationByFeature-class
-#' @rdname annotationByFeature-class
-#' @export
-setClass("annotationByFeature", 
-			representation(members  = "matrix",
-						   annotation = "numeric",
-						   precedence = "numeric",
-						   num.annotation = "numeric",
-						   num.precedence = "numeric",
-						   no.of.OlapFeat = "numeric",
-						   perc.of.OlapFeat = "numeric"))
-
-# ---------------------------------------------------------------------------- #
-#' An S4 class that information on overlap of target features with annotation features  
-#'
-#' This object is desgined to hold statistics and information about genomic feature overlaps
-#'          
-#' @section Slots:\describe{
-#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
-#'
-#'                  \item{\code{annotation}}{a named vector of percentages}
-#'
-#'                  \item{\code{precedence}}{a named vector of percentages}
-#'
-#'                  \item{\code{num.hierarchica}}{vector}
-#'
-#'                  \item{\code{no.of.OlapFeat}}{vector}
-#'
-#'                  \item{\code{perc.of.OlapFeat}}{vector}
-#'
-#'                  \item{dist.to.TSS}{a data frame showing distances to TSS and gene/TSS names and strand}
-#' }
-#' @name annotationByGenicParts-class
-#' @rdname annotationByGenicParts-class
-#' @export
-setClass("annotationByGenicParts", 
-			representation(dist.to.TSS = "data.frame"), contains = "annotationByFeature")
-
-
-#new.obj=new("annotationByGenicParts",
-#            members=matrix(c(1,2,3,4)),annotation=c(1,2,0,3,4),
-#            precedence=c(a=1,b=2,c=0,d=3,e=4),
-#            num.annotation  =c(1,2,0,3,4),
-#            num.precedence=c(1,2,0,3,4),
-#            no.of.OlapFeat  =c(1,2,0,3,4),
-#            perc.of.OlapFeat=c(1,2,0,3,4),
-#            dist.to.TSS     =c(1,2,0,3,4) )
-
 #' @rdname show-methods
-#' @aliases show,annotationByGenicParts-method
-setMethod("show", "annotationByGenicParts", 
+#' @aliases show,AnnotationByGeneParts-method
+setMethod("show", "AnnotationByGeneParts", 
 			function(object) {
 
-				message("Summary of target set annotation with genic parts\n");
-				message("Rows in target set:", nrow(object@members), "\n")
-				message("-----------------------\n\n")
+				message("Summary of target set annotation with genic parts");
+				message("Rows in target set: ", nrow(object@members))
+				message("-----------------------")
 				
-				message("percentage of target features overlapping with annotation :\n")
-				print(object@annotation)
-				message("\n\n")
+				message("percentage of target features overlapping with annotation:")
+				print(round(object@annotation,2))
+				message()
 				
-				message("percentage of target features overlapping with annotation\n")
-				message("(with promoter > exon > intron precedence) :\n"); 
-				print(object@precedence)
-				message("\n\n")
+				message("percentage of target features overlapping with annotation:")
+				message("(with promoter > exon > intron precedence):"); 
+				print(round(object@precedence,2))
+				message()
 				
-				message("percentage of annotation boundaries with feature overlap :\n")
-				print(object@perc.of.OlapFeat);
-				message("\n\n")  
+				message("percentage of annotation boundaries with feature overlap:")
+				print(round(object@perc.of.OlapFeat,2))
+				message()  
 				
-				message("summary of distances to the nearest TSS :\n")
+				message("summary of distances to the nearest TSS:")
 				print(summary(abs(object@dist.to.TSS[,2])))
-				message("\n")
+				message()
 })
 
 
 #' @rdname show-methods
-#' @aliases show,annotationByFeature-method
-setMethod("show", "annotationByFeature", 
-			function(object) {
-
-			message("summary of target set annotation with feature annotation\n")
-			message(nrow(object@members))
-			message(" rows in target set\n--------------\n")
-			message("--------------\n")
-			
-			message("percentage of target features overlapping with annotation :\n")
-			print(object@annotation)
-			message("\n\n")
-			
-			message("percentage of annotation boundaries with feature overlap :\n")
-			print(object@perc.of.OlapFeat)
-			message("\n\n")  
+#' @aliases show,AnnotationByFeature-method
+setMethod("show", "AnnotationByFeature",
+          function(object) {
+            
+            message("summary of target set annotation with feature annotation:")
+            message("Rows in target set: ",nrow(object@members))
+            message("----------------------------")
+            
+            message("percentage of target elements overlapping with features:")
+            print(round(object@annotation,2))
+            message()
+            
+            message("percentage of feature elements overlapping with target:")
+            print(round(object@perc.of.OlapFeat,2))
+            message()
 })
+
 
 
 #######################################
@@ -524,40 +478,62 @@ distance2NearestFeature<-function(g.idh,tss){
 #' The function annotates \code{GRangesList} or \code{GRanges} object as 
 #' overlapping with promoter,exon,intron or intergenic regions.
 #'
-#' @param target A \code{\link{GRanges}} or \code{\link{GRangesList}}
+#' @param target  \code{\link{GRanges}} or \code{\link{GRangesList}}
 #'                object storing chromosome locations
 #'                to be annotated (e.g. chipseq peaks)
-#' @param GRangesList.obj A GRangesList object containing GRanges object for
-#'      promoter, exons, introns and TSSes, or simply output of 
-#'      readTranscriptFeatures function
+#' @param feature GRangesList object containing GRanges object for
+#'                promoter, exons, introns and transcription start sites, 
+#'                or simply output of readTranscriptFeatures function
 #' @param strand If set to TRUE, annotation features and target features will be 
 #'        overlapped based on strand  (def:FALSE)
+#' @param intersect.chr boolean, whether to select only chromosomes that are 
+#'        common to feature and target. FALSE by default
 #' 
-#' @return \code{annotationByGenicParts} object or a list of 
-#'         \code{annotationByGenicParts}
+#' @return \code{AnnotationByGeneParts} object or a list of 
+#'         \code{AnnotationByGeneParts}
 #'         objects if target is a  \code{\link{GRangesList}} object.
+#' 
+#' @examples
+#' data(cage)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#  cage.annot
 #' 
 #' @export
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
 setGeneric("annotateWithGeneParts", 
-                function(target,GRangesList.obj,strand=F)
+                function(target,feature,strand=F, intersect.chr=FALSE)
                     standardGeneric("annotateWithGeneParts") )
 
 #' @aliases annotateWithGeneParts,GRanges,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts", 
-		  signature(target = "GRanges", GRangesList.obj = "GRangesList"),
-		  function(target, GRangesList.obj,strand){
+		  signature(target = "GRanges", feature = "GRangesList"),
+		  function(target, feature, strand, intersect.chr){
 
+		  if(intersect.chr){
+		    message('intersecting chromosomes...')
+		    chrs = intersect(unique(as.character(seqnames(target))), 
+                         unique(unlist(
+                           lapply(feature, 
+                                  function(x)as.character(seqnames(x))))))
+        
+		    if(length(chrs) == 0)
+		      stop('target and feature do not have intersecting chromosomes')
+		    target=target[seqnames(target) %in% chrs]
+		    feature = lapply(feature, function(x)x[seqnames(x) %in% chrs])
+		  }  
+        
 			a.list = annotatGrWithGeneParts(target, 
-												GRangesList.obj$promoters,
-												GRangesList.obj$exons,
-												GRangesList.obj$introns,
-												strand=strand)
-			dist2TSS = distance2NearestFeature(target,GRangesList.obj$TSSes)
+			                                feature$promoters,
+			                                feature$exons,
+			                                feature$introns,
+												              strand=strand)
+			dist2TSS = distance2NearestFeature(target,feature$TSSes)
 
-			new("annotationByGenicParts",
+			new("AnnotationByGeneParts",
 				members 		= as.matrix(a.list$members),
 				annotation      = a.list$annotation,
 				precedence		= a.list$precedence,
@@ -573,11 +549,21 @@ setMethod("annotateWithGeneParts",
 #' @aliases annotateWithGeneParts,GRangesList,GRangesList-method
 #' @rdname annotateWithGeneParts-methods
 setMethod("annotateWithGeneParts",
-		  signature(target = "GRangesList", GRangesList.obj= "GRangesList"),
-		  function(target, GRangesList.obj, strand){
+		  signature(target = "GRangesList", feature= "GRangesList"),
+		  function(target, feature, strand, intersect.chr){
 		  
-			l = lapply(target, function(x)
-                          annotateWithGeneParts(target, GRangesList.obj, strand))
+        
+      l = list()
+      if(is.null(names(target)))
+          names(target) = 1:length(target)
+      for(i in 1:length(target)){
+      
+        name = names(target)[i]
+        message(paste('Working on:',name))
+        x = target[[name]]
+        l[[name]] = annotateWithGeneParts(x, feature, strand, intersect.chr)
+        
+      }                          
 			return(l)
 })
 
@@ -588,13 +574,26 @@ setMethod("annotateWithGeneParts",
 #' Function to annotate a given GRanges object with promoter,exon,intron & intergenic values
 #'  
 #' @param target    a granges object storing chromosome locations to be annotated
-#' @param feature   a granges object storing chromosome locations of a feature (can be CpG islands, ChIP-seq peaks, etc)
-#' @param flank     a granges object storing chromosome locations of the flanks of the feature
+#' @param feature   a granges object storing chromosome locations of a feature 
+#'                  (can be CpG islands, ChIP-seq peaks, etc)
+#' @param flank     a granges object storing chromosome locations of 
+#'                  the flanks of the feature
 #' @param feature.name     string for the name of the feature
 #' @param flank.name     string for the name of the flanks
-#' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
-#' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",flank.name="flank",strand=FALSE)
-#' @return returns an \code{annotationByFeature} object
+#' @param strand   If set to TRUE, annotation features and target features 
+#'                 will be overlapped based on strand  (def:FAULT)
+#' @param intersect.chr boolean, whether to select only chromosomes that are 
+#'                      common to feature and target. FALSE by default
+#' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",
+#'                                 flank.name="flank",strand=FALSE)
+#' @return returns an \code{AnnotationByFeature} object
+#' 
+#' 
+#' @examples
+#' data(cpgi)
+#' data(cage)
+#' cpgi.flanks = getFlanks(cpgi)
+#' flank.annot = annotateWithFeatureFlank(cage, cpgi, cpgi.flanks)
 #' 
 #' @export
 #' @docType methods
@@ -603,17 +602,32 @@ setGeneric("annotateWithFeatureFlank",
                           function(target,
                                    feature,
                                    flank,
-                                   feature.name="feat",
+                                   feature.name=NULL,
                                    flank.name="flank",
-                                   strand=FALSE) 
+                                   strand=FALSE, 
+                                   intersect.chr=FALSE) 
                             standardGeneric("annotateWithFeatureFlank") )
 
 #' @aliases annotateWithFeatureFlank,GRanges,GRanges,GRanges-method
 #' @rdname annotateWithFeatureFlank-methods
 setMethod( "annotateWithFeatureFlank", 
 			signature(target = "GRanges",feature="GRanges",flank="GRanges"),
-			function(target, feature, flank,feature.name,flank.name,strand){
+			function(target, feature, flank, feature.name, flank.name, strand, 
+               intersect.chr){
 
+			  if(is.null(feature.name))
+			    feature.name= deparse(substitute(feature))
+        
+			  if(intersect.chr){
+			    message('intersecting chromosomes...')
+			    chrs = intersect(unique(as.character(seqnames(target))), 
+			                     unique(as.character(seqnames(feature))))
+			    if(length(chrs) == 0)
+			      stop('target and feature do not have intersecting chromosomes')
+			    target  = target[seqnames(target) %in% chrs]
+			    feature = feature[seqnames(feature) %in% chrs]
+			  }
+        
 				if( ! strand )
 					strand(target) = "*"
 					memb=data.frame(matrix(rep(0,length(target)*2),ncol=2) )
@@ -646,7 +660,7 @@ setMethod( "annotateWithFeatureFlank",
 					names(numberOfOlapFeat) = c(feature.name,flank.name)
 					percOfOlapFeat = 100*numberOfOlapFeat/c(length(feature),length(flank) )
 
-					new("annotationByFeature",
+					new("AnnotationByFeature",
 						members         = as.matrix(memb),
 						annotation      = annotation,
 						precedence		= precedence,
@@ -662,12 +676,28 @@ setMethod( "annotateWithFeatureFlank",
 #' Function to annotate given GRanges object with a given genomic feature
 #' 
 #' @param target   a GRanges object storing chromosome locations to be annotated
-#' @param feature  a GRanges object storing chromosome locations of a feature (can be CpG islands, ChIP-seq peaks, etc)
-#' @param strand   If set to TRUE, annotation features and target features will be overlapped based on strand  (def:FAULT)
-#' @param extend   specifiying a positive value will extend the feature on both sides as much as \code{extend}
-#' @param feature.name name of the annotation feature. For example: H3K4me1,CpGisland etc.
-#' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,feature.name="feat1")
-#' @return returns an \code{annotationByFeature} object
+#' @param feature  a GRanges object storing chromosome locations of a feature 
+#'                 (can be CpG islands, ChIP-seq peaks, etc)
+#' @param strand   If set to TRUE, annotation features and target features will 
+#'                 be overlapped based on strand  (def:FAULT)
+#' @param extend   specifiying a positive value will extend the feature on both 
+#'                 sides as much as \code{extend}
+#' @param feature.name name of the annotation feature. 
+#'                     For example: H3K4me1,CpGisland etc.
+#'                     by default the name is taken from the given variable
+#' @param intersect.chr boolean, whether to select only chromosomes that are 
+#'                      common to feature and target. FALSE by default
+
+#' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,
+#'                            feature.name="feat1", intersect.chr=FALSE)
+#' @return returns an \code{AnnotationByFeature} object
+#' 
+#' 
+#' @examples
+#' data(cpgi)
+#' data(promoters)
+#' annot = annotateWithFeature(cpgi, promoters)
+#' 
 #' 
 #' @export
 #' @docType methods
@@ -677,38 +707,56 @@ setGeneric("annotateWithFeature",
                              feature,
                              strand=FALSE,
                              extend=0,
-                             feature.name="feat1") 
+                             feature.name=NULL, 
+                             intersect.chr=FALSE) 
                       standardGeneric("annotateWithFeature") )
 
 #' @aliases annotateWithFeature,GRanges,GRanges-method
 #' @rdname annotateWithFeature-methods
 setMethod("annotateWithFeature", 
 		   signature(target = "GRanges",feature="GRanges"),
-		   function(target, feature, strand,extend,feature.name){
+		   function(target, feature, strand,extend,feature.name,intersect.chr){
 
-				if( ! strand){strand(target)="*"}
-					memb=rep(0,length(target))
+				if(is.null(feature.name))
+          feature.name= deparse(substitute(feature))
 
 				if(extend>0){
-					start(feature) = start(feature)- extend
-					end(feature)   = end(feature)  + extend
+				  message('extending features...')
+          feature = resize(feature, width=(width(feature)+2*extend),
+                           fix='center')
 				}
+        
+        # selects common chromosomes for target and feature
+        if(intersect.chr){
+          message('intersecting chromosomes...')
+          chrs = intersect(unique(as.character(seqnames(target))), 
+                           unique(as.character(seqnames(feature))))
+          if(length(chrs) == 0)
+            stop('target and feature do not have intersecting chromosomes')
+          target=target[seqnames(target) %in% chrs]
+          feature = feature[seqnames(feature) %in% chrs]
+        }
+        
+				if( ! strand)
+          strand(target)="*"
+				memb=rep(0,length(target))
+        
 				memb[countOverlaps(target,feature) > 0] = 1
 
 				annotation = c( 100*sum(memb >  0)/length(memb) ,
-								100*sum(memb == 0)/length(memb) )
+								        100*sum(memb == 0)/length(memb) )
 				
 				num.annotation = c( sum( memb >  0),
-									sum( memb == 0) )
+									          sum( memb == 0) )
 				names(annotation) = c(feature.name, "other")
 
 				numberOfOlapFeat = c(sum(countOverlaps(feature,target)>0))
 				percOfOlapFeat = 100*numberOfOlapFeat/c(length(feature))
 
-				new("annotationByFeature",
+				new("AnnotationByFeature",
 					members         = as.matrix(memb),
 					annotation      = annotation,
-					precedence		= annotation,
+					precedence		  = annotation,
 					num.annotation  = num.annotation,
 					num.precedence	= num.annotation,
 					no.of.OlapFeat  = numberOfOlapFeat,
@@ -716,19 +764,20 @@ setMethod("annotateWithFeature",
 })
 
 # ACCESSOR FUNCTIONS
-#annotationByFeature
-#annotationBygenicparts
+#AnnotationByFeature
+#AnnotationByGeneParts
 
 
 # ---------------------------------------------------------------------------- #
-#' Get the membership slot of annotationByFeature
+#' Get the membership slot of AnnotationByFeature
 #'
 #' Membership slot defines the overlap of target features with annotation features
 #'  For example, if a target feature overlaps with an exon
 #' 
-#' @param x a \code{annotationByFeature}  object
+#' @param x a \code{AnnotationByFeature}  object
 #' 
-#' @return RETURNS a matrix showing overlap of target features with annotation features. 1 for overlap, 0 for non-overlap
+#' @return matrix showing overlap of target features with annotation features. 
+#'         1 for overlap, 0 for non-overlap
 #' 
 #' @usage getMembers(x)
 #'
@@ -737,28 +786,44 @@ setMethod("annotateWithFeature",
 #' @rdname getMembers-methods                      
 setGeneric("getMembers", def=function(x) standardGeneric("getMembers"))
 
-#' @aliases getMembers,annotationByFeature-method
+#' @aliases getMembers,AnnotationByFeature-method
 #' @rdname getMembers-methods
 setMethod("getMembers", 
-			signature(x = "annotationByFeature"),
+			signature(x = "AnnotationByFeature"),
 			function(x){
 				return(x@members)
 })
 
 # ---------------------------------------------------------------------------- #
-#' Get the percentage of target features overlapping with annotation from annotationByFeature
+#' Get the percentage of target features overlapping with annotation from AnnotationByFeature
 #'
-#' This function retrieves percentage/number of target features overlapping with annotation
+#' This function retrieves percentage/number of target features 
+#' overlapping with annotation
 #'  
-#' @param x a \code{annotationByFeature}  object
-#' @param percentage TRUE|FALSE. If TRUE percentage of target features will be returned. If FALSE, number of target features will be returned
-#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation features when calculating numbers (with promoter>exon>intron precedence)
-#' That means if a feature overlaps with a promoter it will be counted as promoter overlapping only, or if it is overlapping with a an exon but not a promoter, 
-#' it will be counted as exon overlapping only whether or not it overlaps with an intron.
+#' @param x a \code{AnnotationByFeature}  object
+#' @param percentage TRUE|FALSE. If TRUE percentage of target 
+#'                   features will be returned. If FALSE, 
+#'                   number of target features will be returned
+#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation 
+#'                   features when calculating numbers 
+#'                   (with promoter>exon>intron precedence)
+#'                   
+#' That means if a feature overlaps with a promoter it will be counted as 
+#' promoter overlapping only, or if it is overlapping with a an exon 
+#' but not a promoter, #' it will be counted as exon overlapping only whether or
+#'  not it overlaps with an intron.
 #'
 #' @usage getTargetAnnotationStats(x,percentage=TRUE,precedence=TRUE)
+#' 
+#' @examples
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#  getTargetAnnotationStats(cage.annot)
 #'
-#' @return RETURNS  a vector of percentages or counts showing quantity of target features overlapping with annotation
+#' @return a vector of percentages or counts showing quantity of target features
+#'         overlapping with annotation
 #' 
 #' @export
 #' @docType methods
@@ -768,39 +833,54 @@ setGeneric("getTargetAnnotationStats",
                     standardGeneric("getTargetAnnotationStats"))
 
 #' @rdname getTargetAnnotationStats-methods
-#' @aliases getTargetAnnotationStats,annotationByFeature-method
+#' @aliases getTargetAnnotationStats,AnnotationByFeature-method
 setMethod("getTargetAnnotationStats", 
-			signature(x = "annotationByFeature"),
-			function(x,percentage ,precedence ){                      
+			signature(x = "AnnotationByFeature"),
+			function(x, percentage ,precedence ){                      
 			
 			if(percentage){
 				if(precedence){
-					return(x@precedence)
+					return(round(x@precedence,2))
 				}else{
-					return(x@annotation)
+					return(round(x@annotation,2))
 				}
 			}else{
 				if(precedence){
-					return(x@num.precedence)
+					return(round(x@num.precedence,2))
 				}else{
-					return(x@num.annotation)
+					return(round(x@num.annotation,2))
 				}
 			}
 })
 
 
 # ---------------------------------------------------------------------------- #
-#' Get the percentage/count of annotation features overlapping with target features from annotationByFeature
+#' Get the percentage/count of annotation features overlapping with target 
+#' features from AnnotationByFeature
 #'
-#' This function retrieves percentage/number of annotation features overlapping with targets. 
-#' For example, if \code{annotationByFeature}  object is containing statistics of differentially methylated 
-#' regions overlapping with gene annotation. This function will return number/percentage of introns,exons and promoters
+#' This function retrieves percentage/number of 
+#' annotation features overlapping with targets. 
+#' For example, if \code{AnnotationByFeature}  object is containing 
+#' statistics of differentially methylated 
+#' regions overlapping with gene annotation. This function will return 
+#' number/percentage of introns,exons and promoters
 #' overlapping with differentially methylated regions.
 #'  
-#' @param x a \code{annotationByFeature}  object
-#' @param percentage TRUE|FALSE. If TRUE percentage of annotation features will be returned. If FALSE, number of annotation features will be returned
+#' @param x a \code{AnnotationByFeature}  object
+#' @param percentage TRUE|FALSE. If TRUE percentage of annotation features will 
+#'        be returned. If FALSE, number of annotation features will be returned
 #'
-#' @return RETURNS  a vector of percentages or counts showing quantity of annotation features overlapping with target features
+#' @return RETURNS  a vector of percentages or counts showing quantity 
+#'         of annotation features overlapping with target features
+#'      
+#'         
+#' @examples
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' getFeatsWithTargetsStats(cage.annot)
+#' 
 #' @usage getFeatsWithTargetsStats(x,percentage=TRUE)
 #' @export
 #' @docType methods
@@ -811,40 +891,52 @@ setGeneric("getFeatsWithTargetsStats",
 
 
 #' @rdname getFeatsWithTargetsStats-methods
-#' @aliases getFeatsWithTargetsStats,annotationByFeature-method
+#' @aliases getFeatsWithTargetsStats,AnnotationByFeature-method
 setMethod("getFeatsWithTargetsStats", 
-			signature(x = "annotationByFeature" ),
+			signature(x = "AnnotationByFeature" ),
 			function( x,percentage ){                      
 			
 				if(percentage){
-					return(x@perc.of.OlapFeat)
+					return(round(x@perc.of.OlapFeat,2))
 				}else{
-					return(x@no.of.OlapFeat)                        
+					return(round(x@no.of.OlapFeat,2))                        
 				}
 })
 
 
 # ---------------------------------------------------------------------------- #
-#' Get distance to nearest TSS and gene id from annotationByGenicParts
+#' Get distance to nearest TSS and gene id from AnnotationByGeneParts
 #'
-#' This accessor function gets the nearest TSS, its distance to target feature,strand and name of TSS/gene from annotationByGenicParts object
-#' @param x a \code{annotationByGenicParts}  object
+#' This accessor function gets the nearest TSS, its distance to target feature,
+#' strand and name of TSS/gene from AnnotationByGeneParts object
 #' 
-#' @return RETURNS a data.frame containing row number of the target features,distance of target to nearest TSS, TSS/Gene name, TSS strand
+#' @param x a \code{AnnotationByGeneParts}  object
+#' 
+#' @return RETURNS a data.frame containing row number of the target features,
+#'         distance of target to nearest TSS, TSS/Gene name, TSS strand
 #' @usage getAssociationWithTSS(x)
-#' @aliases getAssociationWithTSS,-methods getAssociationWithTSS,annotationByGenicParts-method
+#' @aliases getAssociationWithTSS,-methods getAssociationWithTSS,
+#'          AnnotationByGeneParts-method
+#' 
+#' @examples
+#' data(cage)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)        
+#' head(getAssociationWithTSS(cage.annot))
+#'  
 #' @export
 #' @docType methods
-#' @rdname annotationByGenicParts-methods
+#' @rdname AnnotationByGeneParts-methods
 setGeneric("getAssociationWithTSS", 
                   function(x) 
                     standardGeneric("getAssociationWithTSS"))
 
-#' @rdname annotationByGenicParts-methods
+#' @rdname AnnotationByGeneParts-methods
 #' @docType methods
-#' @aliases getAssociationWithTSS,annotationByGenicParts-method
+#' @aliases getAssociationWithTSS,AnnotationByGeneParts-method
 setMethod("getAssociationWithTSS", 
-			signature(x = "annotationByGenicParts"),
+			signature(x = "AnnotationByGeneParts"),
 			function(x){
 				return(x@dist.to.TSS)
 })
@@ -854,18 +946,36 @@ setMethod("getAssociationWithTSS",
 # PLOTTING FUNCTIONS
 
 # ---------------------------------------------------------------------------- #
-#' Plot annotation categories from annotationByGenicParts or annotationByFeature
+#' Plot annotation categories from AnnotationByGeneParts or AnnotationByFeature
 #'
-#' This function plots a pie or bar chart for showing percentages of targets annotated by genic parts or other query features
-#' @param x a \code{annotationByFeature} or  \code{annotationByGenicParts} object
-#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation features when calculating numbers (with promoter>exon>intron precedence). 
-#'  This option is only valid when x is a \code{annotationByGenicParts} object
+#' This function plots a pie or bar chart for showing percentages of targets 
+#' annotated by genic parts or other query features
+#' 
+#' @param x a \code{AnnotationByFeature} or  
+#'        \code{AnnotationByGeneParts} object
+#' @param precedence TRUE|FALSE. If TRUE there will be a hierachy of annotation 
+#'        features when calculating numbers 
+#'        (with promoter>exon>intron precedence). 
+#'        This option is only valid when x is a 
+#'        \code{AnnotationByGeneParts} object
 #' @param col a vector of colors for piechart or the bar plot
-#' @param ... graphical parameters to be passed to \code{pie} or \code{barplot} functions
+#' @param ... graphical parameters to be passed to \code{pie} 
+#'            or \code{barplot} functions
 #'
-#' usage  plotTargetAnnotation(x,precedence=TRUE,col,...)
+#' @usage  plotTargetAnnotation(x,precedence=TRUE,col,...)
 #'
-#' @return plots a piechart or a barplot for percentage of the target features overlapping with annotation
+#'
+#' @examples
+#' data(cage)
+#' 
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' plotTargetAnnotation(annot)
+#'
+#'
+#' @return plots a piechart or a barplot for percentage of 
+#'         the target features overlapping with annotation
 #' 
 #' @export
 #' @docType methods
@@ -873,19 +983,19 @@ setMethod("getAssociationWithTSS",
 setGeneric("plotTargetAnnotation", 
               function(x,
                        precedence=TRUE,
-                       col=rainbow(length(x@annotation)),...) 
+                       col=getColors(length(x@annotation)),...) 
                        standardGeneric("plotTargetAnnotation"))
 
 #' @rdname plotTargetAnnotation-methods
 #' @docType methods
-#' @aliases plotTargetAnnotation,annotationByFeature-method
+#' @aliases plotTargetAnnotation,AnnotationByFeature-method
 setMethod("plotTargetAnnotation", 
-			signature(x = "annotationByFeature"),
+			signature(x = "AnnotationByFeature"),
 			function(x,precedence,col,...){
 				
 				props=getTargetAnnotationStats(x,precedence)
 
-			if(precedence | ( is(x,"annotationByFeature") & !is(x,"annotationByGenicParts")) ){
+			if(precedence | ( is(x,"AnnotationByFeature") & !is(x,"AnnotationByGeneParts")) ){
 				slice.names=names(props)
 				names(props)=paste( paste(round(props),"%"),sep=" ")
 
@@ -905,55 +1015,67 @@ setMethod("plotTargetAnnotation",
 #'
 #' This function plots a heatmap of enrichment of each range in given gene feature
 #' 
-#' @param l a \code{list} of  \code{annotationByGenicParts} objects
+#' @param l a \code{list} of  \code{AnnotationByGeneParts} objects
 #' @param cluster TRUE/FALSE. If TRUE the heatmap is going to be clustered 
 #'        using hierarchical clustering
 #' @param col a vector of two colors that will be used for interpolation. 
 #'        The first color is the lowest one, the second is the highest one
 
-#' usage  plotGenicAnnotation(l, cluster=FALSE, 
+#' @usage  plotGeneAnnotation(l, cluster=FALSE, 
 #'        col=c('white','cornflowerblue'),...)
+#' 
+#' @examples
+#' data(cage)
+#' data(cpgi)
+#' 
+#' cage$tpm = NULL
+#' gl = GRangesList(cage=cage, cpgi=cpgi)
+#' 
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)        
+#' plotGeneAnnotation(annot)
 #' 
 #' @export
 #' @docType methods
-#' @rdname plotGenicAnnotation-methods
-setGeneric("plotGenicAnnotation", 
+#' @rdname plotGeneAnnotation-methods
+setGeneric("plotGeneAnnotation", 
                   function(l, 
                            cluster=FALSE, 
                            col=c('white','cornflowerblue'))
-                    standardGeneric("plotGenicAnnotation"))
+                    standardGeneric("plotGeneAnnotation"))
 
-#' @rdname plotGenicAnnotation-methods
+#' @rdname plotGeneAnnotation-methods
 #' @docType methods
-#' @aliases plotGenicAnnotation,annotationByFeature-method
-setMethod("plotGenicAnnotation", 
+#' @aliases plotGeneAnnotation,AnnotationByFeature-method
+setMethod("plotGeneAnnotation", 
 			signature(l="list"),
 			function(l, cluster, col){
 			
-				if(!all(unlist(lapply(l, class)) == "annotationByGenicParts"))
-					stop("All elements of the input list need to be annotationByGenicParts-class")
+				if(!all(unlist(lapply(l, class)) == "AnnotationByGeneParts"))
+					stop("All elements of the input list need to be AnnotationByGeneParts-class")
 			
-				d = do.call(rbind, lapply(l, function(x)x@precedence))
-				
+				d = data.frame(do.call(rbind, lapply(l, function(x)x@precedence)))
+				d = data.frame(SampleName=rownames(d), d)
+        
 				ind = 1:nrow(d)
 				if(cluster == TRUE){
-					h = hclust(dist(d))
+					h = hclust(dist(d[,-1]))
 					ind = h$order
 				}
-				m = reshape2::melt(data.frame(d))
-				m = melt(d)
-				
-				p <- ggplot(m, aes(x='X2', y='X1', fill='value', colour="white")) + 
-					 scale_fill_gradient(low =col[1], high = col[2]) + 
-					 scale_y_discrete(limits = rownames(d)[ind] ) + 
-					 opts(axis.title.x=theme_text(colour='white'), 
-						  axis.text.x=theme_text(colour='black', face='bold'), 
-						  axis.text.y=theme_text(colour='black'), 
-						  axis.title.y=theme_text(colour='white', face='bold'))
-				p + geom_tile(color='white') 
+
+				m = reshape2::melt(d, id.vars='SampleName')
+        colnames(m)[2] = 'Position'
+        
+				p = ggplot(m, aes(x=Position, y=SampleName, fill=value, colour="white")) +
+				  scale_fill_gradient(low =col[1], high = col[2]) +
+					 theme(
+              axis.title.x = element_text(colour='white'), 
+						  axis.text.x  = element_text(colour='black', face='bold'), 
+						  axis.text.y  = element_text(colour='black'), 
+						  axis.title.y = element_text(colour='white', face='bold')) +
+				      ylim(as.character(d$SampleName[ind]))
+				p = p + geom_tile(color='white')  
+        print(p)
 })
-
-# SECTION 3:
-# annotate ML objects with annotations read-in and converted to GRanges objects
-
 

@@ -9,7 +9,7 @@
 #' @param rand.set instead of randomly placing features in \code{query} one can supply an already shuffled set of \code{query} genomic features.
 #' @param randomizations  number of times the features to be shuffled
 #' @param ... other parameters to be passed to \code{randomizeFeature} function. These parameters ccontrol how randomization is done.
-#' @return returns a \code{randomEnrichment} object
+#' @return returns a \code{RandomEnrichment} object
 #' @seealso \code{\link{randomizeFeature}}
 #' @examples
 #'  data(cage)
@@ -68,9 +68,10 @@ setMethod("getRandomEnrichment",
 				# calculate randomized raw p-value
 				rand.p.value = sum(rand.olap.dist>orig.cnt)/length(rand.olap.dist)
 
-				list( orig.cnt = orig.cnt,
-					  rand.olap.dist = rand.olap.dist,
-					  fc = log2(orig.cnt/mean(rand.olap.dist)),
-					  p.value = p.value,
-					  rand.p.value = rand.p.value)
+				l = list(orig.cnt = orig.cnt,
+					       rand.olap.dist = rand.olap.dist,
+					       fc = log2(orig.cnt/mean(rand.olap.dist)),
+					       p.value = p.value,
+					       rand.p.value = rand.p.value)
+        return(as(l, 'RandomEnrichment'))
 })

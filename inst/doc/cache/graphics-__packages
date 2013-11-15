@@ -1,0 +1,9 @@
+base
+BiocGenerics
+codetools
+genomation
+genomationData
+GenomicRanges
+IRanges
+knitr
+XVector
