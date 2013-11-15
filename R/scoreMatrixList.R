@@ -361,7 +361,7 @@ setMethod("binMatrix", signature("ScoreMatrixList"),
             if(is.null(bin.num))
               return(x)
              
-            return(new("ScoreMatrix", 
+            return(new("ScoreMatrixList", 
                        lapply(x, function(y)binMatrix(y, bin.num=bin.num, fun=fun))))
           }
 )
