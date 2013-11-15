@@ -495,9 +495,9 @@ distance2NearestFeature<-function(g.idh,tss){
 #' 
 #' @examples
 #' data(cage)
-#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
-#' cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 #  cage.annot
 #' 
 #' @export
@@ -872,7 +872,15 @@ setMethod("getTargetAnnotationStats",
 #'
 #' @return RETURNS  a vector of percentages or counts showing quantity 
 #'         of annotation features overlapping with target features
+#'      
 #'         
+#' @examples
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' getFeatsWithTargetsStats(cage.annot)
+#' 
 #' @usage getFeatsWithTargetsStats(x,percentage=TRUE)
 #' @export
 #' @docType methods
@@ -889,9 +897,9 @@ setMethod("getFeatsWithTargetsStats",
 			function( x,percentage ){                      
 			
 				if(percentage){
-					return(x@perc.of.OlapFeat)
+					return(round(x@perc.of.OlapFeat,2))
 				}else{
-					return(x@no.of.OlapFeat)                        
+					return(round(x@no.of.OlapFeat,2))                        
 				}
 })
 
@@ -909,6 +917,14 @@ setMethod("getFeatsWithTargetsStats",
 #' @usage getAssociationWithTSS(x)
 #' @aliases getAssociationWithTSS,-methods getAssociationWithTSS,
 #'          AnnotationByGeneParts-method
+#' 
+#' @examples
+#' data(cage)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)        
+#' head(getAssociationWithTSS(cage.annot))
+#'  
 #' @export
 #' @docType methods
 #' @rdname AnnotationByGeneParts-methods
@@ -946,7 +962,17 @@ setMethod("getAssociationWithTSS",
 #' @param ... graphical parameters to be passed to \code{pie} 
 #'            or \code{barplot} functions
 #'
-#' usage  plotTargetAnnotation(x,precedence=TRUE,col,...)
+#' @usage  plotTargetAnnotation(x,precedence=TRUE,col,...)
+#'
+#'
+#' @examples
+#' data(cage)
+#' 
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' plotTargetAnnotation(annot)
+#'
 #'
 #' @return plots a piechart or a barplot for percentage of 
 #'         the target features overlapping with annotation
@@ -957,7 +983,7 @@ setMethod("getAssociationWithTSS",
 setGeneric("plotTargetAnnotation", 
               function(x,
                        precedence=TRUE,
-                       col=rainbow(length(x@annotation)),...) 
+                       col=getColors(length(x@annotation)),...) 
                        standardGeneric("plotTargetAnnotation"))
 
 #' @rdname plotTargetAnnotation-methods
@@ -995,8 +1021,20 @@ setMethod("plotTargetAnnotation",
 #' @param col a vector of two colors that will be used for interpolation. 
 #'        The first color is the lowest one, the second is the highest one
 
-#' usage  plotGeneAnnotation(l, cluster=FALSE, 
+#' @usage  plotGeneAnnotation(l, cluster=FALSE, 
 #'        col=c('white','cornflowerblue'),...)
+#' 
+#' @examples
+#' data(cage)
+#' data(cpgi)
+#' 
+#' cage$tpm = NULL
+#' gl = GRangesList(cage=cage, cpgi=cpgi)
+#' 
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)        
+#' plotGeneAnnotation(annot)
 #' 
 #' @export
 #' @docType methods
