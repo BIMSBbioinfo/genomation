@@ -24,8 +24,8 @@ Imports:
 	ggplot2,
 	methods,
 	rtracklayer,
-  gridBase,
-  impute
+	gridBase,
+	impute
 Suggests:
     testthat,
     knitr,

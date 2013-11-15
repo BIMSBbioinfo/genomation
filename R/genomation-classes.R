@@ -1,6 +1,9 @@
 # S4 classes for genomation show and accessor functions
 
 # ---------------------------------------------------------------------------- #
+# --------------------- #
+# Randomization Classes #
+# --------------------- #
 #' An S4 class for storing \code{getRandomEnrichment} function results
 #'
 #' The resulting object stores the results of \code{getRandomEnrichment} function
@@ -13,11 +16,11 @@
 #'                  \item{\code{rand.p.value}:}{ p-value from randomization by calculation the proportion of how many times a random number of overlap exceeds the original number of overlap}
 #'                 }
 #'
-#' @name randomEnrichment-class
-#' @rdname randomEnrichment-class
+#' @name RandomEnrichment-class
+#' @rdname RandomEnrichment-class
 #' @seealso \code{\link{getRandomEnrichment}}
 #' @export
-setClass("randomEnrichment", 
+setClass("RandomEnrichment", 
 		representation(
 			orig.cnt = "numeric", 
 			rand.olap.dist = "numeric",
@@ -28,10 +31,10 @@ setClass("randomEnrichment",
 
 
 #' show method for some of the genomation classes
-#' @param object object of class randomEnrichment
+#' @param object object of class RandomEnrichment
 #' @rdname show-methods
-#' @aliases show,randomEnrichment-method
-setMethod("show", "randomEnrichment", function(object) {
+#' @aliases show,RandomEnrichment-method
+setMethod("show", "RandomEnrichment", function(object) {
   message("orig.cnt:",object@orig.cnt,"\n")
   message("log2fc:",object@log2fc,"\n")
   message("p.value:",object@p.value,"\n")
@@ -43,6 +46,10 @@ setMethod("show", "randomEnrichment", function(object) {
 
 
 # ---------------------------------------------------------------------------- #
+# ------------------- #
+# ScoreMatrix Classes #
+# ------------------- #
+
 #' An S4 class for storing \code{ScoreMatrix} function results
 #'
 #' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
@@ -68,3 +75,69 @@ setClass("ScoreMatrixList",
 			contains = "list"
 #			validity=.valid.ScoreMatrixList
 			)
+
+
+# ---------------------------------------------------------------------------- #
+# ------------------ #
+# Annotation Classes #
+# ------------------ #
+
+# A set of objects that will hold statistics about feature and annotation overlap
+#' An S4 class that information on overlap of target features with annotation features  
+#'
+#' This object is desgined to hold statistics and information about genomic feature overlaps
+#'          
+#' @section Slots:\describe{
+#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
+#'
+#'                  \item{\code{annotation}}{a named vector of percentages}
+#'
+#'                  \item{\code{precedence}}{a named vector of percentages}
+#'
+#'                  \item{\code{num.hierarchica}}{vector}
+#'
+#'                  \item{\code{no.of.OlapFeat}}{vector}
+#'
+#'                  \item{\code{perc.of.OlapFeat}}{vector}
+#' }
+#' @name AnnotationByFeature-class
+#' @rdname AnnotationByFeature-class
+#' @export
+setClass("AnnotationByFeature", 
+         representation(members  = "matrix",
+                        annotation = "numeric",
+                        precedence = "numeric",
+                        num.annotation = "numeric",
+                        num.precedence = "numeric",
+                        no.of.OlapFeat = "numeric",
+                        perc.of.OlapFeat = "numeric"))
+
+
+
+#' An S4 class that information on overlap of target features with annotation features  
+#'
+#' This object is desgined to hold statistics and information about genomic feature overlaps
+#'          
+#' @section Slots:\describe{
+#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
+#'
+#'                  \item{\code{annotation}}{a named vector of percentages}
+#'
+#'                  \item{\code{precedence}}{a named vector of percentages}
+#'
+#'                  \item{\code{num.hierarchica}}{vector}
+#'
+#'                  \item{\code{no.of.OlapFeat}}{vector}
+#'
+#'                  \item{\code{perc.of.OlapFeat}}{vector}
+#'
+#'                  \item{dist.to.TSS}{a data frame showing distances to TSS and gene/TSS names and strand}
+#' }
+#' @name AnnotationByGeneParts-class
+#' @rdname AnnotationByGeneParts-class
+#' @export
+setClass("AnnotationByGeneParts", 
+         representation(dist.to.TSS = "data.frame"), contains = "AnnotationByFeature")
+
+
+

@@ -72,15 +72,24 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @docType methods
 #' @rdname readGeneric
 readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL, 
-                      keep.all.metadata=FALSE, zero.based=FALSE, remove.unsual=FALSE,
-                      header=FALSE, skip=0,sep="\t"){
-              
+                      keep.all.metadata=FALSE, zero.based=FALSE, 
+                      remove.unsual=FALSE, header=FALSE, 
+                      skip=0, sep="\t"){
+
+  # removes the track header
+  track=scan(file, n=1, what='character', sep='\n', quiet=TRUE)                    
+  if(grepl('^>',track))
+    skip = max(1, skip)
+  
+  # if header = FALSE, checks whether a header line exists, and skips it
+  if(header==FALSE){
+    line = read.table(file, nrows=1, stringsAsFactors=FALSE)
+    if(all(sapply(line, class) == 'character'))
+      skip = max(1, skip)
+  }
+  
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
-  
-  # removes nonstandard chromosome names
-  if(remove.unsual)
-    df = df[grep("_", as.character(df[,1]),invert=T),]
   
   # make a list of new column names, and their column numbers
   col.names1=list(chr=chr,start=start,end=end,strand=strand)
@@ -93,11 +102,15 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   
   # change the col names to the ones given by meta.cols and chr,str,end,strand
   colnames(df)[unlist(col.names)] = names(unlist(col.names))
-  
+    
   # converts the . strand character to *
   sind = grepl('strand',colnames(df))
   if(any(sind) & !is.null(strand))
     df[, sind] = sub('\\.', '*', df[,sind])
+    
+  # removes nonstandard chromosome names
+  if(remove.unsual)
+    df = df[grep("_", as.character(df$chr),invert=T),]
   
   g = makeGRangesFromDataFrame(
                           df, 
@@ -109,13 +122,13 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   black.names=c("seqnames", "ranges", "strand", "seqlevels", "seqlengths",
                 "isCircular", "start", "end", "width", "element")
   
+
   if(keep.all.metadata){
-    my.mcols=df[,-unlist(col.names1),drop=FALSE]
-    mcols(g)=    my.mcols[, !colnames(my.mcols) %in% black.names]
+    my.mcols = df[,-unlist(col.names1),drop=FALSE]
+    mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
   }else if(!is.null(meta.cols)){
     my.mcols=df[,unlist(meta.cols),drop=FALSE]
-    
-    mcols(g)=   my.mcols[, !colnames(my.mcols) %in% black.names]
+    mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
   }
     
   return(g)
@@ -333,7 +346,8 @@ setMethod("readTranscriptFeatures",
 #' @param split.group boolean, whether to split the 9th column of the file
 #' @param split.char character that is used as a separator of the 9th column. ';' by default
 #' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
-#' @return returns a \code{GenomicRanges} object
+#' @param zero.based \Rcode{boolean} whether the coordinates are 0 or 1 based. 0 is the default
+#' @return returns a \Rcode{GenomicRanges} object
 #' 
 #' @examples
 #' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
@@ -342,7 +356,8 @@ setMethod("readTranscriptFeatures",
 #' 
 #' @docType methods
 #' @export
-gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL){
+gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL, 
+                        zero.based=FALSE){
   
   gff = readGeneric(gff.file, 
                     chr=1,
@@ -353,7 +368,8 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL)
                                   feature=3,
                                   score=6,
                                   frame=8,
-                                  group=9))
+                                  group=9), 
+                    zero.based=zero.based)
   
   if(split.group){
     message('splitting the group.column...')
@@ -371,7 +387,7 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL)
   
   if(!is.null(filter)){		
     if(filter %in% gff$feature){
-      message("Filtering", filter, "features...\n")
+      message(paste("Filtering", filter, "features...\n"))
       gff = gff[gff$feature == filter,]
     }else{
       stop("The given feature is not present in the gff file")
