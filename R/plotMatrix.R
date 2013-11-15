@@ -993,7 +993,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
       my.order=order(-cent.val,group.vector,-rowSums(mat2,na.rm=TRUE))
       
       # commence the new order: Novus Ordo Seclorum
-      mat.list=lapply(mat.list,function(x) x[order(my.order),])
+      mat.list=lapply(mat.list,function(x) x[my.order,])
       group.vector=group.vector[my.order]
     }
     
