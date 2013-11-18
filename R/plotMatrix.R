@@ -125,7 +125,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
   marNew=marOrg
   marNew[4]=6.1
   par(mar=marNew)
-  image(x=xcoords,y=1:nrow(img),z=t(img[nrow(img):1,]),useRaster=TRUE,
+  image(x=xcoords,y=1:nrow(img),z=as.matrix(t(img[nrow(img):1,,drop=FALSE])),useRaster=TRUE,
         col=col,yaxt="n",ylab="",xlab=xlab,main=main,
         cex.lab=cex.lab,cex.axis=cex.axis)
   if(!is.null(profile.names)){
@@ -291,7 +291,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   }else{ # plot things one by one, in this case user must use par
     
     for(i in 1:length(metas) ){
-      plot(metas[[i]],type="l",col=line.col[i],
+      plot(xcoords,metas[[i]],type="l",col=line.col[i],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
     }
   }
@@ -407,7 +407,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
               x = unit(-0.5, "lines"),
               gp=gpar(cex=cex.lab),just="right")
   }else{
-    grid.text(group.names[unique(group.vector)], y=unit(name.coord,"npc"),
+    grid.text(group.names, y=unit(name.coord,"npc"),
               x = unit(-0.5, "lines"),
               gp=gpar(cex=cex.lab),just="right")    
   }
@@ -739,10 +739,14 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
             gp=gpar(cex=cex.main))
   
   #return groups if k-means==TRUE
-  if(kmeans){
-    invisible(clu$cluster) 
-  }
   if(!grid)popViewport()
+  
+  if(kmeans){
+    return(invisible(list(clu$cluster,group.vector))) 
+  }else if(order){
+    
+  }
+
 }
 
 
@@ -1238,7 +1242,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   }
   
   if(kmeans){
-    invisible(clu$cluster)
+    invisible(list(clu=clu$cluster,grp=group.vector))
   }
   
 }

@@ -1,0 +1,148 @@
+\name{multiHeatMatrix}
+\alias{multiHeatMatrix}
+\title{Draw multiple heatmaps from a ScoreMatrixList object}
+\usage{
+multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
+  group = NULL, group.col = NULL, order = FALSE, winsorize = c(0, 100),
+  kmeans = FALSE, k = 3, column.scale = TRUE, matrix.main = NULL,
+  legend.name = NULL, cex.legend = 0.8, xlab = NULL, cex.lab = 1,
+  cex.main = 1, cex.axis = 0.8, newpage = TRUE)
+}
+\arguments{
+  \item{sml}{a \code{ScoreMatrixList} object}
+
+  \item{grid}{if TRUE, grid graphics will be used. if
+  FALSE, base graphics will be used on the top level, so
+  users can use par(mfrow) or par(mfcol) prior to calling
+  the function. Default:FALSE}
+
+  \item{col}{a color palette or list of color palettes,
+  such as list(heat.colors(10),topo.colors(10)). If it is a
+  list, it is length must match the number of matrices to
+  be plotted.  If it is a single palette every heatmap will
+  have the same colors.}
+
+  \item{xcoords}{a vector of numbers showing relative
+  positions of the bases or windows or a list of vectors.
+  The elements of the list must match the number of columns
+  in the corresponding \code{ScoreMatrix}.  Alternatively,
+  the elements could be a numeric vector of two elements.
+  Such as c(0,100) showing the relative start and end
+  coordinates of the first and last column of the
+  \code{ScoreMatrix} object. The remaining coordinates will
+  be automatically matched in this case. If the argument is
+  not a list but a single vector, then all heatmaps will
+  have the same coordinate on their x-axis.}
+
+  \item{group}{a list of vectors of row numbers or a
+  factor. The rows will be reordered to match their
+  grouping. The grouping is used for rowside colors of the
+  heatmap. If it is a list, each element of the list must
+  be a vector of row numbers. Names of the elements of the
+  list will be used as names of groups.  If \code{group} is
+  a factor , it's length must match the number of rows of
+  the matrix, and factor levels will be used as the names
+  of the groups in the plot.}
+
+  \item{group.col}{a vector of color names to be used at
+  the rowside colors if \code{group} argument is given or
+  \code{kmeans=TRUE}}
+
+  \item{order}{Logical indicating if the rows should be
+  ordered or not (Default:FALSE). If \code{order=TRUE} the
+  matrix will be ordered with rowSums of all matrices in
+  descending order. If kmeans=TRUE or \code{group} argument
+  is provided, first the groups/clusters will be ordered in
+  descending order by the sums of rows, then everything
+  within the clusters will be ordered by the sums of rows.}
+
+  \item{winsorize}{Numeric vector of two, defaults to
+  c(0,100). This vector determines the upper and lower
+  percentile values to limit the extreme values. For
+  example, c(0,99) will limit the values to only 99th
+  percentile for a matrix, everything above the 99
+  percentile will be equalized to the value of 99th
+  percentile.This is useful for visualization of matrices
+  that have outliers.}
+
+  \item{kmeans}{Logical indicating if kmeans clustering
+  should be done on the rows or not (Default:FALSE).}
+
+  \item{k}{Defaults to 3. It designates the number of
+  clusters to be returned by kmeans clustering.}
+
+  \item{column.scale}{Logical indicating if matrices should
+  be scaled or not, prior to k-means clustering or
+  ordering. Setting this to TRUE scales the columns of the
+  matrices using, \code{scale()} function. scaled columns
+  are only used for clustering or ordering. Original scores
+  are displayed for heatmaps.}
+
+  \item{matrix.main}{a vector of strings for the titles of
+  the heatmaps. If NULL titles will be obtained from names
+  of the \code{ScoreMatrix} objects in the
+  \code{ScoreMatrixList} objects.}
+
+  \item{legend.name}{a vector of legend labels to be
+  plotted with legends of each heatmap. If it is a length 1
+  vector, all heatmaps will have the same legend label.}
+
+  \item{cex.legend}{A numerical value giving the amount by
+  which legend axis marks should be magnified relative to
+  the default}
+
+  \item{xlab}{a vector of character strings for x-axis
+  labels of the heatmaps.  if it is length 1, all heatmaps
+  will have the same label.}
+
+  \item{cex.lab}{A numerical value giving the amount by
+  which axis labels (including 'legend.name') should be
+  magnified relative to the default.}
+
+  \item{cex.main}{A numerical value giving the amount by
+  which plot title should be magnified}
+
+  \item{cex.axis}{A numerical value giving the amount by
+  which axis marks should be magnified relative to the
+  default}
+
+  \item{newpage}{logical indicating if
+  \code{grid.newpage()} function should be invoked if
+  \code{grid=TRUE}.}
+}
+\value{
+  returns kmeans clustering result invisibly, if
+  kmeans=TRUE
+}
+\description{
+  The function plots multiple heatmaps for a
+  ScoreMatrixList object side by side. Each matrix can have
+  different color schemes but it is essential that each
+  matrix is obtained from same regions or neighbouring
+  regions.
+}
+\examples{
+data(cage)
+data(promoters)
+scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+
+data(cpgi)
+scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+
+sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
+
+# use with K-means
+multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+                winsorize=c(0,99),
+                legend.name=c("tpm","coverage"),xlab="region around TSS")
+
+# use different colors
+require(RColorBrewer)
+col.cage= brewer.pal(9,"Blues")
+col.cpgi= brewer.pal(9,"YlGn")
+multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+                winsorize=c(0,99),col=list(col.cage,col.cpgi),
+                legend.name=c("tpm","coverage"),xlab="region around TSS")
+}
+
