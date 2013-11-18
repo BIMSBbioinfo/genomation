@@ -1,5 +1,6 @@
-\name{randomEnrichment-class}
-\alias{randomEnrichment-class}
+\docType{class}
+\name{RandomEnrichment-class}
+\alias{RandomEnrichment-class}
 \title{An S4 class for storing \code{getRandomEnrichment} function results}
 \description{
   The resulting object stores the results of

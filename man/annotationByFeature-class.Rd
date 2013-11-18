@@ -1,5 +1,6 @@
-\name{annotationByFeature-class}
-\alias{annotationByFeature-class}
+\docType{class}
+\name{AnnotationByFeature-class}
+\alias{AnnotationByFeature-class}
 \title{An S4 class that information on overlap of target features with annotation features}
 \description{
   This object is desgined to hold statistics and

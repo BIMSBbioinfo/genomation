@@ -1,5 +1,4 @@
-
-# ----------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------- #
 #' get enrichment based on randomized feature overlap
 #'
 #' This function measures the association between two genomic features by randomizing one feature and counting the overlaps in randomized sets.
@@ -9,14 +8,22 @@
 #' @param query a \code{GRanges} object that will be randomly placed across the genome and overlap of these random regions with \code{target} will be the background distribution of association between \code{target} and \code{query}.
 #' @param rand.set instead of randomly placing features in \code{query} one can supply an already shuffled set of \code{query} genomic features.
 #' @param randomizations  number of times the features to be shuffled
-#' @param ... other parameters to be passed to \code{randomize.feature} function. These parameters ccontrol how randomization is done.
-#' @usage getRandomEnrichment(target,query,randomizations=1000,rand.set=NULL,...)
-#' @return returns a \code{randomEnrichment} object
-#' @seealso \code{\link{randomize.feature}}
+#' @param ... other parameters to be passed to \code{randomizeFeature} function. These parameters ccontrol how randomization is done.
+#' @return returns a \code{RandomEnrichment} object
+#' @seealso \code{\link{randomizeFeature}}
+#' @examples
+#'  data(cage)
+#'  data(cpgi)
+#'  
+#'  enr = getRandomEnrichment(cage, cpgi, randomizations=50)
+#' 
+#' 
 #' @export
 #' @docType methods
 #' @rdname getRandomEnrichment-methods
-setGeneric("getRandomEnrichment", function(target, query, randomizations=1000, rand.set=NULL,...) standardGeneric("getRandomEnrichment") )
+setGeneric("getRandomEnrichment", 
+           function(target, query, randomizations=1000, rand.set=NULL,...) 
+             standardGeneric("getRandomEnrichment") )
 
 #' @aliases getRandomEnrichment,GRanges,GRanges-method
 #' @rdname getRandomEnrichment-methods
@@ -30,37 +37,41 @@ setMethod("getRandomEnrichment",
 				
 					rand.olap.dist=numeric(randomizations)
 					for(i in 1:randomizations){
-						cat("Iteration number:",i,"\r")
-						my.rand = randomize.feature(query,...)
+						message("Iteration number:",i,"\r")
+						my.rand = randomizeFeature(query,...)
 						my.cnts = sum(countOverlaps(target,my.rand)>0)
 						rand.olap.dist[i] = my.cnts
 					}
-					cat("\n")
+					message("\n")
 					
 				}else if(is(rand.set,"GRangesList")){
 					
 					randomizations = length(rand.set)
 					rand.olap.dist = numeric(randomizations)
 					for(i in 1:randomizations){
-						cat("Iteration number:",i,"\r")
+						message("Iteration number:",i,"\r")
 						my.cnts = sum(countOverlaps(target,rand.set[[i]])>0)
 						rand.olap.dist[i] = my.cnts
 					}
-					cat("\n")
+					message("\n")
 				}else{
 					stop("Wrong 'rand.set' argument supplied, it should be a 'GRangesList'")
 				}
 
 				# calculate p-value assuming normal distribution
-				p.value=pnorm(orig.cnt, mean=mean(rand.olap.dist), sd=sd(rand.olap.dist),lower.tail=FALSE )
+				p.value=pnorm(orig.cnt, 
+                      mean=mean(rand.olap.dist), 
+                      sd=sd(rand.olap.dist),
+                      lower.tail=FALSE )
 				#if(p1>0.5){p.value=1-p1}else{p.value=p1}
 
 				# calculate randomized raw p-value
 				rand.p.value = sum(rand.olap.dist>orig.cnt)/length(rand.olap.dist)
 
-				list( orig.cnt = orig.cnt,
-					  rand.olap.dist = rand.olap.dist,
-					  fc = log2(orig.cnt/mean(rand.olap.dist)),
-					  p.value = p.value,
-					  rand.p.value = rand.p.value)
+				l = list(orig.cnt = orig.cnt,
+					       rand.olap.dist = rand.olap.dist,
+					       fc = log2(orig.cnt/mean(rand.olap.dist)),
+					       p.value = p.value,
+					       rand.p.value = rand.p.value)
+        return(as(l, 'RandomEnrichment'))
 })

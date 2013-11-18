@@ -4,7 +4,11 @@
 \alias{getRandomEnrichment,GRanges,GRanges-method}
 \title{get enrichment based on randomized feature overlap}
 \usage{
-  getRandomEnrichment(target,query,randomizations=1000,rand.set=NULL,...)
+getRandomEnrichment(target, query, randomizations = 1000, rand.set = NULL,
+  ...)
+
+\S4method{getRandomEnrichment}{GRanges,GRanges}(target, query,
+  randomizations = 1000, rand.set = NULL, ...)
 }
 \arguments{
   \item{target}{a \code{GRanges} object to be overlapped
@@ -24,11 +28,11 @@
   shuffled}
 
   \item{...}{other parameters to be passed to
-  \code{randomize.feature} function. This parameters
-  constrains how randomization is done.}
+  \code{randomizeFeature} function. These parameters
+  ccontrol how randomization is done.}
 }
 \value{
-  returns a \code{randomEnrichment} object
+  returns a \code{RandomEnrichment} object
 }
 \description{
   This function measures the association between two
@@ -39,7 +43,13 @@
   overlap of \code{target} with these randomized features
   will be measured.
 }
+\examples{
+data(cage)
+ data(cpgi)
+
+ enr = getRandomEnrichment(cage, cpgi, randomizations=50)
+}
 \seealso{
-  \code{\link{randomize.feature}}
+  \code{\link{randomizeFeature}}
 }
 

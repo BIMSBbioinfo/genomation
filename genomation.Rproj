@@ -9,8 +9,11 @@ UseSpacesForTab: Yes
 NumSpacesForTab: 2
 Encoding: UTF-8
 
-RnwWeave: Sweave
+RnwWeave: knitr
 LaTeX: pdfLaTeX
 
 BuildType: Package
 PackageInstallArgs: --no-multiarch
+PackageBuildArgs: --no-build-vignettes
+PackageCheckArgs: --no-examples --no-manual --no-build-vignettes --no-vignettes
+PackageRoxygenize: rd

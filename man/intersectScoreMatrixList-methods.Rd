@@ -1,0 +1,39 @@
+\docType{methods}
+\name{intersectScoreMatrixList}
+\alias{intersectScoreMatrixList}
+\alias{intersectScoreMatrixList,ScoreMatrixList-method}
+\title{Get common rows from all matrices in a ScoreMatrixList object}
+\usage{
+intersectScoreMatrixList(sml, reorder = FALSE)
+
+\S4method{intersectScoreMatrixList}{ScoreMatrixList}(sml, reorder = FALSE)
+}
+\arguments{
+  \item{sml}{a \code{ScoreMatrixList} object}
+
+  \item{reorder}{if TRUE \code{ScoreMatrix} objects in the
+  list are sorted based on their common row ids.}
+}
+\value{
+  \code{ScoreMatrixList} object
+}
+\description{
+  Returns a intersection of rows for each matrix in a
+  ScoreMatrixList object. This is done using the rownames
+  of each element in the list.
+}
+\examples{
+target = GRanges(rep(c(1,2),each=7),
+                 IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                 weight = rep(c(1,2),each=7))
+
+windows1 = GRanges(rep(c(1,2),each=2),
+                   IRanges(rep(c(1,2), times=2), width=5),
+                   strand=c('-','+','-','+'))
+windows2 = windows1[c(1,3)]
+sml = as(list(ScoreMatrix(target, windows1),
+              ScoreMatrix(target, windows2)), 'ScoreMatrixList')
+sml
+intersectScoreMatrixList(sml)
+}
+

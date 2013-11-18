@@ -1,6 +1,9 @@
 # S4 classes for genomation show and accessor functions
 
-# ------------------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------- #
+# --------------------- #
+# Randomization Classes #
+# --------------------- #
 #' An S4 class for storing \code{getRandomEnrichment} function results
 #'
 #' The resulting object stores the results of \code{getRandomEnrichment} function
@@ -13,11 +16,11 @@
 #'                  \item{\code{rand.p.value}:}{ p-value from randomization by calculation the proportion of how many times a random number of overlap exceeds the original number of overlap}
 #'                 }
 #'
-#' @name randomEnrichment-class
-#' @rdname randomEnrichment-class
+#' @name RandomEnrichment-class
+#' @rdname RandomEnrichment-class
 #' @seealso \code{\link{getRandomEnrichment}}
 #' @export
-setClass("randomEnrichment", 
+setClass("RandomEnrichment", 
 		representation(
 			orig.cnt = "numeric", 
 			rand.olap.dist = "numeric",
@@ -28,58 +31,113 @@ setClass("randomEnrichment",
 
 
 #' show method for some of the genomation classes
+#' @param object object of class RandomEnrichment
 #' @rdname show-methods
-#' @aliases show,randomEnrichment-method
-setMethod("show", "randomEnrichment", function(object) {
-  cat("orig.cnt:",object@orig.cnt,"\n")
-  cat("log2fc:",object@log2fc,"\n")
-  cat("p.value:",object@p.value,"\n")
-  cat("rand.p.value:", object@rand.p.value,"\n")
+#' @aliases show,RandomEnrichment-method
+setMethod("show", "RandomEnrichment", function(object) {
+  message("orig.cnt:",object@orig.cnt,"\n")
+  message("log2fc:",object@log2fc,"\n")
+  message("p.value:",object@p.value,"\n")
+  message("rand.p.value:", object@rand.p.value,"\n")
 })
 
 
-# ------------------------------------------------------------------------------ #
-#' An S4 class for storing \code{modCoverage} function results
-#'
-#' The resulting object is an extension of a \code{RleList} object, and the results of \code{modCoverage} function.
-#' That is to say, the resulting object is basically an \code{RleList} from \code{IRanges} pacakge with extra slots defined below.
-#'
-#' @section Slots:\describe{
-#'                  \item{\code{multiply}:}{ number that is multiplied with original values used to construct the RleList }
-#'                  \item{\code{add}:}{ the value that is added to the original values used to construct the RleList}
-#'                 }
-#'
-#' @name modRleList-class
-#' @rdname modRleList-class
-#' @seealso \code{\link{modCoverage}}
-#' @export
-setClass("modRleList", representation(multiply="numeric",add="numeric"),
-        contains = "SimpleRleList")
 
 
-# ------------------------------------------------------------------------------ #
-#' An S4 class for storing \code{scoreMatrix} function results
+
+# ---------------------------------------------------------------------------- #
+# ------------------- #
+# ScoreMatrix Classes #
+# ------------------- #
+
+#' An S4 class for storing \code{ScoreMatrix} function results
 #'
 #' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
-#' Each row on the scoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
+#' Each row on the ScoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
 #'
-#' @name scoreMatrix-class
-#' @rdname scoreMatrix-class
-#' @seealso \code{\link{scoreMatrix-methods}}
+#' @name ScoreMatrix-class
+#' @rdname ScoreMatrix-class
+#' @seealso \code{\link{ScoreMatrix}}
 #' @export
-setClass("scoreMatrix",contains = "matrix")
+setClass("ScoreMatrix",contains = "matrix")
 
 
-# ------------------------------------------------------------------------------ #
-#' An S4 class for storing a set of \code{scoreMatrixList} 
+# ---------------------------------------------------------------------------- #
+#' An S4 class for storing a set of \code{ScoreMatrixList} 
 #'
 #' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
 #'
-#' @name scoreMatrixList-class
-#' @rdname scoreMatrixList-class
-#' @seealso \code{\link{scoreMatrixList-methods}}
+#' @name ScoreMatrixList-class
+#' @rdname ScoreMatrixList-class
+#' @seealso \code{\link{ScoreMatrixList}}
 #' @export
-setClass("scoreMatrixList", 
+setClass("ScoreMatrixList", 
 			contains = "list"
-#			validity=.valid.scoreMatrixList
+#			validity=.valid.ScoreMatrixList
 			)
+
+
+# ---------------------------------------------------------------------------- #
+# ------------------ #
+# Annotation Classes #
+# ------------------ #
+
+# A set of objects that will hold statistics about feature and annotation overlap
+#' An S4 class that information on overlap of target features with annotation features  
+#'
+#' This object is desgined to hold statistics and information about genomic feature overlaps
+#'          
+#' @section Slots:\describe{
+#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
+#'
+#'                  \item{\code{annotation}}{a named vector of percentages}
+#'
+#'                  \item{\code{precedence}}{a named vector of percentages}
+#'
+#'                  \item{\code{num.hierarchica}}{vector}
+#'
+#'                  \item{\code{no.of.OlapFeat}}{vector}
+#'
+#'                  \item{\code{perc.of.OlapFeat}}{vector}
+#' }
+#' @name AnnotationByFeature-class
+#' @rdname AnnotationByFeature-class
+#' @export
+setClass("AnnotationByFeature", 
+         representation(members  = "matrix",
+                        annotation = "numeric",
+                        precedence = "numeric",
+                        num.annotation = "numeric",
+                        num.precedence = "numeric",
+                        no.of.OlapFeat = "numeric",
+                        perc.of.OlapFeat = "numeric"))
+
+
+
+#' An S4 class that information on overlap of target features with annotation features  
+#'
+#' This object is desgined to hold statistics and information about genomic feature overlaps
+#'          
+#' @section Slots:\describe{
+#'                  \item{\code{members}}{a matrix showing overlap of target features with annotation genomic features}
+#'
+#'                  \item{\code{annotation}}{a named vector of percentages}
+#'
+#'                  \item{\code{precedence}}{a named vector of percentages}
+#'
+#'                  \item{\code{num.hierarchica}}{vector}
+#'
+#'                  \item{\code{no.of.OlapFeat}}{vector}
+#'
+#'                  \item{\code{perc.of.OlapFeat}}{vector}
+#'
+#'                  \item{dist.to.TSS}{a data frame showing distances to TSS and gene/TSS names and strand}
+#' }
+#' @name AnnotationByGeneParts-class
+#' @rdname AnnotationByGeneParts-class
+#' @export
+setClass("AnnotationByGeneParts", 
+         representation(dist.to.TSS = "data.frame"), contains = "AnnotationByFeature")
+
+
+

@@ -1,0 +1,64 @@
+\docType{methods}
+\name{calculateOverlapSignificance}
+\alias{calculateOverlapSignificance}
+\alias{calculateOverlapSignificance,GRanges,GRanges-method}
+\title{function that calculates the significance of overlaps of two sets of features using randomization}
+\usage{
+calculateOverlapSignificance(target, feature, chrom.sizes = NULL,
+  stranded = TRUE, keep.strand.prop = TRUE, keep.chrom = TRUE,
+  exclude = NULL, include = NULL, seed = NULL, nrand = 1)
+
+\S4method{calculateOverlapSignificance}{GRanges,GRanges}(target, feature,
+  chrom.sizes = NULL, stranded = TRUE, keep.strand.prop = TRUE,
+  keep.chrom = TRUE, exclude = NULL, include = NULL, seed = NULL,
+  nrand = 1)
+}
+\arguments{
+  \item{target}{a GRanges object for which the overlap
+  needs to be calculates}
+
+  \item{feature}{a GRanges object to be randomized}
+
+  \item{chrom.sizes}{sizes of chromosomes as a named vector
+  (names are chromsomes names and elements of the vectors
+  are lengths). , if not given sizes in GRanges object will
+  be used if no sizes there the end of each chr will be the
+  end last feature on each chr}
+
+  \item{stranded}{if FALSE, all of the returned features
+  will be strandless (will have "*" in the strand slot)}
+
+  \item{keep.strand.prop}{If TRUE strands will have the
+  same proportion as the features}
+
+  \item{keep.chrom}{If TRUE, number of features and
+  randomized features for a chromosome will match.
+  Currently seeting this to FALSE is not supported.}
+
+  \item{exclude}{A GRanges object where no randomized
+  feature should overlap, can be gaps or unmappable regions
+  in the genome as an example.}
+
+  \item{include}{A GRanges object which defines the
+  boundaries of randomized features}
+
+  \item{seed}{random number generator seed}
+
+  \item{nrand}{number of randomizations (default:1)}
+}
+\value{
+  returns a GRanges object which is randomized version of
+  the feature
+}
+\description{
+  This function calculates the significance of overlaps of
+  two sets of features using randomization. #' It returns a
+  distributon of overlaps of a target set with a given
+  randomized feature set. The randomization can be
+  constrained by supplied arguments. The function is still
+  in Beta mode - the regions can overlap excluded regions,
+  and the randomized regions are not disjoint. Please take
+  care that the excluded and included regions are not too
+  strict when compared to the total width of the ranges.
+}
+

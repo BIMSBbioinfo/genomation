@@ -1,23 +1,50 @@
 Package: genomation
 Type: Package
-Title: : R package for graphics and operations for genomic features
-Version: 0.2.1
+Title: : R package for annotation and visualization of genomic data
+Version: 0.4.6
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
-Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
-Description: A package for genomic feature analysis and annotation by extending bioconductor packages
+Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
+    <vedran.franke@gmail.com>
+Description: A package for genomic feature analysis and annotation. With genomation
+users can visualize and quantify genomic features over pre-defined regions such
+as promoters, exons, introns. The genomic features are any feature with a definite 
+chromosome position and may be associated with a score, such as aligned reads from
+HT-seq experiments, TF binding sites, methylation scores, etc. The package can
+use GRanges objects, BAM files and BigWig files. It can read BED and GFF files.
+On top of that, it can read any tabular genomic feature data as long as it has 
+minimal information on locations of genomic features.
 License: Artistic-2.0
 LazyLoad: yes
-Depends: R (>= 2.14.0), methods
-Imports: GenomicRanges,IRanges,data.table,reshape2
-Suggests: testthat
+VignetteBuilder: knitr
+biocViews: Annotation, HighThroughputSequencing, Visualization
+Depends:
+    R (>= 3.0.0),grid
+Imports:
+    GenomicRanges,
+    IRanges,
+	Rsamtools,
+    data.table,
+    plyr,
+    reshape2,
+	ggplot2,
+	methods,
+	rtracklayer,
+	gridBase,
+	impute
+Suggests:
+    testthat,
+    knitr,
+    RColorBrewer
 Collate:
+    'documentData.R'
     'genomation-classes.R'
     'getRandomEnrichment.R'
-	'gffFunctions.R'
-    'modCoverage.R'
-    'randomize.feature.R'
-    'read_annotate.R'
+    'findFeatureComb.R'
+	'plotMatrix.R'
+    'randomizeFeature.R'
+    'readAnnotate.R'
+    'readData.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'

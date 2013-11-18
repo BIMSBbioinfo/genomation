@@ -1,25 +1,29 @@
 \docType{methods}
 \name{plotTargetAnnotation}
 \alias{plotTargetAnnotation}
-\alias{plotTargetAnnotation,annotationByFeature-method}
-\title{Plot annotation categories from annotationByGenicParts or annotationByFeature}
+\alias{plotTargetAnnotation,AnnotationByFeature-method}
+\title{Plot annotation categories from AnnotationByGeneParts or AnnotationByFeature}
+\usage{
+plotTargetAnnotation(x,precedence=TRUE,col,...)
+
+\S4method{plotTargetAnnotation}{AnnotationByFeature}(x, precedence = TRUE,
+  col = getColors(length(x@annotation)), ...)
+}
 \arguments{
-  \item{x}{a \code{annotationByFeature} or
-  \code{annotationByGenicParts} object}
+  \item{x}{a \code{AnnotationByFeature} or
+  \code{AnnotationByGeneParts} object}
 
   \item{precedence}{TRUE|FALSE. If TRUE there will be a
   hierachy of annotation features when calculating numbers
-  (with promoter>exon>intron precedence). This option is
-  only valid when x is a \code{annotationByGenicParts}
+  (with promoter>exon>intron precedence).  This option is
+  only valid when x is a \code{AnnotationByGeneParts}
   object}
 
   \item{col}{a vector of colors for piechart or the bar
   plot}
 
   \item{...}{graphical parameters to be passed to
-  \code{pie} or \code{barplot} functions
-
-  usage plotTargetAnnotation(x,precedence=TRUE,col,...)}
+  \code{pie} or \code{barplot} functions}
 }
 \value{
   plots a piechart or a barplot for percentage of the
@@ -29,5 +33,13 @@
   This function plots a pie or bar chart for showing
   percentages of targets annotated by genic parts or other
   query features
+}
+\examples{
+data(cage)
+
+bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+gene.parts = readTranscriptFeatures(bed.file)
+annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+plotTargetAnnotation(annot)
 }
 
