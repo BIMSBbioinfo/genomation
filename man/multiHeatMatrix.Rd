@@ -5,8 +5,9 @@
 multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
   group = NULL, group.col = NULL, order = FALSE, winsorize = c(0, 100),
   kmeans = FALSE, k = 3, column.scale = TRUE, matrix.main = NULL,
-  legend.name = NULL, cex.legend = 0.8, xlab = NULL, cex.lab = 1,
-  cex.main = 1, cex.axis = 0.8, newpage = TRUE)
+  common.scale = FALSE, legend = TRUE, legend.name = NULL,
+  cex.legend = 0.8, xlab = NULL, cex.lab = 1, cex.main = 1,
+  cex.axis = 0.8, newpage = TRUE)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
@@ -83,6 +84,19 @@ multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
   of the \code{ScoreMatrix} objects in the
   \code{ScoreMatrixList} objects.}
 
+  \item{common.scale}{if TRUE (Default:FALSE) all the
+  heatmap colors will be coming from the same score scale,
+  although each heatmap color scale can be different.  The
+  color intensities will be coming from the same scale.
+  The scale will be determined by minimum of all matrices
+  and maximum of all matrices. This is useful when all
+  matrices are on the same score scale. If FALSE, the color
+  scale will be determined by minimum and maximum of each
+  matrix individually.}
+
+  \item{legend}{if TRUE and color legend for the heatmap is
+  drawn.}
+
   \item{legend.name}{a vector of legend labels to be
   plotted with legends of each heatmap. If it is a length 1
   vector, all heatmaps will have the same legend label.}
@@ -111,8 +125,8 @@ multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
   \code{grid=TRUE}.}
 }
 \value{
-  returns kmeans clustering result invisibly, if
-  kmeans=TRUE
+  invisibly returns the order of rows, if kmeans=TRUE
+  and/or order=TRUE
 }
 \description{
   The function plots multiple heatmaps for a
