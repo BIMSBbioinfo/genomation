@@ -20,4 +20,4 @@ install_github("genomation", username = "al2na")
 ```
 
 # Using the package
-see the package vignette (here)[https://github.com/al2na/genomation/raw/development/inst/doc/GenomationManual-knitr.pdf]
+see the package vignette [here](https://github.com/al2na/genomation/raw/development/inst/doc/GenomationManual-knitr.pdf)
