@@ -622,7 +622,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
     else if(is.factor(group)){
       
       # check if the length is same as nrow(mat)
-      if(length(group)==nrow(mat)){
+      if( length(group) != nrow(mat)){
         stop("'group' is a factor, and its length should be equal to nrow(mat)\n")
       }
       # arrange factor levels by the order of appeareance
@@ -651,10 +651,10 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
     }
     
   }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
-    order.vector=rep(1,nrow(mat2))
+    order.vector       =rep(1,nrow(mat2))
     names(order.vector)=rownames(mat2)
-    order.vector= order.vector[order(-rowSums(mat2,na.rm=TRUE))]
-    mat2=mat2[order(-rowSums(mat2,na.rm=TRUE)),]
+    order.vector       = order.vector[order(-rowSums(mat2,na.rm=TRUE))]
+    mat2               =mat2[order(-rowSums(mat2,na.rm=TRUE)),]
     
   }
   
