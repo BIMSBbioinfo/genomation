@@ -648,6 +648,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
       # commence the new order: Novus Ordo Seclorum
       mat2=mat2[my.order,]
       group.vector=group.vector[my.order]
+      names(group.vector)=rownames(mat2)
     }
     
   }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
@@ -829,7 +830,16 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' @param matrix.main a vector of strings for the titles of the heatmaps. If NULL
 #'                    titles will be obtained from names of the \code{ScoreMatrix}
 #'                    objects in the \code{ScoreMatrixList} objects.
-#'                    
+#' @param common.scale if TRUE (Default:FALSE) all the heatmap colors will be 
+#'                    coming from the same score
+#'                    scale, although each heatmap color scale can be different.
+#'                    The color intensities will be coming from the same scale. 
+#'                    The scale will be
+#'                    determined by minimum of all matrices and maximum of all 
+#'                    matrices. This is useful when all matrices are on the same
+#'                    score scale. If FALSE, the color scale will be determined
+#'                    by minimum and maximum of each matrix individually.
+#' @param legend      if TRUE and color legend for the heatmap is drawn.                   
 #' @param legend.name a vector of legend labels to be plotted with legends
 #'                    of each heatmap. If it is a length 1 vector, all heatmaps
 #'                    will have the same legend label.
@@ -849,7 +859,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                invoked if \code{grid=TRUE}.
 #' 
 #' @return
-#'  returns kmeans clustering result invisibly, if kmeans=TRUE
+#'  invisibly returns the order of rows, if kmeans=TRUE and/or order=TRUE
 #'  
 #' @examples
 #' 
@@ -888,7 +898,9 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
                           group=NULL,group.col=NULL,order=FALSE,
                           winsorize=c(0,100),
                           kmeans=FALSE,k=3,column.scale=TRUE,
-                          matrix.main=NULL,legend.name=NULL,cex.legend=0.8,
+                          matrix.main=NULL,
+                          common.scale=FALSE,legend=TRUE,
+                          legend.name=NULL,cex.legend=0.8,
                           xlab=NULL,
                           cex.lab=1, cex.main=1,cex.axis=0.8,newpage=TRUE)
 {
@@ -1053,7 +1065,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     else if(is.factor(group)){
       
       # check if the length is same as nrow(mat)
-      if(length(group)==nrow(mat.list[[1]])){
+      if(length(group) != nrow(mat.list[[1]])){
         stop("'group' is a factor, and its length should be equal to nrow(mat)\n")
       }
       # arrange factor levels by the order of appeareance
@@ -1096,10 +1108,15 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
       mat2=scale(mat2)
       mat2[is.nan(mat2)]=0
     }
+    order.vector       =rep(1,nrow(mat2))
+    names(order.vector)=rownames(mat2)
     my.order=order(-rowSums(mat2,na.rm=TRUE))
     mat.list=lapply(mat.list,function(x) x[my.order,])
+    order.vector       = order.vector[my.order]
+    
   }
   
+
   
   # THE PLOTTING STARTS HERE with ordered mat.list
   if(!grid){
@@ -1151,6 +1168,11 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   
   # heatmap start coordinates
   heat.startCoord=convertX( unit(4,"lines"),"npc",valueOnly=TRUE) + (hw/8) + (hw/20)
+  
+  # if the same scale to be used for all plots
+  if(common.scale){
+    common.range=range(mat.list,na.rm=TRUE)
+  }
   
   for(i in 1:length(mat.list)){
     
@@ -1209,25 +1231,31 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     pushViewport(heatVp) # push the heatmap VP
     grid.rect()
     .gridHeat(mat.list[[i]],ccol,cxcoords,xlab[i],cex.lab,cex.axis,
-              angle=60,hjust=0.5,vjust=-0.5) # make the heat  
+              angle=60,hjust=0.6,vjust=-0.5) # make the heat  
     #upViewport(1) # up one level current.vpTree()
     popViewport()
     
-    # make the legend viewport
-    legendVp <- viewport(width=unit(hw*0.7, "npc"), 
-                         height=unit(0.5, "lines"),
-                         x =unit(heat.startCoord+hw*0.15,"npc"), 
-                         y = unit(0.1, "npc"),
-                         just="left")
-    pushViewport(legendVp)
-    grid.rect()
-    
-    rng=range(mat.list[[i]],na.rm=TRUE)
-    # make the legend 
-    .heatLegendX(min=rng[1],max=rng[2],
-                 ccol,legend.name[i],main=TRUE,cex.legend,
-                 cex.lab,vjust=-0.5,hjust=0.5)
-    popViewport()
+    if(legend){
+      # make the legend viewport
+      legendVp <- viewport(width=unit(hw*0.7, "npc"), 
+                           height=unit(0.5, "lines"),
+                           x =unit(heat.startCoord+hw*0.15,"npc"), 
+                           y = unit(0.1, "npc"),
+                           just="left")
+      pushViewport(legendVp)
+      grid.rect()
+      
+      if(common.scale){
+        rng=common.range
+      }else{  
+        rng=range(mat.list[[i]],na.rm=TRUE)
+      }
+      # make the legend 
+      .heatLegendX(min=rng[1],max=rng[2],
+                   ccol,legend.name[i],main=TRUE,cex.legend,
+                   cex.lab,vjust=-0.5,hjust=0.5)
+      popViewport()
+    }
     
     if(!is.null(matrix.main)){
       title.y=unit(0.96, "npc")
@@ -1245,8 +1273,10 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     popViewport()
   }
   
-  if(kmeans){
-    invisible(list(clu=clu$cluster,grp=group.vector))
+  if(kmeans | !is.null(group.vector)){
+    return(invisible(group.vector)) 
+  }else if(order & is.null(group.vector) ){
+    return(invisible(order.vector)) 
   }
   
 }
