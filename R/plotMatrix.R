@@ -651,7 +651,11 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
     }
     
   }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
+    order.vector=rep(1,nrow(mat2))
+    names(order.vector)=rownames(mat2)
+    order.vector= order.vector[order(-rowSums(mat2,na.rm=TRUE))]
     mat2=mat2[order(-rowSums(mat2,na.rm=TRUE)),]
+    
   }
   
   
@@ -741,10 +745,10 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   #return groups if k-means==TRUE
   if(!grid)popViewport()
   
-  if(kmeans){
-    return(invisible(list(clu$cluster,group.vector))) 
-  }else if(order){
-    
+  if(kmeans | !is.null(group.vector)){
+    return(invisible(group.vector)) 
+  }else if(order & is.null(group.vector) ){
+    return(invisible(order.vector)) 
   }
 
 }
