@@ -161,9 +161,6 @@ readBigWig = function(target, windows=NULL, ...){
 #'              based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
-#' @param ... further arguments that control the behaviour of ScoreMatrixList 
-#'            on various input formats (e.g.a param argument containing a 
-#'            ScanBamParam object, when working with bam files)
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
@@ -200,8 +197,7 @@ setGeneric("ScoreMatrix",
                              rpm=FALSE, 
                              unique=FALSE, 
                              extend=0,
-                             param=NULL,
-                             ...) 
+                             param=NULL) 
                                 standardGeneric("ScoreMatrix") )
 
 
@@ -209,7 +205,7 @@ setGeneric("ScoreMatrix",
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
-          function(target,windows,strand.aware,...){
+          function(target,windows,strand.aware){
             
    #check if all windows are equal length
     if( length(unique(width(windows))) >1 ){
@@ -264,7 +260,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
-          function(target, windows, strand.aware, weight.col,is.noCovNA,...){
+          function(target, windows, strand.aware, weight.col,is.noCovNA){
             
             #make coverage vector  from target
             if(is.null(weight.col)){
@@ -295,7 +291,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @rdname ScoreMatrix-methods
 setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows, strand.aware, type='', 
-                   rpm=FALSE, unique=FALSE, extend=0, param=NULL, ...){
+                   rpm=FALSE, unique=FALSE, extend=0, param=NULL){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
@@ -314,7 +310,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param)
             if(type == 'bigWig')
-              covs = readBigWig(target=target, windows=windows, ...)            
+              covs = readBigWig(target=target, windows=windows)            
             
             # get coverage vectors
             ScoreMatrix(covs,windows,strand.aware)

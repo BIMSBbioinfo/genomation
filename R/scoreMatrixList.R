@@ -210,11 +210,10 @@ setMethod("show", "ScoreMatrixList",
 #'            to TRUE
 #' @param scalefun a function object that takes as input a matrix and returns a 
 #'        matrix.
-#' @param ... other argments that be passed to the function
 #'  By default  the argument is set to the R scale function with center=TRUE and 
 #'  scale=TRUE
 #'
-#' @usage scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
+#' @usage scaleScoreMatrixList(sml, columns, rows, scalefun)
 #' @return \code{ScoreMatrixList} object
 #' @examples 
 #' 
@@ -236,14 +235,13 @@ setMethod("show", "ScoreMatrixList",
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
                     columns=FALSE, rows=TRUE, 
-                    scalefun=NULL, 
-                    ...) 
+                    scalefun=NULL) 
              standardGeneric("scaleScoreMatrixList") )
 
 #' @aliases scaleScoreMatrixList,ScoreMatrixList-method
 #' @rdname scaleScoreMatrixList
 setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
-          function(sml, columns, rows, scalefun, ...){
+          function(sml, columns, rows, scalefun){
             
             
             sml = lapply(sml, function(x)
