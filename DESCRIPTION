@@ -4,8 +4,7 @@ Title: : R package for annotation and visualization of genomic data
 Version: 0.4.6
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
-Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
-    <vedran.franke@gmail.com>
+Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for genomic feature analysis and annotation users can visualize and quantify genomic features over pre-defined regions such as promoters, exons, introns. The genomic features are any feature with a definite chromosome position and may be associated with a score, such as aligned reads from HT-seq experiments, TF binding sites, methylation scores, etc. The package can use GRanges objects, BAM files and BigWig files. It can read BED and GFF files. On top of that, it can read any tabular genomic feature data as long as it hasminimal information on locations of genomic features.
 License: Artistic-2.0
 LazyLoad: yes
@@ -34,7 +33,7 @@ Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
     'findFeatureComb.R'
-	'plotMatrix.R'
+    'plotMatrix.R'
     'randomizeFeature.R'
     'readAnnotate.R'
     'readData.R'
