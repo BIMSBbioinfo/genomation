@@ -56,7 +56,7 @@
 \usepackage{geometry}
 \usepackage{wrapfig}
 
-\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
 
 
 \title{\textbf{genomation} \\ a toolkit for annotation and visualization of genomic data}
@@ -121,7 +121,7 @@ High-throughput data which will be used to show the functonality of the
 of gene expression (CAGE) data comes prepared with the genomation package, while
 the raw HTS data can be found in the sister package \Rpackage{genomationData}.
 To install the \Rpackage{genomation} and the complementary data package the from
-the github repository c/p the following lines into your R interpreter:
+the github repository, copy and paste the following lines into your R interpreter:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -434,11 +434,8 @@ We will plot the distribution of CAGE tags around promoters on human chr21.
 \hlkwd{data}\hlstd{(promoters)}
 \hlstd{sm} \hlkwb{<-} \hlkwd{ScoreMatrix}\hlstd{(}\hlkwc{target} \hlstd{= cage,} \hlkwc{windows} \hlstd{= promoters)}
 
-\hlstd{oldmar} \hlkwb{<-} \hlkwd{par}\hlstd{()}\hlopt{$}\hlstd{mar}
-\hlkwd{par}\hlstd{(}\hlkwc{oma} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{0}\hlstd{,} \hlnum{0}\hlstd{,} \hlnum{0}\hlstd{))}
 \hlkwd{heatMatrix}\hlstd{(sm,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{))}
 \hlkwd{plotMeta}\hlstd{(sm,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{))}
-\hlkwd{par}\hlstd{(}\hlkwc{oma} \hlstd{= oldmar)}
 \end{alltt}
 \end{kframe}
 
@@ -469,10 +466,6 @@ annotation over the windows.
     \hlnum{0}\hlstd{)}
 \hlkwd{heatMatrix}\hlstd{(sm,} \hlkwc{xcoords} \hlstd{=} \hlkwd{c}\hlstd{(}\hlopt{-}\hlnum{1000}\hlstd{,} \hlnum{1000}\hlstd{),} \hlkwc{group} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{CpGi} \hlstd{= cpg.ind,}
     \hlkwc{noCpGi} \hlstd{= nocpg.ind))}
-
-\hlcom{# cpg.ind = factor(countOverlaps(promoters,}
-\hlcom{# cpgi)>0, levels=c('CpG','noCpG')) heatMatrix(sm,}
-\hlcom{# xcoords=c(-1000, 1000), group=cpg.ind)}
 \end{alltt}
 \end{kframe}
 

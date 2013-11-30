@@ -2,9 +2,10 @@
 \alias{heatMeta}
 \title{Heatmap for meta-region profiles}
 \usage{
-heatMeta(mat, profile.names = NULL, xcoords = NULL, col = NULL,
-  meta.rescale = FALSE, legend.name = NULL, cex.legend = 1, xlab = NULL,
-  main = "", cex.lab = 1, cex.axis = 1)
+  heatMeta(mat, profile.names = NULL, xcoords = NULL,
+    col = NULL, meta.rescale = FALSE, legend.name = NULL,
+    cex.legend = 1, xlab = NULL, main = "", cex.lab = 1,
+    cex.axis = 1)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList}

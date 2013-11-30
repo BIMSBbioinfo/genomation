@@ -2,11 +2,12 @@
 \alias{heatMatrix}
 \title{Draw a heatmap of a given ScoreMatrix object}
 \usage{
-heatMatrix(mat, grid = FALSE, col = NULL, xcoords = NULL, group = NULL,
-  group.col = NULL, order = FALSE, winsorize = c(0, 100),
-  kmeans = FALSE, k = 3, main = "", legend.name = NULL,
-  cex.legend = 1, xlab = NULL, cex.main = 1, cex.lab = 1,
-  cex.axis = 1, newpage = TRUE)
+  heatMatrix(mat, grid = FALSE, col = NULL, xcoords = NULL,
+    group = NULL, group.col = NULL, order = FALSE,
+    winsorize = c(0, 100), kmeans = FALSE, k = 3,
+    main = "", legend.name = NULL, cex.legend = 1,
+    xlab = NULL, cex.main = 1, cex.lab = 1, cex.axis = 1,
+    newpage = TRUE)
 }
 \arguments{
   \item{mat}{a \code{ScoreMatrix} object}

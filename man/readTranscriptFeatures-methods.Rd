@@ -4,10 +4,11 @@
 \alias{readTranscriptFeatures,character-method}
 \title{Function for reading exon intron and promoter structure from a given bed file}
 \usage{
-readTranscriptFeatures(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+  readTranscriptFeatures(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 
-\S4method{readTranscriptFeatures}{character}(location, remove.unsual = TRUE,
-  up.flank = 1000, down.flank = 1000, unique.prom = TRUE)
+  \S4method{readTranscriptFeatures}{character}(location,
+    remove.unsual = TRUE, up.flank = 1000,
+    down.flank = 1000, unique.prom = TRUE)
 }
 \arguments{
   \item{location}{location of the bed file with 12 or more

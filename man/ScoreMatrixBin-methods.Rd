@@ -6,25 +6,19 @@
 \alias{ScoreMatrixBin,character,GRanges-method}
 \title{Get bin score for bins on each window}
 \usage{
-ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
-  strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  ...)
+  ScoreMatrixBin(target, windows, bin.num = 10,
+    bin.op = "mean", strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE, type = "",
+    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 
-\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num = 10,
-  bin.op = "mean", strand.aware = FALSE, weight.col = NULL,
-  is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
-  extend = 0, param = NULL, ...)
+  \\S4method{ScoreMatrixBin}{RleList,GRanges}(target,
+    windows, bin.num, bin.op, strand.aware)
 
-\S4method{ScoreMatrixBin}{GRanges,GRanges}(target, windows, bin.num = 10,
-  bin.op = "mean", strand.aware = FALSE, weight.col = NULL,
-  is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
-  extend = 0, param = NULL, ...)
+  \\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA)
 
-\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num = 10,
-  bin.op = "mean", strand.aware = FALSE, weight.col = NULL,
-  is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
-  extend = 0, param = NULL, ...)
+  \\S4method{ScoreMatrixBin}{character,GRanges}(target,
+    windows, bin.num=10, bin.op='mean', strand.aware, type,
+    rpm, unique, extend, param)
 }
 \arguments{
   \item{target}{\code{RleList} or a \code{modRleList} or
@@ -77,11 +71,6 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   the reads to width=extend}
 
   \item{param}{ScanBamParam object}
-
-  \item{...}{further arguments that control the behaviour
-  of ScoreMatrixList on various input formats (e.g.a param
-  argument containing a ScanBamParam object, when working
-  with bam files)}
 }
 \value{
   returns a \code{scoreMatrix} object
@@ -100,6 +89,7 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
 \examples{
 data(cage)
   data(cpgi)
+  data(promoters)
   myMat=ScoreMatrixBin(target=cage,
                        windows=cpgi,bin.num=10,bin.op="mean",weight.col="tpm")
   plot(colMeans(myMat,na.rm=TRUE),type="l")

@@ -7,9 +7,9 @@
 \alias{getAssociationWithTSS,AnnotationByGeneParts-method}
 \title{Get distance to nearest TSS and gene id from AnnotationByGeneParts}
 \usage{
-getAssociationWithTSS(x)
+  getAssociationWithTSS(x)
 
-\S4method{getAssociationWithTSS}{AnnotationByGeneParts}(x)
+  \S4method{getAssociationWithTSS}{AnnotationByGeneParts}(x)
 }
 \arguments{
   \item{x}{a \code{AnnotationByGeneParts} object}

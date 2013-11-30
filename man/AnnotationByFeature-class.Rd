@@ -1,4 +1,3 @@
-\docType{class}
 \name{AnnotationByFeature-class}
 \alias{AnnotationByFeature-class}
 \title{An S4 class that information on overlap of target features with annotation features}

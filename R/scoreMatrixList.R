@@ -70,6 +70,7 @@
 #' @examples
 #' 
 #' # visualize the distribution of cage clusters and cpg islands around promoters
+#'  library(GenomicRanges)
 #'  data(cage)
 #'  data(cpgi)
 #'  data(promoters)
@@ -210,14 +211,13 @@ setMethod("show", "ScoreMatrixList",
 #'            to TRUE
 #' @param scalefun a function object that takes as input a matrix and returns a 
 #'        matrix.
-#' @param ... other argments that be passed to the function
 #'  By default  the argument is set to the R scale function with center=TRUE and 
 #'  scale=TRUE
 #'
-#' @usage scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
+#' @usage scaleScoreMatrixList(sml, columns, rows, scalefun)
 #' @return \code{ScoreMatrixList} object
 #' @examples 
-#' 
+#'  library(GenomicRanges)
 #'  data(cage)
 #'  data(cpgi)
 #'  data(promoters)
@@ -236,14 +236,13 @@ setMethod("show", "ScoreMatrixList",
 setGeneric("scaleScoreMatrixList", 
            function(sml, 
                     columns=FALSE, rows=TRUE, 
-                    scalefun=NULL, 
-                    ...) 
+                    scalefun=NULL) 
              standardGeneric("scaleScoreMatrixList") )
 
 #' @aliases scaleScoreMatrixList,ScoreMatrixList-method
 #' @rdname scaleScoreMatrixList
 setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
-          function(sml, columns, rows, scalefun, ...){
+          function(sml, columns, rows, scalefun){
             
             
             sml = lapply(sml, function(x)
@@ -268,6 +267,7 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #'
 #' @return \code{ScoreMatrixList} object
 #' @examples
+#' library(GenomicRanges)
 #' target = GRanges(rep(c(1,2),each=7), 
 #'                  IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
 #'                  weight = rep(c(1,2),each=7))
@@ -316,6 +316,7 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #' 
 #' @examples
+#'  library(GenomicRanges)
 #'  data(cage)
 #'  data(cpgi)
 #'  data(promoters)

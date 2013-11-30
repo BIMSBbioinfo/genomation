@@ -5,11 +5,11 @@
 \alias{plotGeneAnnotation,list-method}
 \title{Plots the enrichment of each feature in the set in the gene annotation}
 \usage{
-plotGeneAnnotation(l, cluster=FALSE,
-       col=c('white','cornflowerblue'),...)
+  plotGeneAnnotation(l, cluster = FALSE,
+    col = c("white", "cornflowerblue"))
 
-\S4method{plotGeneAnnotation}{list}(l, cluster = FALSE, col = c("white",
-  "cornflowerblue"))
+  \S4method{plotGeneAnnotation}{list}(l, cluster = FALSE,
+    col = c("white", "cornflowerblue"))
 }
 \arguments{
   \item{l}{a \code{list} of \code{AnnotationByGeneParts}
@@ -27,6 +27,7 @@ plotGeneAnnotation(l, cluster=FALSE,
   in given gene feature
 }
 \examples{
+library(GenomicRanges)
 data(cage)
 data(cpgi)
 

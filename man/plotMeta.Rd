@@ -3,9 +3,10 @@
 \alias{plotMeta}
 \title{Line plot(s) for meta-region profiles}
 \usage{
-plotMeta(mat, overlay = TRUE, profile.names = NULL, xcoords = NULL,
-  meta.rescale = FALSE, line.col = NULL, ylim = NULL,
-  ylab = "average score", xlab = "bases", ...)
+  plotMeta(mat, overlay = TRUE, profile.names = NULL,
+    xcoords = NULL, meta.rescale = FALSE, line.col = NULL,
+    ylim = NULL, ylab = "average score", xlab = "bases",
+    ...)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList}

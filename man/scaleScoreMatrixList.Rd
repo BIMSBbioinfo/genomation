@@ -4,10 +4,10 @@
 \alias{scaleScoreMatrixList,ScoreMatrixList-method}
 \title{Scale the ScoreMatrixList}
 \usage{
-scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
+  scaleScoreMatrixList(sml, columns, rows, scalefun)
 
-\S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml, columns = FALSE,
-  rows = TRUE, scalefun = NULL, ...)
+  \S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml,
+    columns = FALSE, rows = TRUE, scalefun = NULL)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
@@ -19,11 +19,9 @@ scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
   rows. Set by default to TRUE}
 
   \item{scalefun}{a function object that takes as input a
-  matrix and returns a matrix.}
-
-  \item{...}{other argments that be passed to the function
-  By default the argument is set to the R scale function
-  with center=TRUE and scale=TRUE}
+  matrix and returns a matrix.  By default the argument is
+  set to the R scale function with center=TRUE and
+  scale=TRUE}
 }
 \value{
   \code{ScoreMatrixList} object
@@ -33,7 +31,8 @@ scaleScoreMatrixList(sml, columns, rows, scalefun, ...)
   rows and/or columns
 }
 \examples{
-data(cage)
+library(GenomicRanges)
+ data(cage)
  data(cpgi)
  data(promoters)
 

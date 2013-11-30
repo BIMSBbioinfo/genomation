@@ -3,9 +3,10 @@
 \alias{ScoreMatrixList}
 \title{Make ScoreMatrixList from multiple targets}
 \usage{
-ScoreMatrixList(targets, windows = NULL, bin.num = NULL, bin.op = "mean",
-  strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
+  ScoreMatrixList(targets, windows = NULL, bin.num = NULL,
+    bin.op = "mean", strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE, type = "",
+    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 }
 \arguments{
   \item{targets}{can be a list of \code{scoreMatrix}
@@ -72,6 +73,7 @@ ScoreMatrixList(targets, windows = NULL, bin.num = NULL, bin.op = "mean",
 }
 \examples{
 # visualize the distribution of cage clusters and cpg islands around promoters
+ library(GenomicRanges)
  data(cage)
  data(cpgi)
  data(promoters)

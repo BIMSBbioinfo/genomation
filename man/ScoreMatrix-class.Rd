@@ -1,4 +1,3 @@
-\docType{class}
 \name{ScoreMatrix-class}
 \alias{ScoreMatrix-class}
 \title{An S4 class for storing \code{ScoreMatrix} function results}

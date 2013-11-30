@@ -161,9 +161,6 @@ readBigWig = function(target, windows=NULL, ...){
 #'              based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
-#' @param ... further arguments that control the behaviour of ScoreMatrixList 
-#'            on various input formats (e.g.a param argument containing a 
-#'            ScanBamParam object, when working with bam files)
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
@@ -175,18 +172,19 @@ readBigWig = function(target, windows=NULL, ...){
 #'  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
 #'                                  weight.col="tpm")                                
 #' # When target is RleList
+#' library(GenomicRanges)
 #' covs = coverage(cage)
 #' scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
 #' 
 #' # When target is a bam file
-#'  bam.file = system.file('extdata/test.bam', package='genomation')
+#'  bam.file = system.file('tests/test.bam', package='genomation')
 #'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
 #'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
 #'  
 #' # when target is a bigWig file
 #'  bw.file = system.file('tests/test.bw', package='rtracklayer')
-#'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
-#'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bigWig') 
+#'  windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))
+#'  scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig') 
 #'  
 #' @docType methods
 #' @rdname ScoreMatrix-methods           
@@ -200,16 +198,16 @@ setGeneric("ScoreMatrix",
                              rpm=FALSE, 
                              unique=FALSE, 
                              extend=0,
-                             param=NULL,
-                             ...) 
+                             param=NULL) 
                                 standardGeneric("ScoreMatrix") )
 
 
 
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
+#' @usage  \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
-          function(target,windows,strand.aware,...){
+          function(target,windows,strand.aware){
             
    #check if all windows are equal length
     if( length(unique(width(windows))) >1 ){
@@ -263,8 +261,9 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
+#' @usage \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware, weight.col, is.noCovNA)
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
-          function(target, windows, strand.aware, weight.col,is.noCovNA,...){
+          function(target, windows, strand.aware, weight.col, is.noCovNA){
             
             #make coverage vector  from target
             if(is.null(weight.col)){
@@ -293,9 +292,10 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
+#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target,windows, strand.aware, type='', rpm=FALSE, unique=FALSE, extend=0, param=NULL)
 setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows, strand.aware, type='', 
-                   rpm=FALSE, unique=FALSE, extend=0, param=NULL, ...){
+                   rpm=FALSE, unique=FALSE, extend=0, param=NULL){
             
             if(!file.exists(target)){
 			      	stop("Indicated 'target' file does not exist\n")
@@ -314,7 +314,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param)
             if(type == 'bigWig')
-              covs = readBigWig(target=target, windows=windows, ...)            
+              covs = readBigWig(target=target, windows=windows)            
             
             # get coverage vectors
             ScoreMatrix(covs,windows,strand.aware)
@@ -334,6 +334,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @examples
 #' 
 #' # binning the columns in a ScoreMatrix object
+#' library(GenomicRanges)
 #' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
 #' weight = rep(c(1,2),each=7), 
 #' strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
@@ -397,6 +398,7 @@ setMethod("show", "ScoreMatrix",
 #' @examples
 #' 
 #' # scale the rows of a scoreMatrix object
+#' library(GenomicRanges)
 #' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
 #'           weight = rep(c(1,2),each=7), 
 #'           strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))

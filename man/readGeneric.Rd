@@ -3,9 +3,11 @@
 \alias{readGeneric}
 \title{Read a tabular file and convert it to GRanges.}
 \usage{
-readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
-  meta.cols = NULL, keep.all.metadata = FALSE, zero.based = FALSE,
-  remove.unsual = FALSE, header = FALSE, skip = 0, sep = "\\t")
+  readGeneric(file, chr = 1, start = 2, end = 3,
+    strand = NULL, meta.cols = NULL,
+    keep.all.metadata = FALSE, zero.based = FALSE,
+    remove.unsual = FALSE, header = FALSE, skip = 0,
+    sep = "\\t")
 }
 \arguments{
   \item{file}{location of the file, a character string such

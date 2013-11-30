@@ -143,9 +143,6 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'               based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
-#' @param ... further arguments that control the behaviour of ScoreMatrixList on 
-#'             various input formats (e.g.a param argument containing a 
-#'            ScanBamParam object, when working with bam files)
 #'                   
 #'                                                 
 #' @return returns a \code{scoreMatrix} object
@@ -153,6 +150,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @examples
 #'   data(cage)
 #'   data(cpgi)
+#'   data(promoters)
 #'   myMat=ScoreMatrixBin(target=cage,
 #'                        windows=cpgi,bin.num=10,bin.op="mean",weight.col="tpm")
 #'   plot(colMeans(myMat,na.rm=TRUE),type="l")
@@ -175,13 +173,14 @@ setGeneric("ScoreMatrixBin",
                     rpm=FALSE,
                     unique=FALSE,
                     extend=0,
-                    param=NULL,
-                    ...) 
+                    param=NULL
+                    ) 
              standardGeneric("ScoreMatrixBin") )
 
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,RleList,GRanges-method
 #' @rdname ScoreMatrixBin-methods
+#' @usage \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op, strand.aware)
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
 
@@ -209,6 +208,7 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases  ScoreMatrixBin,GRanges,GRanges-method
 #' @rdname ScoreMatrixBin-methods
+#' @usage \\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA)
 setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
           function(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA){
             
@@ -246,10 +246,11 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
+#' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10, bin.op='mean', strand.aware, type, rpm, unique, extend, param)
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
-                   type, rpm, unique, extend, param,  ...){
+                   type, rpm, unique, extend, param){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
