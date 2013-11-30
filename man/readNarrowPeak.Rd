@@ -3,7 +3,7 @@
 \alias{readNarrowPeak}
 \title{A function to read the Encode formatted narrowPeak file into a GRanges object}
 \usage{
-readNarrowPeak(file)
+  readNarrowPeak(file)
 }
 \arguments{
   \item{file}{a abosulte or relative path to a bed file

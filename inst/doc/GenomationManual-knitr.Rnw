@@ -7,7 +7,7 @@
 \usepackage{geometry}
 \usepackage{wrapfig}
 
-\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
+\geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
 
 
 \title{\textbf{genomation} \\ a toolkit for annotation and visualization of genomic data}
@@ -87,7 +87,7 @@ High-throughput data which will be used to show the functonality of the
 of gene expression (CAGE) data comes prepared with the genomation package, while
 the raw HTS data can be found in the sister package \Rpackage{genomationData}.
 To install the \Rpackage{genomation} and the complementary data package the from
-the github repository c/p the following lines into your R interpreter:
+the github repository, copy and paste the following lines into your R interpreter:
 <<genomationDataLoad, eval=FALSE>>=
 library(devtools)
 install_github("genomationData",username='al2na')

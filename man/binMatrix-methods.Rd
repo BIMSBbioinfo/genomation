@@ -5,11 +5,13 @@
 \alias{binMatrix,ScoreMatrixList-method}
 \title{Bins the columns of a matrix using a user provided function}
 \usage{
-binMatrix(x, bin.num = NULL, fun = "mean")
+  binMatrix(x, bin.num = NULL, fun = "mean")
 
-\S4method{binMatrix}{ScoreMatrix}(x, bin.num = NULL, fun = "mean")
+  \S4method{binMatrix}{ScoreMatrix}(x, bin.num = NULL,
+    fun = "mean")
 
-\S4method{binMatrix}{ScoreMatrixList}(x, bin.num = NULL, fun = "mean")
+  \S4method{binMatrix}{ScoreMatrixList}(x, bin.num = NULL,
+    fun = "mean")
 }
 \arguments{
   \item{x}{\code{ScoreMatrix} or a \code{ScoreMatrixList}
@@ -30,6 +32,7 @@ binMatrix(x, bin.num = NULL, fun = "mean")
 }
 \examples{
 # binning the columns in a ScoreMatrix object
+library(GenomicRanges)
 target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
 weight = rep(c(1,2),each=7),
 strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))

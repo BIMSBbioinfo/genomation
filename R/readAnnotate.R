@@ -584,8 +584,8 @@ setMethod("annotateWithGeneParts",
 #'                 will be overlapped based on strand  (def:FAULT)
 #' @param intersect.chr boolean, whether to select only chromosomes that are 
 #'                      common to feature and target. FALSE by default
-#' @usage annotateWithFeatureFlank(target,feature,flank,feature.name="feat",
-#'                                 flank.name="flank",strand=FALSE)
+#'                      
+#'                      
 #' @return returns an \code{AnnotationByFeature} object
 #' 
 #' 
@@ -687,9 +687,7 @@ setMethod( "annotateWithFeatureFlank",
 #'                     by default the name is taken from the given variable
 #' @param intersect.chr boolean, whether to select only chromosomes that are 
 #'                      common to feature and target. FALSE by default
-
-#' @usage annotateWithFeature(target,feature,strand=FALSE,extend=0,
-#'                            feature.name="feat1", intersect.chr=FALSE)
+#'                      
 #' @return returns an \code{AnnotationByFeature} object
 #' 
 #' 
@@ -1020,11 +1018,9 @@ setMethod("plotTargetAnnotation",
 #'        using hierarchical clustering
 #' @param col a vector of two colors that will be used for interpolation. 
 #'        The first color is the lowest one, the second is the highest one
-
-#' @usage  plotGeneAnnotation(l, cluster=FALSE, 
-#'        col=c('white','cornflowerblue'),...)
 #' 
 #' @examples
+#' library(GenomicRanges)
 #' data(cage)
 #' data(cpgi)
 #' 
@@ -1056,7 +1052,7 @@ setMethod("plotGeneAnnotation",
 					stop("All elements of the input list need to be AnnotationByGeneParts-class")
 			
 				d = data.frame(do.call(rbind, lapply(l, function(x)x@precedence)))
-				d = data.frame(SampleName=rownames(d), d)
+				d = data.frame('SampleName'=rownames(d), d)
         
 				ind = 1:nrow(d)
 				if(cluster == TRUE){

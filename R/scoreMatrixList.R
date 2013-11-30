@@ -70,6 +70,7 @@
 #' @examples
 #' 
 #' # visualize the distribution of cage clusters and cpg islands around promoters
+#'  library(GenomicRanges)
 #'  data(cage)
 #'  data(cpgi)
 #'  data(promoters)
@@ -216,7 +217,7 @@ setMethod("show", "ScoreMatrixList",
 #' @usage scaleScoreMatrixList(sml, columns, rows, scalefun)
 #' @return \code{ScoreMatrixList} object
 #' @examples 
-#' 
+#'  library(GenomicRanges)
 #'  data(cage)
 #'  data(cpgi)
 #'  data(promoters)
@@ -266,6 +267,7 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #'
 #' @return \code{ScoreMatrixList} object
 #' @examples
+#' library(GenomicRanges)
 #' target = GRanges(rep(c(1,2),each=7), 
 #'                  IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
 #'                  weight = rep(c(1,2),each=7))
@@ -314,6 +316,7 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #' 
 #' @examples
+#'  library(GenomicRanges)
 #'  data(cage)
 #'  data(cpgi)
 #'  data(promoters)

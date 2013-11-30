@@ -6,22 +6,18 @@
 \alias{ScoreMatrix,character,GRanges-method}
 \title{Get base-pair score for bases in each window}
 \usage{
-ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
-  is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
-  extend = 0, param = NULL, ...)
+  ScoreMatrix(target, windows, strand.aware = FALSE,
+    weight.col = NULL, is.noCovNA = FALSE, type = "",
+    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 
-\S4method{ScoreMatrix}{RleList,GRanges}(target, windows, strand.aware = FALSE,
-  weight.col = NULL, is.noCovNA = FALSE, type = "", rpm = FALSE,
-  unique = FALSE, extend = 0, param = NULL, ...)
+  \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 
-\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware = FALSE,
-  weight.col = NULL, is.noCovNA = FALSE, type = "", rpm = FALSE,
-  unique = FALSE, extend = 0, param = NULL, ...)
+  \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows,
+    strand.aware, weight.col, is.noCovNA)
 
-\S4method{ScoreMatrix}{character,GRanges}(target, windows,
-  strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  ...)
+  \\S4method{ScoreMatrix}{character,GRanges}(target,windows,
+    strand.aware, type='', rpm=FALSE, unique=FALSE,
+    extend=0, param=NULL)
 }
 \arguments{
   \item{target}{\code{RleList} , \code{GRanges} or a BAM
@@ -66,11 +62,6 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
   the reads to width=extend}
 
   \item{param}{ScanBamParam object}
-
-  \item{...}{further arguments that control the behaviour
-  of ScoreMatrixList on various input formats (e.g.a param
-  argument containing a ScanBamParam object, when working
-  with bam files)}
 }
 \value{
   returns a \code{ScoreMatrix} object
@@ -94,18 +85,19 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
                                  weight.col="tpm")
 # When target is RleList
+library(GenomicRanges)
 covs = coverage(cage)
 scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)
 
 # When target is a bam file
- bam.file = system.file('extdata/test.bam', package='genomation')
+ bam.file = system.file('tests/test.bam', package='genomation')
  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam')
 
 # when target is a bigWig file
  bw.file = system.file('tests/test.bw', package='rtracklayer')
- windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
- scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bigWig')
+ windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))
+ scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig')
 }
 \seealso{
   \code{\link{ScoreMatrixBin}}

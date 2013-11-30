@@ -4,10 +4,11 @@
 \alias{plotTargetAnnotation,AnnotationByFeature-method}
 \title{Plot annotation categories from AnnotationByGeneParts or AnnotationByFeature}
 \usage{
-plotTargetAnnotation(x,precedence=TRUE,col,...)
+  plotTargetAnnotation(x,precedence=TRUE,col,...)
 
-\S4method{plotTargetAnnotation}{AnnotationByFeature}(x, precedence = TRUE,
-  col = getColors(length(x@annotation)), ...)
+  \S4method{plotTargetAnnotation}{AnnotationByFeature}(x,
+    precedence = TRUE,
+    col = getColors(length(x@annotation)), ...)
 }
 \arguments{
   \item{x}{a \code{AnnotationByFeature} or

@@ -3,7 +3,7 @@
 \alias{readBroadPeak}
 \title{A function to read the Encode formatted broad peak file into a GRanges object}
 \usage{
-readBroadPeak(file)
+  readBroadPeak(file)
 }
 \arguments{
   \item{file}{a abosulte or relative path to a bed file

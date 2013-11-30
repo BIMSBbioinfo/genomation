@@ -27,7 +27,8 @@ Imports:
 Suggests:
     testthat,
     knitr,
-    RColorBrewer
+    RColorBrewer,
+	genomationData
 Collate:
     'documentData.R'
     'genomation-classes.R'

@@ -1,4 +1,3 @@
-\docType{class}
 \name{ScoreMatrixList-class}
 \alias{ScoreMatrixList-class}
 \title{An S4 class for storing a set of \code{ScoreMatrixList}}

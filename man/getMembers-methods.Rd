@@ -4,9 +4,9 @@
 \alias{getMembers,AnnotationByFeature-method}
 \title{Get the membership slot of AnnotationByFeature}
 \usage{
-getMembers(x)
+  getMembers(x)
 
-\S4method{getMembers}{AnnotationByFeature}(x)
+  \S4method{getMembers}{AnnotationByFeature}(x)
 }
 \arguments{
   \item{x}{a \code{AnnotationByFeature} object}

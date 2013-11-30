@@ -4,14 +4,15 @@
 \alias{calculateOverlapSignificance,GRanges,GRanges-method}
 \title{function that calculates the significance of overlaps of two sets of features using randomization}
 \usage{
-calculateOverlapSignificance(target, feature, chrom.sizes = NULL,
-  stranded = TRUE, keep.strand.prop = TRUE, keep.chrom = TRUE,
-  exclude = NULL, include = NULL, seed = NULL, nrand = 1)
+  calculateOverlapSignificance(target, feature,
+    chrom.sizes = NULL, stranded = TRUE,
+    keep.strand.prop = TRUE, keep.chrom = TRUE,
+    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
 
-\S4method{calculateOverlapSignificance}{GRanges,GRanges}(target, feature,
-  chrom.sizes = NULL, stranded = TRUE, keep.strand.prop = TRUE,
-  keep.chrom = TRUE, exclude = NULL, include = NULL, seed = NULL,
-  nrand = 1)
+  \S4method{calculateOverlapSignificance}{GRanges,GRanges}(target,
+    feature, chrom.sizes = NULL, stranded = TRUE,
+    keep.strand.prop = TRUE, keep.chrom = TRUE,
+    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
 }
 \arguments{
   \item{target}{a GRanges object for which the overlap

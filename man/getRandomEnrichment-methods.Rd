@@ -4,11 +4,11 @@
 \alias{getRandomEnrichment,GRanges,GRanges-method}
 \title{get enrichment based on randomized feature overlap}
 \usage{
-getRandomEnrichment(target, query, randomizations = 1000, rand.set = NULL,
-  ...)
+  getRandomEnrichment(target, query, randomizations = 1000,
+    rand.set = NULL, ...)
 
-\S4method{getRandomEnrichment}{GRanges,GRanges}(target, query,
-  randomizations = 1000, rand.set = NULL, ...)
+  \S4method{getRandomEnrichment}{GRanges,GRanges}(target,
+    query, randomizations = 1000, rand.set = NULL, ...)
 }
 \arguments{
   \item{target}{a \code{GRanges} object to be overlapped

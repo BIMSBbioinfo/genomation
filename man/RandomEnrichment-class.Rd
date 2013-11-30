@@ -1,4 +1,3 @@
-\docType{class}
 \name{RandomEnrichment-class}
 \alias{RandomEnrichment-class}
 \title{An S4 class for storing \code{getRandomEnrichment} function results}

@@ -4,10 +4,11 @@
 \alias{scaleScoreMatrix,ScoreMatrix-method}
 \title{Scales the values in the matrix by rows and/or columns}
 \usage{
-scaleScoreMatrix(mat, columns = FALSE, rows = TRUE, scalefun = NULL)
+  scaleScoreMatrix(mat, columns = FALSE, rows = TRUE,
+    scalefun = NULL)
 
-\S4method{scaleScoreMatrix}{ScoreMatrix}(mat, columns = FALSE, rows = TRUE,
-  scalefun = NULL)
+  \S4method{scaleScoreMatrix}{ScoreMatrix}(mat,
+    columns = FALSE, rows = TRUE, scalefun = NULL)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} object}
@@ -30,6 +31,7 @@ scaleScoreMatrix(mat, columns = FALSE, rows = TRUE, scalefun = NULL)
 }
 \examples{
 # scale the rows of a scoreMatrix object
+library(GenomicRanges)
 target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
           weight = rep(c(1,2),each=7),
           strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))

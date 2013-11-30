@@ -4,12 +4,12 @@
 \alias{annotateWithFeature,GRanges,GRanges-method}
 \title{Function to annotate given GRanges object with a given genomic feature}
 \usage{
-annotateWithFeature(target,feature,strand=FALSE,extend=0,
-                           feature.name="feat1", intersect.chr=FALSE)
+  annotateWithFeature(target, feature, strand = FALSE,
+    extend = 0, feature.name = NULL, intersect.chr = FALSE)
 
-\S4method{annotateWithFeature}{GRanges,GRanges}(target, feature,
-  strand = FALSE, extend = 0, feature.name = NULL,
-  intersect.chr = FALSE)
+  \S4method{annotateWithFeature}{GRanges,GRanges}(target,
+    feature, strand = FALSE, extend = 0,
+    feature.name = NULL, intersect.chr = FALSE)
 }
 \arguments{
   \item{target}{a GRanges object storing chromosome

@@ -37,12 +37,12 @@ setMethod("getRandomEnrichment",
 				
 					rand.olap.dist=numeric(randomizations)
 					for(i in 1:randomizations){
-						message("Iteration number:",i,"\r")
+# 						message("Iteration number:",i,"\r")
 						my.rand = randomizeFeature(query,...)
 						my.cnts = sum(countOverlaps(target,my.rand)>0)
 						rand.olap.dist[i] = my.cnts
 					}
-					message("\n")
+# 					message("\n")
 					
 				}else if(is(rand.set,"GRangesList")){
 					
@@ -68,10 +68,11 @@ setMethod("getRandomEnrichment",
 				# calculate randomized raw p-value
 				rand.p.value = sum(rand.olap.dist>orig.cnt)/length(rand.olap.dist)
 
-				l = list(orig.cnt = orig.cnt,
-					       rand.olap.dist = rand.olap.dist,
-					       fc = log2(orig.cnt/mean(rand.olap.dist)),
-					       p.value = p.value,
-					       rand.p.value = rand.p.value)
-        return(as(l, 'RandomEnrichment'))
+				n = new('RandomEnrichment', 
+                orig.cnt = orig.cnt,
+					      rand.olap.dist = rand.olap.dist,
+				        log2fc = log2(orig.cnt/mean(rand.olap.dist)),
+					      p.value = p.value,
+					      rand.p.value = rand.p.value)
+        return(n)
 })

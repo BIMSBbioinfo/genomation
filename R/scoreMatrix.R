@@ -172,18 +172,19 @@ readBigWig = function(target, windows=NULL, ...){
 #'  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
 #'                                  weight.col="tpm")                                
 #' # When target is RleList
+#' library(GenomicRanges)
 #' covs = coverage(cage)
 #' scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
 #' 
 #' # When target is a bam file
-#'  bam.file = system.file('extdata/test.bam', package='genomation')
+#'  bam.file = system.file('tests/test.bam', package='genomation')
 #'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
 #'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
 #'  
 #' # when target is a bigWig file
 #'  bw.file = system.file('tests/test.bw', package='rtracklayer')
-#'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
-#'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bigWig') 
+#'  windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))
+#'  scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig') 
 #'  
 #' @docType methods
 #' @rdname ScoreMatrix-methods           
@@ -204,6 +205,7 @@ setGeneric("ScoreMatrix",
 
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
+#' @usage  \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
           function(target,windows,strand.aware){
             
@@ -259,8 +261,9 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
+#' @usage \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware, weight.col, is.noCovNA)
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
-          function(target, windows, strand.aware, weight.col,is.noCovNA){
+          function(target, windows, strand.aware, weight.col, is.noCovNA){
             
             #make coverage vector  from target
             if(is.null(weight.col)){
@@ -289,6 +292,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
+#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target,windows, strand.aware, type='', rpm=FALSE, unique=FALSE, extend=0, param=NULL)
 setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows, strand.aware, type='', 
                    rpm=FALSE, unique=FALSE, extend=0, param=NULL){
@@ -330,6 +334,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @examples
 #' 
 #' # binning the columns in a ScoreMatrix object
+#' library(GenomicRanges)
 #' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
 #' weight = rep(c(1,2),each=7), 
 #' strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
@@ -393,6 +398,7 @@ setMethod("show", "ScoreMatrix",
 #' @examples
 #' 
 #' # scale the rows of a scoreMatrix object
+#' library(GenomicRanges)
 #' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
 #'           weight = rep(c(1,2),each=7), 
 #'           strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))

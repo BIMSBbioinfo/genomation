@@ -1,4 +1,3 @@
-\docType{class}
 \name{AnnotationByGeneParts-class}
 \alias{AnnotationByGeneParts-class}
 \title{An S4 class that information on overlap of target features with annotation features}

@@ -4,9 +4,9 @@
 \alias{convertBed2Introns,data.frame-method}
 \title{convert a data frame read-in from a bed file to a GRanges object for introns}
 \usage{
-convertBed2Introns(bed.df)
+  convertBed2Introns(bed.df)
 
-\S4method{convertBed2Introns}{data.frame}(bed.df)
+  \S4method{convertBed2Introns}{data.frame}(bed.df)
 }
 \arguments{
   \item{bed.df}{a data.frame where column order and content
