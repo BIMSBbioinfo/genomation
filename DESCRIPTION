@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: : R package for annotation and visualization of genomic data
-Version: 0.4.6
+Version: 0.99
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
@@ -13,21 +13,21 @@ biocViews: Annotation, HighThroughputSequencing, Visualization
 Depends:
     R (>= 3.0.0),grid
 Imports:
-    GenomicRanges,
-    IRanges,
+  GenomicRanges,
+  IRanges,
 	Rsamtools,
-    data.table,
-    plyr,
-    reshape2,
+  data.table,
+  plyr,
+  reshape2,
 	ggplot2,
 	methods,
 	rtracklayer,
 	gridBase,
 	impute
 Suggests:
-    testthat,
-    knitr,
-    RColorBrewer,
+  testthat,
+  knitr,
+  RColorBrewer,
 	genomationData
 Collate:
     'documentData.R'
