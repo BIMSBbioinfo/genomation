@@ -567,6 +567,12 @@ when using overlaps.
 \subsection{Annotation of HTS data by functional regions}
 
 
+% ----------------------------------------------------------------- %
+\section{Session Info}
+<<sessionInfo>>=
+sessionInfo()
+@
+
 
 \end{document}
 
