@@ -14,16 +14,17 @@ Depends:
     R (>= 3.0.0),grid
 Imports:
   GenomicRanges,
+  GenomicAlignments,
   IRanges,
-	Rsamtools,
+  Rsamtools,
   data.table,
   plyr,
   reshape2,
-	ggplot2,
-	methods,
-	rtracklayer,
-	gridBase,
-	impute
+  ggplot2,
+  methods,
+  rtracklayer,
+  gridBase,
+ impute
 Suggests:
   testthat,
   knitr,
