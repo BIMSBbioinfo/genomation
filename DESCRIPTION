@@ -13,22 +13,22 @@ biocViews: Annotation, HighThroughputSequencing, Visualization
 Depends:
     R (>= 3.0.0),grid
 Imports:
-  GenomicRanges,
-  GenomicAlignments,
-  IRanges,
-  Rsamtools,
-  data.table,
-  plyr,
-  reshape2,
-  ggplot2,
-  methods,
-  rtracklayer,
-  gridBase,
- impute
+	GenomicRanges,
+	GenomicAlignments,
+	IRanges,
+	Rsamtools,
+	data.table,
+	plyr,
+	reshape2,
+	ggplot2,
+	methods,
+	rtracklayer,
+	gridBase,
+	impute
 Suggests:
-  testthat,
-  knitr,
-  RColorBrewer,
+	testthat,
+	knitr,
+	RColorBrewer,
 	genomationData
 Collate:
     'documentData.R'

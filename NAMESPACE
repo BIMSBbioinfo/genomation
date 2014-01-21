@@ -1,5 +1,6 @@
 import(methods)
 import(GenomicRanges)
+import(GenomicAlignments)
 import(IRanges)
 import(Rsamtools)
 import(ggplot2)
