@@ -1,0 +1,44 @@
+\docType{methods}
+\name{scaleScoreMatrixList}
+\alias{scaleScoreMatrixList}
+\alias{scaleScoreMatrixList,ScoreMatrixList-method}
+\title{Scale the ScoreMatrixList}
+\usage{
+scaleScoreMatrixList(sml, columns, rows, scalefun)
+
+\S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml, columns, rows, scalefun)
+}
+\arguments{
+  \item{sml}{a \code{ScoreMatrixList} object}
+
+  \item{columns}{a \code{columns} whether to scale the
+  matrix by columns.  Set by default to FALSE}
+
+  \item{rows}{a \code{rows} Whether to scale the matrix by
+  rows. Set by default to TRUE}
+
+  \item{scalefun}{a function object that takes as input a
+  matrix and returns a matrix.  By default the argument is
+  set to the R scale function with center=TRUE and
+  scale=TRUE}
+}
+\value{
+\code{ScoreMatrixList} object
+}
+\description{
+Scales each ScoreMatrix in the ScoreMatrixList object, by
+rows and/or columns
+}
+\examples{
+library(GenomicRanges)
+ data(cage)
+ data(cpgi)
+ data(promoters)
+
+ cage$tpm = NULL
+ targets = GRangesList(cage=cage, cpgi=cpgi)
+ sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
+ sml.scaled = scaleScoreMatrixList(sml, rows=TRUE)
+ multiHeatMatrix(sml)
+}
+

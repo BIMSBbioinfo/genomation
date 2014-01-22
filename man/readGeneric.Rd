@@ -1,0 +1,76 @@
+\docType{methods}
+\name{readGeneric}
+\alias{readGeneric}
+\title{Read a tabular file and convert it to GRanges.}
+\usage{
+readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
+  meta.cols = NULL, keep.all.metadata = FALSE, zero.based = FALSE,
+  remove.unsual = FALSE, header = FALSE, skip = 0, sep = "\\t")
+}
+\arguments{
+  \item{file}{location of the file, a character string such
+  as: "/home/user/my.bed"}
+
+  \item{chr}{number of the column that has chromsomes
+  information in the table (Def:1)}
+
+  \item{start}{number of the column that has start
+  coordinates in the table (Def:2)}
+
+  \item{end}{number of the column that has end coordinates
+  in the table (Def:3)}
+
+  \item{strand}{number of the column that has strand
+  information, only -/+ is accepted (Default:NULL)}
+
+  \item{meta.cols}{named \code{list} that maps column
+  numbers to meta data columns.  e.g. list(name=5,
+  score=10), which means 5th column will be named "name",
+  and 10th column will be named "score" and their contents
+  will be a part of the returned GRanges object.  If header
+  = TRUE, meta.cols parameter will over-write the column
+  names given by the header line of the data frame.}
+
+  \item{keep.all.metadata}{\code{logical} determining if
+  the extra columns ( the ones that are not designated by
+  chr,start,end,strand and meta.cols arguments ) should be
+  kept or not. (Default:FALSE)}
+
+  \item{zero.based}{a boolean which tells whether the
+  ranges in the bed file are 0 or 1 base encoded. (Default:
+  FALSE)}
+
+  \item{remove.unsual}{if TRUE(default) remove the
+  chromosomes with unsual names, such as chrX_random
+  (Default:FALSE)}
+
+  \item{header}{whether the original file contains a header
+  line which designates the column names. If \code{TRUE}
+  header will be used to construct column names. These
+  names can be over written by meta.cols argument.}
+
+  \item{skip}{number of lines to skip. If there is a header
+  line(s) you do not wish to include you can use skip
+  argument to skip that line.}
+
+  \item{sep}{a single character which designates the
+  separator in the file.  The default value is tab.}
+}
+\value{
+\code{\link{GRanges}} object
+}
+\description{
+The function reads a tabular text file that contains
+location and other information on genomic features and
+returns a \code{\link{GRanges}} object. The minimal
+information that the file has to have is chromosome, start
+and end columns. Strand information is not compulsory.
+}
+\examples{
+my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+ refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
+                      meta.cols=list(score=5,name=4),
+                     keep.all.metadata=FALSE, zero.based=TRUE)
+ head(refseq)
+}
+

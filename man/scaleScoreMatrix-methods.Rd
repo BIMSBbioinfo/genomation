@@ -1,0 +1,41 @@
+\docType{methods}
+\name{scaleScoreMatrix}
+\alias{scaleScoreMatrix}
+\alias{scaleScoreMatrix,ScoreMatrix-method}
+\title{Scales the values in the matrix by rows and/or columns}
+\usage{
+scaleScoreMatrix(mat, columns = FALSE, rows = TRUE, scalefun = NULL)
+
+\S4method{scaleScoreMatrix}{ScoreMatrix}(mat, columns, rows, scalefun)
+}
+\arguments{
+  \item{mat}{\code{ScoreMatrix} object}
+
+  \item{columns}{\code{columns} whether to scale the matrix
+  by columns. Set by default to FALSE.}
+
+  \item{rows}{\code{rows} Whether to scale the matrix by
+  rows. Set by default to TRUE}
+
+  \item{scalefun}{function object that takes as input a
+  matrix and returns a matrix.  By default the argument is
+  set to (x - mean(x))/(max(x)-min(x)+1)}
+}
+\value{
+\code{ScoreMatrix} object
+}
+\description{
+Scales the values in the matrix by rows and/or columns
+}
+\examples{
+# scale the rows of a scoreMatrix object
+library(GenomicRanges)
+target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+          weight = rep(c(1,2),each=7),
+          strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5),
+          strand=c('-','+','-','+'))
+sm = ScoreMatrix(target, windows)
+ssm = scaleScoreMatrix(sm, rows=TRUE)
+}
+
