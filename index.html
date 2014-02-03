@@ -30,67 +30,120 @@
 
       </header>
       <section>
-        <h3>
-<a name="welcome-to-genomation" class="anchor" href="#welcome-to-genomation"><span class="octicon octicon-link"></span></a>Welcome to Genomation.</h3>
+        <h1>
+<a name="welcome-to-genomation" class="anchor" href="#welcome-to-genomation"><span class="octicon octicon-link"></span></a>Welcome to genomation.</h1>
 
-<p>This is an R package that contains a collection of tools for visualizing and analyzing genome-wide data sets.</p>
+<p>This is an R package that contains a collection of tools for visualizing and analyzing genome-wide data sets. The package works with a variety of genomic interval file types and enables easy summarization and annotation of high throughput data sets with given genomic annotations.</p>
 
 <h2>
 <a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
-<li>Ability to work with multiple flat file formats such as BED,GFF,BAM, bigWig and generic tabular text files </li>
-<li>Annotation of genomic intervals. For example, you can see what percentage of your genomic intervals overlaps with exon/intron/promoter annotation. </li>
-<li>Summary of genomic scores or read coverages over pre-defined regions. The pre-defined regions can be equi-width such as region around TSS or could be a set of regions with varying widths such as CpG islands. This operation will result in a matrix or set of matrices containing scores for each pre-defined region </li>
-<li>Visualisation of summary matrices such as meta-region(meta-gene, meta-promoter, etc.) plots or heatmaps. 
+<li>
+<strong>Ability to work with multiple flat file formats</strong> such as <strong>BED</strong>, <strong>GFF</strong>, <strong>BAM</strong>, <strong>bigWig</strong> and <strong>generic tabular text files</strong> </li>
+<li>
+<strong>Annotation of genomic intervals</strong>. For example, you can see what percentage of your genomic intervals overlaps with exon/intron/promoter annotation. </li>
+<li>
+<strong>Summary of genomic scores or read coverages over pre-defined regions</strong>. The pre-defined regions can be equi-width such as region around TSS or could be a set of regions with varying widths such as CpG islands. This operation will result in a matrix or set of matrices containing scores for each pre-defined region </li>
+<li>
+<strong>Visualisation of summary matrices</strong> such as <strong>meta-region</strong>(meta-gene, meta-promoter, etc.) plots or <strong>heatmaps</strong>. 
 These functions can employ K-means clustering of rows of summary matrices as well.</li>
-</ul><h2>
+</ul><p><img src="http://i.minus.com/ibqHSXWJaBcGH6.png" alt="genomation"></p>
+
+<h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>installation</h2>
 
-<p>You can install genomation via install_github() function from <a href="http://cran.r-project.org/web/packages/devtools/index.html">devtools package</a>.
-`</p>
+<p>You can install genomation via <strong>install_github()</strong> function from <a href="http://cran.r-project.org/web/packages/devtools/index.html">devtools package</a>.</p>
 
-<h1>
-<a name="install-dependencies" class="anchor" href="#install-dependencies"><span class="octicon octicon-link"></span></a>Install dependencies</h1>
+<div class="highlight highlight-R"><pre><span class="c"># Install dependencies</span>
+<span class="c">install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))</span>
+<span class="c">source("http://bioconductor.org/biocLite.R")</span>
+<span class="c">biocLite(c("GenomicRanges","rtracklayer","impute","Rsamtools"))</span>
 
-<p>install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))
-source("<a href="http://bioconductor.org/biocLite.R%22">http://bioconductor.org/biocLite.R"</a>)
-biocLite(c("GenomicRanges","rtracklayer","impute","Rsamtools"))</p>
-
-<h1>
-<a name="install-the-packages" class="anchor" href="#install-the-packages"><span class="octicon octicon-link"></span></a>install the packages</h1>
-
-<p>library(devtools)
-install_github("genomation", username = "al2na")
-`</p>
+<span class="c"># install the packages</span>
+<span class="c">library(devtools)</span>
+<span class="c">install_github("genomation", username = "al2na")</span>
+</pre></div>
 
 <h2>
 <a name="data-import" class="anchor" href="#data-import"><span class="octicon octicon-link"></span></a>Data import</h2>
 
-<p>Functions such as readBed,gff2GRanges and readGeneric can read multiple flat file formats as GRanges objects into R.</p>
+<p>Functions such as <strong>readBed</strong>, <strong>gff2GRanges</strong>, <strong>readTranscriptFeatures</strong> and <strong>readGeneric</strong> can read multiple flat file formats as GRanges objects into R.</p>
+
+<div class="highlight highlight-R"><pre><span class="c"># Read a BED12 file and return a GRangesList object with promoters, exons and introns</span>
+<span class="c">my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")</span>
+<span class="c">my.bed12.file</span>
+<span class="c">feats = readTranscriptFeatures(my.bed12.file)</span>
+
+<span class="c"># Read a generic tabular text file containing genomic locations</span>
+<span class="c">my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")</span>
+<span class="c">refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,</span>
+<span class="c">                      meta.cols=list(score=5,name=4),</span>
+<span class="c">                     keep.all.metadata=FALSE, zero.based=TRUE)</span>
+</pre></div>
 
 <h2>
-<a name="summarise-granges-object-on-promoters" class="anchor" href="#summarise-granges-object-on-promoters"><span class="octicon octicon-link"></span></a>Summarise GRanges object on promoters</h2>
+<a name="summarize-granges-object-on-promoters" class="anchor" href="#summarize-granges-object-on-promoters"><span class="octicon octicon-link"></span></a>Summarize GRanges object on promoters</h2>
+
+<p>You can summarize GRanges objects that overlap with a set of promoters and return a ScoreMatrix object. The object will contain scores for each base in each promoter, columns correspond to bases and rows correspond to promoters.</p>
+
+<div class="highlight highlight-R"><pre><span class="c"> data(cage)</span>
+<span class="c"> data(promoters)</span>
+<span class="c"> scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,</span>
+<span class="c">                                 weight.col="tpm")</span>
+</pre></div>
 
 <h2>
-<a name="summarise-bam-files-on-promoters" class="anchor" href="#summarise-bam-files-on-promoters"><span class="octicon octicon-link"></span></a>Summarise BAM files on promoters</h2>
+<a name="summarize-bam-files-on-promoters" class="anchor" href="#summarize-bam-files-on-promoters"><span class="octicon octicon-link"></span></a>Summarize BAM files on promoters</h2>
+
+<p>BAM files can also be used in <strong>ScoreMatrix()</strong> function as well.</p>
+
+<div class="highlight highlight-R"><pre><span class="c"> bam.file = system.file('tests/test.bam', package='genomation')</span>
+<span class="c"> windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))</span>
+<span class="c"> scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam')</span>
+</pre></div>
 
 <h2>
-<a name="summarise-bigwig-files-on-promoters" class="anchor" href="#summarise-bigwig-files-on-promoters"><span class="octicon octicon-link"></span></a>Summarise BigWig files on promoters</h2>
+<a name="summarize-bigwig-files-on-promoters" class="anchor" href="#summarize-bigwig-files-on-promoters"><span class="octicon octicon-link"></span></a>Summarize BigWig files on promoters</h2>
+
+<p>You can also use bigWig files in <strong>ScoreMatrix()</strong> function.</p>
+
+<div class="highlight highlight-R"><pre><span class="c">bw.file = system.file('tests/test.bw', package='rtracklayer')</span>
+<span class="c">windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))</span>
+<span class="c">scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig')</span>
+</pre></div>
 
 <h2>
 <a name="visualize-summary-matrices-as-heatmap" class="anchor" href="#visualize-summary-matrices-as-heatmap"><span class="octicon octicon-link"></span></a>Visualize summary matrices as heatmap</h2>
 
+<p>ScoreMatrix or ScoreMatrixList objects can be visualized with <strong>heatMatrix, multiHeatMatrix, plotMeta and heatMeta</strong> functions.</p>
+
+<div class="highlight highlight-R"><pre><span class="c">data(cage)</span>
+<span class="c">data(promoters)</span>
+<span class="c">scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)</span>
+
+<span class="c">data(cpgi)</span>
+<span class="c">scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)</span>
+
+<span class="c">sml=new("ScoreMatrixList",list(a=scores1,b=scores2))</span>
+<span class="c">multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)</span>
+
+</pre></div>
+
 <h2>
 <a name="visualize-summary-matrices-as-meta-region-plots" class="anchor" href="#visualize-summary-matrices-as-meta-region-plots"><span class="octicon octicon-link"></span></a>Visualize summary matrices as meta-region plots</h2>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<div class="highlight highlight-R"><pre><span class="c">plotMeta(mat=sml,overlay=TRUE,main="my plotowski")</span>
+<span class="c">heatMeta(mat=sml,main="my plotowski")</span>
+</pre></div>
 
-<p>Vedran Franke (<a href="https://github.com/frenkiboy" class="user-mention">@frenkiboy</a>) and Altuna Akalin (<a href="https://github.com/al2na" class="user-mention">@al2na</a>) authored this package.</p>
+<h1>
+<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h1>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<p>Vedran Franke (<a href="https://github.com/frenkiboy" class="user-mention">@frenkiboy</a>) and Altuna Akalin (<a href="https://github.com/al2na" class="user-mention">@al2na</a>) authored this package. You can contribute by checking out the "development" branch, making changes and submitting a pull request.</p>
+
+<h1>
+<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h1>
 
 <p>send an e-mail to <a href="mailto:genomation@googlegroups.com">genomation@googlegroups.com</a> or use the web interface
 to post a question
