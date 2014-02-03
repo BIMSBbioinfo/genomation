@@ -353,9 +353,13 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 
 # convert a matrix or vector to color matrix
 # to be used in grid.raster()
-.convertToColors <- function(mat,cols) {
-  # Produce 'normalized' version of matrix, with values ranging from 0 to 1
-  rng <- range(mat, na.rm = TRUE)
+.convertToColors <- function(mat,cols,rng=NULL) {
+  
+  if(is.null(rng)){
+    # Produce 'normalized' version of matrix, with values ranging from 0 to 1
+    rng <- range(mat, na.rm = TRUE)
+  }
+  
   m <- (mat - rng[1])/(diff(rng))
   # Convert to a matrix of sRGB color strings
   #m2 <- m; class(m2) <- "character"
@@ -367,9 +371,9 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 
 # make a heatmap from a given matrix using grid.raster()
 .gridHeat<-function(mat,col,xcoords,xlab,cex.lab,cex.axis,angle=0,
-                    hjust=0,vjust=0){
+                    hjust=0,vjust=0,rng=NULL){
   
-  mat2=.convertToColors(mat,col)
+  mat2=.convertToColors(mat,col,rng)
   ras=grid.raster(mat2,interpolate = FALSE, width= unit(1, "npc"),
                   height=unit(1, "npc"))
   
@@ -1170,6 +1174,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   heat.startCoord=convertX( unit(4,"lines"),"npc",valueOnly=TRUE) + (hw/8) + (hw/20)
   
   # if the same scale to be used for all plots
+  common.range=NULL
   if(common.scale){
     common.range=range(mat.list,na.rm=TRUE)
   }
@@ -1231,7 +1236,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     pushViewport(heatVp) # push the heatmap VP
     grid.rect()
     .gridHeat(mat.list[[i]],ccol,cxcoords,xlab[i],cex.lab,cex.axis,
-              angle=60,hjust=0.6,vjust=-0.5) # make the heat  
+              angle=60,hjust=0.6,vjust=-0.5,rng=common.range) # make the heat  
     #upViewport(1) # up one level current.vpTree()
     popViewport()
     

@@ -1,3 +1,11 @@
+genomation 0.99.0.2
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* multiHeatMatrix() works correctly when common.scale=TRUE
+
+
 genomation 0.99.0.1
 --------------
 
