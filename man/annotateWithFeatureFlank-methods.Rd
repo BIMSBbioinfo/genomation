@@ -4,14 +4,11 @@
 \alias{annotateWithFeatureFlank,GRanges,GRanges,GRanges-method}
 \title{Function to annotate a given GRanges object with promoter,exon,intron & intergenic values}
 \usage{
-  annotateWithFeatureFlank(target, feature, flank,
-    feature.name = NULL, flank.name = "flank",
-    strand = FALSE, intersect.chr = FALSE)
+annotateWithFeatureFlank(target, feature, flank, feature.name = NULL,
+  flank.name = "flank", strand = FALSE, intersect.chr = FALSE)
 
-  \S4method{annotateWithFeatureFlank}{GRanges,GRanges,GRanges}(target,
-    feature, flank, feature.name = NULL,
-    flank.name = "flank", strand = FALSE,
-    intersect.chr = FALSE)
+\S4method{annotateWithFeatureFlank}{GRanges,GRanges,GRanges}(target, feature,
+  flank, feature.name, flank.name, strand, intersect.chr)
 }
 \arguments{
   \item{target}{a granges object storing chromosome
@@ -37,11 +34,11 @@
   by default}
 }
 \value{
-  returns an \code{AnnotationByFeature} object
+returns an \code{AnnotationByFeature} object
 }
 \description{
-  Function to annotate a given GRanges object with
-  promoter,exon,intron & intergenic values
+Function to annotate a given GRanges object with
+promoter,exon,intron & intergenic values
 }
 \examples{
 data(cpgi)

@@ -4,11 +4,9 @@
 \alias{findFeatureComb,GRangesList-method}
 \title{Find combitations of genomic features}
 \usage{
-  findFeatureComb(gl, width=0, use.names=FALSE,
-    collapse.char=':')
+findFeatureComb(gl, width=0, use.names=FALSE, collapse.char=':')
 
-  \S4method{findFeatureComb}{GRangesList}(gl, width = 0,
-    use.names = FALSE, collapse.char = ":")
+\S4method{findFeatureComb}{GRangesList}(gl, width, use.names, collapse.char)
 }
 \arguments{
   \item{gl}{a \code{GRangesList} object, containing ranges
@@ -32,20 +30,20 @@
   is ':'}
 }
 \value{
-  a GRanges object
+a GRanges object
 }
 \description{
-  Provided a GRangesList, finds the combinations of sets of
-  ranges. It is mostly used to look at the combinatorics of
-  transcription factor binding. The function works by,
-  firstly, constructing a union of all ranges in the list,
-  which are then designated by the combinatorics of overlap
-  with the original sets. A caveat of this approach is that
-  the number of possible combinations increases
-  exponentially, so we would advise you to use it with up
-  to 6 data sets. If you wish to take a look at a greater
-  number of factors, methods like self organizing maps or
-  ChromHMM might be more appropriate.
+Provided a GRangesList, finds the combinations of sets of
+ranges. It is mostly used to look at the combinatorics of
+transcription factor binding. The function works by,
+firstly, constructing a union of all ranges in the list,
+which are then designated by the combinatorics of overlap
+with the original sets. A caveat of this approach is that
+the number of possible combinations increases
+exponentially, so we would advise you to use it with up to
+6 data sets. If you wish to take a look at a greater number
+of factors, methods like self organizing maps or ChromHMM
+might be more appropriate.
 }
 \examples{
 library(GenomicRanges)

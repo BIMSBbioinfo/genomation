@@ -4,10 +4,9 @@
 \alias{getFlanks,GRanges-method}
 \title{Function to get upstream and downstream adjecent regions to a genomic feature such as CpG islands}
 \usage{
-  getFlanks(grange,flank=2000,clean=T)
+getFlanks(grange,flank=2000,clean=T)
 
-  \S4method{getFlanks}{GRanges}(grange, flank = 2000,
-    clean = T)
+\S4method{getFlanks}{GRanges}(grange, flank = 2000, clean = T)
 }
 \arguments{
   \item{grange}{GRanges object for the feature}
@@ -21,11 +20,11 @@
   when other features overlap with flanks}
 }
 \value{
-  GRanges object for flanking regions
+GRanges object for flanking regions
 }
 \description{
-  Function to get upstream and downstream adjecent regions
-  to a genomic feature such as CpG islands
+Function to get upstream and downstream adjecent regions to
+a genomic feature such as CpG islands
 }
 \examples{
 data(cpgi)

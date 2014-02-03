@@ -4,15 +4,12 @@
 \alias{randomizeFeature,GRanges-method}
 \title{function that randomizes the genomic coordinates}
 \usage{
-  randomizeFeature(feature, chrom.sizes = NULL,
-    stranded = TRUE, keep.strand.prop = TRUE,
-    keep.chrom = TRUE, exclude = NULL, include = NULL,
-    seed = NULL, nrand = 1)
+randomizeFeature(feature, chrom.sizes = NULL, stranded = TRUE,
+  keep.strand.prop = TRUE, keep.chrom = TRUE, exclude = NULL,
+  include = NULL, seed = NULL, nrand = 1)
 
-  \S4method{randomizeFeature}{GRanges}(feature,
-    chrom.sizes = NULL, stranded = TRUE,
-    keep.strand.prop = TRUE, keep.chrom = TRUE,
-    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
+\S4method{randomizeFeature}{GRanges}(feature, chrom.sizes, stranded,
+  keep.strand.prop, keep.chrom, exclude, include, seed, nrand)
 }
 \arguments{
   \item{feature}{a GRanges object to be randomized}
@@ -47,19 +44,19 @@
   \item{nrand}{number of randomizations (default:1)}
 }
 \value{
-  returns a GRanges object which is randomized version of
-  the feature, along with a "set" column in the metadata
-  which designates to which iteration of the randomization
-  the range belong.
+returns a GRanges object which is randomized version of the
+feature, along with a "set" column in the metadata which
+designates to which iteration of the randomization the
+range belong.
 }
 \description{
-  This function randomly distributes the coordinates of
-  genomic features which is stored in a \code{GRanges}
-  object. The randomization can be constrained by supplied
-  arguments. The function is still in Beta mode - the
-  regions can overlap excluded regions, and the randomized
-  regions are not disjoint. Please take care that the
-  excluded and included regions are not too strict when
-  compared to the total width of the ranges.
+This function randomly distributes the coordinates of
+genomic features which is stored in a \code{GRanges}
+object. The randomization can be constrained by supplied
+arguments. The function is still in Beta mode - the regions
+can overlap excluded regions, and the randomized regions
+are not disjoint. Please take care that the excluded and
+included regions are not too strict when compared to the
+total width of the ranges.
 }
 

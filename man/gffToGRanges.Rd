@@ -4,8 +4,8 @@
 \title{Converts a gff formated data.frame into a GenomicRanges object.
 The GenomicRanges object needs to be properly formated for the function to work.}
 \usage{
-  gffToGRanges(gff.file, split.group = FALSE,
-    split.char = ";", filter = NULL, zero.based = FALSE)
+gffToGRanges(gff.file, split.group = FALSE, split.char = ";",
+  filter = NULL, zero.based = FALSE)
 }
 \arguments{
   \item{gff.file}{path to a gff formatted file}
@@ -23,12 +23,12 @@ The GenomicRanges object needs to be properly formated for the function to work.
   are 0 or 1 based. 0 is the default}
 }
 \value{
-  returns a \code{GenomicRanges} object
+returns a \code{GenomicRanges} object
 }
 \description{
-  Converts a gff formated data.frame into a GenomicRanges
-  object. The GenomicRanges object needs to be properly
-  formated for the function to work.
+Converts a gff formated data.frame into a GenomicRanges
+object. The GenomicRanges object needs to be properly
+formated for the function to work.
 }
 \examples{
 gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')

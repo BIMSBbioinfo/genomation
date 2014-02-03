@@ -5,14 +5,13 @@
 \alias{annotateWithGeneParts,GRangesList,GRangesList-method}
 \title{Annotate given  object with promoter, exon, intron and intergenic regions}
 \usage{
-  annotateWithGeneParts(target, feature, strand = F,
-    intersect.chr = FALSE)
+annotateWithGeneParts(target, feature, strand = F, intersect.chr = FALSE)
 
-  \S4method{annotateWithGeneParts}{GRanges,GRangesList}(target,
-    feature, strand = F, intersect.chr = FALSE)
+\S4method{annotateWithGeneParts}{GRanges,GRangesList}(target, feature, strand,
+  intersect.chr)
 
-  \S4method{annotateWithGeneParts}{GRangesList,GRangesList}(target,
-    feature, strand = F, intersect.chr = FALSE)
+\S4method{annotateWithGeneParts}{GRangesList,GRangesList}(target, feature,
+  strand, intersect.chr)
 }
 \arguments{
   \item{target}{\code{\link{GRanges}} or
@@ -33,14 +32,14 @@
   by default}
 }
 \value{
-  \code{AnnotationByGeneParts} object or a list of
-  \code{AnnotationByGeneParts} objects if target is a
-  \code{\link{GRangesList}} object.
+\code{AnnotationByGeneParts} object or a list of
+\code{AnnotationByGeneParts} objects if target is a
+\code{\link{GRangesList}} object.
 }
 \description{
-  The function annotates \code{GRangesList} or
-  \code{GRanges} object as overlapping with
-  promoter,exon,intron or intergenic regions.
+The function annotates \code{GRangesList} or \code{GRanges}
+object as overlapping with promoter,exon,intron or
+intergenic regions.
 }
 \examples{
 data(cage)

@@ -4,10 +4,9 @@
 \alias{scaleScoreMatrixList,ScoreMatrixList-method}
 \title{Scale the ScoreMatrixList}
 \usage{
-  scaleScoreMatrixList(sml, columns, rows, scalefun)
+scaleScoreMatrixList(sml, columns, rows, scalefun)
 
-  \S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml,
-    columns = FALSE, rows = TRUE, scalefun = NULL)
+\S4method{scaleScoreMatrixList}{ScoreMatrixList}(sml, columns, rows, scalefun)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
@@ -24,11 +23,11 @@
   scale=TRUE}
 }
 \value{
-  \code{ScoreMatrixList} object
+\code{ScoreMatrixList} object
 }
 \description{
-  Scales each ScoreMatrix in the ScoreMatrixList object, by
-  rows and/or columns
+Scales each ScoreMatrix in the ScoreMatrixList object, by
+rows and/or columns
 }
 \examples{
 library(GenomicRanges)
