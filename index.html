@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Genomation by al2na</title>
+    <title>genomation by al2na</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -16,7 +16,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1 class="header">Genomation</h1>
+        <h1 class="header">genomation</h1>
         <p class="header"></p>
 
         <ul>
@@ -35,6 +35,55 @@
 
 <p>This is an R package that contains a collection of tools for visualizing and analyzing genome-wide data sets.</p>
 
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Ability to work with multiple flat file formats such as BED,GFF,BAM, bigWig and generic tabular text files </li>
+<li>Annotation of genomic intervals. For example, you can see what percentage of your genomic intervals overlaps with exon/intron/promoter annotation. </li>
+<li>Summary of genomic scores or read coverages over pre-defined regions. The pre-defined regions can be equi-width such as region around TSS or could be a set of regions with varying widths such as CpG islands. This operation will result in a matrix or set of matrices containing scores for each pre-defined region </li>
+<li>Visualisation of summary matrices such as meta-region(meta-gene, meta-promoter, etc.) plots or heatmaps. 
+These functions can employ K-means clustering of rows of summary matrices as well.</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>installation</h2>
+
+<p>You can install genomation via install_github() function from <a href="http://cran.r-project.org/web/packages/devtools/index.html">devtools package</a>.
+`</p>
+
+<h1>
+<a name="install-dependencies" class="anchor" href="#install-dependencies"><span class="octicon octicon-link"></span></a>Install dependencies</h1>
+
+<p>install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))
+source("<a href="http://bioconductor.org/biocLite.R%22">http://bioconductor.org/biocLite.R"</a>)
+biocLite(c("GenomicRanges","rtracklayer","impute","Rsamtools"))</p>
+
+<h1>
+<a name="install-the-packages" class="anchor" href="#install-the-packages"><span class="octicon octicon-link"></span></a>install the packages</h1>
+
+<p>library(devtools)
+install_github("genomation", username = "al2na")
+`</p>
+
+<h2>
+<a name="data-import" class="anchor" href="#data-import"><span class="octicon octicon-link"></span></a>Data import</h2>
+
+<p>Functions such as readBed,gff2GRanges and readGeneric can read multiple flat file formats as GRanges objects into R.</p>
+
+<h2>
+<a name="summarise-granges-object-on-promoters" class="anchor" href="#summarise-granges-object-on-promoters"><span class="octicon octicon-link"></span></a>Summarise GRanges object on promoters</h2>
+
+<h2>
+<a name="summarise-bam-files-on-promoters" class="anchor" href="#summarise-bam-files-on-promoters"><span class="octicon octicon-link"></span></a>Summarise BAM files on promoters</h2>
+
+<h2>
+<a name="summarise-bigwig-files-on-promoters" class="anchor" href="#summarise-bigwig-files-on-promoters"><span class="octicon octicon-link"></span></a>Summarise BigWig files on promoters</h2>
+
+<h2>
+<a name="visualize-summary-matrices-as-heatmap" class="anchor" href="#visualize-summary-matrices-as-heatmap"><span class="octicon octicon-link"></span></a>Visualize summary matrices as heatmap</h2>
+
+<h2>
+<a name="visualize-summary-matrices-as-meta-region-plots" class="anchor" href="#visualize-summary-matrices-as-meta-region-plots"><span class="octicon octicon-link"></span></a>Visualize summary matrices as meta-region plots</h2>
+
 <h3>
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
@@ -43,13 +92,25 @@
 <h3>
 <a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
 
-<p><a href="https://github.com/frenkiboy" class="user-mention">@frenkiboy</a> or <a href="https://github.com/al2na" class="user-mention">@al2na</a> </p>
+<p>send an e-mail to <a href="mailto:genomation@googlegroups.com">genomation@googlegroups.com</a> or use the web interface
+to post a question
+<a href="https://groups.google.com/forum/#!forum/genomation">https://groups.google.com/forum/#!forum/genomation</a></p>
       </section>
       <footer>
         <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-47762010-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
