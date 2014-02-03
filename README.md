@@ -16,7 +16,7 @@ biocLite(c("GenomicRanges","rtracklayer","impute","Rsamtools"))
 library(devtools)
 install_github("genomation", username = "al2na")
 
-}
+
 ```
 
 # Using the package
