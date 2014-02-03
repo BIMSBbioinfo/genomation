@@ -3,19 +3,19 @@
 \alias{ScoreMatrixList}
 \title{Make ScoreMatrixList from multiple targets}
 \usage{
-  ScoreMatrixList(targets, windows = NULL, bin.num = NULL,
-    bin.op = "mean", strand.aware = FALSE,
-    weight.col = NULL, is.noCovNA = FALSE, type = "",
-    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
+ScoreMatrixList(targets, windows = NULL, bin.num = NULL, bin.op = "mean",
+  strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
+  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 }
 \arguments{
   \item{targets}{can be a list of \code{scoreMatrix}
   objects, that are coerced to the \code{ScoreMatrixList},
   a list of \code{RleList} objects, or a character vector
-  specifying the locations of mulitple bam files that are
-  used to construct the \code{scoreMatrixList}. If l is
-  either a RleList object or a character vector of files,
-  it is obligatory to give a granges argument.}
+  specifying the locations of mulitple bam files or bigWig
+  files that are used to construct the
+  \code{scoreMatrixList}. If it is either a RleList object
+  or a character vector of files, it is obligatory to give
+  a windows argument.}
 
   \item{windows}{\code{GenomicRanges} containing viewpoints
   for the scoreMatrix or ScoreMatrixList functions}
@@ -62,14 +62,13 @@
   \item{param}{ScanBamParam object}
 }
 \value{
-  returns a \code{ScoreMatrixList} object
+returns a \code{ScoreMatrixList} object
 }
 \description{
-  The function constructs a list of \code{ScoreMatrix}
-  objects in the form of \code{ScoreMatrixList} object.
-  This object can be visualized using
-  \code{multiHeatMatrix}, \code{heatMeta} or
-  \code{plotMeta}
+The function constructs a list of \code{ScoreMatrix}
+objects in the form of \code{ScoreMatrixList} object. This
+object can be visualized using \code{multiHeatMatrix},
+\code{heatMeta} or \code{plotMeta}
 }
 \examples{
 # visualize the distribution of cage clusters and cpg islands around promoters

@@ -2,10 +2,9 @@
 \alias{heatMeta}
 \title{Heatmap for meta-region profiles}
 \usage{
-  heatMeta(mat, profile.names = NULL, xcoords = NULL,
-    col = NULL, meta.rescale = FALSE, legend.name = NULL,
-    cex.legend = 1, xlab = NULL, main = "", cex.lab = 1,
-    cex.axis = 1)
+heatMeta(mat, profile.names = NULL, xcoords = NULL, col = NULL,
+  meta.rescale = FALSE, legend.name = NULL, cex.legend = 1, xlab = NULL,
+  main = "", cex.lab = 1, cex.axis = 1)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList}
@@ -52,12 +51,12 @@
   default}
 }
 \value{
-  returns meta-profile matrix invisibly.
+returns meta-profile matrix invisibly.
 }
 \description{
-  Function calculates meta-profile(s) from a ScoreMatrix or
-  a ScoreMatrixList, then produces a heatmap or a set of
-  stacked heatmaps for meta-region profiles
+Function calculates meta-profile(s) from a ScoreMatrix or a
+ScoreMatrixList, then produces a heatmap or a set of
+stacked heatmaps for meta-region profiles
 }
 \examples{
 data(cage)

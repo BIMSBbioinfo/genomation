@@ -4,18 +4,17 @@
 \alias{readTranscriptFeatures,character-method}
 \title{Function for reading exon intron and promoter structure from a given bed file}
 \usage{
-  readTranscriptFeatures(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+readTranscriptFeatures(location,remove.unusual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 
-  \S4method{readTranscriptFeatures}{character}(location,
-    remove.unsual = TRUE, up.flank = 1000,
-    down.flank = 1000, unique.prom = TRUE)
+\S4method{readTranscriptFeatures}{character}(location, remove.unusual, up.flank,
+  down.flank, unique.prom)
 }
 \arguments{
   \item{location}{location of the bed file with 12 or more
   columns}
 
-  \item{remove.unsual}{remove the chromomesomes with unsual
-  names, mainly random chromsomes etc}
+  \item{remove.unusual}{remove the chromomesomes with
+  unsual names, mainly random chromsomes etc}
 
   \item{up.flank}{up-stream from TSS to detect promoter
   boundaries}
@@ -28,16 +27,16 @@
   this option to be TRUE}
 }
 \value{
-  a \code{\link{GRangesList}} containing locations of
-  exon/intron/promoter/TSS
+a \code{\link{GRangesList}} containing locations of
+exon/intron/promoter/TSS
 }
 \description{
-  Function for reading exon intron and promoter structure
-  from a given bed file
+Function for reading exon intron and promoter structure
+from a given bed file
 }
 \note{
-  one bed track per file is only accepted, the bed files
-  with multiple tracks will cause en error
+one bed track per file is only accepted, the bed files with
+multiple tracks will cause en error
 }
 \examples{
 my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")

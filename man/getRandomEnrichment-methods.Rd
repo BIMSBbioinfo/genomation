@@ -4,11 +4,11 @@
 \alias{getRandomEnrichment,GRanges,GRanges-method}
 \title{get enrichment based on randomized feature overlap}
 \usage{
-  getRandomEnrichment(target, query, randomizations = 1000,
-    rand.set = NULL, ...)
+getRandomEnrichment(target, query, randomizations = 1000, rand.set = NULL,
+  ...)
 
-  \S4method{getRandomEnrichment}{GRanges,GRanges}(target,
-    query, randomizations = 1000, rand.set = NULL, ...)
+\S4method{getRandomEnrichment}{GRanges,GRanges}(target, query, randomizations,
+  rand.set, ...)
 }
 \arguments{
   \item{target}{a \code{GRanges} object to be overlapped
@@ -32,16 +32,16 @@
   ccontrol how randomization is done.}
 }
 \value{
-  returns a \code{RandomEnrichment} object
+returns a \code{RandomEnrichment} object
 }
 \description{
-  This function measures the association between two
-  genomic features by randomizing one feature and counting
-  the overlaps in randomized sets. That is to say,
-  \code{query} feature will be randomly distributed over
-  the genome (constrained by provided options), and the
-  overlap of \code{target} with these randomized features
-  will be measured.
+This function measures the association between two genomic
+features by randomizing one feature and counting the
+overlaps in randomized sets. That is to say, \code{query}
+feature will be randomly distributed over the genome
+(constrained by provided options), and the overlap of
+\code{target} with these randomized features will be
+measured.
 }
 \examples{
 data(cage)
@@ -50,6 +50,6 @@ data(cage)
  enr = getRandomEnrichment(cage, cpgi, randomizations=50)
 }
 \seealso{
-  \code{\link{randomizeFeature}}
+\code{\link{randomizeFeature}}
 }
 

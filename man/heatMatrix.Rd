@@ -2,12 +2,11 @@
 \alias{heatMatrix}
 \title{Draw a heatmap of a given ScoreMatrix object}
 \usage{
-  heatMatrix(mat, grid = FALSE, col = NULL, xcoords = NULL,
-    group = NULL, group.col = NULL, order = FALSE,
-    winsorize = c(0, 100), kmeans = FALSE, k = 3,
-    main = "", legend.name = NULL, cex.legend = 1,
-    xlab = NULL, cex.main = 1, cex.lab = 1, cex.axis = 1,
-    newpage = TRUE)
+heatMatrix(mat, grid = FALSE, col = NULL, xcoords = NULL, group = NULL,
+  group.col = NULL, order = FALSE, winsorize = c(0, 100),
+  kmeans = FALSE, k = 3, main = "", legend.name = NULL,
+  cex.legend = 1, xlab = NULL, cex.main = 1, cex.lab = 1,
+  cex.axis = 1, newpage = TRUE)
 }
 \arguments{
   \item{mat}{a \code{ScoreMatrix} object}
@@ -92,15 +91,14 @@
   \code{grid=TRUE}.}
 }
 \value{
-  returns kmeans clustering result invisibly, if
-  kmeans=TRUE
+returns kmeans clustering result invisibly, if kmeans=TRUE
 }
 \description{
-  The function makes a heatmap out of given
-  \code{ScoreMatrix} object. If desired it can use
-  clustering using k-means and plot cluster color codes as
-  a sidebar. In addition, user can define groups of rows
-  using 'group' argument.
+The function makes a heatmap out of given
+\code{ScoreMatrix} object. If desired it can use clustering
+using k-means and plot cluster color codes as a sidebar. In
+addition, user can define groups of rows using 'group'
+argument.
 }
 \examples{
 data(cage)

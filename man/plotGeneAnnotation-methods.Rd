@@ -5,11 +5,9 @@
 \alias{plotGeneAnnotation,list-method}
 \title{Plots the enrichment of each feature in the set in the gene annotation}
 \usage{
-  plotGeneAnnotation(l, cluster = FALSE,
-    col = c("white", "cornflowerblue"))
+plotGeneAnnotation(l, cluster = FALSE, col = c("white", "cornflowerblue"))
 
-  \S4method{plotGeneAnnotation}{list}(l, cluster = FALSE,
-    col = c("white", "cornflowerblue"))
+\S4method{plotGeneAnnotation}{list}(l, cluster, col)
 }
 \arguments{
   \item{l}{a \code{list} of \code{AnnotationByGeneParts}
@@ -23,8 +21,8 @@
   second is the highest one}
 }
 \description{
-  This function plots a heatmap of enrichment of each range
-  in given gene feature
+This function plots a heatmap of enrichment of each range
+in given gene feature
 }
 \examples{
 library(GenomicRanges)

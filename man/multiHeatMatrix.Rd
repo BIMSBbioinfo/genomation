@@ -2,14 +2,12 @@
 \alias{multiHeatMatrix}
 \title{Draw multiple heatmaps from a ScoreMatrixList object}
 \usage{
-  multiHeatMatrix(sml, grid = TRUE, col = NULL,
-    xcoords = NULL, group = NULL, group.col = NULL,
-    order = FALSE, winsorize = c(0, 100), kmeans = FALSE,
-    k = 3, column.scale = TRUE, matrix.main = NULL,
-    common.scale = FALSE, legend = TRUE,
-    legend.name = NULL, cex.legend = 0.8, xlab = NULL,
-    cex.lab = 1, cex.main = 1, cex.axis = 0.8,
-    newpage = TRUE)
+multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
+  group = NULL, group.col = NULL, order = FALSE, winsorize = c(0, 100),
+  kmeans = FALSE, k = 3, column.scale = TRUE, matrix.main = NULL,
+  common.scale = FALSE, legend = TRUE, legend.name = NULL,
+  cex.legend = 0.8, xlab = NULL, cex.lab = 1, cex.main = 1,
+  cex.axis = 0.8, newpage = TRUE)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
@@ -127,15 +125,14 @@
   \code{grid=TRUE}.}
 }
 \value{
-  invisibly returns the order of rows, if kmeans=TRUE
-  and/or order=TRUE
+invisibly returns the order of rows, if kmeans=TRUE and/or
+order=TRUE
 }
 \description{
-  The function plots multiple heatmaps for a
-  ScoreMatrixList object side by side. Each matrix can have
-  different color schemes but it is essential that each
-  matrix is obtained from same regions or neighbouring
-  regions.
+The function plots multiple heatmaps for a ScoreMatrixList
+object side by side. Each matrix can have different color
+schemes but it is essential that each matrix is obtained
+from same regions or neighbouring regions.
 }
 \examples{
 data(cage)

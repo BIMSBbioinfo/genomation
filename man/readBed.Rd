@@ -1,0 +1,34 @@
+\docType{methods}
+\name{readBed}
+\alias{readBed}
+\title{Read a BED file and convert it to GRanges.}
+\usage{
+readBed(file, track.line = FALSE, remove.unusual = FALSE)
+}
+\arguments{
+  \item{file}{location of the file, a character string such
+  as: "/home/user/my.bed"}
+
+  \item{track.line}{logical, indicates if the bed file has
+  a track line or not.  default:FALSE.}
+
+  \item{remove.unusual}{if TRUE(default) remove the
+  chromosomes with unsual names, such as chrX_random
+  (Default:FALSE)}
+}
+\value{
+\code{\link{GRanges}} object
+}
+\description{
+The function reads a BED file that contains location and
+other information on genomic features and returns a
+\code{\link{GRanges}} object. The minimal information that
+the BED file has to have is chromosome, start and end
+columns. it can handle all BED formats up to 12 columns.
+}
+\examples{
+my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+ refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
+ head(refseq)
+}
+

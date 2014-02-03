@@ -4,15 +4,13 @@
 \alias{calculateOverlapSignificance,GRanges,GRanges-method}
 \title{function that calculates the significance of overlaps of two sets of features using randomization}
 \usage{
-  calculateOverlapSignificance(target, feature,
-    chrom.sizes = NULL, stranded = TRUE,
-    keep.strand.prop = TRUE, keep.chrom = TRUE,
-    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
+calculateOverlapSignificance(target, feature, chrom.sizes = NULL,
+  stranded = TRUE, keep.strand.prop = TRUE, keep.chrom = TRUE,
+  exclude = NULL, include = NULL, seed = NULL, nrand = 1)
 
-  \S4method{calculateOverlapSignificance}{GRanges,GRanges}(target,
-    feature, chrom.sizes = NULL, stranded = TRUE,
-    keep.strand.prop = TRUE, keep.chrom = TRUE,
-    exclude = NULL, include = NULL, seed = NULL, nrand = 1)
+\S4method{calculateOverlapSignificance}{GRanges,GRanges}(target, feature,
+  chrom.sizes, stranded, keep.strand.prop, keep.chrom, exclude, include, seed,
+  nrand)
 }
 \arguments{
   \item{target}{a GRanges object for which the overlap
@@ -48,18 +46,18 @@
   \item{nrand}{number of randomizations (default:1)}
 }
 \value{
-  returns a GRanges object which is randomized version of
-  the feature
+returns a GRanges object which is randomized version of the
+feature
 }
 \description{
-  This function calculates the significance of overlaps of
-  two sets of features using randomization. #' It returns a
-  distributon of overlaps of a target set with a given
-  randomized feature set. The randomization can be
-  constrained by supplied arguments. The function is still
-  in Beta mode - the regions can overlap excluded regions,
-  and the randomized regions are not disjoint. Please take
-  care that the excluded and included regions are not too
-  strict when compared to the total width of the ranges.
+This function calculates the significance of overlaps of
+two sets of features using randomization. #' It returns a
+distributon of overlaps of a target set with a given
+randomized feature set. The randomization can be
+constrained by supplied arguments. The function is still in
+Beta mode - the regions can overlap excluded regions, and
+the randomized regions are not disjoint. Please take care
+that the excluded and included regions are not too strict
+when compared to the total width of the ranges.
 }
 

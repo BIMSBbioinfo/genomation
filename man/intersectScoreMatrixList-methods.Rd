@@ -4,10 +4,9 @@
 \alias{intersectScoreMatrixList,ScoreMatrixList-method}
 \title{Get common rows from all matrices in a ScoreMatrixList object}
 \usage{
-  intersectScoreMatrixList(sml, reorder = FALSE)
+intersectScoreMatrixList(sml, reorder = FALSE)
 
-  \S4method{intersectScoreMatrixList}{ScoreMatrixList}(sml,
-    reorder = FALSE)
+\S4method{intersectScoreMatrixList}{ScoreMatrixList}(sml, reorder)
 }
 \arguments{
   \item{sml}{a \code{ScoreMatrixList} object}
@@ -16,12 +15,12 @@
   list are sorted based on their common row ids.}
 }
 \value{
-  \code{ScoreMatrixList} object
+\code{ScoreMatrixList} object
 }
 \description{
-  Returns a intersection of rows for each matrix in a
-  ScoreMatrixList object. This is done using the rownames
-  of each element in the list.
+Returns a intersection of rows for each matrix in a
+ScoreMatrixList object. This is done using the rownames of
+each element in the list.
 }
 \examples{
 library(GenomicRanges)

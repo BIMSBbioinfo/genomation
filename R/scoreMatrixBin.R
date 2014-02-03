@@ -110,10 +110,10 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' \code{windows} can be a predefined region such as CpG islands or gene bodies that are not necessarily equi-width.
 #' Each window will be chopped to equal number of bins based on \code{bin.num} option.
 #'
-#' @param target  \code{RleList} or a \code{modRleList} or \code{GRanges} 
+#' @param target  \code{RleList},  \code{GRanges}, BAM file or a bigWig file 
 #'               object to be overlapped with ranges in \code{windows}
 #' @param windows \code{GRanges} object that contains the windows of interest. 
-#'                It could be promoters, CpG islands, exons, introns. However 
+#'                It could be promoters, CpG islands, exons, introns. However, 
 #'                the sizes of windows does NOT have to be equal.
 #' @param bin.num single \code{integer} value denoting how many bins there 
 #'                should be for each window
