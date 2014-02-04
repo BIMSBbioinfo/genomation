@@ -60,14 +60,14 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <p>You can install genomation via <strong>install_github()</strong> function from <a href="http://cran.r-project.org/web/packages/devtools/index.html">devtools package</a>.</p>
 
-<div class="highlight highlight-R"><pre><span class="c"># Install dependencies</span>
-<span class="c">install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))</span>
-<span class="c">source("http://bioconductor.org/biocLite.R")</span>
-<span class="c">biocLite(c("GenomicRanges","rtracklayer","impute","Rsamtools"))</span>
+<div class="highlight highlight-ruby"><pre><span class="c1"># Install dependencies</span>
+<span class="n">install</span><span class="o">.</span><span class="n">packages</span><span class="p">(</span> <span class="n">c</span><span class="p">(</span><span class="s2">"data.table"</span><span class="p">,</span><span class="s2">"plyr"</span><span class="p">,</span><span class="s2">"reshape2"</span><span class="p">,</span><span class="s2">"ggplot2"</span><span class="p">,</span><span class="s2">"gridBase"</span><span class="p">,</span><span class="s2">"devtools"</span><span class="p">))</span>
+<span class="n">source</span><span class="p">(</span><span class="s2">"http://bioconductor.org/biocLite.R"</span><span class="p">)</span>
+<span class="n">biocLite</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="s2">"GenomicRanges"</span><span class="p">,</span><span class="s2">"rtracklayer"</span><span class="p">,</span><span class="s2">"impute"</span><span class="p">,</span><span class="s2">"Rsamtools"</span><span class="p">))</span>
 
-<span class="c"># install the packages</span>
-<span class="c">library(devtools)</span>
-<span class="c">install_github("genomation", username = "al2na")</span>
+<span class="c1"># install the packages</span>
+<span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span>
+<span class="n">install_github</span><span class="p">(</span><span class="s2">"genomation"</span><span class="p">,</span> <span class="n">username</span> <span class="o">=</span> <span class="s2">"al2na"</span><span class="p">)</span>
 </pre></div>
 
 <h2>
@@ -75,16 +75,16 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <p>Functions such as <strong>readBed</strong>, <strong>gff2GRanges</strong>, <strong>readTranscriptFeatures</strong> and <strong>readGeneric</strong> can read multiple flat file formats as GRanges objects into R.</p>
 
-<div class="highlight highlight-R"><pre><span class="c"># Read a BED12 file and return a GRangesList object with promoters, exons and introns</span>
-<span class="c">my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")</span>
-<span class="c">my.bed12.file</span>
-<span class="c">feats = readTranscriptFeatures(my.bed12.file)</span>
+<div class="highlight highlight-ruby"><pre><span class="c1"># Read a BED12 file and return a GRangesList object with promoters, exons and introns</span>
+<span class="n">my</span><span class="o">.</span><span class="n">bed12</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">system</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s2">"extdata/chr21.refseq.hg19.bed"</span><span class="p">,</span> <span class="n">package</span> <span class="o">=</span> <span class="s2">"genomation"</span><span class="p">)</span>
+<span class="n">my</span><span class="o">.</span><span class="n">bed12</span><span class="o">.</span><span class="n">file</span>
+<span class="n">feats</span> <span class="o">=</span> <span class="n">readTranscriptFeatures</span><span class="p">(</span><span class="n">my</span><span class="o">.</span><span class="n">bed12</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
 
-<span class="c"># Read a generic tabular text file containing genomic locations</span>
-<span class="c">my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")</span>
-<span class="c">refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,</span>
-<span class="c">                      meta.cols=list(score=5,name=4),</span>
-<span class="c">                     keep.all.metadata=FALSE, zero.based=TRUE)</span>
+<span class="c1"># Read a generic tabular text file containing genomic locations</span>
+<span class="n">my</span><span class="o">.</span><span class="n">file</span><span class="o">=</span><span class="nb">system</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s2">"extdata"</span><span class="p">,</span><span class="s2">"chr21.refseq.hg19.bed"</span><span class="p">,</span><span class="n">package</span><span class="o">=</span><span class="s2">"genomation"</span><span class="p">)</span>
+<span class="n">refseq</span> <span class="o">=</span> <span class="n">readGeneric</span><span class="p">(</span><span class="n">my</span><span class="o">.</span><span class="n">file</span><span class="p">,</span><span class="n">chr</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="k">end</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">strand</span><span class="o">=</span><span class="no">NULL</span><span class="p">,</span>
+                      <span class="n">meta</span><span class="o">.</span><span class="n">cols</span><span class="o">=</span><span class="n">list</span><span class="p">(</span><span class="n">score</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="nb">name</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                     <span class="n">keep</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">metadata</span><span class="o">=</span><span class="no">FALSE</span><span class="p">,</span> <span class="n">zero</span><span class="o">.</span><span class="n">based</span><span class="o">=</span><span class="no">TRUE</span><span class="p">)</span>
 </pre></div>
 
 <h2>
@@ -92,10 +92,10 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <p>You can summarize GRanges objects that overlap with a set of promoters and return a ScoreMatrix object. The object will contain scores for each base in each promoter, columns correspond to bases and rows correspond to promoters.</p>
 
-<div class="highlight highlight-R"><pre><span class="c"> data(cage)</span>
-<span class="c"> data(promoters)</span>
-<span class="c"> scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,</span>
-<span class="c">                                 weight.col="tpm")</span>
+<div class="highlight highlight-ruby"><pre> <span class="n">data</span><span class="p">(</span><span class="n">cage</span><span class="p">)</span>
+ <span class="n">data</span><span class="p">(</span><span class="n">promoters</span><span class="p">)</span>
+ <span class="n">scores1</span><span class="o">=</span><span class="no">ScoreMatrix</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">cage</span><span class="p">,</span><span class="n">windows</span><span class="o">=</span><span class="n">promoters</span><span class="p">,</span><span class="n">strand</span><span class="o">.</span><span class="n">aware</span><span class="o">=</span><span class="no">TRUE</span><span class="p">,</span>
+                                 <span class="n">weight</span><span class="o">.</span><span class="n">col</span><span class="o">=</span><span class="s2">"tpm"</span><span class="p">)</span>
 </pre></div>
 
 <h2>
@@ -103,9 +103,9 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <p>BAM files can also be used in <strong>ScoreMatrix()</strong> function as well.</p>
 
-<div class="highlight highlight-R"><pre><span class="c"> bam.file = system.file('tests/test.bam', package='genomation')</span>
-<span class="c"> windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))</span>
-<span class="c"> scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam')</span>
+<div class="highlight highlight-ruby"><pre> <span class="n">bam</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">system</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">'tests/test.bam'</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">'genomation'</span><span class="p">)</span>
+ <span class="n">windows</span> <span class="o">=</span> <span class="no">GRanges</span><span class="p">(</span><span class="n">rep</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">each</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="no">IRanges</span><span class="p">(</span><span class="n">rep</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">times</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+ <span class="n">scores3</span> <span class="o">=</span> <span class="no">ScoreMatrix</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">bam</span><span class="o">.</span><span class="n">file</span><span class="p">,</span><span class="n">windows</span><span class="o">=</span><span class="n">windows</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s1">'bam'</span><span class="p">)</span>
 </pre></div>
 
 <h2>
@@ -113,9 +113,9 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <p>You can also use bigWig files in <strong>ScoreMatrix()</strong> function.</p>
 
-<div class="highlight highlight-R"><pre><span class="c">bw.file = system.file('tests/test.bw', package='rtracklayer')</span>
-<span class="c">windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))</span>
-<span class="c">scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig')</span>
+<div class="highlight highlight-ruby"><pre><span class="n">bw</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">system</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">'tests/test.bw'</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">'rtracklayer'</span><span class="p">)</span>
+<span class="n">windows</span> <span class="o">=</span> <span class="no">GRanges</span><span class="p">(</span><span class="n">rep</span><span class="p">(</span><span class="s1">'chr2'</span><span class="p">,</span><span class="n">each</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="no">IRanges</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">c</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="mi">350</span><span class="p">,</span><span class="mi">450</span><span class="p">,</span><span class="mi">550</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">))</span>
+<span class="n">scores3</span> <span class="o">=</span> <span class="no">ScoreMatrix</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">bw</span><span class="o">.</span><span class="n">file</span> <span class="p">,</span><span class="n">windows</span><span class="o">=</span><span class="n">windows</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s1">'bigWig'</span><span class="p">)</span>
 </pre></div>
 
 <h2>
@@ -123,23 +123,23 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <p>ScoreMatrix or ScoreMatrixList objects can be visualized with <strong>heatMatrix, multiHeatMatrix, plotMeta and heatMeta</strong> functions.</p>
 
-<div class="highlight highlight-R"><pre><span class="c">data(cage)</span>
-<span class="c">data(promoters)</span>
-<span class="c">scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)</span>
+<div class="highlight highlight-ruby"><pre><span class="n">data</span><span class="p">(</span><span class="n">cage</span><span class="p">)</span>
+<span class="n">data</span><span class="p">(</span><span class="n">promoters</span><span class="p">)</span>
+<span class="n">scores1</span><span class="o">=</span><span class="no">ScoreMatrix</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">cage</span><span class="p">,</span><span class="n">windows</span><span class="o">=</span><span class="n">promoters</span><span class="p">,</span><span class="n">strand</span><span class="o">.</span><span class="n">aware</span><span class="o">=</span><span class="no">TRUE</span><span class="p">)</span>
 
-<span class="c">data(cpgi)</span>
-<span class="c">scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)</span>
+<span class="n">data</span><span class="p">(</span><span class="n">cpgi</span><span class="p">)</span>
+<span class="n">scores2</span><span class="o">=</span><span class="no">ScoreMatrix</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">cpgi</span><span class="p">,</span><span class="n">windows</span><span class="o">=</span><span class="n">promoters</span><span class="p">,</span><span class="n">strand</span><span class="o">.</span><span class="n">aware</span><span class="o">=</span><span class="no">TRUE</span><span class="p">)</span>
 
-<span class="c">sml=new("ScoreMatrixList",list(a=scores1,b=scores2))</span>
-<span class="c">multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)</span>
+<span class="n">sml</span><span class="o">=</span><span class="kp">new</span><span class="p">(</span><span class="s2">"ScoreMatrixList"</span><span class="p">,</span><span class="n">list</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">scores1</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">scores2</span><span class="p">))</span>
+<span class="n">multiHeatMatrix</span><span class="p">(</span><span class="n">sml</span><span class="p">,</span><span class="n">kmeans</span><span class="o">=</span><span class="no">TRUE</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">matrix</span><span class="o">.</span><span class="n">main</span><span class="o">=</span><span class="n">c</span><span class="p">(</span><span class="s2">"cage"</span><span class="p">,</span><span class="s2">"CpGi"</span><span class="p">),</span><span class="n">cex</span><span class="o">.</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="p">)</span>
 
 </pre></div>
 
 <h2>
 <a name="visualize-summary-matrices-as-meta-region-plots" class="anchor" href="#visualize-summary-matrices-as-meta-region-plots"><span class="octicon octicon-link"></span></a>Visualize summary matrices as meta-region plots</h2>
 
-<div class="highlight highlight-R"><pre><span class="c">plotMeta(mat=sml,overlay=TRUE,main="my plotowski")</span>
-<span class="c">heatMeta(mat=sml,main="my plotowski")</span>
+<div class="highlight highlight-ruby"><pre><span class="n">plotMeta</span><span class="p">(</span><span class="n">mat</span><span class="o">=</span><span class="n">sml</span><span class="p">,</span><span class="n">overlay</span><span class="o">=</span><span class="no">TRUE</span><span class="p">,</span><span class="n">main</span><span class="o">=</span><span class="s2">"my plotowski"</span><span class="p">)</span>
+<span class="n">heatMeta</span><span class="p">(</span><span class="n">mat</span><span class="o">=</span><span class="n">sml</span><span class="p">,</span><span class="n">main</span><span class="o">=</span><span class="s2">"my plotowski"</span><span class="p">)</span>
 </pre></div>
 
 <h1>
