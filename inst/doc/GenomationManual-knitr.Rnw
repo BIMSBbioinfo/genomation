@@ -87,11 +87,11 @@ High-throughput data which will be used to show the functonality of the
 of gene expression (CAGE) data comes prepared with the genomation package, while
 the raw HTS data can be found in the sister package \Rpackage{genomationData}.
 To install the \Rpackage{genomation} and the complementary data package the from
-the github repository, copy and paste the following lines into your R interpreter:
+the Bioconductor repository, copy and paste the following lines into your R interpreter:
 <<genomationDataLoad, eval=FALSE>>=
 library(devtools)
-install_github("genomationData",username='al2na')
-install_github("genomation",username='al2na')
+biocLite("genomationData")
+biocLite("genomation")
 @
 
 The \Rpackage{genomationData} vignette contains a verbose description of 
