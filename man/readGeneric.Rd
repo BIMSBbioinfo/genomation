@@ -5,7 +5,7 @@
 \usage{
 readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
   meta.cols = NULL, keep.all.metadata = FALSE, zero.based = FALSE,
-  remove.unsual = FALSE, header = FALSE, skip = 0, sep = "\\t")
+  remove.unusual = FALSE, header = FALSE, skip = 0, sep = "\\t")
 }
 \arguments{
   \item{file}{location of the file, a character string such
@@ -40,7 +40,7 @@ readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
   ranges in the bed file are 0 or 1 base encoded. (Default:
   FALSE)}
 
-  \item{remove.unsual}{if TRUE(default) remove the
+  \item{remove.unusual}{if TRUE(default) remove the
   chromosomes with unsual names, such as chrX_random
   (Default:FALSE)}
 

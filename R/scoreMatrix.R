@@ -133,7 +133,7 @@ readBigWig = function(target, windows=NULL, ...){
 #' The function takes the intersection of names in the Rle and GRanges objects.
 #' On Windows OS the function will give an error if the target is a file in .bigWig format.
 #'
-#' @param target \code{RleList} , \code{GRanges} or a BAM file
+#' @param target \code{RleList} , \code{GRanges}, a BAM file or a BigWig
 #'  to be overlapped with ranges in \code{windows}
 #' @param windows \code{GRanges} object that contains the windows of interest. 
 #'                It could be promoters, CpG islands, exons, introns. 

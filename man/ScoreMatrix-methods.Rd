@@ -17,8 +17,9 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
 \\S4method{ScoreMatrix}{character,GRanges}(target,windows, strand.aware, type='', rpm=FALSE, unique=FALSE, extend=0, param=NULL)
 }
 \arguments{
-  \item{target}{\code{RleList} , \code{GRanges} or a BAM
-  file to be overlapped with ranges in \code{windows}}
+  \item{target}{\code{RleList} , \code{GRanges}, a BAM file
+  or a BigWig to be overlapped with ranges in
+  \code{windows}}
 
   \item{windows}{\code{GRanges} object that contains the
   windows of interest.  It could be promoters, CpG islands,

@@ -17,13 +17,13 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
 \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10, bin.op='mean', strand.aware, type, rpm, unique, extend, param)
 }
 \arguments{
-  \item{target}{\code{RleList} or a \code{modRleList} or
-  \code{GRanges} object to be overlapped with ranges in
+  \item{target}{\code{RleList}, \code{GRanges}, BAM file or
+  a bigWig file object to be overlapped with ranges in
   \code{windows}}
 
   \item{windows}{\code{GRanges} object that contains the
   windows of interest.  It could be promoters, CpG islands,
-  exons, introns. However the sizes of windows does NOT
+  exons, introns. However, the sizes of windows does NOT
   have to be equal.}
 
   \item{bin.num}{single \code{integer} value denoting how

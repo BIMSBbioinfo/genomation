@@ -4,6 +4,7 @@
 \alias{readFeatureFlank,character-method}
 \title{A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores}
 \usage{
+
 readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
 
 \S4method{readFeatureFlank}{character}(location, remove.unsual, flank, clean,
@@ -18,7 +19,7 @@ readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=
   \item{clean}{If set to TRUE, flanks overlapping with
   other main features will be trimmed}
 
-  \item{remove.unsual}{remove chromsomes with unsual names
+  \item{remove.unusual}{remove chromsomes with unsual names
   random, Un and antyhing with "_" character}
 
   \item{feature.flank.name}{the names for feature and flank

@@ -48,7 +48,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @param zero.based a boolean which tells whether the ranges in 
 #'        the bed file are 0 or 1 base encoded. (Default: FALSE)
 #'        
-#' @param remove.unsual if TRUE(default) remove the chromosomes with unsual 
+#' @param remove.unusual if TRUE(default) remove the chromosomes with unsual 
 #'        names, such as chrX_random (Default:FALSE)
 #'        
 #' @param header whether the original file contains a header line
@@ -73,7 +73,7 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @rdname readGeneric
 readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL, 
                       keep.all.metadata=FALSE, zero.based=FALSE, 
-                      remove.unsual=FALSE, header=FALSE, 
+                      remove.unusual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
 
   # removes the track header
@@ -109,7 +109,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
     df[, sind] = sub('\\.', '*', df[,sind])
     
   # removes nonstandard chromosome names
-  if(remove.unsual)
+  if(remove.unusual)
     df = df[grep("_", as.character(df$chr),invert=T),]
   
   g = makeGRangesFromDataFrame(
@@ -134,6 +134,73 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   return(g)
 }
 
+#' Read a BED file and convert it to GRanges. 
+#' 
+#' The function reads a BED file that contains location and other information
+#' on genomic features and returns a \code{\link{GRanges}} object. 
+#' The minimal information that the BED file has to have is chromosome, 
+#' start and end columns. it can handle all BED formats up to 12 columns. 
+#' 
+#'  
+#' @param file location of the file, a character string such as: "/home/user/my.bed"
+#'
+#' @param track.line  logical, indicates if the bed file has a track line or not. 
+#'                    default:FALSE.
+#' @param remove.unusual if TRUE(default) remove the chromosomes with unsual 
+#'        names, such as chrX_random (Default:FALSE)
+#'        
+#'        
+#' @return \code{\link{GRanges}} object
+#'
+#' @examples
+#'  my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+#'  refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
+#'  head(refseq)
+#'
+#' @export
+#' @docType methods
+#' @rdname readBed
+readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
+{
+  
+  meta.cols=list(score=5,name=4,thickStart=7,  
+                 thickEnd=8, 
+                 itemRgb=9,  
+                 blockCount=10, 
+                 blockSizes=11,  
+                 blockStarts=12 )
+  if(track.line){
+    skip=1
+  }else{skip=0}
+  
+  df=read.table(file,skip=skip,nrow=2,header=FALSE)
+  numcol=ncol(df)
+  
+  if(numcol==3){
+    df=readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
+                   meta.cols = NULL,   zero.based = TRUE,
+                   remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t")
+  }else if(numcol==4){
+    df=readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
+                   meta.cols = meta.cols[1],   zero.based = TRUE,
+                   remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t")    
+  }else if(numcol==5){
+    df=readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
+                   meta.cols = meta.cols[1:2],   zero.based = TRUE,
+                   remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t")    
+  }else if(numcol == 6){
+    df=readGeneric(file, chr = 1, start = 2, end = 3, strand = 6,
+                   meta.cols = meta.cols[1:2],   zero.based = TRUE,
+                   remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t") 
+  }else if(numcol > 6){
+    df=readGeneric(file, chr = 1, start = 2, end = 3, strand = 6,
+                   meta.cols = meta.cols[c(1:2,(3:8)[1:(numcol-6)])],   zero.based = TRUE,
+                   remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t") 
+  }
+  
+  df
+  
+} 
 
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted broad peak file into a GRanges object
@@ -204,9 +271,9 @@ readNarrowPeak<-function(file){
 #' @param location for the bed file of the feature 
 #' @param flank number of basepairs for the flanking regions
 #' @param clean If set to TRUE, flanks overlapping with other main features will be trimmed
-#' @param remove.unsual  remove chromsomes with unsual names random, Un and antyhing with "_" character
+#' @param remove.unusual  remove chromsomes with unsual names random, Un and antyhing with "_" character
 #' @param feature.flank.name the names for feature and flank ranges, it should be a character vector of length 2. example: c("CpGi","shores")
-#' @usage  readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
+#' @usage  readFeatureFlank(location,remove.unusual=T,flank=2000,clean=T,feature.flank.name=NULL)
 #' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object for the main feature.
 #'   NOTE:This can not return a GRangesList at the moment because flanking regions do not have to have the same column name as the feature.
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
@@ -219,7 +286,7 @@ readNarrowPeak<-function(file){
 #' @docType methods
 #' @rdname readFeatureFlank-methods
 setGeneric("readFeatureFlank", 
-           function(location,remove.unsual=T,
+           function(location,remove.unusual=T,
                     flank=2000,
                     clean=T,
                     feature.flank.name=NULL) 
@@ -229,7 +296,7 @@ setGeneric("readFeatureFlank",
 #' @rdname readFeatureFlank-methods
 setMethod("readFeatureFlank", 
           signature(location = "character"),
-          function(location,remove.unsual,flank ,clean,feature.flank.name){
+          function(location,remove.unusual,flank ,clean,feature.flank.name){
             
             feat = readGeneric(location)
             flanks = getFlanks(feat,flank=flank,clean=clean)
@@ -244,11 +311,11 @@ setMethod("readFeatureFlank",
 #' Function for reading exon intron and promoter structure from a given bed file
 #'
 #' @param location location of the bed file with 12 or more columns
-#' @param remove.unsual remove the chromomesomes with unsual names, mainly random chromsomes etc
+#' @param remove.unusual remove the chromomesomes with unsual names, mainly random chromsomes etc
 #' @param up.flank  up-stream from TSS to detect promoter boundaries
 #' @param down.flank down-stream from TSS to detect promoter boundaries
 #' @param unique.prom     get only the unique promoters, promoter boundaries will not have a gene name if you set this option to be TRUE
-#' @usage readTranscriptFeatures(location,remove.unsual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+#' @usage readTranscriptFeatures(location,remove.unusual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
 #' @return a \code{\link{GRangesList}} containing locations of exon/intron/promoter/TSS
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #' 
@@ -262,7 +329,7 @@ setMethod("readFeatureFlank",
 #' @docType methods
 #' @rdname readTranscriptFeatures-methods
 setGeneric("readTranscriptFeatures", 
-           function(location,remove.unsual=TRUE,
+           function(location,remove.unusual=TRUE,
                     up.flank=1000,
                     down.flank=1000,
                     unique.prom=TRUE) 
@@ -272,7 +339,7 @@ setGeneric("readTranscriptFeatures",
 #' @rdname readTranscriptFeatures-methods
 setMethod("readTranscriptFeatures", 
           signature(location = "character"),
-          function(location,remove.unsual,up.flank ,down.flank ,unique.prom){
+          function(location,remove.unusual,up.flank ,down.flank ,unique.prom){
             
             # find out if there is a header, skip 1st line if there is a header
             f.line=readLines(con = location, n = 1)
@@ -283,7 +350,7 @@ setMethod("readTranscriptFeatures",
             # readBed6
             message('Reading the table...\r')
             bed=readTableFast(location,header=F,skip=skip)                    
-            if(remove.unsual)
+            if(remove.unusual)
               bed=bed[grep("_", as.character(bed[,1]),invert=T),]
             
             # introns
