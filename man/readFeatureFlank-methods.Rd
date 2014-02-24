@@ -4,10 +4,9 @@
 \alias{readFeatureFlank,character-method}
 \title{A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores}
 \usage{
+readFeatureFlank(location,remove.unusual=T,flank=2000,clean=T,feature.flank.name=NULL)
 
-readFeatureFlank(location,remove.unsual=T,flank=2000,clean=T,feature.flank.name=NULL)
-
-\S4method{readFeatureFlank}{character}(location, remove.unsual, flank, clean,
+\S4method{readFeatureFlank}{character}(location, remove.unusual, flank, clean,
   feature.flank.name)
 }
 \arguments{

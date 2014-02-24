@@ -5,6 +5,7 @@
 \title{Function for reading exon intron and promoter structure from a given bed file}
 \usage{
 readTranscriptFeatures(location,remove.unusual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+
 \S4method{readTranscriptFeatures}{character}(location, remove.unusual, up.flank,
   down.flank, unique.prom)
 }
