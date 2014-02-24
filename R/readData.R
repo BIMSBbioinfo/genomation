@@ -173,7 +173,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
     skip=1
   }else{skip=0}
   
-  df=read.table(file,skip=skip,nrow=2,header=FALSE)
+  df=read.table(file,skip=skip,nrows=2,header=FALSE)
   numcol=ncol(df)
   
   if(numcol==3){
