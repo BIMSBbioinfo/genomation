@@ -6,28 +6,24 @@
 \alias{ScoreMatrixBin,character,GRanges-method}
 \title{Get bin score for bins on each window}
 \usage{
-  ScoreMatrixBin(target, windows, bin.num = 10,
-    bin.op = "mean", strand.aware = FALSE,
-    weight.col = NULL, is.noCovNA = FALSE, type = "",
-    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
+ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
+  strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
+  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
 
-  \\S4method{ScoreMatrixBin}{RleList,GRanges}(target,
-    windows, bin.num, bin.op, strand.aware)
+\\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op, strand.aware)
 
-  \\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA)
+\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA)
 
-  \\S4method{ScoreMatrixBin}{character,GRanges}(target,
-    windows, bin.num=10, bin.op='mean', strand.aware, type,
-    rpm, unique, extend, param)
+\\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10, bin.op='mean', strand.aware, type, rpm, unique, extend, param)
 }
 \arguments{
-  \item{target}{\code{RleList} or a \code{modRleList} or
-  \code{GRanges} object to be overlapped with ranges in
+  \item{target}{\code{RleList}, \code{GRanges}, BAM file or
+  a bigWig file object to be overlapped with ranges in
   \code{windows}}
 
   \item{windows}{\code{GRanges} object that contains the
   windows of interest.  It could be promoters, CpG islands,
-  exons, introns. However the sizes of windows does NOT
+  exons, introns. However, the sizes of windows does NOT
   have to be equal.}
 
   \item{bin.num}{single \code{integer} value denoting how
@@ -73,18 +69,18 @@
   \item{param}{ScanBamParam object}
 }
 \value{
-  returns a \code{scoreMatrix} object
+returns a \code{scoreMatrix} object
 }
 \description{
-  The function firsts bins each window to equal number of
-  bins, and calculates the a summary metrix for scores of
-  each bin (currently, mean, max and min supported) A
-  scoreMatrix object can be used to draw average profiles
-  or heatmap of read coverage or wig track-like data.
-  \code{windows} can be a predefined region such as CpG
-  islands or gene bodies that are not necessarily
-  equi-width. Each window will be chopped to equal number
-  of bins based on \code{bin.num} option.
+The function firsts bins each window to equal number of
+bins, and calculates the a summary metrix for scores of
+each bin (currently, mean, max and min supported) A
+scoreMatrix object can be used to draw average profiles or
+heatmap of read coverage or wig track-like data.
+\code{windows} can be a predefined region such as CpG
+islands or gene bodies that are not necessarily equi-width.
+Each window will be chopped to equal number of bins based
+on \code{bin.num} option.
 }
 \examples{
 data(cage)
@@ -100,6 +96,6 @@ data(cage)
   plot(colMeans(myMat2,na.rm=TRUE),type="l")
 }
 \seealso{
-  \code{\link{ScoreMatrix}}
+\code{\link{ScoreMatrix}}
 }
 

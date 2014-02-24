@@ -1,11 +1,11 @@
 Package: genomation
 Type: Package
 Title: : R package for annotation and visualization of genomic data
-Version: 0.99
+Version: 0.99.3
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
-Description: A package for genomic feature analysis and annotation users can visualize and quantify genomic features over pre-defined regions such as promoters, exons, introns. The genomic features are any feature with a definite chromosome position and may be associated with a score, such as aligned reads from HT-seq experiments, TF binding sites, methylation scores, etc. The package can use GRanges objects, BAM files and BigWig files. It can read BED and GFF files. On top of that, it can read any tabular genomic feature data as long as it has minimal information on locations of genomic features.
+Description: A package for annotation of genomic features. Users can visualize and quantify genomic features over pre-defined functional regions, such as promoters, exons, introns, etc. The genomic features represent regions with a defined chromosome position, which may be associated with a score, such as aligned reads from HT-seq experiments, TF binding sites, methylation scores, etc. The package can use any tabular genomic feature data as long as it has minimal information on the locations of genomic features.
 License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
@@ -13,21 +13,22 @@ biocViews: Annotation, HighThroughputSequencing, Visualization
 Depends:
     R (>= 3.0.0),grid
 Imports:
-  GenomicRanges,
-  IRanges,
+	GenomicRanges,
+	GenomicAlignments,
+	IRanges,
 	Rsamtools,
-  data.table,
-  plyr,
-  reshape2,
+	data.table,
+	plyr,
+	reshape2,
 	ggplot2,
 	methods,
 	rtracklayer,
 	gridBase,
 	impute
 Suggests:
-  testthat,
-  knitr,
-  RColorBrewer,
+	testthat,
+	knitr,
+	RColorBrewer,
 	genomationData
 Collate:
     'documentData.R'

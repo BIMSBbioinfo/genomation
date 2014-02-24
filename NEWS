@@ -1,5 +1,32 @@
+genomation 0.99.0.2
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* multiHeatMatrix() works correctly when common.scale=TRUE
+
+
+genomation 0.99.0.1
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* readBed() function to read bed files in to R as GRanges objects
+
+IMPROVEMENTS AND BUG FIXES
+
+* typo in readGeneric,readFeatureFlank,read* functions argument "remove.unusual" is fixed
+
+
+genomation 0.99
+--------------
+
+
+NEW FUNCTIONS AND FEATURES
+
 
 * new plotting functions for visualization of ScoreMatrix and ScoreMatrixList
+  multiHeatMatrix, heatMatrix, metaHeat and metaPlot
 
 * ScoreMatrix constructor can deal with a variety of inputs, including BAM and wig
 

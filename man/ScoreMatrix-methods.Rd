@@ -6,22 +6,20 @@
 \alias{ScoreMatrix,character,GRanges-method}
 \title{Get base-pair score for bases in each window}
 \usage{
-  ScoreMatrix(target, windows, strand.aware = FALSE,
-    weight.col = NULL, is.noCovNA = FALSE, type = "",
-    rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
+ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
+  is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
+  extend = 0, param = NULL)
 
-  \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
+\\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 
-  \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows,
-    strand.aware, weight.col, is.noCovNA)
+\\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware, weight.col, is.noCovNA)
 
-  \\S4method{ScoreMatrix}{character,GRanges}(target,windows,
-    strand.aware, type='', rpm=FALSE, unique=FALSE,
-    extend=0, param=NULL)
+\\S4method{ScoreMatrix}{character,GRanges}(target,windows, strand.aware, type='', rpm=FALSE, unique=FALSE, extend=0, param=NULL)
 }
 \arguments{
-  \item{target}{\code{RleList} , \code{GRanges} or a BAM
-  file to be overlapped with ranges in \code{windows}}
+  \item{target}{\code{RleList} , \code{GRanges}, a BAM file
+  or a BigWig to be overlapped with ranges in
+  \code{windows}}
 
   \item{windows}{\code{GRanges} object that contains the
   windows of interest.  It could be promoters, CpG islands,
@@ -64,19 +62,21 @@
   \item{param}{ScanBamParam object}
 }
 \value{
-  returns a \code{ScoreMatrix} object
+returns a \code{ScoreMatrix} object
 }
 \description{
-  The funcion produces a base-pair resolution matrix of
-  scores for given equal width windows of interest. The
-  returned matrix can be used to draw meta profiles or
-  heatmap of read coverage or wig track-like data. The
-  \code{windows} argument can be a predefined region around
-  transcription start sites or other regions of interest
-  that have equal lengths The function removes all window
-  that fall off the Rle object - have the start coordinate
-  < 1 or end coordinate > length(Rle) The function takes
-  the intersection of names in the Rle and GRanges objects
+The funcion produces a base-pair resolution matrix of
+scores for given equal width windows of interest. The
+returned matrix can be used to draw meta profiles or
+heatmap of read coverage or wig track-like data. The
+\code{windows} argument can be a predefined region around
+transcription start sites or other regions of interest that
+have equal lengths The function removes all window that
+fall off the Rle object - have the start coordinate < 1 or
+end coordinate > length(Rle) The function takes the
+intersection of names in the Rle and GRanges objects. On
+Windows OS the function will give an error if the target is
+a file in .bigWig format.
 }
 \examples{
 # When target is GRanges
@@ -93,13 +93,8 @@ scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)
  bam.file = system.file('tests/test.bam', package='genomation')
  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam')
-
-# when target is a bigWig file
- bw.file = system.file('tests/test.bw', package='rtracklayer')
- windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))
- scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig')
 }
 \seealso{
-  \code{\link{ScoreMatrixBin}}
+\code{\link{ScoreMatrixBin}}
 }
 

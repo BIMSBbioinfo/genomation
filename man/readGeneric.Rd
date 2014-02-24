@@ -3,11 +3,9 @@
 \alias{readGeneric}
 \title{Read a tabular file and convert it to GRanges.}
 \usage{
-  readGeneric(file, chr = 1, start = 2, end = 3,
-    strand = NULL, meta.cols = NULL,
-    keep.all.metadata = FALSE, zero.based = FALSE,
-    remove.unsual = FALSE, header = FALSE, skip = 0,
-    sep = "\\t")
+readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
+  meta.cols = NULL, keep.all.metadata = FALSE, zero.based = FALSE,
+  remove.unusual = FALSE, header = FALSE, skip = 0, sep = "\\t")
 }
 \arguments{
   \item{file}{location of the file, a character string such
@@ -42,7 +40,7 @@
   ranges in the bed file are 0 or 1 base encoded. (Default:
   FALSE)}
 
-  \item{remove.unsual}{if TRUE(default) remove the
+  \item{remove.unusual}{if TRUE(default) remove the
   chromosomes with unsual names, such as chrX_random
   (Default:FALSE)}
 
@@ -59,15 +57,14 @@
   separator in the file.  The default value is tab.}
 }
 \value{
-  \code{\link{GRanges}} object
+\code{\link{GRanges}} object
 }
 \description{
-  The function reads a tabular text file that contains
-  location and other information on genomic features and
-  returns a \code{\link{GRanges}} object. The minimal
-  information that the file has to have is chromosome,
-  start and end columns. Strand information is not
-  compulsory.
+The function reads a tabular text file that contains
+location and other information on genomic features and
+returns a \code{\link{GRanges}} object. The minimal
+information that the file has to have is chromosome, start
+and end columns. Strand information is not compulsory.
 }
 \examples{
 my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")

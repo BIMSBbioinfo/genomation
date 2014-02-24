@@ -4,11 +4,9 @@
 \alias{plotTargetAnnotation,AnnotationByFeature-method}
 \title{Plot annotation categories from AnnotationByGeneParts or AnnotationByFeature}
 \usage{
-  plotTargetAnnotation(x,precedence=TRUE,col,...)
+plotTargetAnnotation(x,precedence=TRUE,col,...)
 
-  \S4method{plotTargetAnnotation}{AnnotationByFeature}(x,
-    precedence = TRUE,
-    col = getColors(length(x@annotation)), ...)
+\S4method{plotTargetAnnotation}{AnnotationByFeature}(x, precedence, col, ...)
 }
 \arguments{
   \item{x}{a \code{AnnotationByFeature} or
@@ -27,13 +25,13 @@
   \code{pie} or \code{barplot} functions}
 }
 \value{
-  plots a piechart or a barplot for percentage of the
-  target features overlapping with annotation
+plots a piechart or a barplot for percentage of the target
+features overlapping with annotation
 }
 \description{
-  This function plots a pie or bar chart for showing
-  percentages of targets annotated by genic parts or other
-  query features
+This function plots a pie or bar chart for showing
+percentages of targets annotated by genic parts or other
+query features
 }
 \examples{
 data(cage)

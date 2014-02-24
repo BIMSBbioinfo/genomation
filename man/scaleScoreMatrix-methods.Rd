@@ -4,11 +4,9 @@
 \alias{scaleScoreMatrix,ScoreMatrix-method}
 \title{Scales the values in the matrix by rows and/or columns}
 \usage{
-  scaleScoreMatrix(mat, columns = FALSE, rows = TRUE,
-    scalefun = NULL)
+scaleScoreMatrix(mat, columns = FALSE, rows = TRUE, scalefun = NULL)
 
-  \S4method{scaleScoreMatrix}{ScoreMatrix}(mat,
-    columns = FALSE, rows = TRUE, scalefun = NULL)
+\S4method{scaleScoreMatrix}{ScoreMatrix}(mat, columns, rows, scalefun)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} object}
@@ -24,10 +22,10 @@
   set to (x - mean(x))/(max(x)-min(x)+1)}
 }
 \value{
-  \code{ScoreMatrix} object
+\code{ScoreMatrix} object
 }
 \description{
-  Scales the values in the matrix by rows and/or columns
+Scales the values in the matrix by rows and/or columns
 }
 \examples{
 # scale the rows of a scoreMatrix object

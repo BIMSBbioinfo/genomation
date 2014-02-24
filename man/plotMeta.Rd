@@ -3,10 +3,9 @@
 \alias{plotMeta}
 \title{Line plot(s) for meta-region profiles}
 \usage{
-  plotMeta(mat, overlay = TRUE, profile.names = NULL,
-    xcoords = NULL, meta.rescale = FALSE, line.col = NULL,
-    ylim = NULL, ylab = "average score", xlab = "bases",
-    ...)
+plotMeta(mat, overlay = TRUE, profile.names = NULL, xcoords = NULL,
+  meta.rescale = FALSE, line.col = NULL, ylim = NULL,
+  ylab = "average score", xlab = "bases", ...)
 }
 \arguments{
   \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList}
@@ -51,12 +50,12 @@
   \item{...}{other options to \code{\link{plot}}}
 }
 \value{
-  returns the meta-region profiles invisibly as a matrix.
+returns the meta-region profiles invisibly as a matrix.
 }
 \description{
-  Function calculates meta-profile(s) from a ScoreMatrix or
-  a ScoreMatrixList, then produces a line plot or a set of
-  line plots for meta-region profiles
+Function calculates meta-profile(s) from a ScoreMatrix or a
+ScoreMatrixList, then produces a line plot or a set of line
+plots for meta-region profiles
 }
 \examples{
 data(cage)

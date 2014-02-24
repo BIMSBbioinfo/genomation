@@ -5,13 +5,11 @@
 \alias{binMatrix,ScoreMatrixList-method}
 \title{Bins the columns of a matrix using a user provided function}
 \usage{
-  binMatrix(x, bin.num = NULL, fun = "mean")
+binMatrix(x, bin.num = NULL, fun = "mean")
 
-  \S4method{binMatrix}{ScoreMatrix}(x, bin.num = NULL,
-    fun = "mean")
+\S4method{binMatrix}{ScoreMatrix}(x, bin.num = NULL, fun = "mean")
 
-  \S4method{binMatrix}{ScoreMatrixList}(x, bin.num = NULL,
-    fun = "mean")
+\S4method{binMatrix}{ScoreMatrixList}(x, bin.num = NULL, fun = "mean")
 }
 \arguments{
   \item{x}{\code{ScoreMatrix} or a \code{ScoreMatrixList}
@@ -24,11 +22,10 @@
   function that will be used for binning}
 }
 \value{
-  \code{ScoreMatrix} or \code{ScoreMatrixList} object
+\code{ScoreMatrix} or \code{ScoreMatrixList} object
 }
 \description{
-  Bins the columns of a matrix using a user provided
-  function
+Bins the columns of a matrix using a user provided function
 }
 \examples{
 # binning the columns in a ScoreMatrix object

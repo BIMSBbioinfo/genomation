@@ -130,9 +130,10 @@ readBigWig = function(target, windows=NULL, ...){
 #' or other regions of interest that have equal lengths
 #' The function removes all window that fall off the Rle object - 
 #' have the start coordinate < 1 or end coordinate > length(Rle)
-#' The function takes the intersection of names in the Rle and GRanges objects
+#' The function takes the intersection of names in the Rle and GRanges objects.
+#' On Windows OS the function will give an error if the target is a file in .bigWig format.
 #'
-#' @param target \code{RleList} , \code{GRanges} or a BAM file
+#' @param target \code{RleList} , \code{GRanges}, a BAM file or a BigWig
 #'  to be overlapped with ranges in \code{windows}
 #' @param windows \code{GRanges} object that contains the windows of interest. 
 #'                It could be promoters, CpG islands, exons, introns. 
@@ -181,10 +182,6 @@ readBigWig = function(target, windows=NULL, ...){
 #'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
 #'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
 #'  
-#' # when target is a bigWig file
-#'  bw.file = system.file('tests/test.bw', package='rtracklayer')
-#'  windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))
-#'  scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig') 
 #'  
 #' @docType methods
 #' @rdname ScoreMatrix-methods           

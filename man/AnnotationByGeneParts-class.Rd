@@ -1,9 +1,10 @@
+\docType{class}
 \name{AnnotationByGeneParts-class}
 \alias{AnnotationByGeneParts-class}
 \title{An S4 class that information on overlap of target features with annotation features}
 \description{
-  This object is desgined to hold statistics and
-  information about genomic feature overlaps
+This object is desgined to hold statistics and information
+about genomic feature overlaps
 }
 \section{Slots}{
   \describe{ \item{\code{members}}{a matrix showing overlap
@@ -13,7 +14,8 @@
 
   \item{\code{precedence}}{a named vector of percentages}
 
-  \item{\code{num.hierarchica}}{vector}
+  \item{\code{num.annotation}}{vector}
+  \item{\code{num.precedence}}{vector}
 
   \item{\code{no.of.OlapFeat}}{vector}
 

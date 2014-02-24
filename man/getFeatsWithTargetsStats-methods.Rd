@@ -5,10 +5,9 @@
 \title{Get the percentage/count of annotation features overlapping with target
 features from AnnotationByFeature}
 \usage{
-  getFeatsWithTargetsStats(x,percentage=TRUE)
+getFeatsWithTargetsStats(x,percentage=TRUE)
 
-  \S4method{getFeatsWithTargetsStats}{AnnotationByFeature}(x,
-    percentage = TRUE)
+\S4method{getFeatsWithTargetsStats}{AnnotationByFeature}(x, percentage)
 }
 \arguments{
   \item{x}{a \code{AnnotationByFeature} object}
@@ -18,18 +17,17 @@ features from AnnotationByFeature}
   annotation features will be returned}
 }
 \value{
-  RETURNS a vector of percentages or counts showing
-  quantity of annotation features overlapping with target
-  features
+RETURNS a vector of percentages or counts showing quantity
+of annotation features overlapping with target features
 }
 \description{
-  This function retrieves percentage/number of annotation
-  features overlapping with targets. For example, if
-  \code{AnnotationByFeature} object is containing
-  statistics of differentially methylated regions
-  overlapping with gene annotation. This function will
-  return number/percentage of introns,exons and promoters
-  overlapping with differentially methylated regions.
+This function retrieves percentage/number of annotation
+features overlapping with targets. For example, if
+\code{AnnotationByFeature} object is containing statistics
+of differentially methylated regions overlapping with gene
+annotation. This function will return number/percentage of
+introns,exons and promoters overlapping with differentially
+methylated regions.
 }
 \examples{
 data(cage)

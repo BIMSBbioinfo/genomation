@@ -1,9 +1,10 @@
+\docType{class}
 \name{RandomEnrichment-class}
 \alias{RandomEnrichment-class}
 \title{An S4 class for storing \code{getRandomEnrichment} function results}
 \description{
-  The resulting object stores the results of
-  \code{getRandomEnrichment} function
+The resulting object stores the results of
+\code{getRandomEnrichment} function
 }
 \section{Slots}{
   \describe{ \item{\code{orig.cnt}:}{number of features
@@ -22,6 +23,6 @@
   }
 }
 \seealso{
-  \code{\link{getRandomEnrichment}}
+\code{\link{getRandomEnrichment}}
 }
 

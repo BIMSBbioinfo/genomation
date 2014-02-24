@@ -3,18 +3,18 @@
 \alias{readBroadPeak}
 \title{A function to read the Encode formatted broad peak file into a GRanges object}
 \usage{
-  readBroadPeak(file)
+readBroadPeak(file)
 }
 \arguments{
   \item{file}{a abosulte or relative path to a bed file
   formatted by the Encode broadPeak standard}
 }
 \value{
-  a GRanges object
+a GRanges object
 }
 \description{
-  A function to read the Encode formatted broad peak file
-  into a GRanges object
+A function to read the Encode formatted broad peak file
+into a GRanges object
 }
 \examples{
 broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
