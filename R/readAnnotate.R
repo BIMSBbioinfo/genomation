@@ -530,7 +530,7 @@ setMethod("annotateWithGeneParts",
 			                                feature$promoters,
 			                                feature$exons,
 			                                feature$introns,
-												              strand=strand)
+											strand=strand)
 			dist2TSS = distance2NearestFeature(target,feature$TSSes)
 
 			new("AnnotationByGeneParts",
