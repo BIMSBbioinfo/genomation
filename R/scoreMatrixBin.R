@@ -1,4 +1,3 @@
-
 #######################################
 # S3 functions
 #######################################
@@ -90,6 +89,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 		orig.rows=which(as.character(strand(windows))== '-')
         mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
 	}
+	mat = mat[order(as.numeric(rownames(mat))),]
 	return(mat)
 	
 }
