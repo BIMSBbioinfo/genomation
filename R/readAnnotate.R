@@ -434,8 +434,8 @@ distance2NearestFeature<-function(g.idh,tss){
 # I think this function can be easily simplified
 .nearest.2bed<-function(g.bed,subject){
 	
-	chrs1 = IRanges::levels(seqnames(g.bed))
-	chrs2 = IRanges::levels(seqnames(subject))
+	chrs1 = levels(seqnames(g.bed))
+	chrs2 = levels(seqnames(subject))
 	chrs  = intersect(chrs1, chrs2)
 	res.df=NULL
 	
