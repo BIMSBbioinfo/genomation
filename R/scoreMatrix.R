@@ -228,7 +228,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
     mat = do.call("rbind",mat)   
     
     # get the ranks of windows, when things are reorganized by as(...,"RangesList")
-    r.list=split(mcols(windows)[,"X_rank"], as.factor(seqnames(windows))  )    
+    r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )    
     ranks=do.call("c",r.list)
     
     # put original window order as rownames
