@@ -128,7 +128,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
     mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
   }else if(!is.null(meta.cols)){
     my.mcols=df[,unlist(meta.cols),drop=FALSE]
-    mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
+    values(g) = my.mcols[, !colnames(my.mcols) %in% black.names, drop=FALSE]
   }
     
   return(g)
