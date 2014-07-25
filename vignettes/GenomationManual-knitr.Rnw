@@ -586,7 +586,7 @@ dnase=paste('goldenpath',
             'wgEncodeOpenChromDnase8988tPk',
             'narrowPeak_0.0.1.RData', sep='.')
 dnaseP=ah[[dnase]]
-sm = ScoreMatrixBin(target=dnaseP, windows=cpgi, strand.aware=FALSE)s
+sm = ScoreMatrixBin(target=dnaseP, windows=cpgi, strand.aware=FALSE)
 @
 \end{document}
 
