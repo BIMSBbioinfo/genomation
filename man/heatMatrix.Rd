@@ -100,22 +100,22 @@ it can use clustering using k-means and plot cluster color codes as a sidebar.
 In addition, user can define groups of rows using 'group' argument.
 }
 \examples{
-data(cage)
-data(promoters)
-scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-                    weight.col="tpm")
+# data(cage)
+# data(promoters)
+# scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#                   weight.col="tpm")
 
 
 
-heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-          xcoords=-1000:1000,
-          cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-          cex.axis=0.9,grid=FALSE)
+# heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#           xcoords=-1000:1000,
+#           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#           cex.axis=0.9,grid=FALSE)
 
-set.seed(1000)
-heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-          xcoords=-1000:1000,kmeans=TRUE,k=3,
-          cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-          cex.axis=0.9,grid=FALSE)
+# set.seed(1000)
+# heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#         xcoords=-1000:1000,kmeans=TRUE,k=3,
+#         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#         cex.axis=0.9,grid=FALSE)
 }
 

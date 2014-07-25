@@ -67,10 +67,10 @@ The minimal information that the file has to have is chromosome,
 start and end columns. Strand information is not compulsory.
 }
 \examples{
-my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
- refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
-                      meta.cols=list(score=5,name=4),
-                     keep.all.metadata=FALSE, zero.based=TRUE)
- head(refseq)
+# my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+# refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
+#                      meta.cols=list(score=5,name=4),
+#                      keep.all.metadata=FALSE, zero.based=TRUE)
+# head(refseq)
 }
 

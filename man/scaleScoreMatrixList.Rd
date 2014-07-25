@@ -30,15 +30,15 @@ scaleScoreMatrixList(sml, columns, rows, scalefun)
 Scales each ScoreMatrix in the ScoreMatrixList object, by rows and/or columns
 }
 \examples{
-library(GenomicRanges)
- data(cage)
- data(cpgi)
- data(promoters)
+# library(GenomicRanges)
+# data(cage)
+# data(cpgi)
+# data(promoters)
 
- cage$tpm = NULL
- targets = GRangesList(cage=cage, cpgi=cpgi)
- sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
- sml.scaled = scaleScoreMatrixList(sml, rows=TRUE)
- multiHeatMatrix(sml)
+# cage$tpm = NULL
+# targets = GRangesList(cage=cage, cpgi=cpgi)
+# sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
+# sml.scaled = scaleScoreMatrixList(sml, rows=TRUE)
+# multiHeatMatrix(sml)
 }
 

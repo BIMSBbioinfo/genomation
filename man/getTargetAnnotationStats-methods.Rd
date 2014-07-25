@@ -36,9 +36,10 @@ This function retrieves percentage/number of target features
 overlapping with annotation
 }
 \examples{
-data(cage)
-bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-gene.parts = readTranscriptFeatures(bed.file)
-cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+# data(cage)
+# bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+# gene.parts = readTranscriptFeatures(bed.file)
+# cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+# getTargetAnnotationStats(cage.annot)
 }
 

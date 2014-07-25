@@ -134,27 +134,27 @@ Each matrix can have different color schemes but it is essential that each matri
 is obtained from same regions or neighbouring regions.
 }
 \examples{
-data(cage)
-data(promoters)
-scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+# data(cage)
+# data(promoters)
+# scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 
-data(cpgi)
-scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+# data(cpgi)
+# scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
-sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
-multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
+# sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+# multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
 
 # use with K-means
-multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
-                winsorize=c(0,99),
-                legend.name=c("tpm","coverage"),xlab="region around TSS")
+# multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#                 winsorize=c(0,99),
+#                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 
 # use different colors
-require(RColorBrewer)
-col.cage= brewer.pal(9,"Blues")
-col.cpgi= brewer.pal(9,"YlGn")
-multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
-                winsorize=c(0,99),col=list(col.cage,col.cpgi),
-                legend.name=c("tpm","coverage"),xlab="region around TSS")
+# require(RColorBrewer)
+# col.cage= brewer.pal(9,"Blues")
+# col.cpgi= brewer.pal(9,"YlGn")
+# multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
+#                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 }
 

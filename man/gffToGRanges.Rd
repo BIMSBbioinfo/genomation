@@ -31,7 +31,7 @@ Converts a gff formated data.frame into a GenomicRanges object.
 The GenomicRanges object needs to be properly formated for the function to work.
 }
 \examples{
-gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
-gff = gffToGRanges(gff.file, split.group=TRUE)
+# gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
+# gff = gffToGRanges(gff.file, split.group=TRUE)
 }
 

@@ -25,16 +25,16 @@ plotGeneAnnotation(l, cluster = FALSE, col = c("white", "cornflowerblue"))
 This function plots a heatmap of enrichment of each range in given gene feature
 }
 \examples{
-library(GenomicRanges)
-data(cage)
-data(cpgi)
+# library(GenomicRanges)
+# data(cage)
+# data(cpgi)
 
-cage$tpm = NULL
-gl = GRangesList(cage=cage, cpgi=cpgi)
+# cage$tpm = NULL
+# gl = GRangesList(cage=cage, cpgi=cpgi)
 
-bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-gene.parts = readTranscriptFeatures(bed.file)
-annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)
-plotGeneAnnotation(annot)
+# bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+# gene.parts = readTranscriptFeatures(bed.file)
+# annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)
+# plotGeneAnnotation(annot)
 }
 

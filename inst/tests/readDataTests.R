@@ -34,7 +34,7 @@ test_that("readGeneric works",
   expect_equal(g4,r4)
   
   #5. selected metadata columns
-  r5 = readGeneric(tab.test1, strand=4, meta.col=list(score1=6))
+  r5 = readGeneric(tab.test1, strand=4, meta.cols=list(score1=6))
   g5 =  GRanges(c('chr1','chr1'), 
                 IRanges(c(1,5), c(10,15)), 
                 strand=c('+','-'),

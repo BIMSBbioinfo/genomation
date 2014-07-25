@@ -24,10 +24,10 @@ This accessor function gets the nearest TSS, its distance to target feature,
 strand and name of TSS/gene from AnnotationByGeneParts object
 }
 \examples{
-data(cage)
-bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-gene.parts = readTranscriptFeatures(bed.file)
-cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-head(getAssociationWithTSS(cage.annot))
+# data(cage)
+# bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+# gene.parts = readTranscriptFeatures(bed.file)
+# cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+# head(getAssociationWithTSS(cage.annot))
 }
 

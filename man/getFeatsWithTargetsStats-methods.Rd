@@ -31,10 +31,10 @@ number/percentage of introns,exons and promoters
 overlapping with differentially methylated regions.
 }
 \examples{
-data(cage)
-bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-gene.parts = readTranscriptFeatures(bed.file)
-cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-getFeatsWithTargetsStats(cage.annot)
+# data(cage)
+# bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+# gene.parts = readTranscriptFeatures(bed.file)
+# cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+# getFeatsWithTargetsStats(cage.annot)
 }
 

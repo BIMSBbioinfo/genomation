@@ -72,14 +72,14 @@ of \code{ScoreMatrixList} object. This object can be visualized using
 }
 \examples{
 # visualize the distribution of cage clusters and cpg islands around promoters
- library(GenomicRanges)
- data(cage)
- data(cpgi)
- data(promoters)
+# library(GenomicRanges)
+# data(cage)
+# data(cpgi)
+# data(promoters)
 
- cage$tpm = NULL
- targets = GRangesList(cage=cage, cpgi=cpgi)
- sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
- multiHeatMatrix(sml)
+# cage$tpm = NULL
+# targets = GRangesList(cage=cage, cpgi=cpgi)
+# sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
+# multiHeatMatrix(sml)
 }
 

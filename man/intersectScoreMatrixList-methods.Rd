@@ -23,18 +23,18 @@ Returns a intersection of rows for each matrix in a ScoreMatrixList object.
 This is done using the rownames of each element in the list.
 }
 \examples{
-library(GenomicRanges)
-target = GRanges(rep(c(1,2),each=7),
-                 IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
-                 weight = rep(c(1,2),each=7))
+# library(GenomicRanges)
+# target = GRanges(rep(c(1,2),each=7),
+#                  IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+#                  weight = rep(c(1,2),each=7))
 
-windows1 = GRanges(rep(c(1,2),each=2),
-                   IRanges(rep(c(1,2), times=2), width=5),
-                   strand=c('-','+','-','+'))
-windows2 = windows1[c(1,3)]
-sml = as(list(ScoreMatrix(target, windows1),
-              ScoreMatrix(target, windows2)), 'ScoreMatrixList')
-sml
-intersectScoreMatrixList(sml)
+# windows1 = GRanges(rep(c(1,2),each=2),
+#                    IRanges(rep(c(1,2), times=2), width=5),
+#                    strand=c('-','+','-','+'))
+# windows2 = windows1[c(1,3)]
+# sml = as(list(ScoreMatrix(target, windows1),
+#               ScoreMatrix(target, windows2)), 'ScoreMatrixList')
+# sml
+# intersectScoreMatrixList(sml)
 }
 

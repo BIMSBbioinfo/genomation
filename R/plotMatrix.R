@@ -48,15 +48,15 @@
 #' 
 #' 
 #' @examples
-#' data(cage)
-#' data(promoters)
-#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
-#' data(cpgi)
-#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#' # data(cage)
+#' # data(promoters)
+#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#' # data(cpgi)
+#' # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 #' 
-#' x=new("ScoreMatrixList",list(scores1,scores2))
-#' heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
-#'          cex.axis=0.9)
+#' # x=new("ScoreMatrixList",list(scores1,scores2))
+#' # heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
+#' #          cex.axis=0.9)
 #' @import gridBase
 #' @export
 #' 
@@ -198,16 +198,16 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #' 
 #' @examples
 #' 
-#' data(cage)
-#' data(promoters)
-#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#' # data(cage)
+#' # data(promoters)
+#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 #'
-#' data(cpgi)
-#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#' # data(cpgi)
+#' # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 #' 
 #' # create a new ScoreMatrixList
-#' x=new("ScoreMatrixList",list(scores1,scores2))
-#' plotMeta(mat=x,overlay=TRUE,main="my plotowski")
+#' # x=new("ScoreMatrixList",list(scores1,scores2))
+#' # plotMeta(mat=x,overlay=TRUE,main="my plotowski")
 #' 
 #' @export
 #' @docType methods
@@ -485,23 +485,23 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #'  returns kmeans clustering result invisibly, if kmeans=TRUE
 #'                                    
 #' @examples
-#' data(cage)
-#' data(promoters)
-#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#'                     weight.col="tpm")
+#' # data(cage)
+#' # data(promoters)
+#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#' #                   weight.col="tpm")
 #'
 #'
 #'
-#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#'           xcoords=-1000:1000,
-#'           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#'           cex.axis=0.9,grid=FALSE)
+#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#' #           xcoords=-1000:1000,
+#' #           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#' #           cex.axis=0.9,grid=FALSE)
 #'
-#' set.seed(1000)
-#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#'           xcoords=-1000:1000,kmeans=TRUE,k=3,
-#'           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#'           cex.axis=0.9,grid=FALSE)
+#' # set.seed(1000)
+#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#' #         xcoords=-1000:1000,kmeans=TRUE,k=3,
+#' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#' #         cex.axis=0.9,grid=FALSE)
 #'           
 #' @import impute           
 #' @import gridBase
@@ -867,29 +867,29 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'  
 #' @examples
 #' 
-#' data(cage)
-#' data(promoters)
-#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#' # data(cage)
+#' # data(promoters)
+#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 #' 
-#' data(cpgi)
-#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#' # data(cpgi)
+#' # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 #' 
-#' sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+#' # sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
 
-#' multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
+#' # multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
 #' 
 #' # use with K-means
-#' multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
-#'                 winsorize=c(0,99),
-#'                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' # multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#' #                 winsorize=c(0,99),
+#' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' 
 #' # use different colors
-#' require(RColorBrewer)
-#' col.cage= brewer.pal(9,"Blues")
-#' col.cpgi= brewer.pal(9,"YlGn")
-#' multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
-#'                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
-#'                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' # require(RColorBrewer)
+#' # col.cage= brewer.pal(9,"Blues")
+#' # col.cpgi= brewer.pal(9,"YlGn")
+#' # multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#' #                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
+#' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' 
 #' 
 #' @import impute           

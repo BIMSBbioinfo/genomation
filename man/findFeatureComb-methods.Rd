@@ -45,10 +45,10 @@ look at a greater number of factors, methods like self organizing
 maps or ChromHMM might be more appropriate.
 }
 \examples{
-library(GenomicRanges)
-g = GRanges(paste('chr',rep(1:2, each=3), sep=''), IRanges(rep(c(1,5,9), times=2), width=3))
-gl = GRangesList(g1=g, g2=g[2:5], g3=g[3:4])
-findFeatureComb(gl)
-findFeatureComb(gl, use.names=TRUE)
+# library(GenomicRanges)
+# g = GRanges(paste('chr',rep(1:2, each=3), sep=''), IRanges(rep(c(1,5,9), times=2), width=3))
+# gl = GRangesList(g1=g, g2=g[2:5], g3=g[3:4])
+# findFeatureComb(gl)
+# findFeatureComb(gl, use.names=TRUE)
 }
 
