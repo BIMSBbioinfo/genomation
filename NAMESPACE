@@ -1,10 +1,12 @@
 import(methods)
 import(GenomicRanges)
+import(GenomicAlignments)
 import(IRanges)
 import(Rsamtools)
 import(ggplot2)
 importMethodsFrom("rtracklayer", import)
-#importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
+#importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-",GRanges)
+importMethodsFrom("GenomicAlignments",readGAlignmentsFromBam)
 
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)
 
