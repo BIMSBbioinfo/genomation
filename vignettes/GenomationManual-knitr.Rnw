@@ -303,7 +303,8 @@ sm = ScoreMatrix(target=cage, windows=promoters)
 heatMatrix(sm, xcoords=c(-1000, 1000))
 plotMeta(sm, xcoords=c(-1000, 1000))
 @
-\includegraphics[width=0.4\textwidth]{FiguresHeatMatrix1.pdf}
+\includegraphics[width=0.4\textwidth]{FiguresheatMatrix11.pdf}
+\includegraphics[width=0.4\textwidth]{FiguresheatMatrix12.pdf}
 
 The \Rcode{heatMatrix} function can also take a list of numeric vectors 
 designating row names, or a factor variable that represent our 
@@ -318,7 +319,7 @@ cpg.ind = which(countOverlaps(promoters, cpgi)>0)
 nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
 heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 @
-\includegraphics[width=0.65\textwidth]{FiguresHeatMatrix2.pdf}
+\includegraphics[width=0.5\textwidth]{FiguresheatMatrix2.pdf}
 
 Because the enrichment in windows can have a high dynamic range, it is sometimes
 convenient to scale the matrix before plotting.
@@ -326,7 +327,7 @@ convenient to scale the matrix before plotting.
 sm.scaled = scaleScoreMatrix(sm)
 heatMatrix(sm.scaled, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 @
-\includegraphics[width=0.65\textwidth]{FiguresheatMatrixScales.pdf}
+\includegraphics[width=0.5\textwidth]{FiguresheatMatrixScales.pdf}
 
 
 Several experiments can be plotted in a side by side fashion using a combination
