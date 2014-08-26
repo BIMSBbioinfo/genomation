@@ -62,11 +62,11 @@ readTableFast<-function(filename,header=T,skip=0,sep=""){
 #' @return \code{\link{GRanges}} object
 #'
 #' @examples
-#'  my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
-#'  refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
-#'                       meta.cols=list(score=5,name=4),
-#'                      keep.all.metadata=FALSE, zero.based=TRUE)
-#'  head(refseq)
+#' # my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+#' # refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
+#' #                      meta.cols=list(score=5,name=4),
+#' #                      keep.all.metadata=FALSE, zero.based=TRUE)
+#' # head(refseq)
 #'
 #' @export
 #' @docType methods
@@ -128,7 +128,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
     mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
   }else if(!is.null(meta.cols)){
     my.mcols=df[,unlist(meta.cols),drop=FALSE]
-    mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
+    values(g) = my.mcols[, !colnames(my.mcols) %in% black.names, drop=FALSE]
   }
     
   return(g)
@@ -153,9 +153,9 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #' @return \code{\link{GRanges}} object
 #'
 #' @examples
-#'  my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
-#'  refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
-#'  head(refseq)
+#' # my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+#' # refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
+#' # head(refseq)
 #'
 #' @export
 #' @docType methods
@@ -173,7 +173,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
     skip=1
   }else{skip=0}
   
-  df=read.table(file,skip=skip,nrow=2,header=FALSE)
+  df=read.table(file,skip=skip,nrows=2,header=FALSE)
   numcol=ncol(df)
   
   if(numcol==3){
@@ -211,10 +211,10 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
 #'
 #' @examples
 #' 
-#' broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
+#' # broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
 #'                            
-#' broad.peak = readBroadPeak(broad.peak.file)
-#' head(broad.peak)
+#' # broad.peak = readBroadPeak(broad.peak.file)
+#' # head(broad.peak)
 #'
 #' @docType methods
 #' @rdname readBroadPeak
@@ -241,10 +241,10 @@ readBroadPeak<-function(file){
 #'
 #' @examples
 #' 
-#' narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
+#' # narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
 #'                  
-#' narrow.peak = readBroadPeak(narrow.peak.file)
-#' head(narrow.peak)
+#' # narrow.peak = readBroadPeak(narrow.peak.file)
+#' # head(narrow.peak)
 #'
 #' @docType methods
 #' @rdname readNarrowPeak
@@ -279,8 +279,8 @@ readNarrowPeak<-function(file){
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
 #'
 #' @examples
-#'  cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
-#'  cgi.shores = readFeatureFlank(cgi.path)
+#' # cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
+#' # cgi.shores = readFeatureFlank(cgi.path)
 #'
 #' @export
 #' @docType methods
@@ -320,11 +320,11 @@ setMethod("readFeatureFlank",
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #' 
 #' @examples
-#'   my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#'   my.bed12.file
-#'   feats = readTranscriptFeatures(my.bed12.file) 
-#'   names(feats)
-#'   sapply(feats, head)
+#' # my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' # my.bed12.file
+#' # feats = readTranscriptFeatures(my.bed12.file) 
+#' # names(feats)
+#' # sapply(feats, head)
 #' @export
 #' @docType methods
 #' @rdname readTranscriptFeatures-methods
@@ -417,8 +417,8 @@ setMethod("readTranscriptFeatures",
 #' @return returns a \code{GenomicRanges} object
 #' 
 #' @examples
-#' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
-#' gff = gffToGRanges(gff.file, split.group=TRUE)
+#' # gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
+#' # gff = gffToGRanges(gff.file, split.group=TRUE)
 #' 
 #' 
 #' @docType methods

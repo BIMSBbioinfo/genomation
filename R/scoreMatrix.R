@@ -130,7 +130,8 @@ readBigWig = function(target, windows=NULL, ...){
 #' or other regions of interest that have equal lengths
 #' The function removes all window that fall off the Rle object - 
 #' have the start coordinate < 1 or end coordinate > length(Rle)
-#' The function takes the intersection of names in the Rle and GRanges objects
+#' The function takes the intersection of names in the Rle and GRanges objects.
+#' On Windows OS the function will give an error if the target is a file in .bigWig format.
 #'
 #' @param target \code{RleList} , \code{GRanges}, a BAM file or a BigWig
 #'  to be overlapped with ranges in \code{windows}
@@ -167,24 +168,21 @@ readBigWig = function(target, windows=NULL, ...){
 #' @examples
 #' 
 #' # When target is GRanges
-#'  data(cage)
-#'  data(promoters)
-#'  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#'                                  weight.col="tpm")                                
+#' #data(cage)
+#' #data(promoters)
+#' #scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#' #                                weight.col="tpm")                                
+#'                                  
 #' # When target is RleList
-#' library(GenomicRanges)
-#' covs = coverage(cage)
-#' scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
+#' #library(GenomicRanges)
+#' #covs = coverage(cage)
+#' #scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
 #' 
 #' # When target is a bam file
-#'  bam.file = system.file('tests/test.bam', package='genomation')
-#'  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
-#'  scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
+#' # bam.file = system.file('tests/test.bam', package='genomation')
+#' # windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
+#' # scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
 #'  
-#' # when target is a bigWig file
-#'  bw.file = system.file('tests/test.bw', package='rtracklayer')
-#'  windows = GRanges(rep('chr2',each=4), IRanges(start=c(250,350,450,550), width=50))
-#'  scores3 = ScoreMatrix(target=bw.file ,windows=windows, type='bigWig') 
 #'  
 #' @docType methods
 #' @rdname ScoreMatrix-methods           
@@ -231,7 +229,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
     mat = do.call("rbind",mat)   
     
     # get the ranks of windows, when things are reorganized by as(...,"RangesList")
-    r.list=split(mcols(windows)[,"X_rank"], as.factor(seqnames(windows))  )    
+    r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )    
     ranks=do.call("c",r.list)
     
     # put original window order as rownames
@@ -307,7 +305,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !grepl('bw$',target))
+            if(type == 'bigWig' & !(grepl('bw$',target) | grepl('bigWig$',target)))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
             if(type == 'bam')
@@ -334,14 +332,14 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @examples
 #' 
 #' # binning the columns in a ScoreMatrix object
-#' library(GenomicRanges)
-#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-#' weight = rep(c(1,2),each=7), 
-#' strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
-#' strand=c('-','+','-','+'))
-#' sm = ScoreMatrix(target, windows)
-#' bin = binMatrix(sm, bin.num=2)
+#' #library(GenomicRanges)
+#' #target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#' #weight = rep(c(1,2),each=7), 
+#' #strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' #windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#' #strand=c('-','+','-','+'))
+#' #sm = ScoreMatrix(target, windows)
+#' #bin = binMatrix(sm, bin.num=2)
 #'
 #' @docType methods
 #' @rdname binMatrix-methods
@@ -398,14 +396,14 @@ setMethod("show", "ScoreMatrix",
 #' @examples
 #' 
 #' # scale the rows of a scoreMatrix object
-#' library(GenomicRanges)
-#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-#'           weight = rep(c(1,2),each=7), 
-#'           strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
-#'           strand=c('-','+','-','+'))
-#' sm = ScoreMatrix(target, windows)
-#' ssm = scaleScoreMatrix(sm, rows=TRUE)
+#' #library(GenomicRanges)
+#' #target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#' #         weight = rep(c(1,2),each=7), 
+#' #         strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' #windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#' #           strand=c('-','+','-','+'))
+#' #sm = ScoreMatrix(target, windows)
+#' #ssm = scaleScoreMatrix(sm, rows=TRUE)
 #'
 #' @docType methods
 #' @rdname scaleScoreMatrix-methods

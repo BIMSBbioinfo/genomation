@@ -94,7 +94,9 @@ setClass("ScoreMatrixList",
 #'
 #'                  \item{\code{precedence}}{a named vector of percentages}
 #'
-#'                  \item{\code{num.hierarchica}}{vector}
+#'                  \item{\code{num.annotation}}{vector}
+
+#'                  \item{\code{num.precedence}}{vector}
 #'
 #'                  \item{\code{no.of.OlapFeat}}{vector}
 #'
@@ -125,7 +127,9 @@ setClass("AnnotationByFeature",
 #'
 #'                  \item{\code{precedence}}{a named vector of percentages}
 #'
-#'                  \item{\code{num.hierarchica}}{vector}
+#'                  \item{\code{num.annotation}}{vector}
+
+#'                  \item{\code{num.precedence}}{vector}
 #'
 #'                  \item{\code{no.of.OlapFeat}}{vector}
 #'
