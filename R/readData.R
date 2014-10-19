@@ -351,7 +351,7 @@ setMethod("readTranscriptFeatures",
             message('Reading the table...\r')
             bed=readTableFast(location,header=F,skip=skip)                    
             if(remove.unusual)
-              bed=bed[grep("_", as.character(bed[,1]),invert=T),]
+              bed=bed[grep("_", as.character(bed[,1]),invert=TRUE),]
             
             # introns
             message('Calculating intron coordinates...\r')

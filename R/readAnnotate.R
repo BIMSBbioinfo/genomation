@@ -277,7 +277,7 @@ setGeneric("getFlanks",
 #' @aliases getFlanks,GRanges-method
 #' @rdname getFlanks-methods
 setMethod("getFlanks", signature(grange= "GRanges"),
-			function(grange,flank=2000,clean=T){
+			function(grange,flank=2000,clean=TRUE){
 
 			shores = c( IRanges::flank(grange,flank),
 						IRanges::flank(grange,flank, FALSE) )

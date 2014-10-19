@@ -124,7 +124,7 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 				
 				# sets the strand of the features
 				if(stranded == TRUE)
-					strand(g) = sample(c('+','-'), length(g), replace=T)
+					strand(g) = sample(c('+','-'), length(g), replace=TRUE)
 				if(keep.strand.prop == TRUE)
 					strand(g) = sample(as.character(strand(feature[ind])))
 				glist[[chr]] = g

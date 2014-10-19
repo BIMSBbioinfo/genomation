@@ -80,7 +80,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 		
 	if(bin.op=="median")
 		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-        viewApply(x, function(x) median(as.numeric(x),na.rm=T)  )), use.names=F) 
+        viewApply(x, function(x) median(as.numeric(x),na.rm=TRUE)  )), use.names=F) 
         
 	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
   mat[is.nan(mat)]=NA
