@@ -8,7 +8,7 @@
 readFeatureFlank(location,remove.unusual=T,flank=2000,clean=T,feature.flank.name=NULL)
 
 \S4method{readFeatureFlank}{character}(location, remove.unusual = T,
-  flank = 2000, clean = T, feature.flank.name = NULL)
+  flank = 2000, clean = TRUE, feature.flank.name = NULL)
 }
 \arguments{
 \item{location}{for the bed file of the feature}

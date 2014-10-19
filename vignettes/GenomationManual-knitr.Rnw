@@ -100,12 +100,12 @@ biocLite("genomation")
 The \Rpackage{genomationData} vignette contains a verbose description of 
 included files. 
 To list the available data, type:
-<<listGenomationData, eval=FALSE>>=
+<<listGenomationData, eval=TRUE>>=
 list.files(system.file('extdata',package='genomationData'))
 @
 
 To see the descriptions of the files:
-<<genomationDataInfo, eval=FALSE, tidy=TRUE>>=
+<<genomationDataInfo, eval=TRUE, tidy=TRUE>>=
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
                                     package='genomationData'),header=T, sep='\t')
 head(sampleInfo)
@@ -115,7 +115,7 @@ Basic annotation data and processed experimental data can be found within the
 \Rpackage{genomation} package.
 The data can be accesed throught the \Rcode{data} command or located 
 in the extdata folder. 
-<<genomationInfo, eval=FALSE, tidy=TRUE>>=
+<<genomationInfo, eval=TRUE, tidy=TRUE>>=
 library(genomation)
 data(cage)
 data(cpgi)
@@ -144,7 +144,7 @@ developed specifically for input of genomic data in tabular formats, and their
 conversion to a GRanges object. 
 By default, the function persumes that the file is a standard .bed file 
 containing columns chr, start, end.
-<<readGeneric1, eval=FALSE, tidy=TRUE>>=
+<<readGeneric1, eval=TRUE, tidy=TRUE>>=
 library(genomation)
 tab.file1=system.file("extdata/tab1.bed", package = "genomation")
 readGeneric(tab.file1)
@@ -153,7 +153,7 @@ readGeneric(tab.file1)
 If the file contains meta data columns (as in extended bed format), 
 it is possible to read all or some of the additional columns.
 To select columns which you want to read in, use the \Rcode{meta.col} argument 
-<<readGeneric2, eval=FALSE, tidy=TRUE>>=
+<<readGeneric2, eval=TRUE, tidy=TRUE>>=
 readGeneric(tab.file1, keep.all.metadata=TRUE)
 
 readGeneric(tab.file1, meta.col = list(CpGnum=4))
@@ -161,7 +161,7 @@ readGeneric(tab.file1, meta.col = list(CpGnum=4))
 
 If the file contains header, the function will automatically recognize the 
 columns using the header names.
-<<readGeneric3, eval=FALSE, tidy=TRUE>>=
+<<readGeneric3, eval=TRUE, tidy=TRUE>>=
 readGeneric(tab.file1, header=TRUE, keep.all.metadata=TRUE)
 @
 
@@ -169,7 +169,7 @@ readGeneric(tab.file1, header=TRUE, keep.all.metadata=TRUE)
 If the files have permutted columns, such that the first three do not represent
 chromosome, start and end, you can select an arbitrary set of columns using the
 chr, start and end arguments.
-<<readGeneric4, eval=FALSE, tidy=TRUE>>=
+<<readGeneric4, eval=TRUE, tidy=TRUE>>=
 tab.file2=system.file("extdata/tab2.bed", package = "genomation")
 readGeneric(tab.file2, chr=3, start=2, end=1)
 @
@@ -177,7 +177,7 @@ readGeneric(tab.file2, chr=3, start=2, end=1)
 \Rcode{readGeneric} function can easily be extended to read almost any kind of 
 biological data. As an example we have provided convenience functions to read 
 the Encode \Rcode{narrowPeak} and \Rcode{broadPeak} formats, and gtf formatted files.
-<<readGff1, eval=FALSE, tidy=TRUE>>=
+<<readGff1, eval=TRUE, tidy=TRUE>>=
 gff.file=system.file("extdata/chr21.refseq.hg19.gtf", package = "genomation")
 gff = gffToGRanges(gff.file)
 head(gff)
@@ -194,18 +194,13 @@ There are specific functions to read genomic annotation from flat bed files.
 \Rcode{readFeatureFlank} is a convenience function used to get the ranges flanking 
 the set of interest. As an example, it could be used to get the CpG island shores, 
 which have been shown to harbour condition specific differential methylation.
-<<readFeatureFlank, eval=FALSE, tidy=TRUE>>=
+<<readFeatureFlank, eval=TRUE, tidy=TRUE>>=
 # reading genes stored as a BED files
 cpgi.file = system.file("extdata/chr21.CpGi.hg19.bed", package = "genomation")
 cpgi.flanks = readFeatureFlank(cpgi.file)
 head(cpgi.flanks$flanks)
 @
 
-
-
-<<readGeneFeatures, eval=FALSE, tidy=TRUE>>=
-readGeneFeatures()
-@
 
 
 % ----------------------------------------------------------------- %
