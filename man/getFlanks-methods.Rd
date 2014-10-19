@@ -7,7 +7,7 @@
 \usage{
 getFlanks(grange,flank=2000,clean=T)
 
-\S4method{getFlanks}{GRanges}(grange, flank = 2000, clean = T)
+\S4method{getFlanks}{GRanges}(grange, flank = 2000, clean = TRUE)
 }
 \arguments{
 \item{grange}{GRanges object for the feature}

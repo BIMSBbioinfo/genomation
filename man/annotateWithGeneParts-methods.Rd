@@ -6,13 +6,14 @@
 \alias{annotateWithGeneParts,GRangesList,GRangesList-method}
 \title{Annotate given  object with promoter, exon, intron and intergenic regions}
 \usage{
-annotateWithGeneParts(target, feature, strand = F, intersect.chr = FALSE)
+annotateWithGeneParts(target, feature, strand = FALSE,
+  intersect.chr = FALSE)
 
 \S4method{annotateWithGeneParts}{GRanges,GRangesList}(target, feature,
-  strand = F, intersect.chr = FALSE)
+  strand = FALSE, intersect.chr = FALSE)
 
 \S4method{annotateWithGeneParts}{GRangesList,GRangesList}(target, feature,
-  strand = F, intersect.chr = FALSE)
+  strand = FALSE, intersect.chr = FALSE)
 }
 \arguments{
 \item{target}{\code{\link{GRanges}} or \code{\link{GRangesList}}

@@ -20,6 +20,10 @@ using hierarchical clustering}
 \item{col}{a vector of two colors that will be used for interpolation.
        The first color is the lowest one, the second is the highest one}
 }
+\value{
+plots a heatmap of enrichment of target in each gene functional
+        category
+}
 \description{
 This function plots a heatmap of enrichment of each range in given gene feature
 }
