@@ -6,6 +6,7 @@
 \documentclass{article}
 \usepackage{geometry}
 \usepackage{wrapfig}
+\usepackage{color}
 
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
 
@@ -48,19 +49,21 @@ set.seed=10
 % ----------------------------------------------------------------- %
 \section{Introduction}
 
-\Rpackage{genomation}  is a  toolkit for annotation and in bulk visualization of
-genomic features (scored or unscored) over predefined regions.
- The \textbf{genomic features} which the package can handle can 
-be anything with a minimal information of chromosome, start and end. 
-The features could have any length and most of the time they are 
-\begin{wrapfigure}{r}{0.4\textwidth}
-\vspace{-15pt}
+\textcolor{white}{a}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-20pt}
   \begin{center}
-    \includegraphics[width=0.4\textwidth]{Figures/genomationFlowChart1.pdf}
+    \includegraphics[width=0.5\textwidth]{Figures/genomationFlowChart1.pdf}
     \caption{Bulk visualization for different genomic feature datasets flowchart}
   \end{center}
-  \vspace{-15pt}
+  \vspace{-25pt}
 \end{wrapfigure}
+\Rpackage{genomation}  is a  toolkit for annotation 
+and in bulk visualization of genomic features (scored or unscored)
+over predefined regions.
+The \textbf{genomic features} which the package can handle can 
+be anything with a minimal information of chromosome, start and end. 
+The features could have any length and most of the time they are 
 associated with a score. Typical examples of such data sets include aligned  
 reads from high-throughput sequencing (HTS) experiments, percent methylation 
 values for CpGs (or other cytosines), locations of transcription factor binding, 
@@ -232,7 +235,7 @@ The target data can be in 3 forms: a GRanges, a RLeList or a path to an indexed
 
 As an example we will extract the density of cage tags around the promoters on 
 the human chromosome 21.
-<<ScoreMatrixExample, eval=FALSE, tidy=TRUE>>=
+<<ScoreMatrixExample, eval=TRUE, tidy=TRUE>>=
 data(cage)
 data(promoters)
 sm = ScoreMatrix(target=cage, windows=promoters)
@@ -270,7 +273,7 @@ the targets argument contains results from multiple experiments.
 It can be in one of the three formats: a list of RleLists, a list of GRanges 
 (or a GRangesList object), or a character vector designating a set of 
 .bam or .bigWig files.
-<<ScoreMatrixList, eval=FALSE, tidy=TRUE>>=
+<<ScoreMatrixList, eval=TRUE, tidy=TRUE>>=
 data(promoters)
 data(cpgi)
 data(cage)
@@ -369,7 +372,7 @@ exon, intron).
 Firstly, we will select the broadPeak files from the \Rpackage{genomatonData} package,
 and read in the peaks for the Ctcf transcription factor
 
-<<getFiles_annotation, eval=FALSE, tidy=TRUE>>=
+<<getFiles_annotation, eval=TRUE, tidy=TRUE>>=
 library(genomationData)
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), 
@@ -386,7 +389,7 @@ Now we will annotate the human the Ctcf binding sites using the CpG islands.
 Because the CpG islands are restricted to chromosomes 21 and 22, we will set the
 \Rcode{intersect.chr = TRUE}, which will limit the analysis only to the 
 chromosomes that are present in both data sets.
-<<readAllPeaks_annotation, eval=FALSE, tidy=TRUE>>=
+<<readAllPeaks_annotation, eval=TRUE, tidy=TRUE>>=
 data(cpgi)
 peak.annot = annotateWithFeature(ctcf.peaks, cpgi, intersect.chr=TRUE)
 peak.annot
@@ -405,7 +408,7 @@ we will first read the transcript features from a file using the
 \Rcode{readTranscriptFeatures} function. \Rcode{readTranscriptFeatures} reads
 a bed12 formatted file and parses the coordinates into a \Rcode{GRangesList} containing
 four elements: exons, introns. promoters and transcription start sites (TSSes).
-<<readTranscriptFeatures, eval=FALSE, tidy=TRUE>>=
+<<readTranscriptFeatures, eval=TRUE, tidy=TRUE>>=
 bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 gene.parts = readTranscriptFeatures(bed.file)
 @
@@ -413,7 +416,7 @@ gene.parts = readTranscriptFeatures(bed.file)
 \Rcode{annotateWithGeneParts} will give us the  overlap statistics between our 
 CTCF peaks and gene structures. We will again use the \Rcode{intersect.chr=TRUE}
 to limit the analysis.
-<<annotateCtcf, eval=FALSE, tidy=TRUE>>=
+<<annotateCtcf, eval=TRUE, tidy=TRUE>>=
 ctcf.annot=annotateWithGeneParts(ctcf.peaks, gene.parts, intersect.chr=TRUE)
 ctcf.annot
 @
@@ -421,7 +424,7 @@ ctcf.annot
 \Rcode{annotateWithGeneParts} can also take a set of feature ranges as an argument.
 We will use the readGeneric function to load all of the broadPeak files in the
 \Rpackage{genomationData}, which we will then annotate.
-<<annotateTargetList, eval=FALSE, tidy=TRUE>>=
+<<annotateTargetList, eval=TRUE, tidy=TRUE>>=
 peaks = GRangesList(lapply(peak.files, readGeneric))
 names(peaks) = names(peak.files)
 annot.list = annotateWithGeneParts(peaks, gene.parts, intersect.chr=TRUE)
@@ -431,7 +434,7 @@ Gene annotation of multiple feature objects can be visualized in a form of a hea
 where rows represent samples, columns the gene structure, and the value is the 
 percentage of overlap given by priority. If \Rcode{cluster=TRUE}, then the function
 will use hierarhical clustering to order the heatmap.
-<<plotGeneAnnotation, eval=FALSE, tidy=TRUE, dpi=300, out.width='.25\\textwidth'>>=
+<<plotGeneAnnotation, eval=TRUE, tidy=TRUE, dpi=300, out.width='.25\\textwidth'>>=
 plotGeneAnnotation(annot.list)
 plotGeneAnnotation(annot.list, cluster=TRUE)
 @
@@ -455,7 +458,7 @@ We will visualize the binding profiles of 6 transcription factors around the
 Ctcf binding sites. 
 
 In the fist step we will select the *.bam files containing mapped reads.
-<<selectBamChipseq, eval=FALSE, tidy=TRUE>>=
+<<selectBamChipseq, eval=TRUE, tidy=TRUE>>=
 genomationDataPath = system.file('extdata',package='genomationData')
 bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
 bam.files = bam.files[!grepl('Cage', bam.files)]
@@ -464,7 +467,7 @@ bam.files = bam.files[!grepl('Cage', bam.files)]
 Firstly, we will read in the Ctcf peaks, filter regions from human chromosome 21,
 and order them by their signal values. In the end we will resize all ranges to 
 have a uniform width of 500 bases, fixed on the center of the peak.
-<<readCtcfPeaks, eval=FALSE, tidy=TRUE>>=
+<<readCtcfPeaks, eval=TRUE, tidy=TRUE>>=
 ctcf.peaks = readBroadPeak(file.path(genomationDataPath, 
                                      'wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz'))
 ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
@@ -522,7 +525,7 @@ in the narrowPeak. To read the files, we will use the \Rcode{readGeneric}
 function. It enables us to select from the files only columns of interest. 
 As the last step, we will restrict ourselves to peaks that are located on 
 chromosome 21 and have width 100 and 1000 bp
-<<readAllPeaks, eval=FALSE, tidy=TRUE>>=
+<<readAllPeaks, eval=TRUE, tidy=TRUE>>=
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), 
                         header=T, sep='\t', stringsAsFactors=FALSE)
@@ -547,7 +550,7 @@ By default, the returned ranges will have a numeric \Rcode{class}
 meta data column, which designates the correponding combination. 
 If you are interested in the names of the TF which make 
 the combinations, put the \Rcode{use.names=TRUE}.
-<<findFeatureComb, eval=FALSE, tidy=TRUE>>=
+<<findFeatureComb, eval=TRUE, tidy=TRUE>>=
 tf.comb = findFeatureComb(peaks, width=1000)
 @
 
