@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------------------- #
 # fast reading of big tables
-readTableFast<-function(filename,header=T,skip=0,sep=""){
+readTableFast<-function(filename,header=TRUE,skip=0,sep=""){
   
   tab5rows <- read.table(filename, header = header,skip=skip,
-                         sep=sep, nrows = 100, stringsAsFactors=F)
+                         sep=sep, nrows = 100, stringsAsFactors=FALSE)
   classes  <- sapply(tab5rows, class)
   df = read.table(filename, 
                   header = header,
@@ -288,7 +288,7 @@ readNarrowPeak<-function(file){
 setGeneric("readFeatureFlank", 
            function(location,remove.unusual=T,
                     flank=2000,
-                    clean=T,
+                    clean=TRUE,
                     feature.flank.name=NULL) 
              standardGeneric("readFeatureFlank") )
 

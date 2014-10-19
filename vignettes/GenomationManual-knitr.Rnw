@@ -376,7 +376,7 @@ and read in the peaks for the Ctcf transcription factor
 library(genomationData)
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), 
-                        header=T, sep='\t', stringsAsFactors=FALSE)
+                        header=TRUE, sep='\t', stringsAsFactors=FALSE)
 
 peak.files=list.files(genomationDataPath, full.names=T, pattern='broadPeak')
 names(peak.files) = sampleInfo$sampleName[match(basename(peak.files),sampleInfo$fileName)]

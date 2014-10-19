@@ -29,7 +29,7 @@ getViewsBin = function(target, windows, bin.num){
                         IRanges::start(windows),
                         IRanges::end(windows), 
                         bin.num, SIMPLIFY=TRUE), 
-                              ncol=2, byrow=T)
+                              ncol=2, byrow=TRUE)
   
   # make GRanges object for the bins
     # subtract 1 so next start pos is not identical to  current end pos
@@ -69,11 +69,11 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
         stop(paste(c('Supported binning functions are', functs,'\n')))
     if(bin.op=="min")
       sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-                                  IRanges::viewMins(x,na.rm=TRUE) ),use.names=F)      
+                                  IRanges::viewMins(x,na.rm=TRUE) ),use.names=FALSE)      
     
     if(bin.op=="max")
         sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-                                  IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=F)      
+                                  IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=FALSE)      
     if(bin.op=="mean")
         sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
                                   IRanges::viewMeans(x,na.rm=TRUE) ),use.names=F)    

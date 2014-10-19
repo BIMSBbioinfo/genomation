@@ -271,7 +271,7 @@ setMethod("convertBed2Introns",
 #' @docType methods
 #' @rdname getFlanks-methods
 setGeneric("getFlanks", 
-                function(grange,flank=2000,clean=T) 
+                function(grange,flank=2000,clean=TRUE) 
                           standardGeneric("getFlanks"))
 
 #' @aliases getFlanks,GRanges-method
@@ -352,7 +352,7 @@ setMethod("show", "AnnotationByFeature",
 
 # ---------------------------------------------------------------------------- #
 
-annotatGrWithGeneParts <- function(gr, prom, exon, intron, strand=F){
+annotatGrWithGeneParts <- function(gr, prom, exon, intron, strand=FALSE){
 
     if( ! strand){strand(gr)="*"}
     memb = data.frame(matrix(rep(0,length(gr)*3),ncol=3) )
