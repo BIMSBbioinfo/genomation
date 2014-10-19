@@ -504,7 +504,7 @@ distance2NearestFeature<-function(g.idh,tss){
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
 setGeneric("annotateWithGeneParts", 
-                function(target,feature,strand=F, intersect.chr=FALSE)
+                function(target,feature,strand=FALSE, intersect.chr=FALSE)
                     standardGeneric("annotateWithGeneParts") )
 
 #' @aliases annotateWithGeneParts,GRanges,GRangesList-method

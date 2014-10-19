@@ -349,7 +349,7 @@ setMethod("readTranscriptFeatures",
             
             # readBed6
             message('Reading the table...\r')
-            bed=readTableFast(location,header=F,skip=skip)                    
+            bed=readTableFast(location,header=FALSE,skip=skip)                    
             if(remove.unusual)
               bed=bed[grep("_", as.character(bed[,1]),invert=TRUE),]
             

@@ -118,7 +118,7 @@ setMethod("randomizeFeature", signature(feature = "GRanges"),
 				w[i] = w[i] + total - sum(w)
 				
 				# generates the random regions
-				m = mapply(function(n,x,y)runif(n,x,y), w, start(a), end(a), SIMPLIFY=F)
+				m = mapply(function(n,x,y)runif(n,x,y), w, start(a), end(a), SIMPLIFY=FALSE)
 				g = GRanges(chr, IRanges(start = unlist(m), width=rep(width(feature[ind]), times=nrand)))
 				values(g)$set = rep(1:nrand, each=nl)
 				
