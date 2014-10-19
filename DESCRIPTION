@@ -9,7 +9,7 @@ Description: A package for annotation of genomic features. Users can visualize a
 License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
-biocViews: Annotation, Sequencing, Visualization
+biocViews: Annotation, Sequencing, Visualization, CpGIsland
 Depends:
     R (>= 3.0.0),grid
 Imports:

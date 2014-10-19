@@ -26,8 +26,8 @@ GRanges object for flanking regions
 Function to get upstream and downstream adjecent regions to a genomic feature such as CpG islands
 }
 \examples{
-# data(cpgi)
-# cpgi.flanks = getFlanks(cpgi)
-# head(cpgi.flanks)
+data(cpgi)
+cpgi.flanks = getFlanks(cpgi)
+head(cpgi.flanks)
 }
 

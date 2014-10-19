@@ -38,8 +38,8 @@ returns an \code{AnnotationByFeature} object
 Function to annotate given GRanges object with a given genomic feature
 }
 \examples{
-# data(cpgi)
-# data(promoters)
-# annot = annotateWithFeature(cpgi, promoters)
+data(cpgi)
+data(promoters)
+annot = annotateWithFeature(cpgi, promoters)
 }
 

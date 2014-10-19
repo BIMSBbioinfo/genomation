@@ -21,6 +21,11 @@
 \arguments{
 \item{object}{object of class RandomEnrichment}
 }
+\value{
+Shows the dimension of the ScoreMatrix
+
+Shows the number of matrices and their sizes
+}
 \description{
 show method for some of the genomation classes
 }

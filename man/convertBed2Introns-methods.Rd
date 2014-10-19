@@ -24,9 +24,9 @@ one bed track per file is only accepted, the bed files with
       multiple tracks will cause en error
 }
 \examples{
-# file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
-# bed12 = read.table(file)
-# introns = convertBed2Introns(bed12)
-# head(introns)
+file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+bed12 = read.table(file)
+introns = convertBed2Introns(bed12)
+head(introns)
 }
 

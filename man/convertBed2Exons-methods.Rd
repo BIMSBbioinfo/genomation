@@ -22,9 +22,9 @@ convert a data frame read-in from a bed file to a GRanges object for exons
 one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 }
 \examples{
-# file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
-# bed12 = read.table(file)
-# exons = convertBed2Exons(bed12)
-# head(exons)
+file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+bed12 = read.table(file)
+exons = convertBed2Exons(bed12)
+head(exons)
 }
 

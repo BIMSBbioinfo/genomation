@@ -34,11 +34,11 @@ This function plots a pie or bar chart for showing percentages of targets
 annotated by genic parts or other query features
 }
 \examples{
-# data(cage)
+data(cage)
 
-# bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-# gene.parts = readTranscriptFeatures(bed.file)
-# annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+gene.parts = readTranscriptFeatures(bed.file)
+annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 # plotTargetAnnotation(annot)
 }
 

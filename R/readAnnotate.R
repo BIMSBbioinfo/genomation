@@ -188,10 +188,10 @@ setMethod("convertBedDf" ,
 #'
 #'
 #' @examples
-#' # file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
-#' # bed12 = read.table(file)
-#' # exons = convertBed2Exons(bed12)
-#' # head(exons)
+#' file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+#' bed12 = read.table(file)
+#' exons = convertBed2Exons(bed12)
+#' head(exons)
 #' 
 #' @export
 #' @docType methods
@@ -224,10 +224,10 @@ setMethod("convertBed2Exons" ,
 #'       multiple tracks will cause en error
 #'
 #' @examples
-#' # file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
-#' # bed12 = read.table(file)
-#' # introns = convertBed2Introns(bed12)
-#' # head(introns)
+#' file = system.file('extdata/chr21.refseq.hg19.bed', package='genomation')
+#' bed12 = read.table(file)
+#' introns = convertBed2Introns(bed12)
+#' head(introns)
 #'
 #' @export
 #' @docType methods
@@ -262,9 +262,9 @@ setMethod("convertBed2Introns",
 #' @usage getFlanks(grange,flank=2000,clean=TRUE)
 #' 
 #' @examples
-#' # data(cpgi)
-#' # cpgi.flanks = getFlanks(cpgi)
-#' # head(cpgi.flanks)
+#' data(cpgi)
+#' cpgi.flanks = getFlanks(cpgi)
+#' head(cpgi.flanks)
 #' 
 #' @return GRanges object for flanking regions
 #' @export
@@ -590,10 +590,10 @@ setMethod("annotateWithGeneParts",
 #' 
 #' 
 #' @examples
-#' # data(cpgi)
-#' # data(cage)
-#' # cpgi.flanks = getFlanks(cpgi)
-#' # flank.annot = annotateWithFeatureFlank(cage, cpgi, cpgi.flanks)
+#' data(cpgi)
+#' data(cage)
+#' cpgi.flanks = getFlanks(cpgi)
+#' flank.annot = annotateWithFeatureFlank(cage, cpgi, cpgi.flanks)
 #' 
 #' @export
 #' @docType methods
@@ -692,9 +692,9 @@ setMethod( "annotateWithFeatureFlank",
 #' 
 #' 
 #' @examples
-#' # data(cpgi)
-#' # data(promoters)
-#' # annot = annotateWithFeature(cpgi, promoters)
+#' data(cpgi)
+#' data(promoters)
+#' annot = annotateWithFeature(cpgi, promoters)
 #' 
 #' 
 #' @export
@@ -814,11 +814,11 @@ setMethod("getMembers",
 #' @usage getTargetAnnotationStats(x,percentage=TRUE,precedence=TRUE)
 #' 
 #' @examples
-#' # data(cage)
-#' # bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # gene.parts = readTranscriptFeatures(bed.file)
-#' # cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-#' # getTargetAnnotationStats(cage.annot)
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' getTargetAnnotationStats(cage.annot)
 #'
 #' @return a vector of percentages or counts showing quantity of target features
 #'         overlapping with annotation
@@ -873,11 +873,11 @@ setMethod("getTargetAnnotationStats",
 #'      
 #'         
 #' @examples
-#' # data(cage)
-#' # bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # gene.parts = readTranscriptFeatures(bed.file)
-#' # cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-#' # getFeatsWithTargetsStats(cage.annot)
+#' data(cage)
+#' bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' getFeatsWithTargetsStats(cage.annot)
 #' 
 #' @usage getFeatsWithTargetsStats(x,percentage=TRUE)
 #' @export
@@ -917,11 +917,11 @@ setMethod("getFeatsWithTargetsStats",
 #'          AnnotationByGeneParts-method
 #' 
 #' @examples
-#' # data(cage)
-#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # gene.parts = readTranscriptFeatures(bed.file)
-#' # cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)        
-#' # head(getAssociationWithTSS(cage.annot))
+#' data(cage)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)        
+#' ead(getAssociationWithTSS(cage.annot))
 #'  
 #' @export
 #' @docType methods
@@ -964,11 +964,11 @@ setMethod("getAssociationWithTSS",
 #'
 #'
 #' @examples
-#' # data(cage)
+#' data(cage)
 #' 
-#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # gene.parts = readTranscriptFeatures(bed.file)
-#' # annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 #' # plotTargetAnnotation(annot)
 #'
 #'
