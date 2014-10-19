@@ -993,7 +993,8 @@ setMethod("plotTargetAnnotation",
 				
 				props=getTargetAnnotationStats(x,precedence)
 
-			if(precedence | ( is(x,"AnnotationByFeature") & !is(x,"AnnotationByGeneParts")) ){
+			if(precedence | ( is(x,"AnnotationByFeature") & 
+                       !is(x,"AnnotationByGeneParts")) ){
 				slice.names=names(props)
 				names(props)=paste( paste(round(props),"%"),sep=" ")
 
@@ -1027,10 +1028,14 @@ setMethod("plotTargetAnnotation",
 #' # cage$tpm = NULL
 #' # gl = GRangesList(cage=cage, cpgi=cpgi)
 #' 
-#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", 
+#'                           package = "genomation")
 #' # gene.parts = readTranscriptFeatures(bed.file)
 #' # annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)        
 #' # plotGeneAnnotation(annot)
+#' 
+#' @return plots a heatmap of enrichment of target in each gene functional 
+#'         category
 #' 
 #' @export
 #' @docType methods
