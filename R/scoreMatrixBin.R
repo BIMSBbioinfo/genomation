@@ -25,37 +25,37 @@ binner=function(start,end,nbins){
 getViewsBin = function(target, windows, bin.num){
 
   #get coordinates of bins in each window
-	coord = matrix(mapply(binner, 
+    coord = matrix(mapply(binner, 
                         IRanges::start(windows),
                         IRanges::end(windows), 
                         bin.num, SIMPLIFY=TRUE), 
-		  	                ncol=2, byrow=T)
+                              ncol=2, byrow=T)
   
   # make GRanges object for the bins
-	# subtract 1 so next start pos is not identical to  current end pos
+    # subtract 1 so next start pos is not identical to  current end pos
   # keep window rank from original "windows" GRanges object
-	subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
+    subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
                     IRanges(start=coord[,1],end=coord[,2])) 
-	IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
-	
+    IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
+    
   # convert sub-windows to RangesList to be fed into coverage()
-	win.list=as(subWins, "RangesList")
-	win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
+    win.list=as(subWins, "RangesList")
+    win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
   
-	#check if there are common chromsomes
-	chrs  = intersect(names(win.list), names(target))
-	if(length(chrs)==0)
+    #check if there are common chromsomes
+    chrs  = intersect(names(win.list), names(target))
+    if(length(chrs)==0)
     stop("There are no common chromosomes/spaces to do overlap")
 
   # get views on your windows
-	my.vList = Views(target[chrs], win.list[chrs] )
-	my.vList = lapply(chrs, 
-						function(x){
-						v = my.vList[[x]]
-						names(v) = IRanges::values(subWins)$X_rank[as.character(seqnames(subWins)) == x]
-						return(v)})
-	names(my.vList) = chrs
-	return(my.vList)
+    my.vList = Views(target[chrs], win.list[chrs] )
+    my.vList = lapply(chrs, 
+                        function(x){
+                        v = my.vList[[x]]
+                        names(v) = IRanges::values(subWins)$X_rank[as.character(seqnames(subWins)) == x]
+                        return(v)})
+    names(my.vList) = chrs
+    return(my.vList)
 }
 
 
@@ -63,35 +63,35 @@ getViewsBin = function(target, windows, bin.num){
 # applies the summary function for the views to bin the objects - for standard Rle and returns a matrix object
 summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 
-	# chop windows to bins
-	functs = c("min",'mean','max','median')
-	if(!bin.op %in% functs)
-		stop(paste(c('Supported binning functions are', functs,'\n')))
-	if(bin.op=="min")
-	  sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+    # chop windows to bins
+    functs = c("min",'mean','max','median')
+    if(!bin.op %in% functs)
+        stop(paste(c('Supported binning functions are', functs,'\n')))
+    if(bin.op=="min")
+      sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
                                   IRanges::viewMins(x,na.rm=TRUE) ),use.names=F)      
-	
-	if(bin.op=="max")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+    
+    if(bin.op=="max")
+        sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
                                   IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=F)      
-	if(bin.op=="mean")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+    if(bin.op=="mean")
+        sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
                                   IRanges::viewMeans(x,na.rm=TRUE) ),use.names=F)    
-		
-	if(bin.op=="median")
-		sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
+        
+    if(bin.op=="median")
+        sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
         viewApply(x, function(x) median(as.numeric(x),na.rm=TRUE)  )), use.names=F) 
         
-	mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
+    mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
   mat[is.nan(mat)]=NA
-	rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=FALSE)[seq(1, length(mat), bin.num)]
-	if(strand.aware){
-		orig.rows=which(as.character(strand(windows))== '-')
+    rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=FALSE)[seq(1, length(mat), bin.num)]
+    if(strand.aware){
+        orig.rows=which(as.character(strand(windows))== '-')
         mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
-	}
-	mat = mat[order(as.numeric(rownames(mat))),]
-	return(mat)
-	
+    }
+    mat = mat[order(as.numeric(rownames(mat))),]
+    return(mat)
+    
 }
 
 
@@ -184,24 +184,24 @@ setGeneric("ScoreMatrixBin",
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
 
-			# removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
-			windows = constrainRanges(target, windows)
-			
-			# checks whether some windows are shorter than the wanted window size
-			wi = IRanges::width(windows) < bin.num
-			if(any(wi)){
-				windows = windows[!wi]
+            # removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
+            windows = constrainRanges(target, windows)
+            
+            # checks whether some windows are shorter than the wanted window size
+            wi = IRanges::width(windows) < bin.num
+            if(any(wi)){
+                windows = windows[!wi]
         if(length(windows) == 0)
           stop('all supplied windows have width < number of bins')
-				warning('supplied GRanges object contains ranges of width < number of bins')
-			}
-	
-			# gets the view list
-			my.vList = getViewsBin(target, windows, bin.num)
-			
-			# summarize views with the given function
-			mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
-			new("ScoreMatrix",mat)
+                warning('supplied GRanges object contains ranges of width < number of bins')
+            }
+    
+            # gets the view list
+            my.vList = getViewsBin(target, windows, bin.num)
+            
+            # summarize views with the given function
+            mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
+            new("ScoreMatrix",mat)
 })
 
 

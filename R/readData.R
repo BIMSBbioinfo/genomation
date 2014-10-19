@@ -355,10 +355,10 @@ setMethod("readTranscriptFeatures",
             
             # introns
             message('Calculating intron coordinates...\r')
-            introns	= convertBed2Introns(bed)
+            introns    = convertBed2Introns(bed)
             # exons
             message('Calculating exon coordinates...\r')
-            exons	= convertBed2Exons(bed)
+            exons    = convertBed2Exons(bed)
             
             # get the locations of TSSes
             message('Calculating TSS coordinates...\r')
@@ -452,7 +452,7 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL,
     values(gff) = cbind(values(gff), group)
   }
   
-  if(!is.null(filter)){		
+  if(!is.null(filter)){        
     if(filter %in% gff$feature){
       message(paste("Filtering", filter, "features...\n"))
       gff = gff[gff$feature == filter,]
