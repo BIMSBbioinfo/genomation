@@ -399,7 +399,7 @@ annotatGrWithGeneParts <- function(gr, prom, exon, intron, strand=FALSE){
 # ---------------------------------------------------------------------------- #
 distance2NearestFeature<-function(g.idh,tss){
 
-    elementMetadata(g.idh) = DataFrame(elementMetadata(g.idh),orig.row=1:length(g.idh))
+    elementMetadata(g.idh) = data.frame(elementMetadata(g.idh),orig.row=1:length(g.idh))
     # get the row number column
     id.col = ncol( elementMetadata(g.idh))+5 
 
@@ -921,7 +921,7 @@ setMethod("getFeatsWithTargetsStats",
 #' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
 #' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)        
-#' ead(getAssociationWithTSS(cage.annot))
+#' head(getAssociationWithTSS(cage.annot))
 #'  
 #' @export
 #' @docType methods
