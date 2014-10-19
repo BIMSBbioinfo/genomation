@@ -259,7 +259,7 @@ setMethod("convertBed2Introns",
 #'               This will remove multiple counts when other features overlap 
 #'               with flanks
 #'
-#' @usage getFlanks(grange,flank=2000,clean=T)
+#' @usage getFlanks(grange,flank=2000,clean=TRUE)
 #' 
 #' @examples
 #' # data(cpgi)

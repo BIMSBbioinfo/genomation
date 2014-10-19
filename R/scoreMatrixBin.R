@@ -76,11 +76,11 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
                                   IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=FALSE)      
     if(bin.op=="mean")
         sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-                                  IRanges::viewMeans(x,na.rm=TRUE) ),use.names=F)    
+                                  IRanges::viewMeans(x,na.rm=TRUE) ),use.names=FALSE)    
         
     if(bin.op=="median")
         sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-        viewApply(x, function(x) median(as.numeric(x),na.rm=TRUE)  )), use.names=F) 
+        viewApply(x, function(x) median(as.numeric(x),na.rm=TRUE)  )), use.names=FALSE) 
         
     mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
   mat[is.nan(mat)]=NA

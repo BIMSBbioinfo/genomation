@@ -373,7 +373,7 @@ setMethod("binMatrix", signature("ScoreMatrix"),
 # ---------------------------------------------------------------------------- #
 # show Methods
 #' @rdname show-methods
-#' 
+#' @return Shows the dimension of the ScoreMatrix
 setMethod("show", "ScoreMatrix",
           function(object){
             dims = dim(object)

@@ -110,7 +110,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
     
   # removes nonstandard chromosome names
   if(remove.unusual)
-    df = df[grep("_", as.character(df$chr),invert=T),]
+    df = df[grep("_", as.character(df$chr),invert=TRUE),]
   
   g = makeGRangesFromDataFrame(
                           df, 
@@ -273,7 +273,7 @@ readNarrowPeak<-function(file){
 #' @param clean If set to TRUE, flanks overlapping with other main features will be trimmed
 #' @param remove.unusual  remove chromsomes with unsual names random, Un and antyhing with "_" character
 #' @param feature.flank.name the names for feature and flank ranges, it should be a character vector of length 2. example: c("CpGi","shores")
-#' @usage  readFeatureFlank(location,remove.unusual=T,flank=2000,clean=T,feature.flank.name=NULL)
+#' @usage  readFeatureFlank(location,remove.unusual=TRUE,flank=2000,clean=TRUE,feature.flank.name=NULL)
 #' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object for the main feature.
 #'   NOTE:This can not return a GRangesList at the moment because flanking regions do not have to have the same column name as the feature.
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
@@ -286,7 +286,7 @@ readNarrowPeak<-function(file){
 #' @docType methods
 #' @rdname readFeatureFlank-methods
 setGeneric("readFeatureFlank", 
-           function(location,remove.unusual=T,
+           function(location,remove.unusual=TRUE,
                     flank=2000,
                     clean=TRUE,
                     feature.flank.name=NULL) 

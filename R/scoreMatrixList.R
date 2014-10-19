@@ -185,6 +185,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
 # ---------------------------------------------------------------------------- #
 # show Methods
 #' @rdname show-methods
+#' @return Shows the number of matrices and their sizes
 setMethod("show", "ScoreMatrixList",
             function(object){
                 dims = lapply(object, dim)
