@@ -1028,8 +1028,7 @@ setMethod("plotTargetAnnotation",
 #' # cage$tpm = NULL
 #' # gl = GRangesList(cage=cage, cpgi=cpgi)
 #' 
-#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", 
-#'                           package = "genomation")
+#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' # gene.parts = readTranscriptFeatures(bed.file)
 #' # annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)        
 #' # plotGeneAnnotation(annot)

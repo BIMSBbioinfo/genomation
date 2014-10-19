@@ -57,7 +57,6 @@
 #' # x=new("ScoreMatrixList",list(scores1,scores2))
 #' # heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
 #' #          cex.axis=0.9)
-#' @import gridBase
 #' @export
 #' 
 heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
@@ -503,8 +502,6 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
 #' #         cex.axis=0.9,grid=FALSE)
 #'           
-#' @import impute           
-#' @import gridBase
 #' 
 #' 
 #' @export
@@ -892,8 +889,6 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' 
 #' 
-#' @import impute           
-#' @import gridBase
 #' 
 #' 
 #' @export
