@@ -1,0 +1,73 @@
+import(methods)
+import(GenomicRanges)
+import(GenomicAlignments)
+import(IRanges)
+import(Rsamtools)
+import(ggplot2)
+import(grid)
+import(gridBase)
+import(impute)
+importMethodsFrom("rtracklayer", import)
+#importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
+
+#importClassesFrom("GenomicRanges",GRanges,GRangesList)
+
+#importClassesFrom("IRanges", RangedData, RangedDataList, DataTable,
+#                  Annotated, Vector, List, DataTableORNULL, characterORNULL,
+#                  RangedSelection, SimpleList, DataFrame,SimpleRleList,RleList,SimpleAtomicList,AtomicList,RleViews,RleViewsList)
+
+#importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
+#           RangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,subsetByOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
+
+#importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
+
+
+importFrom("data.table", data.table)
+importFrom("plyr",rbind.fill)
+importFrom("reshape2", melt)
+
+
+# importFrom("parallel", mclapply)
+exportClasses(AnnotationByFeature)
+exportClasses(AnnotationByGeneParts)
+exportClasses(RandomEnrichment)
+exportClasses(ScoreMatrix)
+exportClasses(ScoreMatrixList)
+
+exportMethods(annotateWithFeature)
+exportMethods(annotateWithFeatureFlank)
+exportMethods(annotateWithGeneParts)
+exportMethods(binMatrix)
+exportMethods(convertBedDf)
+exportMethods(convertBed2Exons)
+exportMethods(convertBed2Introns)
+exportMethods(findFeatureComb)
+exportMethods(getAssociationWithTSS)
+exportMethods(getFeatsWithTargetsStats)
+exportMethods(getFlanks)
+exportMethods(getMembers)
+exportMethods(getRandomEnrichment)
+exportMethods(getTargetAnnotationStats)
+export(heatMatrix)
+export(heatMeta)
+export(intersectScoreMatrixList)
+export(multiHeatMatrix)
+export(plotMeta)
+exportMethods(plotGeneAnnotation)
+exportMethods(plotTargetAnnotation)
+exportMethods(orderBy)
+exportMethods(randomizeFeature)
+export(readGeneric)
+export(readBed)
+export(readBroadPeak)
+exportMethods(readFeatureFlank)
+export(readNarrowPeak)
+exportMethods(readTranscriptFeatures)
+exportMethods(ScoreMatrix)
+exportMethods(ScoreMatrixBin)
+exportMethods(scaleScoreMatrix)
+exportMethods(scaleScoreMatrixList)
+
+export(gffToGRanges)
+export(ScoreMatrixList)
+
