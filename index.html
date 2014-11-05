@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>genomation by al2na</title>
+    <title>genomation by BIMSBbioinfo</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -20,23 +20,23 @@
         <p class="header">a toolkit to summarize, annotate and visualize genomic intervals</p>
 
         <ul>
-          <li class="download"><a class="buttons" href="https://github.com/al2na/genomation/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/al2na/genomation/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/al2na/genomation">View On GitHub</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/BIMSBbioinfo/genomation/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/BIMSBbioinfo/genomation/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/BIMSBbioinfo/genomation">View On GitHub</a></li>
         </ul>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/al2na">al2na</a></p>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/BIMSBbioinfo">BIMSBbioinfo</a></p>
 
 
       </header>
       <section>
         <h1>
-<a name="welcome-to-genomation" class="anchor" href="#welcome-to-genomation"><span class="octicon octicon-link"></span></a>Welcome to genomation</h1>
+<a id="welcome-to-genomation" class="anchor" href="#welcome-to-genomation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to genomation</h1>
 
 <p>This is an <a href="http://cran.r-project.org/index.html">R</a> package that contains a collection of tools for visualizing and analyzing genome-wide data sets. The package works with a variety of genomic interval file types and enables easy summarization and annotation of high throughput data sets with given genomic annotations.</p>
 
 <h2>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
 <li>
@@ -48,15 +48,17 @@
 <li>
 <strong>Visualisation of summary matrices</strong> such as <strong>meta-region</strong>(meta-gene, meta-promoter, etc.) plots or <strong>heatmaps</strong>. 
 These functions can employ K-means clustering of rows of summary matrices as well.</li>
-</ul><p><img src="http://i.minus.com/ibqHSXWJaBcGH6.png" alt="genomation"></p>
+</ul>
+
+<p><img src="http://i.minus.com/ibqHSXWJaBcGH6.png" alt="genomation"></p>
 
 <h2>
-<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
 
 <p>See the package vignette <a href="https://github.com/al2na/genomation/raw/master/inst/doc/GenomationManual-knitr.pdf">here</a>. Every function has proper documentation and examples reachable via <strong>help()</strong> function in R.</p>
 
 <h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>You can install genomation via <strong>install_github()</strong> function from <a href="http://cran.r-project.org/web/packages/devtools/index.html">devtools package</a>.</p>
 
@@ -67,11 +69,11 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 
 <span class="c1"># install the packages</span>
 <span class="n">library</span><span class="p">(</span><span class="n">devtools</span><span class="p">)</span>
-<span class="n">install_github</span><span class="p">(</span><span class="s2">"genomation"</span><span class="p">,</span> <span class="n">username</span> <span class="o">=</span> <span class="s2">"al2na"</span><span class="p">,</span><span class="n">build_vignettes</span><span class="o">=</span><span class="no">FALSE</span><span class="p">)</span>
+<span class="n">install_github</span><span class="p">(</span><span class="s2">"BIMSBbioinfo/genomation"</span><span class="p">,</span><span class="n">build_vignettes</span><span class="o">=</span><span class="no">FALSE</span><span class="p">)</span>
 </pre></div>
 
 <h2>
-<a name="data-import" class="anchor" href="#data-import"><span class="octicon octicon-link"></span></a>Data import</h2>
+<a id="data-import" class="anchor" href="#data-import" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data import</h2>
 
 <p>Functions such as <strong>readBed</strong>, <strong>gff2GRanges</strong>, <strong>readTranscriptFeatures</strong> and <strong>readGeneric</strong> can read multiple flat file formats as GRanges objects into R.</p>
 
@@ -88,7 +90,7 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 </pre></div>
 
 <h2>
-<a name="summarize-granges-object-on-defined-regions-such-as-promoters" class="anchor" href="#summarize-granges-object-on-defined-regions-such-as-promoters"><span class="octicon octicon-link"></span></a>Summarize GRanges object on defined regions such as promoters</h2>
+<a id="summarize-granges-object-on-defined-regions-such-as-promoters" class="anchor" href="#summarize-granges-object-on-defined-regions-such-as-promoters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summarize GRanges object on defined regions such as promoters</h2>
 
 <p>You can summarize GRanges objects that overlap with a set of promoters and return a ScoreMatrix object. The object will contain scores for each base in each promoter, columns correspond to bases and rows correspond to promoters.</p>
 
@@ -99,7 +101,7 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 </pre></div>
 
 <h2>
-<a name="summarize-bam-files-on-pre-defined-regions" class="anchor" href="#summarize-bam-files-on-pre-defined-regions"><span class="octicon octicon-link"></span></a>Summarize BAM files on pre-defined regions</h2>
+<a id="summarize-bam-files-on-pre-defined-regions" class="anchor" href="#summarize-bam-files-on-pre-defined-regions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summarize BAM files on pre-defined regions</h2>
 
 <p>BAM files can also be used in <strong>ScoreMatrix()</strong> function as well.</p>
 
@@ -109,7 +111,7 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 </pre></div>
 
 <h2>
-<a name="summarize-bigwig-files-on-pre-defined-regions" class="anchor" href="#summarize-bigwig-files-on-pre-defined-regions"><span class="octicon octicon-link"></span></a>Summarize BigWig files on pre-defined regions</h2>
+<a id="summarize-bigwig-files-on-pre-defined-regions" class="anchor" href="#summarize-bigwig-files-on-pre-defined-regions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summarize BigWig files on pre-defined regions</h2>
 
 <p>You can also use bigWig files in <strong>ScoreMatrix()</strong> function.</p>
 
@@ -119,7 +121,7 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 </pre></div>
 
 <h2>
-<a name="visualize-summary-matrices-as-heatmap" class="anchor" href="#visualize-summary-matrices-as-heatmap"><span class="octicon octicon-link"></span></a>Visualize summary matrices as heatmap</h2>
+<a id="visualize-summary-matrices-as-heatmap" class="anchor" href="#visualize-summary-matrices-as-heatmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualize summary matrices as heatmap</h2>
 
 <p>ScoreMatrix or ScoreMatrixList objects can be visualized with <strong>heatMatrix, multiHeatMatrix, plotMeta and heatMeta</strong> functions.</p>
 
@@ -136,19 +138,19 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 </pre></div>
 
 <h2>
-<a name="visualize-summary-matrices-as-meta-region-plots" class="anchor" href="#visualize-summary-matrices-as-meta-region-plots"><span class="octicon octicon-link"></span></a>Visualize summary matrices as meta-region plots</h2>
+<a id="visualize-summary-matrices-as-meta-region-plots" class="anchor" href="#visualize-summary-matrices-as-meta-region-plots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualize summary matrices as meta-region plots</h2>
 
 <div class="highlight highlight-ruby"><pre><span class="n">plotMeta</span><span class="p">(</span><span class="n">mat</span><span class="o">=</span><span class="n">sml</span><span class="p">,</span><span class="n">overlay</span><span class="o">=</span><span class="no">TRUE</span><span class="p">,</span><span class="n">main</span><span class="o">=</span><span class="s2">"my plotowski"</span><span class="p">)</span>
 <span class="n">heatMeta</span><span class="p">(</span><span class="n">mat</span><span class="o">=</span><span class="n">sml</span><span class="p">,</span><span class="n">main</span><span class="o">=</span><span class="s2">"my plotowski"</span><span class="p">)</span>
 </pre></div>
 
 <h1>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h1>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h1>
 
 <p>Vedran Franke (<a href="https://github.com/frenkiboy" class="user-mention">@frenkiboy</a>) and Altuna Akalin (<a href="https://github.com/al2na" class="user-mention">@al2na</a>) authored this package. You can contribute by checking out the "development" branch, making changes and submitting a pull request.</p>
 
 <h1>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h1>
+<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h1>
 
 <p>send an e-mail to <a href="mailto:genomation@googlegroups.com">genomation@googlegroups.com</a> or use the web interface
 to post a question
