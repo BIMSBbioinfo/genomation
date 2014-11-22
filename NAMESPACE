@@ -4,6 +4,9 @@ import(GenomicAlignments)
 import(IRanges)
 import(Rsamtools)
 import(ggplot2)
+import(grid)
+import(gridBase)
+import(impute)
 importMethodsFrom("rtracklayer", import)
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 
@@ -19,8 +22,6 @@ importMethodsFrom("rtracklayer", import)
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
 
-importFrom("impute",impute.knn)
-importFrom("gridBase",baseViewports)
 importFrom("data.table", data.table)
 importFrom("plyr",rbind.fill)
 importFrom("reshape2", melt)

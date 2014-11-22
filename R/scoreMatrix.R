@@ -14,25 +14,25 @@ getColors = function(n) {
 # removes ranges that fell of the rle object
 # does not check for the correspondence of the chromosome names - always check before using this function
 constrainRanges = function(target, windows){
-	
+    
   checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
-	checkClass(windows, 'GRanges')
-	
-	mcols(windows)$X_rank = 1:length(windows)
-	r.chr.len = elementLengths(target)
+    checkClass(windows, 'GRanges')
+    
+    mcols(windows)$X_rank = 1:length(windows)
+    r.chr.len = elementLengths(target)
     constraint = GRanges(seqnames=names(r.chr.len),
                          IRanges(start=rep(1,length(r.chr.len)),
                                    end=as.numeric(r.chr.len)))
-	# suppressWarnings is done becuause GenomicRanges function give warnings 
+    # suppressWarnings is done becuause GenomicRanges function give warnings 
   #if you don't have the same seqnames in both objects
   win.list.chr = suppressWarnings(subsetByOverlaps(windows, 
                                                    constraint,
                                                    type = "within",
                                                    ignore.strand = TRUE))
-	
-	if(length(win.list.chr) == 0)
+    
+    if(length(win.list.chr) == 0)
     stop('All windows fell have coordinates outside windows boundaries')
-	return(win.list.chr)
+    return(win.list.chr)
 }
 
 
@@ -40,9 +40,9 @@ constrainRanges = function(target, windows){
 # checkw whether the x object corresponds to the given class
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 
-	fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
-	if(!class(x) %in% class.name)
-		stop(paste(fun.name,': ', 
+    fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
+    if(!class(x) %in% class.name)
+        stop(paste(fun.name,': ', 
                var.name, 
                ' is not of class: ', 
                paste(class.name, collapse=' '), 
@@ -211,12 +211,12 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
     if( length(unique(width(windows))) >1 ){
         stop("width of 'windows' are not equal, provide 'windows' with equal widths")
     }     
-		
+        
     # set a uniq id for the GRanges
     windows = constrainRanges(target, windows)
-		
+        
    
-  	# fetches the windows and the scores
+      # fetches the windows and the scores
     chrs = intersect(names(target), as.character(unique(seqnames(windows))))
     myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
     
@@ -239,17 +239,17 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
     # so when we are doing something comparative (clustering windows
     # based on different histone marks) we only work with windows
     # that are covered by all histone marks
-  	rownames(mat) = ranks  
+      rownames(mat) = ranks  
     
     # if strand aware is TRUE, we need to flip the windows on the minus strand
-  	if(strand.aware == TRUE){
+      if(strand.aware == TRUE){
       orig.rows=which(as.character(strand(windows)) == '-')
       mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
                                                orig.rows, ncol(mat):1]
-  	}
+      }
 
-	# reorder matrix
-  	mat = mat[order(ranks),] 
+    # reorder matrix
+      mat = mat[order(ranks),] 
     
   return(new("ScoreMatrix",mat))
 })
@@ -265,7 +265,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
             
             #make coverage vector  from target
             if(is.null(weight.col)){
-				      target.rle=coverage(target)
+                      target.rle=coverage(target)
             }else{
               if(! weight.col %in% names(mcols(target)) ){
                   stop("provided column 'weight.col' does not exist in tartget\n")
@@ -296,7 +296,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
                    rpm=FALSE, unique=FALSE, extend=0, param=NULL){
             
             if(!file.exists(target)){
-			      	stop("Indicated 'target' file does not exist\n")
+                      stop("Indicated 'target' file does not exist\n")
             }
             
             fm = c('bam','bigWig')
@@ -351,29 +351,29 @@ setGeneric("binMatrix",
 #' @aliases binMatrix,ScoreMatrix-method
 #' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
-			function(x, bin.num=NULL, fun='mean'){
-		  
-				if(is.null(bin.num))
-					return(x)
-					
-				if(bin.num > ncol(x))
-					stop("number of given bins is bigger 
+            function(x, bin.num=NULL, fun='mean'){
+          
+                if(is.null(bin.num))
+                    return(x)
+                    
+                if(bin.num > ncol(x))
+                    stop("number of given bins is bigger 
                 than the number of matrix columns")
-		  
+          
         if(is.character(fun))
-				  fun = match.fun(fun)
+                  fun = match.fun(fun)
         
-				coord = binner(1, ncol(x), bin.num)
-				bmat = mapply(function(a,b)apply(x[,a:b],1,fun), coord[1,], coord[2,])
-										
-				return(new("ScoreMatrix", bmat))
-		 }
+                coord = binner(1, ncol(x), bin.num)
+                bmat = mapply(function(a,b)apply(x[,a:b],1,fun), coord[1,], coord[2,])
+                                        
+                return(new("ScoreMatrix", bmat))
+         }
 )
 
 # ---------------------------------------------------------------------------- #
 # show Methods
 #' @rdname show-methods
-#' 
+#' @return Shows the dimension of the ScoreMatrix
 setMethod("show", "ScoreMatrix",
           function(object){
             dims = dim(object)

@@ -21,11 +21,11 @@
 #' @return a GRanges object
 #'
 #'@examples
-#' # library(GenomicRanges)
-#' # g = GRanges(paste('chr',rep(1:2, each=3), sep=''), IRanges(rep(c(1,5,9), times=2), width=3))
-#' # gl = GRangesList(g1=g, g2=g[2:5], g3=g[3:4])
-#' # findFeatureComb(gl)
-#' # findFeatureComb(gl, use.names=TRUE)
+#' library(GenomicRanges)
+#' g = GRanges(paste('chr',rep(1:2, each=3), sep=''), IRanges(rep(c(1,5,9), times=2), width=3))
+#' gl = GRangesList(g1=g, g2=g[2:5], g3=g[3:4])
+#' findFeatureComb(gl)
+#' findFeatureComb(gl, use.names=TRUE)
 #'
 #' @docType methods
 #' @rdname findFeatureComb-methods

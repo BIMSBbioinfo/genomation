@@ -21,12 +21,12 @@
 #' @seealso \code{\link{getRandomEnrichment}}
 #' @export
 setClass("RandomEnrichment", 
-		representation(
-			orig.cnt = "numeric", 
-			rand.olap.dist = "numeric",
-			log2fc="numeric",
-			p.value="numeric",
-			rand.p.value="numeric" 
+        representation(
+            orig.cnt = "numeric", 
+            rand.olap.dist = "numeric",
+            log2fc="numeric",
+            p.value="numeric",
+            rand.p.value="numeric" 
 ))
 
 
@@ -72,9 +72,9 @@ setClass("ScoreMatrix",contains = "matrix")
 #' @seealso \code{\link{ScoreMatrixList}}
 #' @export
 setClass("ScoreMatrixList", 
-			contains = "list"
-#			validity=.valid.ScoreMatrixList
-			)
+            contains = "list"
+#            validity=.valid.ScoreMatrixList
+            )
 
 
 # ---------------------------------------------------------------------------- #

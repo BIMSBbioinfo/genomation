@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------------------- #
 # fast reading of big tables
-readTableFast<-function(filename,header=T,skip=0,sep=""){
+readTableFast<-function(filename,header=TRUE,skip=0,sep=""){
   
   tab5rows <- read.table(filename, header = header,skip=skip,
-                         sep=sep, nrows = 100, stringsAsFactors=F)
+                         sep=sep, nrows = 100, stringsAsFactors=FALSE)
   classes  <- sapply(tab5rows, class)
   df = read.table(filename, 
                   header = header,
@@ -110,7 +110,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
     
   # removes nonstandard chromosome names
   if(remove.unusual)
-    df = df[grep("_", as.character(df$chr),invert=T),]
+    df = df[grep("_", as.character(df$chr),invert=TRUE),]
   
   g = makeGRangesFromDataFrame(
                           df, 
@@ -273,7 +273,7 @@ readNarrowPeak<-function(file){
 #' @param clean If set to TRUE, flanks overlapping with other main features will be trimmed
 #' @param remove.unusual  remove chromsomes with unsual names random, Un and antyhing with "_" character
 #' @param feature.flank.name the names for feature and flank ranges, it should be a character vector of length 2. example: c("CpGi","shores")
-#' @usage  readFeatureFlank(location,remove.unusual=T,flank=2000,clean=T,feature.flank.name=NULL)
+#' @usage  readFeatureFlank(location,remove.unusual=TRUE,flank=2000,clean=TRUE,feature.flank.name=NULL)
 #' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object for the main feature.
 #'   NOTE:This can not return a GRangesList at the moment because flanking regions do not have to have the same column name as the feature.
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
@@ -286,9 +286,9 @@ readNarrowPeak<-function(file){
 #' @docType methods
 #' @rdname readFeatureFlank-methods
 setGeneric("readFeatureFlank", 
-           function(location,remove.unusual=T,
+           function(location,remove.unusual=TRUE,
                     flank=2000,
-                    clean=T,
+                    clean=TRUE,
                     feature.flank.name=NULL) 
              standardGeneric("readFeatureFlank") )
 
@@ -349,16 +349,16 @@ setMethod("readTranscriptFeatures",
             
             # readBed6
             message('Reading the table...\r')
-            bed=readTableFast(location,header=F,skip=skip)                    
+            bed=readTableFast(location,header=FALSE,skip=skip)                    
             if(remove.unusual)
-              bed=bed[grep("_", as.character(bed[,1]),invert=T),]
+              bed=bed[grep("_", as.character(bed[,1]),invert=TRUE),]
             
             # introns
             message('Calculating intron coordinates...\r')
-            introns	= convertBed2Introns(bed)
+            introns    = convertBed2Introns(bed)
             # exons
             message('Calculating exon coordinates...\r')
-            exons	= convertBed2Exons(bed)
+            exons    = convertBed2Exons(bed)
             
             # get the locations of TSSes
             message('Calculating TSS coordinates...\r')
@@ -452,7 +452,7 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL,
     values(gff) = cbind(values(gff), group)
   }
   
-  if(!is.null(filter)){		
+  if(!is.null(filter)){        
     if(filter %in% gff$feature){
       message(paste("Filtering", filter, "features...\n"))
       gff = gff[gff$feature == filter,]

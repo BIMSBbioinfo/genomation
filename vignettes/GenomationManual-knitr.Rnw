@@ -6,6 +6,7 @@
 \documentclass{article}
 \usepackage{geometry}
 \usepackage{wrapfig}
+\usepackage{color}
 
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
 
@@ -48,19 +49,21 @@ set.seed=10
 % ----------------------------------------------------------------- %
 \section{Introduction}
 
-\Rpackage{genomation}  is a  toolkit for annotation and in bulk visualization of
-genomic features (scored or unscored) over predefined regions.
- The \textbf{genomic features} which the package can handle can 
-be anything with a minimal information of chromosome, start and end. 
-The features could have any length and most of the time they are 
-\begin{wrapfigure}{r}{0.4\textwidth}
-\vspace{-15pt}
+\textcolor{white}{a}
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-20pt}
   \begin{center}
-    \includegraphics[width=0.4\textwidth]{Figures/genomationFlowChart1.pdf}
+    \includegraphics[width=0.5\textwidth]{Figures/genomationFlowChart1.pdf}
     \caption{Bulk visualization for different genomic feature datasets flowchart}
   \end{center}
-  \vspace{-15pt}
+  \vspace{-25pt}
 \end{wrapfigure}
+\Rpackage{genomation}  is a  toolkit for annotation 
+and in bulk visualization of genomic features (scored or unscored)
+over predefined regions.
+The \textbf{genomic features} which the package can handle can 
+be anything with a minimal information of chromosome, start and end. 
+The features could have any length and most of the time they are 
 associated with a score. Typical examples of such data sets include aligned  
 reads from high-throughput sequencing (HTS) experiments, percent methylation 
 values for CpGs (or other cytosines), locations of transcription factor binding, 
@@ -97,14 +100,14 @@ biocLite("genomation")
 The \Rpackage{genomationData} vignette contains a verbose description of 
 included files. 
 To list the available data, type:
-<<listGenomationData, eval=FALSE>>=
+<<listGenomationData, eval=TRUE>>=
 list.files(system.file('extdata',package='genomationData'))
 @
 
 To see the descriptions of the files:
-<<genomationDataInfo, eval=FALSE, tidy=TRUE>>=
+<<genomationDataInfo, eval=TRUE, tidy=TRUE>>=
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
-                                    package='genomationData'),header=T, sep='\t')
+                                    package='genomationData'),header=TRUE, sep='\t')
 head(sampleInfo)
 @
 
@@ -112,7 +115,7 @@ Basic annotation data and processed experimental data can be found within the
 \Rpackage{genomation} package.
 The data can be accesed throught the \Rcode{data} command or located 
 in the extdata folder. 
-<<genomationInfo, eval=FALSE, tidy=TRUE>>=
+<<genomationInfo, eval=TRUE, tidy=TRUE>>=
 library(genomation)
 data(cage)
 data(cpgi)
@@ -141,7 +144,7 @@ developed specifically for input of genomic data in tabular formats, and their
 conversion to a GRanges object. 
 By default, the function persumes that the file is a standard .bed file 
 containing columns chr, start, end.
-<<readGeneric1, eval=FALSE, tidy=TRUE>>=
+<<readGeneric1, eval=TRUE, tidy=TRUE>>=
 library(genomation)
 tab.file1=system.file("extdata/tab1.bed", package = "genomation")
 readGeneric(tab.file1)
@@ -150,7 +153,7 @@ readGeneric(tab.file1)
 If the file contains meta data columns (as in extended bed format), 
 it is possible to read all or some of the additional columns.
 To select columns which you want to read in, use the \Rcode{meta.col} argument 
-<<readGeneric2, eval=FALSE, tidy=TRUE>>=
+<<readGeneric2, eval=TRUE, tidy=TRUE>>=
 readGeneric(tab.file1, keep.all.metadata=TRUE)
 
 readGeneric(tab.file1, meta.col = list(CpGnum=4))
@@ -158,7 +161,7 @@ readGeneric(tab.file1, meta.col = list(CpGnum=4))
 
 If the file contains header, the function will automatically recognize the 
 columns using the header names.
-<<readGeneric3, eval=FALSE, tidy=TRUE>>=
+<<readGeneric3, eval=TRUE, tidy=TRUE>>=
 readGeneric(tab.file1, header=TRUE, keep.all.metadata=TRUE)
 @
 
@@ -166,7 +169,7 @@ readGeneric(tab.file1, header=TRUE, keep.all.metadata=TRUE)
 If the files have permutted columns, such that the first three do not represent
 chromosome, start and end, you can select an arbitrary set of columns using the
 chr, start and end arguments.
-<<readGeneric4, eval=FALSE, tidy=TRUE>>=
+<<readGeneric4, eval=TRUE, tidy=TRUE>>=
 tab.file2=system.file("extdata/tab2.bed", package = "genomation")
 readGeneric(tab.file2, chr=3, start=2, end=1)
 @
@@ -174,7 +177,7 @@ readGeneric(tab.file2, chr=3, start=2, end=1)
 \Rcode{readGeneric} function can easily be extended to read almost any kind of 
 biological data. As an example we have provided convenience functions to read 
 the Encode \Rcode{narrowPeak} and \Rcode{broadPeak} formats, and gtf formatted files.
-<<readGff1, eval=FALSE, tidy=TRUE>>=
+<<readGff1, eval=TRUE, tidy=TRUE>>=
 gff.file=system.file("extdata/chr21.refseq.hg19.gtf", package = "genomation")
 gff = gffToGRanges(gff.file)
 head(gff)
@@ -191,18 +194,13 @@ There are specific functions to read genomic annotation from flat bed files.
 \Rcode{readFeatureFlank} is a convenience function used to get the ranges flanking 
 the set of interest. As an example, it could be used to get the CpG island shores, 
 which have been shown to harbour condition specific differential methylation.
-<<readFeatureFlank, eval=FALSE, tidy=TRUE>>=
+<<readFeatureFlank, eval=TRUE, tidy=TRUE>>=
 # reading genes stored as a BED files
 cpgi.file = system.file("extdata/chr21.CpGi.hg19.bed", package = "genomation")
 cpgi.flanks = readFeatureFlank(cpgi.file)
 head(cpgi.flanks$flanks)
 @
 
-
-
-<<readGeneFeatures, eval=FALSE, tidy=TRUE>>=
-readGeneFeatures()
-@
 
 
 % ----------------------------------------------------------------- %
@@ -232,7 +230,7 @@ The target data can be in 3 forms: a GRanges, a RLeList or a path to an indexed
 
 As an example we will extract the density of cage tags around the promoters on 
 the human chromosome 21.
-<<ScoreMatrixExample, eval=FALSE, tidy=TRUE>>=
+<<ScoreMatrixExample, eval=TRUE, tidy=TRUE>>=
 data(cage)
 data(promoters)
 sm = ScoreMatrix(target=cage, windows=promoters)
@@ -270,7 +268,7 @@ the targets argument contains results from multiple experiments.
 It can be in one of the three formats: a list of RleLists, a list of GRanges 
 (or a GRangesList object), or a character vector designating a set of 
 .bam or .bigWig files.
-<<ScoreMatrixList, eval=FALSE, tidy=TRUE>>=
+<<ScoreMatrixList, eval=TRUE, tidy=TRUE>>=
 data(promoters)
 data(cpgi)
 data(cage)
@@ -369,13 +367,13 @@ exon, intron).
 Firstly, we will select the broadPeak files from the \Rpackage{genomatonData} package,
 and read in the peaks for the Ctcf transcription factor
 
-<<getFiles_annotation, eval=FALSE, tidy=TRUE>>=
+<<getFiles_annotation, eval=TRUE, tidy=TRUE>>=
 library(genomationData)
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), 
-                        header=T, sep='\t', stringsAsFactors=FALSE)
+                        header=TRUE, sep='\t', stringsAsFactors=FALSE)
 
-peak.files=list.files(genomationDataPath, full.names=T, pattern='broadPeak')
+peak.files=list.files(genomationDataPath, full.names=TRUE, pattern='broadPeak')
 names(peak.files) = sampleInfo$sampleName[match(basename(peak.files),sampleInfo$fileName)]
 
 ctcf.peaks = readBroadPeak(peak.files['Ctcf'])
@@ -386,7 +384,7 @@ Now we will annotate the human the Ctcf binding sites using the CpG islands.
 Because the CpG islands are restricted to chromosomes 21 and 22, we will set the
 \Rcode{intersect.chr = TRUE}, which will limit the analysis only to the 
 chromosomes that are present in both data sets.
-<<readAllPeaks_annotation, eval=FALSE, tidy=TRUE>>=
+<<readAllPeaks_annotation, eval=TRUE, tidy=TRUE>>=
 data(cpgi)
 peak.annot = annotateWithFeature(ctcf.peaks, cpgi, intersect.chr=TRUE)
 peak.annot
@@ -405,7 +403,7 @@ we will first read the transcript features from a file using the
 \Rcode{readTranscriptFeatures} function. \Rcode{readTranscriptFeatures} reads
 a bed12 formatted file and parses the coordinates into a \Rcode{GRangesList} containing
 four elements: exons, introns. promoters and transcription start sites (TSSes).
-<<readTranscriptFeatures, eval=FALSE, tidy=TRUE>>=
+<<readTranscriptFeatures, eval=TRUE, tidy=TRUE>>=
 bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 gene.parts = readTranscriptFeatures(bed.file)
 @
@@ -413,7 +411,7 @@ gene.parts = readTranscriptFeatures(bed.file)
 \Rcode{annotateWithGeneParts} will give us the  overlap statistics between our 
 CTCF peaks and gene structures. We will again use the \Rcode{intersect.chr=TRUE}
 to limit the analysis.
-<<annotateCtcf, eval=FALSE, tidy=TRUE>>=
+<<annotateCtcf, eval=TRUE, tidy=TRUE>>=
 ctcf.annot=annotateWithGeneParts(ctcf.peaks, gene.parts, intersect.chr=TRUE)
 ctcf.annot
 @
@@ -421,7 +419,7 @@ ctcf.annot
 \Rcode{annotateWithGeneParts} can also take a set of feature ranges as an argument.
 We will use the readGeneric function to load all of the broadPeak files in the
 \Rpackage{genomationData}, which we will then annotate.
-<<annotateTargetList, eval=FALSE, tidy=TRUE>>=
+<<annotateTargetList, eval=TRUE, tidy=TRUE>>=
 peaks = GRangesList(lapply(peak.files, readGeneric))
 names(peaks) = names(peak.files)
 annot.list = annotateWithGeneParts(peaks, gene.parts, intersect.chr=TRUE)
@@ -431,7 +429,7 @@ Gene annotation of multiple feature objects can be visualized in a form of a hea
 where rows represent samples, columns the gene structure, and the value is the 
 percentage of overlap given by priority. If \Rcode{cluster=TRUE}, then the function
 will use hierarhical clustering to order the heatmap.
-<<plotGeneAnnotation, eval=FALSE, tidy=TRUE, dpi=300, out.width='.25\\textwidth'>>=
+<<plotGeneAnnotation, eval=TRUE, tidy=TRUE, dpi=300, out.width='.25\\textwidth'>>=
 plotGeneAnnotation(annot.list)
 plotGeneAnnotation(annot.list, cluster=TRUE)
 @
@@ -455,16 +453,16 @@ We will visualize the binding profiles of 6 transcription factors around the
 Ctcf binding sites. 
 
 In the fist step we will select the *.bam files containing mapped reads.
-<<selectBamChipseq, eval=FALSE, tidy=TRUE>>=
+<<selectBamChipseq, eval=TRUE, tidy=TRUE>>=
 genomationDataPath = system.file('extdata',package='genomationData')
-bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+bam.files = list.files(genomationDataPath, full.names=TRUE, pattern='bam$')
 bam.files = bam.files[!grepl('Cage', bam.files)]
 @
 
 Firstly, we will read in the Ctcf peaks, filter regions from human chromosome 21,
 and order them by their signal values. In the end we will resize all ranges to 
 have a uniform width of 500 bases, fixed on the center of the peak.
-<<readCtcfPeaks, eval=FALSE, tidy=TRUE>>=
+<<readCtcfPeaks, eval=TRUE, tidy=TRUE>>=
 ctcf.peaks = readBroadPeak(file.path(genomationDataPath, 
                                      'wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz'))
 ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
@@ -486,7 +484,7 @@ we can plot the underlying signal side by side.
 <<ctcfScoreMatrixList, eval=FALSE, tidy=TRUE, fig.width=5, fig.height=3.5, dpi=300>>=
 sml = ScoreMatrixList(bam.files, ctcf.peaks, bin.num=50, type='bam')
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
-                                    package='genomationData'),header=T, sep='\t')
+                                    package='genomationData'),header=TRUE, sep='\t')
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 multiHeatMatrix(sml, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
@@ -522,13 +520,13 @@ in the narrowPeak. To read the files, we will use the \Rcode{readGeneric}
 function. It enables us to select from the files only columns of interest. 
 As the last step, we will restrict ourselves to peaks that are located on 
 chromosome 21 and have width 100 and 1000 bp
-<<readAllPeaks, eval=FALSE, tidy=TRUE>>=
+<<readAllPeaks, eval=TRUE, tidy=TRUE>>=
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), 
-                        header=T, sep='\t', stringsAsFactors=FALSE)
+                        header=TRUE, sep='\t', stringsAsFactors=FALSE)
 
 
-peak.files = list.files(genomationDataPath, full.names=T, pattern='Peak.gz$')
+peak.files = list.files(genomationDataPath, full.names=TRUE, pattern='Peak.gz$')
 peaks = list()
 for(i in 1:length(peak.files)){
     file = peak.files[i]
@@ -547,7 +545,7 @@ By default, the returned ranges will have a numeric \Rcode{class}
 meta data column, which designates the correponding combination. 
 If you are interested in the names of the TF which make 
 the combinations, put the \Rcode{use.names=TRUE}.
-<<findFeatureComb, eval=FALSE, tidy=TRUE>>=
+<<findFeatureComb, eval=TRUE, tidy=TRUE>>=
 tf.comb = findFeatureComb(peaks, width=1000)
 @
 
@@ -556,7 +554,7 @@ To visualize the results, we will plot the enricment of resulting regions.
 Before doing that we will order the regions by their \Rcode{class} argument.
 <<visualizeFeatureComb, eval=FALSE, tidy=TRUE, fig.width=5, fig.height=3, dpi=300>>=
 tf.comb = tf.comb[order(tf.comb$class)]
-bam.files = list.files(genomationDataPath, full.names=T, pattern='bam$')
+bam.files = list.files(genomationDataPath, full.names=TRUE, pattern='bam$')
 bam.files = bam.files[!grepl('Cage', bam.files)]
 sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20, type='bam')
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]

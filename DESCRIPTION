@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: : R package for annotation and visualization of genomic data
-Version: 0.99.3
+Version: 0.99.6
 Date: 2011-11-30
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
@@ -9,7 +9,7 @@ Description: A package for annotation of genomic features. Users can visualize a
 License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
-biocViews: Annotation, HighThroughputSequencing, Visualization
+biocViews: Annotation, Sequencing, Visualization, CpGIsland
 Depends:
     R (>= 3.0.0),grid
 Imports:
