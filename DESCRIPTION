@@ -1,11 +1,15 @@
 Package: genomation
 Type: Package
-Title: : R package for annotation and visualization of genomic data
-Version: 0.99.6
-Date: 2011-11-30
+Title: Summary, annotation and visualization of genomic data
+Version: 0.99.7
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
-Description: A package for annotation of genomic features. Users can visualize and quantify genomic features over pre-defined functional regions, such as promoters, exons, introns, etc. The genomic features represent regions with a defined chromosome position, which may be associated with a score, such as aligned reads from HT-seq experiments, TF binding sites, methylation scores, etc. The package can use any tabular genomic feature data as long as it has minimal information on the locations of genomic features.
+Description: A package for summary and annotation of genomic intervals. Users can visualize and 
+	quantify genomic intervals over pre-defined functional regions, such as promoters, exons, 
+	introns, etc. The genomic intervals represent regions with a defined chromosome position,
+	which may be associated with a score, such as aligned reads from HT-seq experiments, TF binding sites, 
+	methylation scores, etc. The package can use any tabular genomic feature data as long as it has minimal 
+	information on the locations of genomic intervals. In addition, It can use BAM or BigWig files as input.
 License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
