@@ -24,7 +24,7 @@
 
 <<setup2, include=FALSE, cache=FALSE>>=
 library(knitr)
-options(replace.assign=TRUE,width=50)
+options(formatR.arrow=TRUE,width=50)
 opts_chunk$set(root.dir=getwd(),
                fig.path='Figures', 
                cache.path='cache/graphics-', 
@@ -49,14 +49,14 @@ set.seed=10
 % ----------------------------------------------------------------- %
 \section{Introduction}
 
-\textcolor{white}{a}
-\begin{wrapfigure}{r}{0.5\textwidth}
+\textcolor{white}{write something here}
+\begin{wrapfigure}{r}{0.4\textwidth}
 \vspace{-20pt}
   \begin{center}
-    \includegraphics[width=0.5\textwidth]{Figures/genomationFlowChart1.pdf}
+    \includegraphics[width=0.4\textwidth]{Figures/genomationFlowChart1.pdf}
     \caption{Bulk visualization for different genomic feature datasets flowchart}
   \end{center}
-  \vspace{-25pt}
+  \vspace{-30pt}
 \end{wrapfigure}
 \Rpackage{genomation}  is a  toolkit for annotation 
 and in bulk visualization of genomic features (scored or unscored)
@@ -108,7 +108,7 @@ To see the descriptions of the files:
 <<genomationDataInfo, eval=TRUE, tidy=TRUE>>=
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
                                     package='genomationData'),header=TRUE, sep='\t')
-head(sampleInfo)
+sampleInfo[1:5,1:5]
 @
 
 Basic annotation data and processed experimental data can be found within the 
@@ -301,8 +301,8 @@ sm = ScoreMatrix(target=cage, windows=promoters)
 heatMatrix(sm, xcoords=c(-1000, 1000))
 plotMeta(sm, xcoords=c(-1000, 1000))
 @
-\includegraphics[width=0.4\textwidth]{FiguresheatMatrix11.pdf}
-\includegraphics[width=0.4\textwidth]{FiguresheatMatrix12.pdf}
+\includegraphics[width=0.4\textwidth]{Figures/FiguresheatMatrix11.pdf}
+\includegraphics[width=0.4\textwidth]{Figures/FiguresheatMatrix12.pdf}
 
 The \Rcode{heatMatrix} function can also take a list of numeric vectors 
 designating row names, or a factor variable that represent our 
@@ -317,7 +317,7 @@ cpg.ind = which(countOverlaps(promoters, cpgi)>0)
 nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
 heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 @
-\includegraphics[width=0.5\textwidth]{FiguresheatMatrix2.pdf}
+\includegraphics[width=0.5\textwidth]{Figures/FiguresheatMatrix2.pdf}
 
 Because the enrichment in windows can have a high dynamic range, it is sometimes
 convenient to scale the matrix before plotting.
@@ -325,7 +325,7 @@ convenient to scale the matrix before plotting.
 sm.scaled = scaleScoreMatrix(sm)
 heatMatrix(sm.scaled, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 @
-\includegraphics[width=0.5\textwidth]{FiguresheatMatrixScales.pdf}
+\includegraphics[width=0.5\textwidth]{Figures/FiguresheatMatrixScales.pdf}
 
 
 Several experiments can be plotted in a side by side fashion using a combination
@@ -336,13 +336,13 @@ targets = list(cage=cage, cpgi=cpgi)
 sml = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50, strand.aware=TRUE)
 multiHeatMatrix(sml, xcoords=c(-1000, 1000))
 @
-\includegraphics[width=0.5\textwidth]{FiguresmultiHeatMatrix1.pdf}
+\includegraphics[width=0.5\textwidth]{Figures/FiguresmultiHeatMatrix1.pdf}
 
 We can put the kmeans=TRUE to see whether there are any patterns present in the data.
 <<multiHeatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4.5, fig.height=3, dpi=300>>=
 multiHeatMatrix(sml, xcoords=c(-1000, 1000), kmeans=TRUE, k=2)
 @
-\includegraphics[width=0.5\textwidth]{FiguresmultiHeatMatrix2.pdf}
+\includegraphics[width=0.5\textwidth]{Figures/FiguresmultiHeatMatrix2.pdf}
 
 More advance usage of the ScoreMatrix family of functions and their
 visualtization can be found in the specific use-cases at the end of the vignette.
@@ -429,12 +429,12 @@ Gene annotation of multiple feature objects can be visualized in a form of a hea
 where rows represent samples, columns the gene structure, and the value is the 
 percentage of overlap given by priority. If \Rcode{cluster=TRUE}, then the function
 will use hierarhical clustering to order the heatmap.
-<<plotGeneAnnotation, eval=TRUE, tidy=TRUE, dpi=300, out.width='.25\\textwidth'>>=
+<<plotGeneAnnotation, eval=FALSE, tidy=TRUE, dpi=300, out.width='.25\\textwidth'>>=
 plotGeneAnnotation(annot.list)
 plotGeneAnnotation(annot.list, cluster=TRUE)
 @
-\includegraphics[width=0.3\textwidth]{FiguresplotGeneAnnotation1.pdf}
-\includegraphics[width=0.3\textwidth]{FiguresplotGeneAnnotation2.pdf}
+\includegraphics[width=0.3\textwidth]{Figures/FiguresplotGeneAnnotation1.pdf}
+\includegraphics[width=0.3\textwidth]{Figures/FiguresplotGeneAnnotation2.pdf}
 
 
 
@@ -488,7 +488,7 @@ sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 multiHeatMatrix(sml, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
-\includegraphics[width=0.65\textwidth]{FiguresctcfScoreMatrixList.pdf}
+\includegraphics[width=0.65\textwidth]{Figures/FiguresctcfScoreMatrixList.pdf}
 
 \caption{Heatmap profile of unscaled coverage shows a slight colocalization of
 Ctcf, Rad21 and Znf143. option.\label{fig:ctcfScoreMatrixList}}
@@ -503,7 +503,7 @@ to independently scale the rows of each element in the ScoreMatrixList.
 sml.scaled = scaleScoreMatrixList(sml)
 multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
-\includegraphics[width=0.65\textwidth]{FiguresplotScaledProfile.pdf}
+\includegraphics[width=0.65\textwidth]{Figures/FiguresplotScaledProfile.pdf}
 
 \caption{Heatmap profile of scaled coverage shows much stronger colocalization 
 of the transcription factors; nevertheless, it is evident that some of the CTCF 
@@ -561,7 +561,7 @@ names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 sml.scaled = scaleScoreMatrixList(sml)
 multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 @
-\includegraphics[width=0.65\textwidth]{FiguresvisualizeFeatureComb.pdf}
+\includegraphics[width=0.65\textwidth]{Figures/FiguresvisualizeFeatureComb.pdf}
 
 
 The plot shows perfectly how misleading the peak calling process can be. 
