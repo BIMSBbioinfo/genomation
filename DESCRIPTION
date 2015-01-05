@@ -14,6 +14,7 @@ License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
 biocViews: Annotation, Sequencing, Visualization, CpGIsland
+Encoding: latin1
 Depends:
     R (>= 3.0.0),grid
 Imports:
@@ -30,7 +31,6 @@ Imports:
 	gridBase,
 	impute
 Suggests:
-	testthat,
 	knitr,
 	RColorBrewer,
 	genomationData

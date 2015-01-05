@@ -1,0 +1,10 @@
+citEntry(
+    entry = "Article",
+    title = "genomation: a toolkit to summarize, annotate and visualize genomic intervals",
+    author = "Altuna Akalin and Vedran Franke and Kristian Vlahovicek and Christopher Mason and Dirk Schubeler",
+    year = 2014,
+    journal = "Bioinformatics",
+    doi = "10.1093/bioinformatics/btu775",
+    url = "http://bioinformatics.oxfordjournals.org/content/early/2014/12/04/bioinformatics.btu775.long",
+    textVersion = "Akalin A, Franke V, Vlahovicek K, Mason CE, Schubeler D, (2014) genomation: a toolkit to summarize, annotate and visualize genomic intervals. Bioinformatics. doi: 10.1093/bioinformatics/btu775"
+);
