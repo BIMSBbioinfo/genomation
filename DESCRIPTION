@@ -37,7 +37,8 @@ Suggests:
 	genomationData,
   BiocGenerics,
   BiocStyles,
-  rmarkdown
+  rmarkdown,
+  knitrBootstrap
 Collate:
     'documentData.R'
     'genomation-classes.R'

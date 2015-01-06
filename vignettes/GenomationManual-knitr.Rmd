@@ -1,36 +1,28 @@
----
-title: genomation <br/> a toolkit for annotation and visualization of genomic data
-output:
-  BiocStyle::html_document:
-    toc: true
----
 <!--
-%% \VignetteEngine{knitr::rmarkdown}
+%% \VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{genomation}
 -->
-```{r style, echo=FALSE, results='asis'}
-BiocStyle::markdown()
-```
-
 
 ```{r setup2, include=FALSE, cache=FALSE, eval=TRUE}
 library(knitr)
 opts_chunk$set(root.dir=getwd(),
                fig.path='Figures/', 
-               cache.path='cache/graphics-', 
-               fig.align='center', 
                dev='png',
                fig.show='hold', 
-               cache=TRUE,
-               par=FALSE)
-require(genomation)
+               cache=TRUE)
+library(genomation)
 library(genomationData)
 library(GenomicRanges)
 set.seed=10
 ```
-##Introduction
+
+# `genomation`: a toolkit for annotation and visualization of genomic data
+
+## Introduction
+-----
 
 <img style="float: right;padding-left:9px" src="Figures/genomationFlowChart1.png", width=350>
-genomation is a  toolkit for annotation 
+`genomation` is a  toolkit for annotation 
 and in bulk visualization of genomic features (scored or unscored)
 over predefined regions.
 The genomic features which the package can handle can 
@@ -49,29 +41,30 @@ biological interpretation of the data.
 The pipeline for computational knowledge extraction consists of three steps: 
 data filtering, integration of data from multiple sources or generation of 
 predictive models and biological interpretation of produced models, which leads 
-to novel hypotheses that can be tested in the wetlab.genomation aims
+to novel hypotheses that can be tested in the wetlab.`genomation` aims
 to facilitate the integration of multiple sources of genomic features with 
 genomic annotation or already published experimental results.
 
-
-##Access the data
+## Access the data
+-----
 
 High-throughput data which will be used to show the functonality of the 
-genomation are located in two places. The annotation and cap analysis
-of gene expression (CAGE) data comes prepared with the genomation package, while
-the raw HTS data can be found in the sister package genomationData.
-To install the genomation and the complementary data package the from
-the github repository, copy and paste the following lines into your R interpreter:
-```{r genomationDataLoad, eval=FALSE}
-library(devtools)
-biocLite("genomationData")
-biocLite("genomation")
+`genomation` are located in two places. The annotation and cap analysis
+of gene expression (CAGE) data comes prepared with the `genomation` package, while
+the raw HTS data can be found in the sister package `genomationData`.
+To install the `genomation` and the complementary data package the from
+the Bioconductor repository, copy and paste the following lines into your R interpreter:
+
+```{r eval=FALSE}
+biocLite('genomationData')
+biocLite('genomation')
 ```
+
 
 The r Biocpkg("genomationData") vignette contains a verbose description of 
 included files. 
 To list the available data, type:
-```{r listGenomationData, eval=TRUE}
+```{r listgenomationData, eval=TRUE}
 list.files(system.file('extdata',package='genomationData'))
 ```
 
@@ -83,32 +76,33 @@ sampleInfo[1:5,1:5]
 ```
 
 Basic annotation data and processed experimental data can be found within the 
-genomation package.
+`genomation` package.
 The data can be accesed throught the data command or located 
 in the extdata folder. 
-```{r genomationInfo, eval=TRUE, tidy=TRUE}
+```{r genomationInfo, eval=FALSE, tidy=TRUE}
 library(genomation)
 data(cage)
 data(cpgi)
 
 list.files(system.file('extdata', package='genomation'))
 ```
+<div>
+</div>
 
-
-##Data input
-
+## Data input
+-----
 One of larger hindrances in computational genomics stems from the myriad of 
 formats that are used to store the data. Although some formats have been 
 selected as de facto standards for specific kind of biological data (e.g. BAM, VCF), 
 almost all publications come with supplementary tables that do not have the 
 same structure, but hold similar information. The tables usually have a tabular 
 format, contain the locationof elements in genomic coordinates and various 
-metadata colums. genomation contais functions to read genomic 
+metadata colums. `genomation` contais functions to read genomic 
 features and genomic annotation provided they are in a tabular format. 
 These functions will read the data from flat files into GRanges or GRangesList 
 objects.
 
-readGeneric is the workhorse of the genomation package. It is a function
+readGeneric is the workhorse of the `genomation` package. It is a function
 developed specifically for input of genomic data in tabular formats, and their 
 conversion to a GRanges object. 
 By default, the function persumes that the file is a standard .bed file 
@@ -169,31 +163,30 @@ cpgi.flanks = readFeatureFlank(cpgi.file)
 head(cpgi.flanks$flanks)
 ```
 
-
-##Extraction and visualization of genomic data 
-
-
+<div>
+</div>
+## Extraction and visualization of genomic data 
+-----
 A standard step in a computational genomics experiment is visualization of 
 average enrichment over a certain predefined set of ranges, such as mean coverage
 of a certain histone modification around a transcription factor binding site,
 or visualization of histone positions around transcription start sites.
 
+### Extraction of data over genomic winows
 
-###Extration of data over genomic winows
-
-\Rcode{ScoreMatrix} and \Rcode{ScoreMatrixBin} are functions used to extract 
+*ScoreMatrix* and *ScoreMatrixBin* are functions used to extract 
 data over predefined windows.
 
-\Rcode{ScoreMatrix} is used when all of the windows
+*ScoreMatrix* is used when all of the windows
 have the same width, such as a designated area around the transcription start
-site, while the \Rcode{ScoreMatrixBin} is designed for use with windows of 
+site, while the *ScoreMatrixBin* is designed for use with windows of 
 unequal width (e.g. enrichment of methylation over exons).
 
-Both functions have 2 main arguments: \Rcode{target} and 
-\Rcode{windows}. \Rcode{target} is the data that we want to extract, while the 
-\Rcode{windows} represents the regions over which we want to see the enrichment.
+Both functions have 2 main arguments: *target* and 
+*windows*. *target* is the data that we want to extract, while the 
+*windows* represents the regions over which we want to see the enrichment.
 The target data can be in 3 forms: a GRanges, a RLeList or a path to an indexed 
-.bam file. The \Rcode{windows} must be GRanges object.
+.bam file. The *windows* must be GRanges object.
 
 As an example we will extract the density of cage tags around the promoters on 
 the human chromosome 21.
@@ -204,32 +197,31 @@ sm = ScoreMatrix(target=cage, windows=promoters)
 sm
 ```
   
-\Rcode{ScoreMatrixBin} function has an additional \Rcode{bin.num} argument which
+*ScoreMatrixBin* function has an additional *bin.num* argument which
 specifies the number of bins that will represent each windot window  
 (ie. it converts windows of unequal width into ones of equal width.). 
-By default, the binning function is set
-to \Rcode{mean}.
+By default, the binning function is set to *mean*.
 ```{r ScoreMatrixBinExample, eval=FALSE, tidy=TRUE}
   data(cage)
-gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
+gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
 exons = gffToGRanges(gff.file, filter='exon')
 sm = ScoreMatrixBin(target=cage, windows=exons, bin.num=50)
 sm
 ```
   
-Running \Rcode{ScoreMatrixBin} with \Rcode{bin.num=50} on 
+Running *ScoreMatrixBin* with *bin.num=50* on 
 a set of exons warned us that some of the exons are shorter than 50 bp and
 were thus removed from the set before binning. 
-The rownames of the resulting \Rcode{ScoreMatrix} object correspond
+The rownames of the resulting *ScoreMatrix* object correspond
 to the ranges that were used to construct the windows (e.g. row name 10 means 
 that the 10th element in the target GRanges object was used to extract the data). 
 If a certain rowname is not present in the ScoreMatrix object, that means that 
 the corresponding range was filtered out (e.g. the range could have been on a 
 chromosome that was not present in the target).
 
-To simultaneously work on multiple files you can use the \Rcode{ScoreMatrixList}
-function. The function also has 2 obligatory arguments \Rcode{targets} and 
-\Rcode{windows}. While the \Rcode{windows} is the same as in \Rcode{ScoreMatrix}, 
+To simultaneously work on multiple files you can use the *ScoreMatrixList*
+function. The function also has 2 obligatory arguments *targets* and 
+*windows*. While the *windows* is the same as in *ScoreMatrix*, 
 the targets argument contains results from multiple experiments. 
 It can be in one of the three formats: a list of RleLists, a list of GRanges 
 (or a GRangesList object), or a character vector designating a set of 
@@ -245,17 +237,18 @@ sm = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50)
 sm
 ```
   
-  If all of the windows have the same width \Rcode{ScoreMatrixList} will use the
-\Rcode{ScoreMatrix} function. That can be overridden by explicitly specifying the 
-\Rcode{bin.num} argument, as we did in the example.
+If all of the windows have the same width *ScoreMatrixList* will use the
+*ScoreMatrix* function. That can be overridden by explicitly specifying the 
+*bin.num* argument, as we did in the example.
 
-
-###Visualization of multiple genomic experiments
+<div>
+</div>
+### Visualization of multiple genomic experiments
 
 There are 2 basic modes of visualization of enrichment over windows: either 
-as a heatmap, or as a histogram. \Rcode{heatMatrix]}, \Rcode{plotMeta} and 
-\Rcode{multiHeatMatrix} are functions for visualization of \Rcode{ScoreMatrix} 
-and \Rcode{ScoreMatrixList} objects.
+as a heatmap, or as a histogram. *heatMatrix*, *plotMeta* and 
+*multiHeatMatrix* are functions for visualization of *ScoreMatrix* 
+and *ScoreMatrixList* objects.
 
 We will plot the distribution of CAGE tags around promoters on human chr21.
 
@@ -272,7 +265,7 @@ plotMeta(sm, xcoords=c(-1000, 1000))
   <img src="Figures/heatMatrix1-2.png", width=400>
 </div>
 
-The \Rcode{heatMatrix} function can also take a list of numeric vectors 
+The *heatMatrix* function can also take a list of numeric vectors 
 designating row names, or a factor variable that represent our 
 annotation over the windows.
 ```{r heatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4, fig.height=3}
@@ -290,7 +283,7 @@ heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind
 Because the enrichment in windows can have a high dynamic range, it is sometimes
 convenient to scale the matrix before plotting.
 ```{r heatMatrixScales, eval=FALSE, tidy=TRUE, echo=TRUE, fig.width=4, fig.height=3, dpi=300}
-  sm.scaled = scaleScoreMatrix(sm)
+sm.scaled = scaleScoreMatrix(sm)
 heatMatrix(sm.scaled, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 ```
 <img align="midle" src="Figures/heatMatrixScales-1.png", width=350>
@@ -299,7 +292,7 @@ heatMatrix(sm.scaled, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=no
 Several experiments can be plotted in a side by side fashion using a combination
 of ScoreMatrixList and multiHeatMatrix.
 ```{r multiHeatMatrix1, eval=FALSE, tidy=TRUE, fig.width=4.5, fig.height=3, dpi=300}
-  cage$tpm = NULL
+cage$tpm = NULL
 targets = list(cage=cage, cpgi=cpgi)
 sml = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50, strand.aware=TRUE)
 multiHeatMatrix(sml, xcoords=c(-1000, 1000))
@@ -308,31 +301,29 @@ multiHeatMatrix(sml, xcoords=c(-1000, 1000))
 
 We can put the kmeans=TRUE to see whether there are any patterns present in the data.
 ```{r multiHeatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4.5, fig.height=3, dpi=300}
-  multiHeatMatrix(sml, xcoords=c(-1000, 1000), kmeans=TRUE, k=2)
+multiHeatMatrix(sml, xcoords=c(-1000, 1000), kmeans=TRUE, k=2)
 ```
 <img align="midle" src="Figures/multiHeatMatrix2-1.png", width=350>
 
 More advance usage of the ScoreMatrix family of functions and their
 visualtization can be found in the specific use-cases at the end of the vignette.
 
-
-##Annotation of genomic features
-
+## Annotation of genomic features
+-----
 Searching for correlation between sets of genomic features is a standard exploratory
 method in computational genomics. It is usually done by looking at the overlap between 
 2 or more sets of ranges and calculating various overlap statistics. 
-\Rpackage{genomation} contains two sets of functions for annotation of ranges:
+`genomation` contains two sets of functions for annotation of ranges:
 the first one is used to facilitate the general annotation of any sets of ranges,
 while the second one is used to annotate a given feature with gene structures (promoter, 
 exon, intron).
 
+### Annotation by generic features
 
-###Annotation by generic features
-
-Firstly, we will select the broadPeak files from the \Rpackage{genomatonData} package,
+Firstly, we will select the broadPeak files from the **genomatonData** package,
 and read in the peaks for the Ctcf transcription factor
 
-```{r etFiles_annotation, eval=TRUE, tidy=TRUE}
+```{r getFiles_annotation, eval=TRUE, tidy=TRUE}
 library(genomationData)
 genomationDataPath = system.file('extdata',package='genomationData')
 sampleInfo = read.table(file.path(genomationDataPath, 'SamplesInfo.txt'), 
@@ -346,7 +337,7 @@ ctcf.peaks = readBroadPeak(peak.files['Ctcf'])
 
 Now we will annotate the human the Ctcf binding sites using the CpG islands.
 Because the CpG islands are restricted to chromosomes 21 and 22, we will set the
-\Rcode{intersect.chr = TRUE}, which will limit the analysis only to the 
+*intersect.chr = TRUE*, which will limit the analysis only to the 
 chromosomes that are present in both data sets.
 ```{r readAllPeaks_annotation, eval=TRUE, tidy=TRUE}
 data(cpgi)
@@ -359,30 +350,29 @@ The total number of elements in the target dataset, the percentage of target
 dataset that overlaps with the feature dataset. And the percentage of the feature
 elements that overlap the target.
 
-
-###Annotation of genomic features by gene structures
+### Annotation of genomic features by gene structures
 
 To find the distribution of our designated features around gene structures, 
 we will first read the transcript features from a file using the 
-\Rcode{readTranscriptFeatures} function. \Rcode{readTranscriptFeatures} reads
-a bed12 formatted file and parses the coordinates into a \Rcode{GRangesList} containing
+*readTranscriptFeatures* function. *readTranscriptFeatures* reads
+a bed12 formatted file and parses the coordinates into a *GRangesList* containing
 four elements: exons, introns. promoters and transcription start sites (TSSes).
 ```{r readTranscriptFeatures, eval=TRUE, tidy=TRUE}
 bed.file=system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 gene.parts = readTranscriptFeatures(bed.file)
 ```
 
-\Rcode{annotateWithGeneParts} will give us the  overlap statistics between our 
-CTCF peaks and gene structures. We will again use the \Rcode{intersect.chr=TRUE}
+*annotateWithGeneParts* will give us the  overlap statistics between our 
+CTCF peaks and gene structures. We will again use the *intersect.chr=TRUE*
 to limit the analysis.
 ```{r annotateCtcf, eval=TRUE, tidy=TRUE}
 ctcf.annot=annotateWithGeneParts(ctcf.peaks, gene.parts, intersect.chr=TRUE)
 ctcf.annot
 ```
   
-\Rcode{annotateWithGeneParts} can also take a set of feature ranges as an argument.
+annotateWithGeneParts can also take a set of feature ranges as an argument.
 We will use the readGeneric function to load all of the broadPeak files in the
-\Rpackage{genomationData}, which we will then annotate.
+`genomationData`, which we will then annotate.
 ```{r annotateTargetList, eval=TRUE, tidy=TRUE}
 peaks = GRangesList(lapply(peak.files, readGeneric))
 names(peaks) = names(peak.files)
@@ -391,21 +381,21 @@ annot.list = annotateWithGeneParts(peaks, gene.parts, intersect.chr=TRUE)
   
 Gene annotation of multiple feature objects can be visualized in a form of a heatmap, 
 where rows represent samples, columns the gene structure, and the value is the 
-percentage of overlap given by priority. If \Rcode{cluster=TRUE}, then the function
+percentage of overlap given by priority. If *cluster=TRUE*, then the function
 will use hierarhical clustering to order the heatmap.
-```{r plotGeneAnnotation, eval=TRUE, tidy=TRUE, dpi=300, out.width='.25\\textwidth', include=FALSE}
+```{r plotGeneAnnotation, eval=FALSE, tidy=TRUE, dpi=300}
 plotGeneAnnotation(annot.list)
 plotGeneAnnotation(annot.list, cluster=TRUE)
 ```
 <img align="midle" src="Figures/plotGeneAnnotation-1.png", width=350>
 <img align="midle" src="Figures/plotGeneAnnotation-2.png", width=350>
 
-##Use cases for genomation package
-The genomation package provides generalizable functions for genomic data analysis
+## Use cases for `genomation` package
+-----
+The `genomation` package provides generalizable functions for genomic data analysis
 and visualization. Below we will demonstrate the functionality on specific use cases
 
-
-###Visualization of ChiP sequencing data
+### Visualization of ChiP sequencing data
 
 We will visualize the binding profiles of 6 transcription factors around the 
 Ctcf binding sites. 
@@ -429,15 +419,15 @@ ctcf.peaks = resize(ctcf.peaks, width=1000, fix='center')
 ```
   
 In order to extract the coverage values of all transcription factors around 
-chipseq peaks, we will use the \Rcode{ScoreMatrixList} function. 
-\Rcode{ScoreMatrixList} assign names to each element of the list based on the 
+chipseq peaks, we will use the *ScoreMatrixList* function. 
+*ScoreMatrixList* assign names to each element of the list based on the 
 names of the bam files. We will use the names of the files to find the 
 corresponding names of each sample in the SamplesInfo.txt.
-Using the \Rcode{heatmapProfile} on our \Rcode{ScoreMatrixList}, 
+Using the *heatmapProfile* on our *ScoreMatrixList*, 
 we can plot the underlying signal side by side.
 
 
-```{r ctcfScoreMatrixList, eval=TRUE, tidy=TRUE, fig.width=5, fig.height=3.5, dpi=300, include=FALSE}
+```{r ctcfScoreMatrixList, eval=FALSE, tidy=TRUE, fig.width=5, fig.height=3.5, dpi=300}
 sml = ScoreMatrixList(bam.files, ctcf.peaks, bin.num=50, type='bam')
 sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
                                     package='genomationData'),header=TRUE, sep='\t')
@@ -445,30 +435,28 @@ names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 multiHeatMatrix(sml, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
 <img align="midle" src="Figures/ctcfScoreMatrixList-1.png", width=350>
-<caption>Heatmap profile of unscaled coverage shows a slight colocalization of
-         Ctcf, Rad21 and Znf143. </caption>
+<figcaption>Heatmap profile of unscaled coverage shows a slight colocalization of
+         Ctcf, Rad21 and Znf143. </figcaption>
 
-Because of the large range of signal values in chipseq peaks, the \Rcode{heatmapProfile} 
+Because of the large range of signal values in chipseq peaks, the *heatmapProfile* 
 will not show the true extent of colocalization. To get around this, it is advisable
 to independently scale the rows of each element in the ScoreMatrixList.
 
-```{r plotScaledProfile, eval=TRUE, tidy=TRUE, fig.width=5, fig.height=3.5, dpi=300, include=FALSE}
+```{r plotScaledProfile, eval=FALSE, tidy=TRUE, fig.width=5, fig.height=3.5, dpi=300}
   sml.scaled = scaleScoreMatrixList(sml)
 multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
 <img align="midle" src="Figures/plotScaledProfile-1.png", width=350>
-<caption>Heatmap profile of scaled coverage shows much stronger colocalization 
+<figcaption>Heatmap profile of scaled coverage shows much stronger colocalization 
          of the transcription factors; nevertheless, it is evident that some of the CTCF 
-         peaks have a very weak enrichment.</caption>
+         peaks have a very weak enrichment.</figcaption>
 
-
-
-##Combinatorial binding of transcription factors
+### Combinatorial binding of transcription factors
 
 In the first step we will read all peak files into a GRanges list. We will use 
-the SamplesInfo file from the \Rpackage{genomationData} to get he names of the 
+the SamplesInfo file from the `genomationData` to get he names of the 
 samples. Four of the peak files are in the Encode broadPeak format, while one is
-in the narrowPeak. To read the files, we will use the \Rcode{readGeneric} 
+in the narrowPeak. To read the files, we will use the readGeneric 
 function. It enables us to select from the files only columns of interest. 
 As the last step, we will restrict ourselves to peaks that are located on 
 chromosome 21 and have width 100 and 1000 bp
@@ -490,31 +478,29 @@ peaks = GRangesList(peaks)
 peaks = peaks[seqnames(peaks) == 'chr21' & width(peaks) < 1000  & width(peaks) > 100]
 ```
 
-To find the combination of binding sites we will use the \Rcode{findFeatureComb}
+To find the combination of binding sites we will use the *findFeatureComb*
 function. It takes a granges list object, finds the union of the 
 ranges and designates each range by the combination of overlaps from the original set.
-By default, the returned ranges will have a numeric \Rcode{class}
+By default, the returned ranges will have a numeric *class*
 meta data column, which designates the correponding combination. 
 If you are interested in the names of the TF which make 
-the combinations, put the \Rcode{use.names=TRUE}.
+the combinations, put the *use.names=TRUE*.
 ```{r findFeatureComb, eval=TRUE, tidy=TRUE}
   tf.comb = findFeatureComb(peaks, width=1000)
 ```
   
 To visualize the results, we will plot the enricment of resulting regions. 
-Before doing that we will order the regions by their \Rcode{class} argument.
-```{r visualizeFeatureComb, eval=TRUE, tidy=TRUE, fig.width=5, fig.height=3, dpi=300, include=FALSE}
+Before doing that we will order the regions by their *class* argument.
+```{r visualizeFeatureComb, eval=FALSE, tidy=TRUE, fig.width=5, fig.height=3, dpi=300}
   tf.comb = tf.comb[order(tf.comb$class)]
-bam.files = list.files(genomationDataPath, full.names=TRUE, pattern='bam$')
-bam.files = bam.files[!grepl('Cage', bam.files)]
-sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20, type='bam')
-names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
-sml.scaled = scaleScoreMatrixList(sml)
-multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
+  bam.files = list.files(genomationDataPath, full.names=TRUE, pattern='bam$')
+  bam.files = bam.files[!grepl('Cage', bam.files)]
+  sml = ScoreMatrixList(bam.files, tf.comb, bin.num=20, type='bam')
+  names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
+  sml.scaled = scaleScoreMatrixList(sml)
+  multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
 <img align="midle" src="Figures/visualizeFeatureComb-1.png", width=350>
-
-
 
 The plot shows perfectly how misleading the peak calling process can be. 
 Although the plots show that CTFC, Rad21 and Znf143 have almost perfect 
@@ -522,11 +508,12 @@ colozalization, peak callers have trouble identifying peaks in regions with
 lower enrichments and as a  result, we get different statistics 
 when using overlaps.
 
-##Using data from AnnotationHub
+### Using data from AnnotationHub
+
 We can also use data from AnnotationHub since it can return data as GRanges object.  Below we download CpG island and DNAse peak locations from AnnotationHub and get a scoreMatrix on the CpG islands.
 
 ```{r annotationHubExample1, eval=FALSE, tidy=TRUE}
-  library(AnnotationHub)
+library(AnnotationHub)
 ah = AnnotationHub()
 # retrieve CpG island data from annotationHub
 cpgi=ah$goldenpath.hg19.database.cpgIslandExt_0.0.1.RData
