@@ -35,7 +35,9 @@ Suggests:
 	knitr,
 	RColorBrewer,
 	genomationData,
-  BiocGenerics
+  BiocGenerics,
+  BiocStyles,
+  rmarkdown
 Collate:
     'documentData.R'
     'genomation-classes.R'
