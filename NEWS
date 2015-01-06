@@ -1,3 +1,12 @@
+genomation 0.99.8
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* added the Bioinformatics citation
+* vignette is converted to html format
+* changed tests form test_that to RUnit
+
 genomation 0.99.0.2
 --------------
 
