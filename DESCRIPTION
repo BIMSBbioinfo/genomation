@@ -36,7 +36,6 @@ Suggests:
 	RColorBrewer,
 	genomationData,
   BiocGenerics,
-  BiocStyles,
   rmarkdown,
   knitrBootstrap
 Collate:
