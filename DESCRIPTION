@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 0.99.7
+Version: 0.99.8
 Author: Altuna Akalin, Vedran Franke
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users can visualize and 
@@ -31,18 +31,21 @@ Imports:
 	gridBase,
 	impute
 Suggests:
+  RUnit,
 	knitr,
 	RColorBrewer,
-	genomationData
+	genomationData,
+  BiocGenerics
 Collate:
     'documentData.R'
     'genomation-classes.R'
     'getRandomEnrichment.R'
     'findFeatureComb.R'
-	'plotMatrix.R'
+    'plotMatrix.R'
     'randomizeFeature.R'
     'readAnnotate.R'
     'readData.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'
+    'test_genomation_package.R'

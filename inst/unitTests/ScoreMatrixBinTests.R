@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
 # test for ScoreMatrix function
-test_that("ScoreMatrixBin: RleList, GRanges works",
+test_ScoreMatrixBin_RleList_GRanges = function()
 {
   
   # -----------------------------------------------#
@@ -15,7 +15,7 @@ test_that("ScoreMatrixBin: RleList, GRanges works",
   m1 = as(cbind(rowMeans(m1[,1:2]), rowMeans(m1[,2:3])),'ScoreMatrix')
   rownames(m1) = 1:4
   s1 = ScoreMatrixBin(rl, gr1, bin.num=2)
-  expect_equal(s1, m1)
+  checkEquals(s1, m1)
   
   #2. test for different bin.op
   for(fun in c('min', 'max', 'median')){
@@ -25,7 +25,7 @@ test_that("ScoreMatrixBin: RleList, GRanges works",
                   apply(m2[,2:3],1,match.fun(fun))),'ScoreMatrix')
     rownames(m2) = 1:4
     s2 = ScoreMatrixBin(rl, gr1, bin.num=2, bin.op=fun)
-    expect_equal(s2, m2)  
+    checkEquals(s2, m2)  
   }
   
   #3. test strand aware
@@ -34,21 +34,20 @@ test_that("ScoreMatrixBin: RleList, GRanges works",
   rownames(m3) = 1:4
   m3[c(2,4),] = m3[c(2,4),2:1]
   s3 = ScoreMatrixBin(rl, gr1, bin.num=2, strand.aware=T)
-  expect_equal(s3, m3)
+  checkEquals(s3, m3)
   
   # -----------------------------------------------#
   # errors
   # error for removing all bins
-  expect_error(SCoreMatrixBin(rl, gr1, bin.num=2))
+  checkException(SCoreMatrixBin(rl, gr1, bin.num=2), silent=TRUE)
   
-  gr5 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,5),c(5,6,5,6)), 
-                strand=c('+','-','+','-'))
-  expect_warning(ScoreMatrixBin(rl, gr5, bin.num=3))
-  
-})
+  #gr5 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,5),c(5,6,5,6)), 
+  #              strand=c('+','-','+','-'))
+  #checkException(ScoreMatrixBin(rl, gr5, bin.num=3), silent=FALSE) 
+}
 
 # ---------------------------------------------------------------------------- #
-test_that("ScoreMatrixBin:GRanges, GRanges works",
+test_ScoreMatrixBin_GRanges_GRanges = function()
 {
   target = GRanges(rep(c(1,2),each=6), 
                    IRanges(rep(c(1,2,3,7,8,9), times=2), width=5),
@@ -63,7 +62,7 @@ test_that("ScoreMatrixBin:GRanges, GRanges works",
   m1 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
   m1 = as(cbind(rowMeans(m1[,1:3]), rowMeans(m1[,3:5])), 'ScoreMatrix')
   rownames(m1) = 1:4
-  expect_equal(s1,m1)
+  checkEquals(s1,m1)
   
   # function with weight col works
   s2 = ScoreMatrixBin(target=target, windows=windows,bin.num=2, weight.col='weight')
@@ -71,7 +70,7 @@ test_that("ScoreMatrixBin:GRanges, GRanges works",
   m2[3:4,] = m2[3:4,]*2
   m2 = as(cbind(rowMeans(m2[,1:3]), rowMeans(m2[,3:5])), 'ScoreMatrix')
   rownames(m2) = 1:4
-  expect_equal(s2,m2)  
+  checkEquals(s2,m2)  
   
   #strand aware
   s3 = ScoreMatrixBin(target=target, windows=windows, bin.num=2, strand.aware=T)
@@ -80,21 +79,20 @@ test_that("ScoreMatrixBin:GRanges, GRanges works",
   m3[c(1,3),] = rev(m3[c(1,3),])
   m3 = as(cbind(rowMeans(m3[,1:3]), rowMeans(m3[,3:5])), 'ScoreMatrix')
   rownames(m3) = 1:4
-  expect_equal(s3,m3)
+  checkEquals(s3,m3)
   
   # -----------------------------------------------#
   # errors
-  expect_error(ScoreMatrixBin(target, windows, weight.col=''))
+  checkException(ScoreMatrixBin(target, windows, weight.col=''), silent=TRUE)
   
   # number of bins > ncol 
-  expect_warning(ScoreMatrixBin(target, windows, strand.aware = FALSE, bin.num=10))
-              
-  
-})
+  #expect_warning(ScoreMatrixBin(target, windows, strand.aware = FALSE, bin.num=10))
+               
+}
 
 
 # ---------------------------------------------------------------------------- #
-test_that("ScoreMatrixBin:character, GRanges works",
+test_ScoreMatrixBin_character_GRanges = function()
 {
   target = GRanges(rep(c(1,2),each=7), 
                    IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
@@ -109,37 +107,37 @@ test_that("ScoreMatrixBin:character, GRanges works",
   bam.file = system.file('tests/test.bam', package='genomation')
   s1 = ScoreMatrixBin(bam.file, windows, type='bam', bin.num=2)
   m1 = ScoreMatrixBin(target, windows, bin.num=2)
-  expect_equal(s1,m1)
+  checkEquals(s1,m1)
   
   # bam file, rpm=TRUE
   s2 = ScoreMatrixBin(bam.file, windows,bin.num=2, type='bam', rpm=TRUE)
   tot = 1e6/countBam(BamFile(bam.file))$records
   m2 = m1*tot
-  expect_equal(s2, m2)
+  checkEquals(s2, m2)
   
   #bam file, rpm=FALSE, unique=TRUE
   s3 = ScoreMatrixBin(bam.file, windows,bin.num=2, type='bam', unique=T)
   m3 = ScoreMatrixBin(unique(target), windows, bin.num=2)
-  expect_equal(s3,m3)
+  checkEquals(s3,m3)
   
   #bam file, rpm=FALSE, unique=TRUE, extend=1
   s4 = ScoreMatrixBin(bam.file, windows, type='bam',bin.num=2, unique=T, extend=1)
   m4 = ScoreMatrixBin(resize(unique(target), width=1), windows, bin.num=2)
-  expect_equal(s4,m4)
+  checkEquals(s4,m4)
   
   #bigWig file - missing
   
   # -----------------------------------------------#
   # errors
   # error upon not specifying the file
-  expect_error(ScoreMatrixBin('',windows))
+  checkException(ScoreMatrixBin('',windows), silent=TRUE)
   
   # error upon not specifying the format
-  expect_error(ScoreMatrixBin(bam.file, target))
-})
+  checkException(ScoreMatrixBin(bam.file, target), silent=TRUE)
+}
 
 # ---------------------------------------------------------------------------- #
-test_that("ScoreMatrix:character, GRanges, type='bigWig' works".
+test_that_ScoreMatrix_character_GRange_bigWig = function()
 {
   test_path <- system.file("tests/test.bw", package = "genomation")
   b = import(test_bw, asRangedData=F)
@@ -153,5 +151,5 @@ test_that("ScoreMatrix:character, GRanges, type='bigWig' works".
   m[6,2] = -0.75
   rownames(m) = 1:6
   m = as(m, 'ScoreMatrix')
-  expect_equal(s, m)
-})
+  checkEquals(s, m)
+}
