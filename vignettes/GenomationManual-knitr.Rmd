@@ -1,3 +1,4 @@
+
 <!--
 %% \VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{genomation}
@@ -6,7 +7,7 @@
 ```{r setup2, include=FALSE, cache=FALSE, eval=TRUE}
 library(knitr)
 opts_chunk$set(root.dir=getwd(),
-               fig.path='Figures/', 
+               fig.path='Figures', 
                dev='png',
                fig.show='hold', 
                cache=TRUE)
@@ -21,7 +22,7 @@ set.seed=10
 ## Introduction
 -----
 
-<img style="float: right;padding-left:9px" src="Figures/genomationFlowChart1.png", width=350>
+<img style="float: right;padding-left:9px" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/genomationFlowChart1.png", width=350/>
 `genomation` is a  toolkit for annotation 
 and in bulk visualization of genomic features (scored or unscored)
 over predefined regions.
@@ -261,8 +262,8 @@ heatMatrix(sm, xcoords=c(-1000, 1000))
 plotMeta(sm, xcoords=c(-1000, 1000))
 ```
 <div>
-  <img src="Figures/heatMatrix1-1.png", width=400>
-  <img src="Figures/heatMatrix1-2.png", width=400>
+  <img src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix1-1.png", width=400>
+  <img src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix1-2.png", width=400>
 </div>
 
 The *heatMatrix* function can also take a list of numeric vectors 
@@ -278,7 +279,7 @@ cpg.ind = which(countOverlaps(promoters, cpgi)>0)
 nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
 heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 ```
-<img align="midle" src="Figures/heatMatrix2-1.png", width=350>
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix2-1.png", width=350></center>
 
 Because the enrichment in windows can have a high dynamic range, it is sometimes
 convenient to scale the matrix before plotting.
@@ -286,7 +287,7 @@ convenient to scale the matrix before plotting.
 sm.scaled = scaleScoreMatrix(sm)
 heatMatrix(sm.scaled, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 ```
-<img align="midle" src="Figures/heatMatrixScales-1.png", width=350>
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrixScales-1.png", width=350></center>
 
 
 Several experiments can be plotted in a side by side fashion using a combination
@@ -297,13 +298,13 @@ targets = list(cage=cage, cpgi=cpgi)
 sml = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50, strand.aware=TRUE)
 multiHeatMatrix(sml, xcoords=c(-1000, 1000))
 ```
-<img align="midle" src="Figures/multiHeatMatrix1-1.png", width=350>
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix1-1.png", width=350></center>
 
 We can put the kmeans=TRUE to see whether there are any patterns present in the data.
 ```{r multiHeatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4.5, fig.height=3, dpi=300}
 multiHeatMatrix(sml, xcoords=c(-1000, 1000), kmeans=TRUE, k=2)
 ```
-<img align="midle" src="Figures/multiHeatMatrix2-1.png", width=350>
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix2-1.png", width=350></center>
 
 More advance usage of the ScoreMatrix family of functions and their
 visualtization can be found in the specific use-cases at the end of the vignette.
@@ -320,7 +321,7 @@ exon, intron).
 
 ### Annotation by generic features
 
-Firstly, we will select the broadPeak files from the **genomatonData** package,
+Firstly, we will select the broadPeak files from the `genomatonData` package,
 and read in the peaks for the Ctcf transcription factor
 
 ```{r getFiles_annotation, eval=TRUE, tidy=TRUE}
@@ -387,8 +388,8 @@ will use hierarhical clustering to order the heatmap.
 plotGeneAnnotation(annot.list)
 plotGeneAnnotation(annot.list, cluster=TRUE)
 ```
-<img align="midle" src="Figures/plotGeneAnnotation-1.png", width=350>
-<img align="midle" src="Figures/plotGeneAnnotation-2.png", width=350>
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotGeneAnnotation-1.png", width=350></center>
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotGeneAnnotation-2.png", width=350></center>
 
 ## Use cases for `genomation` package
 -----
@@ -434,9 +435,11 @@ sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 multiHeatMatrix(sml, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
-<img align="midle" src="Figures/ctcfScoreMatrixList-1.png", width=350>
+<center>
+<img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/ctcfScoreMatrixList-1.png", width=350>
 <figcaption>Heatmap profile of unscaled coverage shows a slight colocalization of
          Ctcf, Rad21 and Znf143. </figcaption>
+</center>
 
 Because of the large range of signal values in chipseq peaks, the *heatmapProfile* 
 will not show the true extent of colocalization. To get around this, it is advisable
@@ -446,10 +449,12 @@ to independently scale the rows of each element in the ScoreMatrixList.
   sml.scaled = scaleScoreMatrixList(sml)
 multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
-<img align="midle" src="Figures/plotScaledProfile-1.png", width=350>
+<center>
+<img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotScaledProfile-1.png", width=350>
 <figcaption>Heatmap profile of scaled coverage shows much stronger colocalization 
          of the transcription factors; nevertheless, it is evident that some of the CTCF 
          peaks have a very weak enrichment.</figcaption>
+</center>
 
 ### Combinatorial binding of transcription factors
 
@@ -500,7 +505,8 @@ Before doing that we will order the regions by their *class* argument.
   sml.scaled = scaleScoreMatrixList(sml)
   multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
-<img align="midle" src="Figures/visualizeFeatureComb-1.png", width=350>
+
+<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/visualizeFeatureComb-1.png", width=350></center>
 
 The plot shows perfectly how misleading the peak calling process can be. 
 Although the plots show that CTFC, Rad21 and Znf143 have almost perfect 
