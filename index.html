@@ -69,7 +69,12 @@ biocLite(c(<span class="pl-s1"><span class="pl-pds">"</span>GenomicRanges<span c
 
 <span class="pl-c"># install the packages</span>
 library(devtools)
-install_github(<span class="pl-s1"><span class="pl-pds">"</span>BIMSBbioinfo/genomation<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-vo">FALSE</span>)</pre></div>
+install_github(<span class="pl-s1"><span class="pl-pds">"</span>BIMSBbioinfo/genomation<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-vo">FALSE</span>)
+
+<span class="pl-c"># install the data package to be able to run examples in the vignette</span>
+install_github(<span class="pl-s1"><span class="pl-pds">"</span>frenkiboy/genomationData<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-vo">FALSE</span>)
+
+</pre></div>
 
 <h2>
 <a id="data-import" class="anchor" href="#data-import" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data import</h2>
