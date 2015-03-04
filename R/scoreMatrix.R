@@ -69,7 +69,7 @@ readBam = function(target, windows, rpm=FALSE,
   
   # get the coverage vector for 
   # given locations
-  alns <- granges(readGAlignmentsFromBam(target, param=param))# read alignments
+  alns <- granges(readGAlignments(target, param=param))# read alignments
   if(unique)
     alns = unique(alns)
   
