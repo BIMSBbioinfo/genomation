@@ -58,21 +58,26 @@ These functions can employ K-means clustering of rows of summary matrices as wel
 <p>See the package vignette <a href="http://bioconductor.org/packages/3.1/bioc/vignettes/genomation/inst/doc/GenomationManual-knitr.html">here</a>. Every function has proper documentation and examples reachable via <strong>help()</strong> function in R.</p>
 
 <h2>
+<a id="citation" class="anchor" href="#citation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Citation</h2>
+
+<p>Akalin A, Franke V, Vlahoviček K, Mason CE, Schübeler D. <a href="http://www.ncbi.nlm.nih.gov/pubmed/25417204">genomation: a toolkit to summarize, annotate and visualize genomic intervals</a>. Bioinformatics. 2014 Nov 21. pii: btu775</p>
+
+<h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <p>You can install genomation via <strong>install_github()</strong> function from <a href="http://cran.r-project.org/web/packages/devtools/index.html">devtools package</a>.</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-c"># Install dependencies</span>
-install.packages( c(<span class="pl-s1"><span class="pl-pds">"</span>data.table<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>plyr<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>reshape2<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>ggplot2<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>gridBase<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>devtools<span class="pl-pds">"</span></span>))
-source(<span class="pl-s1"><span class="pl-pds">"</span>http://bioconductor.org/biocLite.R<span class="pl-pds">"</span></span>)
-biocLite(c(<span class="pl-s1"><span class="pl-pds">"</span>GenomicRanges<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>rtracklayer<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>impute<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>Rsamtools<span class="pl-pds">"</span></span>))
+install.packages( c(<span class="pl-s"><span class="pl-pds">"</span>data.table<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>plyr<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>reshape2<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>ggplot2<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>gridBase<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>devtools<span class="pl-pds">"</span></span>))
+source(<span class="pl-s"><span class="pl-pds">"</span>http://bioconductor.org/biocLite.R<span class="pl-pds">"</span></span>)
+biocLite(c(<span class="pl-s"><span class="pl-pds">"</span>GenomicRanges<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>rtracklayer<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>impute<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>Rsamtools<span class="pl-pds">"</span></span>))
 
 <span class="pl-c"># install the packages</span>
 library(devtools)
-install_github(<span class="pl-s1"><span class="pl-pds">"</span>BIMSBbioinfo/genomation<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-vo">FALSE</span>)
+install_github(<span class="pl-s"><span class="pl-pds">"</span>BIMSBbioinfo/genomation<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-c1">FALSE</span>)
 
 <span class="pl-c"># install the data package to be able to run examples in the vignette</span>
-install_github(<span class="pl-s1"><span class="pl-pds">"</span>frenkiboy/genomationData<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-vo">FALSE</span>)
+install_github(<span class="pl-s"><span class="pl-pds">"</span>frenkiboy/genomationData<span class="pl-pds">"</span></span>,build_vignettes<span class="pl-k">=</span><span class="pl-c1">FALSE</span>)
 
 </pre></div>
 
@@ -82,15 +87,15 @@ install_github(<span class="pl-s1"><span class="pl-pds">"</span>frenkiboy/genoma
 <p>Functions such as <strong>readBed</strong>, <strong>gff2GRanges</strong>, <strong>readTranscriptFeatures</strong> and <strong>readGeneric</strong> can read multiple flat file formats as GRanges objects into R.</p>
 
 <div class="highlight highlight-ruby"><pre><span class="pl-c"># Read a BED12 file and return a GRangesList object with promoters, exons and introns</span>
-my.bed12.file <span class="pl-k">=</span> system.file(<span class="pl-s1"><span class="pl-pds">"</span>extdata/chr21.refseq.hg19.bed<span class="pl-pds">"</span></span>, package <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">"</span>genomation<span class="pl-pds">"</span></span>)
+my.bed12.file <span class="pl-k">=</span> system.file(<span class="pl-s"><span class="pl-pds">"</span>extdata/chr21.refseq.hg19.bed<span class="pl-pds">"</span></span>, package <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>genomation<span class="pl-pds">"</span></span>)
 my.bed12.file
 feats <span class="pl-k">=</span> readTranscriptFeatures(my.bed12.file)
 
 <span class="pl-c"># Read a generic tabular text file containing genomic locations</span>
-my.file<span class="pl-k">=</span>system.file(<span class="pl-s1"><span class="pl-pds">"</span>extdata<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>chr21.refseq.hg19.bed<span class="pl-pds">"</span></span>,package<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>genomation<span class="pl-pds">"</span></span>)
-refseq <span class="pl-k">=</span> readGeneric(my.file,chr<span class="pl-k">=</span><span class="pl-c1">1</span>,start<span class="pl-k">=</span><span class="pl-c1">2</span>,<span class="pl-k">end</span><span class="pl-k">=</span><span class="pl-c1">3</span>,strand<span class="pl-k">=</span><span class="pl-vo">NULL</span>,
+my.file<span class="pl-k">=</span>system.file(<span class="pl-s"><span class="pl-pds">"</span>extdata<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>chr21.refseq.hg19.bed<span class="pl-pds">"</span></span>,package<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>genomation<span class="pl-pds">"</span></span>)
+refseq <span class="pl-k">=</span> readGeneric(my.file,chr<span class="pl-k">=</span><span class="pl-c1">1</span>,start<span class="pl-k">=</span><span class="pl-c1">2</span>,<span class="pl-k">end</span><span class="pl-k">=</span><span class="pl-c1">3</span>,strand<span class="pl-k">=</span><span class="pl-c1">NULL</span>,
                       meta.cols<span class="pl-k">=</span>list(score<span class="pl-k">=</span><span class="pl-c1">5</span>,name<span class="pl-k">=</span><span class="pl-c1">4</span>),
-                     keep.all.metadata<span class="pl-k">=</span><span class="pl-vo">FALSE</span>, zero.based<span class="pl-k">=</span><span class="pl-vo">TRUE</span>)</pre></div>
+                     keep.all.metadata<span class="pl-k">=</span><span class="pl-c1">FALSE</span>, zero.based<span class="pl-k">=</span><span class="pl-c1">TRUE</span>)</pre></div>
 
 <h2>
 <a id="summarize-granges-object-on-defined-regions-such-as-promoters" class="anchor" href="#summarize-granges-object-on-defined-regions-such-as-promoters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summarize GRanges object on defined regions such as promoters</h2>
@@ -99,26 +104,26 @@ refseq <span class="pl-k">=</span> readGeneric(my.file,chr<span class="pl-k">=</
 
 <div class="highlight highlight-ruby"><pre> data(cage)
  data(promoters)
- scores1<span class="pl-k">=</span><span class="pl-vo">ScoreMatrix</span>(target<span class="pl-k">=</span>cage,windows<span class="pl-k">=</span>promoters,strand.aware<span class="pl-k">=</span><span class="pl-vo">TRUE</span>,
-                                 weight.col<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>tpm<span class="pl-pds">"</span></span>)</pre></div>
+ scores1<span class="pl-k">=</span><span class="pl-c1">ScoreMatrix</span>(target<span class="pl-k">=</span>cage,windows<span class="pl-k">=</span>promoters,strand.aware<span class="pl-k">=</span><span class="pl-c1">TRUE</span>,
+                                 weight.col<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>tpm<span class="pl-pds">"</span></span>)</pre></div>
 
 <h2>
 <a id="summarize-bam-files-on-pre-defined-regions" class="anchor" href="#summarize-bam-files-on-pre-defined-regions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summarize BAM files on pre-defined regions</h2>
 
 <p>BAM files can also be used in <strong>ScoreMatrix()</strong> function as well.</p>
 
-<div class="highlight highlight-ruby"><pre> bam.file <span class="pl-k">=</span> system.file(<span class="pl-s1"><span class="pl-pds">'</span>tests/test.bam<span class="pl-pds">'</span></span>, package<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>genomation<span class="pl-pds">'</span></span>)
- windows <span class="pl-k">=</span> <span class="pl-vo">GRanges</span>(rep(c(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>),each<span class="pl-k">=</span><span class="pl-c1">2</span>), <span class="pl-vo">IRanges</span>(rep(c(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>), times<span class="pl-k">=</span><span class="pl-c1">2</span>), width<span class="pl-k">=</span><span class="pl-c1">5</span>))
- scores3 <span class="pl-k">=</span> <span class="pl-vo">ScoreMatrix</span>(target<span class="pl-k">=</span>bam.file,windows<span class="pl-k">=</span>windows, type<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>bam<span class="pl-pds">'</span></span>)</pre></div>
+<div class="highlight highlight-ruby"><pre> bam.file <span class="pl-k">=</span> system.file(<span class="pl-s"><span class="pl-pds">'</span>tests/test.bam<span class="pl-pds">'</span></span>, package<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>genomation<span class="pl-pds">'</span></span>)
+ windows <span class="pl-k">=</span> <span class="pl-c1">GRanges</span>(rep(c(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>),each<span class="pl-k">=</span><span class="pl-c1">2</span>), <span class="pl-c1">IRanges</span>(rep(c(<span class="pl-c1">1</span>,<span class="pl-c1">2</span>), times<span class="pl-k">=</span><span class="pl-c1">2</span>), width<span class="pl-k">=</span><span class="pl-c1">5</span>))
+ scores3 <span class="pl-k">=</span> <span class="pl-c1">ScoreMatrix</span>(target<span class="pl-k">=</span>bam.file,windows<span class="pl-k">=</span>windows, type<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>bam<span class="pl-pds">'</span></span>)</pre></div>
 
 <h2>
 <a id="summarize-bigwig-files-on-pre-defined-regions" class="anchor" href="#summarize-bigwig-files-on-pre-defined-regions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summarize BigWig files on pre-defined regions</h2>
 
 <p>You can also use bigWig files in <strong>ScoreMatrix()</strong> function.</p>
 
-<div class="highlight highlight-ruby"><pre>bw.file <span class="pl-k">=</span> system.file(<span class="pl-s1"><span class="pl-pds">'</span>tests/test.bw<span class="pl-pds">'</span></span>, package<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>rtracklayer<span class="pl-pds">'</span></span>)
-windows <span class="pl-k">=</span> <span class="pl-vo">GRanges</span>(rep(<span class="pl-s1"><span class="pl-pds">'</span>chr2<span class="pl-pds">'</span></span>,each<span class="pl-k">=</span><span class="pl-c1">4</span>), <span class="pl-vo">IRanges</span>(start<span class="pl-k">=</span>c(<span class="pl-c1">250</span>,<span class="pl-c1">350</span>,<span class="pl-c1">450</span>,<span class="pl-c1">550</span>), width<span class="pl-k">=</span><span class="pl-c1">50</span>))
-scores3 <span class="pl-k">=</span> <span class="pl-vo">ScoreMatrix</span>(target<span class="pl-k">=</span>bw.file ,windows<span class="pl-k">=</span>windows, type<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>bigWig<span class="pl-pds">'</span></span>)</pre></div>
+<div class="highlight highlight-ruby"><pre>bw.file <span class="pl-k">=</span> system.file(<span class="pl-s"><span class="pl-pds">'</span>tests/test.bw<span class="pl-pds">'</span></span>, package<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>rtracklayer<span class="pl-pds">'</span></span>)
+windows <span class="pl-k">=</span> <span class="pl-c1">GRanges</span>(rep(<span class="pl-s"><span class="pl-pds">'</span>chr2<span class="pl-pds">'</span></span>,each<span class="pl-k">=</span><span class="pl-c1">4</span>), <span class="pl-c1">IRanges</span>(start<span class="pl-k">=</span>c(<span class="pl-c1">250</span>,<span class="pl-c1">350</span>,<span class="pl-c1">450</span>,<span class="pl-c1">550</span>), width<span class="pl-k">=</span><span class="pl-c1">50</span>))
+scores3 <span class="pl-k">=</span> <span class="pl-c1">ScoreMatrix</span>(target<span class="pl-k">=</span>bw.file ,windows<span class="pl-k">=</span>windows, type<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>bigWig<span class="pl-pds">'</span></span>)</pre></div>
 
 <h2>
 <a id="visualize-summary-matrices-as-heatmap" class="anchor" href="#visualize-summary-matrices-as-heatmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualize summary matrices as heatmap</h2>
@@ -127,20 +132,20 @@ scores3 <span class="pl-k">=</span> <span class="pl-vo">ScoreMatrix</span>(targe
 
 <div class="highlight highlight-ruby"><pre>data(cage)
 data(promoters)
-scores1<span class="pl-k">=</span><span class="pl-vo">ScoreMatrix</span>(target<span class="pl-k">=</span>cage,windows<span class="pl-k">=</span>promoters,strand.aware<span class="pl-k">=</span><span class="pl-vo">TRUE</span>)
+scores1<span class="pl-k">=</span><span class="pl-c1">ScoreMatrix</span>(target<span class="pl-k">=</span>cage,windows<span class="pl-k">=</span>promoters,strand.aware<span class="pl-k">=</span><span class="pl-c1">TRUE</span>)
 
 data(cpgi)
-scores2<span class="pl-k">=</span><span class="pl-vo">ScoreMatrix</span>(target<span class="pl-k">=</span>cpgi,windows<span class="pl-k">=</span>promoters,strand.aware<span class="pl-k">=</span><span class="pl-vo">TRUE</span>)
+scores2<span class="pl-k">=</span><span class="pl-c1">ScoreMatrix</span>(target<span class="pl-k">=</span>cpgi,windows<span class="pl-k">=</span>promoters,strand.aware<span class="pl-k">=</span><span class="pl-c1">TRUE</span>)
 
-sml<span class="pl-k">=</span><span class="pl-k">new</span>(<span class="pl-s1"><span class="pl-pds">"</span>ScoreMatrixList<span class="pl-pds">"</span></span>,list(a<span class="pl-k">=</span>scores1,b<span class="pl-k">=</span>scores2))
-multiHeatMatrix(sml,kmeans<span class="pl-k">=</span><span class="pl-vo">TRUE</span>,k<span class="pl-k">=</span><span class="pl-c1">2</span>,matrix.main<span class="pl-k">=</span>c(<span class="pl-s1"><span class="pl-pds">"</span>cage<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>CpGi<span class="pl-pds">"</span></span>),cex.axis<span class="pl-k">=</span><span class="pl-c1">0.8</span>)
+sml<span class="pl-k">=</span><span class="pl-k">new</span>(<span class="pl-s"><span class="pl-pds">"</span>ScoreMatrixList<span class="pl-pds">"</span></span>,list(a<span class="pl-k">=</span>scores1,b<span class="pl-k">=</span>scores2))
+multiHeatMatrix(sml,kmeans<span class="pl-k">=</span><span class="pl-c1">TRUE</span>,k<span class="pl-k">=</span><span class="pl-c1">2</span>,matrix.main<span class="pl-k">=</span>c(<span class="pl-s"><span class="pl-pds">"</span>cage<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>CpGi<span class="pl-pds">"</span></span>),cex.axis<span class="pl-k">=</span><span class="pl-c1">0.8</span>)
 </pre></div>
 
 <h2>
 <a id="visualize-summary-matrices-as-meta-region-plots" class="anchor" href="#visualize-summary-matrices-as-meta-region-plots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualize summary matrices as meta-region plots</h2>
 
-<div class="highlight highlight-ruby"><pre>plotMeta(mat<span class="pl-k">=</span>sml,overlay<span class="pl-k">=</span><span class="pl-vo">TRUE</span>,main<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>my plotowski<span class="pl-pds">"</span></span>)
-heatMeta(mat<span class="pl-k">=</span>sml,main<span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>my plotowski<span class="pl-pds">"</span></span>)</pre></div>
+<div class="highlight highlight-ruby"><pre>plotMeta(mat<span class="pl-k">=</span>sml,overlay<span class="pl-k">=</span><span class="pl-c1">TRUE</span>,main<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>my plotowski<span class="pl-pds">"</span></span>)
+heatMeta(mat<span class="pl-k">=</span>sml,main<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>my plotowski<span class="pl-pds">"</span></span>)</pre></div>
 
 <h1>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h1>
@@ -155,7 +160,7 @@ to post a question
 <a href="https://groups.google.com/forum/#!forum/genomation">https://groups.google.com/forum/#!forum/genomation</a></p>
       </section>
       <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
