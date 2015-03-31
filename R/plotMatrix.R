@@ -939,7 +939,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   if( length(unique(sapply(sml,nrow)))>1  ){
     warning("\nThe row numbers are different\n",
             "attempting to get common rows and to reorder rows\n",
-            "using 'unionScoreMatrixList()'\n")
+            "using 'intersectScoreMatrixList()'\n")
     sml=intersectScoreMatrixList(sml,reorder=TRUE)
   }
   
