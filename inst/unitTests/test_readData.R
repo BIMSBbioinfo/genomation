@@ -1,10 +1,9 @@
-
+require(GenomicRanges)
 # test for readGeneric function
 test_readGeneric = function()
 {
-  
-  tab.test1=system.file('tests/tab.test1', package='genomation')
-  
+  tab.test1=system.file('unitTests/tab.test1', package='genomation')
+
   #1. test regular bed input
   r1 = readGeneric(tab.test1)
   g1 = GRanges(c('chr1','chr1'), IRanges(c(1,5), c(10,15)))
@@ -42,7 +41,7 @@ test_readGeneric = function()
   checkIdentical(g5,r5)
 
   #6. test whether it can read a file containing a header
-  tab.test2=system.file('tests/tab.test2', package='genomation')
+  tab.test2=system.file('unitTests/tab.test2', package='genomation')
   r6 = readGeneric(tab.test2)
   g6 = GRanges(c('chr1','chr1'), IRanges(c(1,5), c(10,15)))
   checkIdentical(g6,r6)
@@ -52,7 +51,7 @@ test_readGeneric = function()
   
 
   #8. test whether it can read a file with permutted columns
-  tab.test3=system.file('tests/tab.test3', package='genomation')
+  tab.test3=system.file('unitTests/tab.test3', package='genomation')
   r7 = readGeneric(tab.test3, chr=5, start=3, end=4, strand=6, 
                    meta.col=c(score1=1, score2=2))
   g7 =  GRanges(c('chr1','chr1'), 

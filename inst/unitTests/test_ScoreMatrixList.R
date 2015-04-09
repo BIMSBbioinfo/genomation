@@ -1,7 +1,9 @@
+require(GenomicRanges)
 # ---------------------------------------------------------------------------- #
 # scoreMatrixList: standard
 test_scoreMatrixList = function()
 {
+
   target = GRanges(rep(c(1,2),each=7), 
                    IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
                    weight = rep(c(1,2),each=7), 
@@ -83,7 +85,9 @@ test_scoreMatrixList = function()
 # scoreMatrixList: character, bigWig
 test_ScoreMatrixList_BigWig = function()
 {
-  test_bw <- system.file("tests/test.bw", package = "genomation")
+  if (.Platform$OS.type == "windows")
+    return()
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
           
   st = seq(200, 300, 20)
   g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
@@ -101,13 +105,15 @@ test_ScoreMatrixList_BigWig = function()
 # scoreMatrixList: character, bigWig, bin
 test_ScoreMatrixListBin_bigWig = function()
 {
-  test_bw <- system.file("tests/test.bw", package = "genomation")
+  if (.Platform$OS.type == "windows")
+    return()
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
           
   st = seq(200, 300, 20)
   g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
-  b = import(test_bw, asRangedData=FALSE, which=g)
-  covs = coverage(b, weight=b$score)        
-  s = ScoreMatrixBin(covs, g, bin.num=5)
+#   b = import(test_bw, asRangedData=FALSE, which=g)
+#   covs = coverage(b, weight=b$score)        
+#   s = ScoreMatrixBin(covs, g, bin.num=5)
           
   s = ScoreMatrixList(c(test_bw, test_bw), g,bin.num=5, type='bigWig')
           
@@ -136,7 +142,7 @@ test_ScoreMatrixList_Bam = function()
   # -----------------------------------------------#
   # usage
   # bam file
-  bam.file = system.file('tests/test.bam', package='genomation')
+  bam.file = system.file('unitTests/test.bam', package='genomation')
   bam.files = c(bam.file, bam.file)
   sml1 = ScoreMatrixList(bam.files, windows, type='bam')
   tml1 = ScoreMatrixList(tar.list, windows)
