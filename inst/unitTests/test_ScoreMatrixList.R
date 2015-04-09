@@ -1,4 +1,3 @@
-require(GenomicRanges)
 # ---------------------------------------------------------------------------- #
 # scoreMatrixList: standard
 test_scoreMatrixList = function()

@@ -1,5 +1,3 @@
-require(GenomicRanges)
-require(rtracklayer)
 # ---------------------------------------------------------------------------- #
 # test for ScoreMatrix function
 test_ScoreMatrix_RleList_GRanges = function()

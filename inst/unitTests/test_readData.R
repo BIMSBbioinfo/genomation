@@ -1,4 +1,3 @@
-require(GenomicRanges)
 # test for readGeneric function
 test_readGeneric = function()
 {

@@ -1,4 +1,3 @@
-require(GenomicRanges)
 # ---------------------------------------------------------------------------- #
 # test for ScoreMatrix function
 test_ScoreMatrixBin_RleList_GRanges = function()
