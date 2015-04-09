@@ -2,7 +2,7 @@
 # test for ScoreMatrix function
 test_ScoreMatrix_RleList_GRanges = function()
 	{
-	
+
 		# input RleList
 		rl = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
 		
@@ -99,7 +99,7 @@ test_ScoreMatrix_character_GRanges = function()
   # -----------------------------------------------#
   # usage
   # bam file
-  bam.file = system.file('tests/test.bam', package='genomation')
+  bam.file = system.file('unitTests/test.bam', package='genomation')
   s1 = ScoreMatrix(bam.file, windows, type='bam')
   m1 = ScoreMatrix(target, windows)
   checkEquals(s1,m1)
@@ -134,8 +134,9 @@ test_ScoreMatrix_character_GRanges = function()
 # ---------------------------------------------------------------------------- #
 test_ScoreMatrix_character_GRanges_bigWig = function()
 {
-  test_bw <- system.file("tests/test.bw", package = "genomation")
-  b = import(test_bw, asRangedData=F)
+  if (.Platform$OS.type == "windows")
+    return()
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
           
   st = seq(200, 300, 20)
   g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))

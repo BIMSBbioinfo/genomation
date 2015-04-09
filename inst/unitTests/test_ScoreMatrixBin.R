@@ -104,7 +104,7 @@ test_ScoreMatrixBin_character_GRanges = function()
   # -----------------------------------------------#
   # usage
   # bam file
-  bam.file = system.file('tests/test.bam', package='genomation')
+  bam.file = system.file('unitTests/test.bam', package='genomation')
   s1 = ScoreMatrixBin(bam.file, windows, type='bam', bin.num=2)
   m1 = ScoreMatrixBin(target, windows, bin.num=2)
   checkEquals(s1,m1)
@@ -139,8 +139,10 @@ test_ScoreMatrixBin_character_GRanges = function()
 # ---------------------------------------------------------------------------- #
 test_that_ScoreMatrix_character_GRange_bigWig = function()
 {
-  test_path <- system.file("tests/test.bw", package = "genomation")
-  b = import(test_bw, asRangedData=F)
+  if (.Platform$OS.type == "windows")
+    return()
+  
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
   
   st = seq(200, 300, 20)
   g = GRanges(rep('chr2', length(st)), IRanges(st, width=5))
