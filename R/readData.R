@@ -1,19 +1,91 @@
 # ---------------------------------------------------------------------------- #
 # fast reading of big tables
-readTableFast<-function(filename,header=TRUE,skip=0,sep=""){
+readTableFast<-function(filename,header="auto",skip=0,sep="auto",as.datatable=FALSE, ...){
   
-  tab5rows <- read.table(filename, header = header,skip=skip,
-                         sep=sep, nrows = 100, stringsAsFactors=FALSE)
-  classes  <- sapply(tab5rows, class)
-  df = read.table(filename, 
-                  header = header,
-                  skip=skip,
-                  sep=sep, 
-                  colClasses = classes,
-                  stringsAsFactors=FALSE)
+  if(.Platform$OS.type=="unix"){
+    
+    #if file is in gzip, bz2 or zip format
+    if(grepl("^.*(.gz)[[:space:]]*$", filename)){
+      filename <- paste("gzip -dc", filename)
+    } else if (grepl("^.*(.zip)[[:space:]]*$", filename)){
+      filename <- paste("unzip -p", filename)
+    } else if (grepl("^.*(.bz2)[[:space:]]*$", filename)){  
+      filename <- paste("bzcat -dc", filename)
+    } 
+    
+    # removes the track header 
+    if(grepl("^.*(.gz|.bz2|.zip)[[:space:]]*$", filename)){
+      con <- pipe(filename)     
+      track=scan(con, n=1, what='character', sep='\n', quiet=TRUE)   
+      close(con)
+    }else{
+      track=scan(filename, n=1, what='character', sep='\n', quiet=TRUE) 
+    }
+    if(grepl('^>',track))
+      skip = max(1, skip)
+    
+    df = fread(filename, 
+               header=header, skip=skip,
+               sep=sep, stringsAsFactors=FALSE,
+               data.table=as.datatable)
+  }else{
+    
+    # default header and sep for read.table
+    if(header=="auto") header=FALSE
+    if(sep=="auto") sep=""
+    
+    # if file is not in zip format
+    if (!grepl("^.*(.zip)[[:space:]]*$", filename)){
+      
+      # removes the track header
+      track=scan(filename, n=1, what='character', sep='\n', quiet=TRUE)                    
+      if(grepl('^>',track))
+        skip = max(1, skip)
+      # if header = FALSE, checks whether a header line exists, and skips it
+      if(header==FALSE){
+        line = read.table(filename, nrows=1, stringsAsFactors=FALSE)
+        if(all(sapply(line, class) == 'character'))
+          skip = max(1, skip)
+      }
+      
+      tab5rows <- read.table(filename, header = header, skip=skip,
+                             sep=sep, nrows = 100, stringsAsFactors=FALSE) 
+      classes  <- sapply(tab5rows, class)
+      
+      df = read.table(filename, 
+                      header=header, skip=skip,
+                      sep=sep, colClasses = classes,
+                      stringsAsFactors=FALSE)
+    }else{
+      
+      #if windows and file is in zip format
+      zipFileInfo <- unzip(filename, list=TRUE)
+      if(length(zipFileInfo$Name)>1) stop("More than one data file inside zip")
+      con <- unz(filename, filename=zipFileInfo$Name)
+      
+      open(con)
+      if(header==FALSE){
+        line = read.table(con, nrows=1, stringsAsFactors=FALSE)
+        if(all(sapply(line, class) == 'character'))
+          skip = max(1, skip)
+      }
+      
+      tab5rows <- read.table(con, header = header, skip=skip,
+                             sep=sep, nrows = 100, stringsAsFactors=FALSE) 
+      classes  <- sapply(tab5rows, class) 
+      close(con)
+      
+      con <- unz(filename, filename=zipFileInfo$Name); open(con)
+      df = read.table(con, 
+                      header = header, skip=skip,
+                      sep=sep, colClasses = classes,
+                      stringsAsFactors=FALSE)
+      close(con)
+    }
+  }
   return(df)
-}
-
+}  
+      
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
 #' 
@@ -73,21 +145,9 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep=""){
 #' @rdname readGeneric
 readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL, 
                       keep.all.metadata=FALSE, zero.based=FALSE, 
-                      remove.unusual=FALSE, header=FALSE, 
-                      skip=0, sep="\t"){
+                      remove.unusual=FALSE, header="auto", 
+                      skip=0, sep="auto"){
 
-  # removes the track header
-  track=scan(file, n=1, what='character', sep='\n', quiet=TRUE)                    
-  if(grepl('^>',track))
-    skip = max(1, skip)
-  
-  # if header = FALSE, checks whether a header line exists, and skips it
-  if(header==FALSE){
-    line = read.table(file, nrows=1, stringsAsFactors=FALSE)
-    if(all(sapply(line, class) == 'character'))
-      skip = max(1, skip)
-  }
-  
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
