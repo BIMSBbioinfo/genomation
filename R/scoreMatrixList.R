@@ -3,23 +3,23 @@
 #######################
 
 .plotXYlab = function(lab, pos){
-    
-    if(!pos %in% c('x','y'))
-        stop('pos can only be x or y')
-    
-    if(pos == 'x'){
-        .plotLab(lab, srt=0)
-    }
-
-    if(pos == 'y'){
-        .plotLab(lab, srt=90)
-    }
+  
+  if(!pos %in% c('x','y'))
+    stop('pos can only be x or y')
+  
+  if(pos == 'x'){
+    .plotLab(lab, srt=0)
+  }
+  
+  if(pos == 'y'){
+    .plotLab(lab, srt=90)
+  }
 }
 
 .plotLab = function(lab, srt, xlim, ylim, x, y){
-    plot.new()
-    plot.window(xlim=c(1,5), ylim=c(1,5))
-    text(3, 3, labels=lab, cex=2, srt=srt)
+  plot.new()
+  plot.window(xlim=c(1,5), ylim=c(1,5))
+  text(3, 3, labels=lab, cex=2, srt=srt)
 }
 
 # ---------------------------------------------------------------------------- #
@@ -65,6 +65,7 @@
 #'               ( i.e aligned reads) to total
 #'               length ofwidth+extend
 #' @param param ScanBamParam object  
+#' @param cores the number of cores to use (default: 1)
 #'
 #' @return returns a \code{ScoreMatrixList} object
 #' 
@@ -87,98 +88,111 @@
 ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, weight.col=NULL, 
                            is.noCovNA=FALSE, type='', rpm=FALSE, unique=FALSE, 
-                           extend=0, param=NULL){
-    len = length(targets)
-    if(len == 0L)
-        stop('targets argument is empty')
+                           extend=0, param=NULL, cores=1){
+  len = length(targets)
+  if(len == 0L)
+    stop('targets argument is empty')
   
-    # this checks whether we can work with the corresponding targets object class set
-    list.ind = grepl('list', class(targets)) | grepl('List', class(targets))
-    if(len > 1L & !list.ind){
-      if(all(is.character(targets)) && is.null(type) && all(file.exists(targets)))
-        stop('targets argument is neither a list like object (e.g. GRangesList),
-            nor a set of files') 
-    }
-         
+  # this checks whether we can work with the corresponding targets object class set
+  list.ind = grepl('list', class(targets)) | grepl('List', class(targets))
+  if(len > 1L & !list.ind){
+    if(all(is.character(targets)) && is.null(type) && all(file.exists(targets)))
+      stop('targets argument is neither a list like object (e.g. GRangesList),
+           nor a set of files') 
+  }
   
-    # ----------------------------------------------------------------- #
-    # checks whether the list argument contains only scoreMatrix objects
-    if(all(unlist(lapply(targets, class)) == 'ScoreMatrix'))
-        return(new("ScoreMatrixList",targets))
   
-    # ----------------------------------------------------------------- #
-    if(is.null(windows))
-      stop("windows of class GRanges must be defined")
+  # ----------------------------------------------------------------- #
+  # checks whether the list argument contains only scoreMatrix objects
+  if(all(unlist(lapply(targets, class)) == 'ScoreMatrix'))
+    return(new("ScoreMatrixList",targets))
   
-    # Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
-    if(list.ind & !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
-            stop('targets should be one of the following: an RleList, list of Rle, 
-           GRangesList, a list of GRanges objects')
-    }  
-         
-    if(!list.ind && all(file.exists(targets)) && is.null(type))
-      stop('When providing a file, it is necessary to give the type of the file')
-    
-    # gets the names for the resulting list
-    if(all(is.character(targets))){
-      names = basename(targets)
-    }else{
-      names = names(targets)
-    }
+  # ----------------------------------------------------------------- #
+  if(is.null(windows))
+    stop("windows of class GRanges must be defined")
+  
+  # Given a list of RleList objects and a granges object, returns the scoreMatrix list Object
+  if(list.ind & !all(unlist(lapply(targets, class)) %in% c('SimpleRleList', 'RleList','GRanges'))){
+    stop('targets should be one of the following: an RleList, list of Rle, 
+         GRangesList, a list of GRanges objects')
+  }  
+  
+  if(!list.ind && all(file.exists(targets)) && is.null(type))
+    stop('When providing a file, it is necessary to give the type of the file')
+  
+  # gets the names for the resulting list
+  if(all(is.character(targets))){
+    names = basename(targets)
+  }else{
+    names = names(targets)
+  }
   
   sml = list()
-  for(i in 1:length(targets)){
-    message(paste('working on:',names[i]))
+  calc.ScoreMatrices <- function(i, targets=targets, windows=windows,
+                                 strand.aware=strand.aware, weight.col=weight.col,
+                                 is.noCovNA=is.noCovNA, type=type, rpm=rpm,
+                                 unique=unique, extend=extend, param=param,
+                                 bin.num){
+    
+    message(paste("working on", names(targets)[i]))
+    
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
-      sml[[i]] = ScoreMatrix(targets[[i]], windows=windows, 
-                             strand.aware=strand.aware,
-                             weight.col=weight.col, 
-                             is.noCovNA=is.noCovNA,
-                             type=type,
-                             rpm=rpm,
-                             unique=unique,
-                             extend=extend,
-                             param=param)
       
-    } else{
+      ScoreMatrix(targets[[i]], windows=windows, 
+                  strand.aware=strand.aware,
+                  weight.col=weight.col, 
+                  is.noCovNA=is.noCovNA,
+                  type=type,
+                  rpm=rpm,
+                  unique=unique,
+                  extend=extend,
+                  param=param)
+    }else{
       if(is.null(bin.num))
         bin.num = 10
-
-      sml[[i]] = ScoreMatrixBin(targets[[i]], windows=windows, 
-                                bin.num=bin.num, 
-                                bin.op=bin.op,
-                                strand.aware=strand.aware,
-                                weight.col=weight.col, 
-                                is.noCovNA = is.noCovNA,
-                                type=type,
-                                rpm=rpm,
-                                unique=unique,
-                                extend=extend,
-                                param=param)
-    }  
-  }
+      
+      ScoreMatrixBin(targets[[i]], windows=windows, 
+                     bin.num=bin.num, 
+                     bin.op=bin.op,
+                     strand.aware=strand.aware,
+                     weight.col=weight.col, 
+                     is.noCovNA = is.noCovNA,
+                     type=type,
+                     rpm=rpm,
+                     unique=unique,
+                     extend=extend,
+                     param=param)
+    }
+  }    
+  sml <- mclapply(1:length(targets), 
+                  calc.ScoreMatrices,
+                  targets=targets,
+                  windows=windows,strand.aware=strand.aware,
+                  weight.col=weight.col,is.noCovNA=is.noCovNA,type=type,
+                  rpm=rpm,unique=unique,extend=extend,param=param,bin.num,
+                  mc.cores=cores)
   names(sml) = names
   return(new("ScoreMatrixList",sml))
-}
+  }
 
 # ---------------------------------------------------------------------------- #
 # Validator
 .valid.ScoreMatrixList = function(l){
-    errors = character()
-    # checks whether all matrices are of class scoreMatrix
-    if(!all(unlist(lapply(l, function(x)class(x) == 'scoreMatrix'))))
-        errors = paste(errors, 
+  errors = character()
+  # checks whether all matrices are of class scoreMatrix
+  if(!all(unlist(lapply(l, function(x)class(x) == 'scoreMatrix'))))
+    errors = paste(errors, 
                    'All elements for ScoreMatrixList 
-                    need to be of class scoreMatrix', 
-                    sep='\n')
-
-    # checks whether all matrices are numeric
-    if(!all(unlist(lapply(l, function(x)all(is.integer(x) | is.numeric(x))))))
-        errors = paste(errors, '
+                   need to be of class scoreMatrix', 
+                   sep='\n')
+  
+  # checks whether all matrices are numeric
+  if(!all(unlist(lapply(l, function(x)all(is.integer(x) | is.numeric(x))))))
+    errors = paste(errors, '
                    Not all matrices are of type integer or numeric', 
                    sep='\n')
-        
-    if(length(errors) == 0) TRUE else errors 
+  
+  if(length(errors) == 0) TRUE else errors 
 }
 
 
@@ -187,17 +201,17 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
 #' @rdname show-methods
 #' @return Shows the number of matrices and their sizes
 setMethod("show", "ScoreMatrixList",
-            function(object){
-                dims = lapply(object, dim)
-                len = length(object)
-                widths = apply(do.call(rbind, dims),2, function(x)max(nchar(x)))
-                message('scoreMatrixlist of length:', len, '\n')
-                for(i in 1:len){
-                    s=sprintf(paste('%d%s ','%',widths[1],'d %',widths[2],'d', sep=''), 
-                            i, '. scoreMatrix with dims:', dims[[i]][1], dims[[i]][2])
-                    message(s)
-                }
+          function(object){
+            dims = lapply(object, dim)
+            len = length(object)
+            widths = apply(do.call(rbind, dims),2, function(x)max(nchar(x)))
+            message('scoreMatrixlist of length:', len, '\n')
+            for(i in 1:len){
+              s=sprintf(paste('%d%s ','%',widths[1],'d %',widths[2],'d', sep=''), 
+                        i, '. scoreMatrix with dims:', dims[[i]][1], dims[[i]][2])
+              message(s)
             }
+          }
 )
 
 
@@ -298,10 +312,10 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
             rnames = Reduce('intersect' ,lapply(sml, rownames))
             if(reorder){
               sml = as(lapply(sml, function(x){ 
-                                  x=x[rownames(x) %in% rnames,]
-                                  x[order(rownames(x)),]
-                                  }), 
-                     'ScoreMatrixList')
+                x=x[rownames(x) %in% rnames,]
+                x[order(rownames(x)),]
+              }), 
+              'ScoreMatrixList')
             }else{
               sml = as(lapply(sml, function(x)x[rownames(x) %in% rnames,]), 
                        'ScoreMatrixList')              
@@ -363,7 +377,7 @@ setMethod("binMatrix", signature("ScoreMatrixList"),
             
             if(is.null(bin.num))
               return(x)
-             
+            
             return(new("ScoreMatrixList", 
                        lapply(x, function(y)binMatrix(y, bin.num=bin.num, fun=fun))))
           }
