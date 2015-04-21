@@ -1,3 +1,14 @@
+genomation 1.1.1
+--------------
+NEW FUNCTIONS AND FEATURES
+
+* We are in BioC
+
+IMPROVEMENTS AND BUG FIXES
+
+* readGeneric() and all the functions that read data from text files are faster
+  due to use of data.table::fread(). Implemented by Katarzyna Wręczycka	
+
 genomation 0.99.9
 --------------
 IMPROVEMENTS AND BUG FIXES
