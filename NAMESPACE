@@ -23,6 +23,7 @@ importMethodsFrom("rtracklayer", import)
 
 
 importFrom("data.table", data.table)
+importFrom("data.table", fread)
 importFrom("plyr",rbind.fill)
 importFrom("reshape2", melt)
 
