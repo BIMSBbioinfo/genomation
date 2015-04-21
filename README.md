@@ -6,7 +6,7 @@ with other genomic features such as exons,introns and promoters.
 
 # Installation
 
-### install via Biconductor
+### install via Bioconductor
 ```R
 source("http://bioconductor.org/biocLite.R")
 biocLite("genomation")
