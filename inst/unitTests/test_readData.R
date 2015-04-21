@@ -2,7 +2,7 @@
 test_readGeneric = function()
 {
   tab.test1=system.file('unitTests/tab.test1', package='genomation')
-
+  
   #1. test regular bed input
   r1 = readGeneric(tab.test1)
   g1 = GRanges(c('chr1','chr1'), IRanges(c(1,5), c(10,15)))
@@ -38,21 +38,21 @@ test_readGeneric = function()
                 strand=c('+','-'),
                 score1=as.integer(c(20,25)))
   checkIdentical(g5,r5)
-
+  
   #6. test whether it can read a file containing a header
   tab.test2=system.file('unitTests/tab.test2', package='genomation')
-  r6 = readGeneric(tab.test2)
+  r6 = readGeneric(tab.test2, header=TRUE)
   g6 = GRanges(c('chr1','chr1'), IRanges(c(1,5), c(10,15)))
   checkIdentical(g6,r6)
   
   #7. header=TRUE, keep.all.metadata=TRUE
   r7 = readGeneric(tab.test2,strand=4, header=TRUE, keep.all.metadata=TRUE)
   
-
+  
   #8. test whether it can read a file with permutted columns
   tab.test3=system.file('unitTests/tab.test3', package='genomation')
   r7 = readGeneric(tab.test3, chr=5, start=3, end=4, strand=6, 
-                   meta.col=c(score1=1, score2=2))
+                   meta.col=c(score1=1, score2=2), header=TRUE)
   g7 =  GRanges(c('chr1','chr1'), 
                 IRanges(c(1,5), c(10,15)), 
                 strand=c('+','-'),
@@ -75,9 +75,9 @@ test_readGeneric = function()
   zip(tab.test3.zip, tab.test3)
   
   r7.gz = readGeneric(tab.test3.gz, chr=5, start=3, end=4, strand=6, 
-                      meta.col=c(score1=1, score2=2))  
+                      meta.col=c(score1=1, score2=2), header=TRUE)  
   r7.zip = readGeneric(tab.test3.zip, chr=5, start=3, end=4, strand=6, 
-                       meta.col=c(score1=1, score2=2))
+                       meta.col=c(score1=1, score2=2), header=TRUE)
   
   g7 =  GRanges(c('chr1','chr1'), 
                 IRanges(c(1,5), c(10,15)), 

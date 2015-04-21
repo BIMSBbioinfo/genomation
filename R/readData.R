@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
 # fast reading of big tables
-readTableFast<-function(filename,header="auto",skip=0,sep="auto",as.datatable=FALSE, ...){
+readTableFast<-function(filename,header=TRUE,skip=0,sep="\t",as.datatable=FALSE){
   
   if(.Platform$OS.type=="unix"){
     
@@ -35,7 +35,7 @@ readTableFast<-function(filename,header="auto",skip=0,sep="auto",as.datatable=FA
                       sep=sep, colClasses = classes,
                       stringsAsFactors=FALSE)
       close(con)
-    
+      
     }else{
       tab100rows <- read.table(filename, header = header,skip=skip,
                                sep=sep, nrows = 100, stringsAsFactors=FALSE)
@@ -49,7 +49,7 @@ readTableFast<-function(filename,header="auto",skip=0,sep="auto",as.datatable=FA
   }
   return(df)
 }  
-      
+
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
 #' 
@@ -111,39 +111,21 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
                       keep.all.metadata=FALSE, zero.based=FALSE, 
                       remove.unusual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
-
   
   if (grepl("^.*(.zip)[[:space:]]*$", file)){
     zipFileInfo <- unzip(file, list=TRUE)
     if(length(zipFileInfo$Name)>1) stop("More than one data file inside zip")
     
-    con <- unz(file, filename=zipFileInfo$Name); open(con)
-    # removes the track header 
+    #removes the track header
+    con <- unz(file, filename=zipFileInfo$Name); open(con) 
     track=scan(con, n=1, what='character', sep='\n', quiet=TRUE)   
-    if(grepl('^>',track))
-      skip = max(1, skip)
     close(con)
-    
-    con <- unz(file, filename=zipFileInfo$Name); open(con)
-    # if header = FALSE, checks whether a header line exists, and skips it
-    if(header==FALSE){
-      line = read.table(con, nrows=1, stringsAsFactors=FALSE)
-      if(all(sapply(line, class) == 'character'))
-        skip = max(1, skip)
-    }
-    close(con)
-    
   }else{
-    if(header==FALSE){
-      line = read.table(file, nrows=1, stringsAsFactors=FALSE)
-      if(all(sapply(line, class) == 'character'))
-        skip = max(1, skip)
-    }
-    track=scan(file, n=1, what='character', sep='\n', quiet=TRUE)   
-    if(grepl('^>',track))
-      skip = max(1, skip)
+    track=scan(file, n=1, what='character', sep='\n', quiet=TRUE) 
   }
-
+  if(grepl('^>',track))
+    skip = max(1, skip)
+  
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
@@ -158,12 +140,12 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   
   # change the col names to the ones given by meta.cols and chr,str,end,strand
   colnames(df)[unlist(col.names)] = names(unlist(col.names))
-    
+  
   # converts the . strand character to *
   sind = grepl('strand',colnames(df))
   if(any(sind) & !is.null(strand))
     df[, sind] = sub('\\.', '*', df[,sind])
-    
+  
   # removes nonstandard chromosome names
   if(remove.unusual)
     df = df[grep("_", as.character(df$chr),invert=TRUE),]
@@ -178,7 +160,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   black.names=c("seqnames", "ranges", "strand", "seqlevels", "seqlengths",
                 "isCircular", "start", "end", "width", "element")
   
-
+  
   if(keep.all.metadata){
     my.mcols = df[,-unlist(col.names1),drop=FALSE]
     mcols(g) = my.mcols[, !colnames(my.mcols) %in% black.names]
@@ -186,7 +168,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
     my.mcols=df[,unlist(meta.cols),drop=FALSE]
     values(g) = my.mcols[, !colnames(my.mcols) %in% black.names, drop=FALSE]
   }
-    
+  
   return(g)
 }
 
@@ -276,7 +258,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
 #' @rdname readBroadPeak
 #' @export
 readBroadPeak<-function(file){
-          
+  
             g = readGeneric(file,
                             strand=6,
                             meta.cols=list(name=4,
@@ -286,8 +268,8 @@ readBroadPeak<-function(file){
                                           qvalue=9),
                             header=FALSE )
             return(g)
-          }
-        
+}
+
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted narrowPeak file into a GRanges object
 #' @param file a abosulte or relative path to a bed file formatted by the Encode 
@@ -306,7 +288,7 @@ readBroadPeak<-function(file){
 #' @rdname readNarrowPeak
 #' @export
 readNarrowPeak<-function(file){
-                      
+  
             g = readGeneric(file,
                             strand=6,
                             meta.cols=list(name=4,
@@ -317,8 +299,8 @@ readNarrowPeak<-function(file){
                                           peak=10),
                             header=FALSE )
             return(g)
-          }
-         
+}
+
 
 
 # ---------------------------------------------------------------------------- #
@@ -519,4 +501,3 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL,
   
   return(gff)
 }
-
