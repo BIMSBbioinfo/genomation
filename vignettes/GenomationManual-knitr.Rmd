@@ -111,16 +111,16 @@ containing columns chr, start, end.
 ```{r readGeneric1, eval=TRUE, tidy=TRUE}
 library(genomation)
 tab.file1=system.file("extdata/tab1.bed", package = "genomation")
-readGeneric(tab.file1)
+readGeneric(tab.file1, header=TRUE)
 ```
 
 If the file contains meta data columns (as in extended bed format), 
 it is possible to read all or some of the additional columns.
 To select columns which you want to read in, use the meta.col argument 
 ```{r readGeneric2, eval=TRUE, tidy=TRUE}
-readGeneric(tab.file1, keep.all.metadata=TRUE)
+readGeneric(tab.file1, header=TRUE, keep.all.metadata=TRUE)
 
-readGeneric(tab.file1, meta.col = list(CpGnum=4))
+readGeneric(tab.file1, header=TRUE, meta.col = list(CpGnum=4))
 ```
 
 If the file contains header, the function will automatically recognize the 
