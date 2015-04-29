@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 1.1.1
+Version: 1.1.2
 Author: Altuna Akalin, Vedran Franke, Katarzyna Wreczycka, Liz Ing-Simmons	
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users can visualize and 
@@ -29,7 +29,8 @@ Imports:
 	methods,
 	rtracklayer,
 	gridBase,
-	impute
+	impute,
+  parallel
 Suggests:
   RUnit,
 	knitr,
