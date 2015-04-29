@@ -28,7 +28,7 @@ importFrom("plyr",rbind.fill)
 importFrom("reshape2", melt)
 
 
-# importFrom("parallel", mclapply)
+importFrom("parallel", mclapply)
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
 exportClasses(RandomEnrichment)
