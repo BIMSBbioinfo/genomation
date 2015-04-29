@@ -7,7 +7,8 @@
 \usage{
 ScoreMatrixList(targets, windows = NULL, bin.num = NULL, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL)
+  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
+  cores = 1)
 }
 \arguments{
 \item{targets}{can be a list of \code{scoreMatrix} objects, that are coerced
@@ -56,6 +57,8 @@ based on chr, start, end and strand}
 length ofwidth+extend}
 
 \item{param}{ScanBamParam object}
+
+\item{cores}{the number of cores to use (default: 1)}
 }
 \value{
 returns a \code{ScoreMatrixList} object
