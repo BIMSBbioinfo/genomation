@@ -6,6 +6,14 @@ with other genomic features such as exons,introns and promoters.
 
 # Installation
 
+### install via Bioconductor
+```R
+source("http://bioconductor.org/biocLite.R")
+biocLite("genomation")
+
+```
+
+### Install the latest version via install_github
 ```R
 #' Install dependecies
 install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))
@@ -19,6 +27,5 @@ install_github("BIMSBbioinfo/genomation",build_vignettes=FALSE)
 
 ```
 
-
 # Using the package
-see the package vignette [here](https://github.com/al2na/genomation/raw/development/inst/doc/GenomationManual-knitr.pdf)
+see the package vignette [here](http://www.bioconductor.org/packages/release/bioc/vignettes/genomation/inst/doc/GenomationManual-knitr.html)
