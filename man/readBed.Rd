@@ -5,16 +5,20 @@
 \alias{readBed}
 \title{Read a BED file and convert it to GRanges.}
 \usage{
-readBed(file, track.line = FALSE, remove.unusual = FALSE)
+readBed(file, track.line = FALSE, remove.unusual = FALSE,
+  zero.based = TRUE)
 }
 \arguments{
 \item{file}{location of the file, a character string such as: "/home/user/my.bed"}
 
-\item{track.line}{logical, indicates if the bed file has a track line or not.
-default:FALSE.}
+\item{track.line}{the number of track lines to skip, "auto" to detect them automatically
+                  or FALSE(default) if the bed file doesn't have track lines}
 
-\item{remove.unusual}{if TRUE(default) remove the chromosomes with unsual
-       names, such as chrX_random (Default:FALSE)}
+\item{remove.unusual}{if TRUE remove the chromosomes with unsual
+names, such as chrX_random (Default:FALSE)}
+
+\item{zero.based}{a boolean which tells whether the ranges in
+       the bed file are 0 or 1 base encoded. (Default: TRUE)}
 }
 \value{
 \code{\link{GRanges}} object

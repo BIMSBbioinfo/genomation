@@ -22,8 +22,7 @@ importMethodsFrom("rtracklayer", import)
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
 
-importFrom("data.table", data.table)
-importFrom("data.table", fread)
+importFrom("readr", read_delim)
 importFrom("plyr",rbind.fill)
 importFrom("reshape2", melt)
 

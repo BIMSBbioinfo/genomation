@@ -1,54 +1,37 @@
 # ---------------------------------------------------------------------------- #
 # fast reading of big tables
-readTableFast<-function(filename,header=TRUE,skip=0,sep="\t",as.datatable=FALSE){
+readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
   
-  if(.Platform$OS.type=="unix"){
-    
-    #if file is in gzip or zip format
-    if(grepl("^.*(.gz)[[:space:]]*$", filename)){
-      filename <- paste("gzip -dc", filename)
-    } else if (grepl("^.*(.zip)[[:space:]]*$", filename)){
-      filename <- paste("unzip -p", filename)
-    }
-    
-    df = fread(filename, 
-               header=header, skip=skip,
-               sep=sep, stringsAsFactors=FALSE,
-               data.table=as.datatable)
-    
-  }else{
-    
-    #if windows and file is in zip format
-    if (grepl("^.*(.zip)[[:space:]]*$", filename)){
-      zipFileInfo <- unzip(filename, list=TRUE)
-      if(length(zipFileInfo$Name)>1) stop("More than one data file inside zip")
-      
-      con <- unz(filename, filename=zipFileInfo$Name); open(con)
-      tab100rows <- read.table(con, header = header,skip=skip,
-                               sep=sep, nrows = 100, stringsAsFactors=FALSE)
-      classes  <- sapply(tab100rows, class)
-      close(con)
-      
-      con <- unz(filename, filename=zipFileInfo$Name); open(con)
-      df = read.table(con, 
-                      header=header, skip=skip,
-                      sep=sep, colClasses = classes,
-                      stringsAsFactors=FALSE)
-      close(con)
-      
-    }else{
-      tab100rows <- read.table(filename, header = header,skip=skip,
-                               sep=sep, nrows = 100, stringsAsFactors=FALSE)
-      classes  <- sapply(tab100rows, class)
-      
-      df = read.table(filename, 
-                      header=header, skip=skip,
-                      sep=sep, colClasses = classes,
-                      stringsAsFactors=FALSE)
-    }
-  }
-  return(df)
+  tab30rows <- read_delim(file=filename, skip=skip,
+                          delim=sep, n_max = 30,
+                          col_names=header)
+  classes  <- sapply(tab30rows, class)
+  cl <- paste(sapply(classes, function(x) substr(x, 0, 1)), collapse="")
+  
+  df <- read_delim(file=filename, 
+                   delim=sep, 
+                   skip=skip,
+                   col_names=header,
+                   col_types=cl)
+  #changing notation of unnamed cols from read_delim (X[0-9]+) to data.frame (V[0-9]+)
+  colnames(df) <- gsub("^X(\\d+)$", "V\\1", colnames(df)) 
+  return(as.data.frame(df))
 }  
+
+# detects UCSC header (and first track)
+detectUCSCheader <- function(filename){
+  skip=0
+  con <- file(filename, open = "r")
+  while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+    if(grepl("^[[:space:]]*browser.*", oneLine) | grepl("^[[:space:]]*track.*", oneLine)){
+      skip = skip + 1
+    }else{
+      break
+    }
+  }  
+  close(con)
+  return(skip)
+}
 
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
@@ -60,6 +43,7 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t",as.datatable=FALSE)
 #` 
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
+#'             or the input itself as a string (containing at least one \n, e.g. "a,b\n1.0,2.0")
 #'
 #' @param chr  number of the column that has chromsomes information in the table (Def:1)
 #' @param start number of the column that has start coordinates in the table (Def:2)
@@ -112,20 +96,6 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
                       remove.unusual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
   
-  if (grepl("^.*(.zip)[[:space:]]*$", file)){
-    zipFileInfo <- unzip(file, list=TRUE)
-    if(length(zipFileInfo$Name)>1) stop("More than one data file inside zip")
-    
-    #removes the track header
-    con <- unz(file, filename=zipFileInfo$Name); open(con) 
-    track=scan(con, n=1, what='character', sep='\n', quiet=TRUE)   
-    close(con)
-  }else{
-    track=scan(file, n=1, what='character', sep='\n', quiet=TRUE) 
-  }
-  if(grepl('^>',track))
-    skip = max(1, skip)
-  
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
@@ -149,7 +119,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   # removes nonstandard chromosome names
   if(remove.unusual)
     df = df[grep("_", as.character(df$chr),invert=TRUE),]
-  
+
   g = makeGRangesFromDataFrame(
                           df, 
                           keep.extra.columns=FALSE, 
@@ -182,11 +152,13 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
 #'
-#' @param track.line  logical, indicates if the bed file has a track line or not. 
-#'                    default:FALSE.
-#' @param remove.unusual if TRUE(default) remove the chromosomes with unsual 
-#'        names, such as chrX_random (Default:FALSE)
-#'        
+#' @param track.line the number of track lines to skip, "auto" to detect them automatically
+#'                   or FALSE(default) if the bed file doesn't have track lines
+#'                   
+#' @param remove.unusual if TRUE remove the chromosomes with unsual 
+#'        names, such as chrX_random (Default:FALSE)        
+#' @param zero.based a boolean which tells whether the ranges in 
+#'        the bed file are 0 or 1 base encoded. (Default: TRUE)
 #'        
 #' @return \code{\link{GRanges}} object
 #'
@@ -198,7 +170,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #' @export
 #' @docType methods
 #' @rdname readBed
-readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
+readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 {
   
   meta.cols=list(score=5,name=4,thickStart=7,  
@@ -207,35 +179,39 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE)
                  blockCount=10, 
                  blockSizes=11,  
                  blockStarts=12 )
-  if(track.line){
-    skip=1
-  }else{skip=0}
+  
+  if(is.numeric(track.line)){
+    skip = track.line
+  }else if(track.line=="auto"){
+    skip = detectUCSCheader(file)
+  }else{
+    skip = 0
+  }
   
   df=read.table(file,skip=skip,nrows=2,header=FALSE)
   numcol=ncol(df)
   
   if(numcol==3){
     df=readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
-                   meta.cols = NULL,   zero.based = TRUE,
+                   meta.cols = NULL,   zero.based = zero.based,
                    remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t")
   }else if(numcol==4){
     df=readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
-                   meta.cols = meta.cols[1],   zero.based = TRUE,
+                   meta.cols = meta.cols[1],   zero.based = zero.based,
                    remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t")    
   }else if(numcol==5){
     df=readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
-                   meta.cols = meta.cols[1:2],   zero.based = TRUE,
+                   meta.cols = meta.cols[1:2],   zero.based = zero.based,
                    remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t")    
   }else if(numcol == 6){
     df=readGeneric(file, chr = 1, start = 2, end = 3, strand = 6,
-                   meta.cols = meta.cols[1:2],   zero.based = TRUE,
+                   meta.cols = meta.cols[1:2],   zero.based = zero.based,
                    remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t") 
   }else if(numcol > 6){
     df=readGeneric(file, chr = 1, start = 2, end = 3, strand = 6,
-                   meta.cols = meta.cols[c(1:2,(3:8)[1:(numcol-6)])],   zero.based = TRUE,
+                   meta.cols = meta.cols[c(1:2,(3:8)[1:(numcol-6)])],   zero.based = zero.based,
                    remove.unusual =remove.unusual, header = FALSE, skip = skip, sep = "\t") 
   }
-  
   df
   
 } 
@@ -379,11 +355,8 @@ setMethod("readTranscriptFeatures",
           signature(location = "character"),
           function(location,remove.unusual,up.flank ,down.flank ,unique.prom){
             
-            # find out if there is a header, skip 1st line if there is a header
-            f.line=readLines(con = location, n = 1)
-            skip=0
-            if(grepl("^track",f.line))
-              skip=1
+            # find out if there is a header
+            skip <- detectUCSCheader(location)
             
             # readBed6
             message('Reading the table...\r')

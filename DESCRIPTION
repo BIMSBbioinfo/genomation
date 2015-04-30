@@ -22,7 +22,7 @@ Imports:
 	GenomicAlignments,
 	IRanges,
 	Rsamtools,
-	data.table,
+	readr,
 	plyr,
 	reshape2,
 	ggplot2,
