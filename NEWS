@@ -1,3 +1,15 @@
+genomation 1.1.3
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* Functions that read data from text files re-written from 
+  data.table::fread() to readr::read_delim().
+* Changes in readBed() arguments; track.line argument can be FALSE,
+  "auto" or an integer indicating number of first lines to skip 
+  and added the zero.based argument telling whether ranges in the bed file
+  are in 0 or 1-based coordinate system.
+
 genomation 1.1.2
 --------------
 

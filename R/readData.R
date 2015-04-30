@@ -13,7 +13,7 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
                    skip=skip,
                    col_names=header,
                    col_types=cl)
-  #changing notation of unnamed cols from read_delim (X[0-9]+) to data.frame (V[0-9]+)
+  #changing default variables names from read_delim (X[0-9]+) to data.frame (V[0-9]+)
   colnames(df) <- gsub("^X(\\d+)$", "V\\1", colnames(df)) 
   return(as.data.frame(df))
 }  
@@ -23,10 +23,12 @@ detectUCSCheader <- function(filename){
   skip=0
   con <- file(filename, open = "r")
   while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
-    if(grepl("^[[:space:]]*browser.*", oneLine) | grepl("^[[:space:]]*track.*", oneLine)){
-      skip = skip + 1
+    if(grepl("^ *browser", oneLine) | 
+       grepl("^ *track", oneLine) |
+       grepl("^ *#", oneLine)){
+        skip = skip + 1
     }else{
-      break
+        break
     }
   }  
   close(con)
@@ -43,7 +45,9 @@ detectUCSCheader <- function(filename){
 #` 
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
-#'             or the input itself as a string (containing at least one \n, e.g. "a,b\n1.0,2.0")
+#'             or the input itself as a string (containing at least one \\n).
+#'             The file can ending in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+#'             or starting with \code{https://}, \code{ftp://}, or \code{ftps://}.
 #'
 #' @param chr  number of the column that has chromsomes information in the table (Def:1)
 #' @param start number of the column that has start coordinates in the table (Def:2)
@@ -151,6 +155,9 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #' 
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
+#'             or the input itself as a string (containing at least one \\n).
+#'             The file can ending in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+#'             or starting with \code{https://}, \code{ftp://}, or \code{ftps://}.
 #'
 #' @param track.line the number of track lines to skip, "auto" to detect them automatically
 #'                   or FALSE(default) if the bed file doesn't have track lines
