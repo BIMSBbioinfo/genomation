@@ -11,9 +11,7 @@ readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
 }
 \arguments{
 \item{file}{location of the file, a character string such as: "/home/user/my.bed"
-            or the input itself as a string (containing at least one \\n).
-            The file can ending in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
-            or starting with \code{https://}, \code{ftp://}, or \code{ftps://}.}
+            or the input itself as a string (containing at least one \\n).}
 
 \item{chr}{number of the column that has chromsomes information in the table (Def:1)}
 

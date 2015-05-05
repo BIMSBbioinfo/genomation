@@ -11,8 +11,9 @@ readBed(file, track.line = FALSE, remove.unusual = FALSE,
 \arguments{
 \item{file}{location of the file, a character string such as: "/home/user/my.bed"
             or the input itself as a string (containing at least one \\n).
-            The file can ending in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
-            or starting with \code{https://}, \code{ftp://}, or \code{ftps://}.}
+            The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+            and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+            it can also start with \code{https://} or \code{ftps://}.}
 
 \item{track.line}{the number of track lines to skip, "auto" to detect them automatically
                   or FALSE(default) if the bed file doesn't have track lines}

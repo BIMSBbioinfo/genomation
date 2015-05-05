@@ -1,6 +1,46 @@
 # ---------------------------------------------------------------------------- #
+compressedAndUrl2temp <- function(filename){ 
+  if(grepl('^(http://|https://|ftp://|ftps://).*(.gz|.bz2|.xz|.zip)$',filename)){
+    temp <- tempfile()
+    download.file(filename, destfile=temp, method="auto", quiet = TRUE)
+    ext <- tail(unlist(strsplit(x=filename, split="\\.")), n=1)
+    filename <- paste0(temp, ".", ext)
+    file.rename(temp, filename)
+  }
+  filename
+}
+# detects UCSC header (and first track)
+detectUCSCheader <- function(filename){
+  skip=0
+  if(grepl("^.*(.zip)[[:space:]]*$", filename)){
+    zipFileInfo <- unzip(filename, list=TRUE)
+    if(length(zipFileInfo$Name)>1) stop("More than one data file inside zip")
+    con <- unz(filename, filename=zipFileInfo$Name); open(con)
+  }else{
+    con <- file(filename, open = "r")
+  }
+  while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
+    if(grepl("^ *browser", oneLine) | 
+         grepl("^ *track", oneLine) |
+         grepl("^ *#", oneLine)){
+      skip = skip + 1
+    }else{
+      break
+    }
+  }  
+  close(con)
+  return(skip)
+}
+
 # fast reading of big tables
 readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
+  
+  filename <- compressedAndUrl2temp(filename)
+  if(skip==FALSE){
+    skip = 0
+  }else if(skip=="auto"){
+    skip = detectUCSCheader(filename)
+  }
   
   tab30rows <- read_delim(file=filename, skip=skip,
                           delim=sep, n_max = 30,
@@ -18,23 +58,6 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
   return(as.data.frame(df))
 }  
 
-# detects UCSC header (and first track)
-detectUCSCheader <- function(filename){
-  skip=0
-  con <- file(filename, open = "r")
-  while (length(oneLine <- readLines(con, n = 1, warn = FALSE)) > 0) {
-    if(grepl("^ *browser", oneLine) | 
-       grepl("^ *track", oneLine) |
-       grepl("^ *#", oneLine)){
-        skip = skip + 1
-    }else{
-        break
-    }
-  }  
-  close(con)
-  return(skip)
-}
-
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
 #' 
@@ -46,9 +69,7 @@ detectUCSCheader <- function(filename){
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
 #'             or the input itself as a string (containing at least one \\n).
-#'             The file can ending in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
-#'             or starting with \code{https://}, \code{ftp://}, or \code{ftps://}.
-#'
+#'             
 #' @param chr  number of the column that has chromsomes information in the table (Def:1)
 #' @param start number of the column that has start coordinates in the table (Def:2)
 #' @param end  number of the column that has end coordinates in the table (Def:3)
@@ -99,7 +120,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
                       keep.all.metadata=FALSE, zero.based=FALSE, 
                       remove.unusual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
-  
+    
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
@@ -156,8 +177,9 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #'  
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
 #'             or the input itself as a string (containing at least one \\n).
-#'             The file can ending in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
-#'             or starting with \code{https://}, \code{ftp://}, or \code{ftps://}.
+#'             The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+#'             and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+#'             it can also start with \code{https://} or \code{ftps://}.
 #'
 #' @param track.line the number of track lines to skip, "auto" to detect them automatically
 #'                   or FALSE(default) if the bed file doesn't have track lines
@@ -187,6 +209,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
                  blockSizes=11,  
                  blockStarts=12 )
   
+  file <- compressedAndUrl2temp(file)
   if(is.numeric(track.line)){
     skip = track.line
   }else if(track.line=="auto"){
@@ -195,7 +218,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
     skip = 0
   }
   
-  df=read.table(file,skip=skip,nrows=2,header=FALSE)
+  df=read_delim(file,skip=skip,n_max=2,col_names=FALSE, delim="\t")
   numcol=ncol(df)
   
   if(numcol==3){
@@ -226,8 +249,13 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted broad peak file into a GRanges object
 #'
-#' @param file a abosulte or relative path to a bed file formatted by the Encode broadPeak standard
-#' @usage readBroadPeak(file)
+#' @param file an absolute or relative path to a bed file formatted by the Encode broadPeak standard.
+#'             The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+#'             and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+#'             it can also start with \code{https://} or \code{ftps://}.
+#' @param track.line the number of track lines to skip, "auto" to detect them automatically
+#'                   or FALSE(default) if the bed file doesn't have track lines
+#' @usage readBroadPeak(file, track.line=FALSE)
 #' @return a GRanges object
 #'
 #' @examples
@@ -240,24 +268,30 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 #' @docType methods
 #' @rdname readBroadPeak
 #' @export
-readBroadPeak<-function(file){
-  
-            g = readGeneric(file,
-                            strand=6,
-                            meta.cols=list(name=4,
-                                          score=5,
-                                          signalValue=7,
-                                          pvalue=8,
-                                          qvalue=9),
-                            header=FALSE )
-            return(g)
+readBroadPeak<-function(file, track.line=FALSE){
+   
+  g = readGeneric(file,
+                  strand=6,
+                  meta.cols=list(name=4,
+                                 score=5,
+                                 signalValue=7,
+                                 pvalue=8,
+                                 qvalue=9),
+                  header=FALSE,
+                  skip=track.line)
+  return(g)
 }
 
 # ---------------------------------------------------------------------------- #
 #' A function to read the Encode formatted narrowPeak file into a GRanges object
-#' @param file a abosulte or relative path to a bed file formatted by the Encode 
-#'             narrowPeak standard
-#' @usage readNarrowPeak(file)
+#' @param file an absolute or relative path to a bed file formatted by the Encode 
+#'             narrowPeak standard. The file can end in \code{.gz}, \code{.bz2}, 
+#'             \code{.xz}, or \code{.zip} and/or start with \code{http://} or 
+#'             \code{ftp://}. If the file is not compressed
+#'             it can also start with \code{https://} or \code{ftps://}.
+#' @param track.line the number of track lines to skip, "auto" to detect them automatically
+#'                   or FALSE(default) if the bed file doesn't have track lines
+#' @usage readNarrowPeak(file, track.line=FALSE)
 #' @return a GRanges object
 #'
 #' @examples
@@ -270,18 +304,19 @@ readBroadPeak<-function(file){
 #' @docType methods
 #' @rdname readNarrowPeak
 #' @export
-readNarrowPeak<-function(file){
-  
-            g = readGeneric(file,
-                            strand=6,
-                            meta.cols=list(name=4,
-                                          score=5,
-                                          signalValue=7,
-                                          pvalue=8,
-                                          qvalue=9,
-                                          peak=10),
-                            header=FALSE )
-            return(g)
+readNarrowPeak<-function(file, track.line=FALSE){
+
+  g = readGeneric(file,
+                  strand=6,
+                  meta.cols=list(name=4,
+                                score=5,
+                                signalValue=7,
+                                pvalue=8,
+                                qvalue=9,
+                                peak=10),
+                  header=FALSE,
+                  skip=track.line)
+  return(g)
 }
 
 
@@ -289,7 +324,7 @@ readNarrowPeak<-function(file){
 # ---------------------------------------------------------------------------- #
 #' A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores
 #'
-#' @param location for the bed file of the feature 
+#' @param location for the bed file of the feature.
 #' @param flank number of basepairs for the flanking regions
 #' @param clean If set to TRUE, flanks overlapping with other main features will be trimmed
 #' @param remove.unusual  remove chromsomes with unsual names random, Un and antyhing with "_" character
@@ -331,7 +366,10 @@ setMethod("readFeatureFlank",
 # ---------------------------------------------------------------------------- #
 #' Function for reading exon intron and promoter structure from a given bed file
 #'
-#' @param location location of the bed file with 12 or more columns
+#' @param location location of the bed file with 12 or more columns. 
+#'                 The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+#'                 and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+#'                 it can also start with \code{https://} or \code{ftps://}.
 #' @param remove.unusual remove the chromomesomes with unsual names, mainly random chromsomes etc
 #' @param up.flank  up-stream from TSS to detect promoter boundaries
 #' @param down.flank down-stream from TSS to detect promoter boundaries
@@ -362,12 +400,9 @@ setMethod("readTranscriptFeatures",
           signature(location = "character"),
           function(location,remove.unusual,up.flank ,down.flank ,unique.prom){
             
-            # find out if there is a header
-            skip <- detectUCSCheader(location)
-            
             # readBed6
             message('Reading the table...\r')
-            bed=readTableFast(location,header=FALSE,skip=skip)                    
+            bed=readTableFast(location,header=FALSE,skip="auto")                    
             if(remove.unusual)
               bed=bed[grep("_", as.character(bed[,1]),invert=TRUE),]
             
@@ -427,7 +462,12 @@ setMethod("readTranscriptFeatures",
 # ---------------------------------------------------------------------------- #
 #' Converts a gff formated data.frame into a GenomicRanges object. 
 #' The GenomicRanges object needs to be properly formated for the function to work.
-#' @param gff.file path to a gff formatted file
+#' @param gff.file path to a gff formatted file. 
+#'                 The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+#'                 and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+#'                 it can also start with \code{https://} or \code{ftps://}.
+#' @param track.line the number of track lines to skip, "auto" to detect them automatically
+#'                   or FALSE(default) if the bed file doesn't have track lines
 #' @param split.group boolean, whether to split the 9th column of the file
 #' @param split.char character that is used as a separator of the 9th column. ';' by default
 #' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
@@ -441,7 +481,7 @@ setMethod("readTranscriptFeatures",
 #' 
 #' @docType methods
 #' @export
-gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL, 
+gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.char=';',filter=NULL, 
                         zero.based=FALSE){
   
   gff = readGeneric(gff.file, 
@@ -454,7 +494,8 @@ gffToGRanges = function(gff.file, split.group=FALSE, split.char=';',filter=NULL,
                                   score=6,
                                   frame=8,
                                   group=9), 
-                    zero.based=zero.based)
+                    zero.based=zero.based,
+                    skip=track.line)
   
   if(split.group){
     message('splitting the group.column...')
