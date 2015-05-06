@@ -10,7 +10,8 @@ readGeneric(file, chr = 1, start = 2, end = 3, strand = NULL,
   remove.unusual = FALSE, header = FALSE, skip = 0, sep = "\\t")
 }
 \arguments{
-\item{file}{location of the file, a character string such as: "/home/user/my.bed"}
+\item{file}{location of the file, a character string such as: "/home/user/my.bed"
+            or the input itself as a string (containing at least one \\n).}
 
 \item{chr}{number of the column that has chromsomes information in the table (Def:1)}
 

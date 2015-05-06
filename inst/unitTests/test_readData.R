@@ -90,4 +90,32 @@ test_readGeneric = function()
   
   if (file.exists(tab.test3.gz)) file.remove(tab.test3.gz)
   if (file.exists(tab.test3.zip)) file.remove(tab.test3.zip)
+  
+  #10. test a file with UCSC header
+  tab.test4=system.file('unitTests/tab.test4', package='genomation')
+  r8 = readGeneric(tab.test4, chr=1, start=2, end=3, strand=6, 
+                   meta.col=c(score=5,
+                              name=4, 
+                              thickStart=7,  
+                              thickEnd=8, 
+                              itemRgb=9), 
+                   header=FALSE, skip=3,
+                   zero.based=TRUE)
+  r9 = readBed(tab.test4, track.line=3)
+  r10 = readBed(tab.test4, track.line="auto")
+  
+  g8 =  GRanges(c('chr7','chr7','chr7'), 
+                IRanges(c(1,11,16), c(10,15,20)), 
+                strand=c('+','+','+'),
+                score=as.integer(c(0,0,0)),
+                name=c("Pos1","Pos2","Pos3"),
+                thickStart=as.integer(c(0,10,15)),
+                thickEnd=as.integer(c(10,15,20)),
+                itemRgb=c("255,0,0","255,0,0","255,0,0"))
+  
+  checkIdentical(g8, r8)
+  checkIdentical(g8, r9)
+  checkIdentical(g8, r10)
 }
+
+
