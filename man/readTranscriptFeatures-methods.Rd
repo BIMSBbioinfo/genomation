@@ -12,7 +12,10 @@ readTranscriptFeatures(location,remove.unusual=TRUE,up.flank=1000,down.flank=100
   up.flank = 1000, down.flank = 1000, unique.prom = TRUE)
 }
 \arguments{
-\item{location}{location of the bed file with 12 or more columns}
+\item{location}{location of the bed file with 12 or more columns.
+The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+it can also start with \code{https://} or \code{ftps://}.}
 
 \item{remove.unusual}{remove the chromomesomes with unsual names, mainly random chromsomes etc}
 

@@ -6,11 +6,17 @@
 \title{Converts a gff formated data.frame into a GenomicRanges object.
 The GenomicRanges object needs to be properly formated for the function to work.}
 \usage{
-gffToGRanges(gff.file, split.group = FALSE, split.char = ";",
-  filter = NULL, zero.based = FALSE)
+gffToGRanges(gff.file, track.line = FALSE, split.group = FALSE,
+  split.char = ";", filter = NULL, zero.based = FALSE)
 }
 \arguments{
-\item{gff.file}{path to a gff formatted file}
+\item{gff.file}{path to a gff formatted file.
+The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
+and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
+it can also start with \code{https://} or \code{ftps://}.}
+
+\item{track.line}{the number of track lines to skip, "auto" to detect them automatically
+or FALSE(default) if the bed file doesn't have track lines}
 
 \item{split.group}{boolean, whether to split the 9th column of the file}
 

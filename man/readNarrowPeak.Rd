@@ -5,11 +5,17 @@
 \alias{readNarrowPeak}
 \title{A function to read the Encode formatted narrowPeak file into a GRanges object}
 \usage{
-readNarrowPeak(file)
+readNarrowPeak(file, track.line=FALSE)
 }
 \arguments{
-\item{file}{a abosulte or relative path to a bed file formatted by the Encode
-narrowPeak standard}
+\item{file}{an absolute or relative path to a bed file formatted by the Encode
+narrowPeak standard. The file can end in \code{.gz}, \code{.bz2},
+\code{.xz}, or \code{.zip} and/or start with \code{http://} or
+\code{ftp://}. If the file is not compressed
+it can also start with \code{https://} or \code{ftps://}.}
+
+\item{track.line}{the number of track lines to skip, "auto" to detect them automatically
+or FALSE(default) if the bed file doesn't have track lines}
 }
 \value{
 a GRanges object
