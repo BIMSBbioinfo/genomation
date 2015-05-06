@@ -12,7 +12,7 @@ readFeatureFlank(location,remove.unusual=TRUE,flank=2000,clean=TRUE,feature.flan
   flank = 2000, clean = TRUE, feature.flank.name = NULL)
 }
 \arguments{
-\item{location}{for the bed file of the feature}
+\item{location}{for the bed file of the feature.}
 
 \item{remove.unusual}{remove chromsomes with unsual names random, Un and antyhing with "_" character}
 
