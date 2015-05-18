@@ -75,7 +75,7 @@ readBam = function(target, windows, rpm=FALSE,
     }
   }else{
     if(class(param) == 'ScanBamParam'){
-      bamWhich(param) <- reduce(windows, ignore.strand=TRUE) #TODO?
+      bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
     }else{
       stop('param needs to be an object of class ScanBamParam')
     }
@@ -85,7 +85,7 @@ readBam = function(target, windows, rpm=FALSE,
     
     alnpairs <- readGAlignmentPairs(target, param=param, use.names=TRUE)
     # remove duplicate rows
-    #e.g. when every read from pair maps into two different windows, then the pair is duplicated in alnpairs
+    #e.g. when each read from pair maps into two different windows, then the pair is duplicated in alnpairs
     uniq.names.alnpairs <- unique(names(alnpairs))
     ap <- GAlignmentPairs(names=names(alnpairs[1]), first=first(alnpairs[1]), last=last(alnpairs[1]), isProperPair=TRUE)
     for(i in 2:length(uniq.names.alnpairs)){
@@ -355,8 +355,8 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             if(type == 'bam')
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
-                             extend=extend, param=param, paired.end=bam.paired.end,
-                             stranded=stranded)
+                             extend=extend, param=param, 
+                             paired.end=bam.paired.end, stranded=stranded)
             if(type == 'bigWig')
               covs = readBigWig(target=target, windows=windows)            
             

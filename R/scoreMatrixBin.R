@@ -143,7 +143,10 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'               based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
-#'                   
+#' @param bam.paired.end boolean indicating whether given BAM file contains paired-end reads (default:FALSE).
+#'                       Paired-reads will be treated as fragments.
+#' @param stranded boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then 
+#'                 strands of reads will be set up to "*".               
 #'                                                 
 #' @return returns a \code{scoreMatrix} object
 #' 
@@ -173,7 +176,9 @@ setGeneric("ScoreMatrixBin",
                     rpm=FALSE,
                     unique=FALSE,
                     extend=0,
-                    param=NULL
+                    param=NULL,
+                    bam.paired.end=FALSE,
+                    stranded=TRUE
                     ) 
              standardGeneric("ScoreMatrixBin") )
 
@@ -246,11 +251,14 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
-#' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10, bin.op='mean', strand.aware, type, rpm, unique, extend, param)
+#' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10, bin.op='mean', 
+#'                                                      strand.aware, type, rpm, unique, extend, param,
+#'                                                      bam.paired.end=FALSE, stranded=TRUE)
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
-                   type, rpm, unique, extend, param){
+                   type, rpm, unique, extend, param,
+                   bam.paired.end=FALSE, stranded=TRUE){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
@@ -267,7 +275,8 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             
             if(type == 'bam')
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
-                             extend=extend, param=param)
+                             extend=extend, param=param,
+                             paired.end=bam.paired.end, stranded=stranded)
             if(type == 'bigWig')
               covs = readBigWig(target=target, windows=windows)        
             
