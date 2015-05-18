@@ -92,10 +92,16 @@ test_ScoreMatrix_character_GRanges = function()
   target = GRanges(rep(c(1,2),each=7), 
                    IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
                    weight = rep(c(1,2),each=7), 
-                   strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+                   strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))  
   windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
                     strand=c('-','+','-','+'))
   
+  target.paired.end = GRanges(rep(1,each=7), 
+                              IRanges(c(1,1,2,3,7,8,9), width=c(19, 19, 19, 19, 16, 16, 16)),
+                              strand=rep("+", times=7))
+  windows.paired.end = GRanges(rep(c(1),each=4), IRanges(c(7,8,20, 21), width=10), 
+                               strand=c('+','+','+','+'))
+
   # -----------------------------------------------#
   # usage
   # bam file
@@ -111,16 +117,21 @@ test_ScoreMatrix_character_GRanges = function()
   checkEquals(s2, m2)
   
   #bam file, rpm=FALSE, unique=TRUE
-  s3 = ScoreMatrix(bam.file, windows, type='bam', unique=T)
+  s3 = ScoreMatrix(bam.file, windows, type='bam', unique=TRUE)
   m3 = ScoreMatrix(unique(target), windows)
   checkEquals(s3,m3)
   
   #bam file, rpm=FALSE, unique=TRUE, extend=1
-  s4 = ScoreMatrix(bam.file, windows, type='bam', unique=T, extend=1)
+  s4 = ScoreMatrix(bam.file, windows, type='bam', unique=TRUE, extend=1)
   m4 = ScoreMatrix(resize(unique(target), width=1), windows)
   checkEquals(s4,m4)
   
-  
+  # bam file with paired-end reads, rpm=FALSE, unique=TRUE, extend=16
+  bam.pe.file = system.file('unitTests/test_pairedend.bam', package='genomation')
+  s5 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE, unique=TRUE, extend=16)
+  m5 = ScoreMatrix(resize(unique(target.paired.end), width=16), windows.paired.end)
+  checkEquals(s5,m5)
+
   # -----------------------------------------------#
   # errors
   # error upon not specifying the file

@@ -14,62 +14,98 @@ getColors = function(n) {
 # removes ranges that fell of the rle object
 # does not check for the correspondence of the chromosome names - always check before using this function
 constrainRanges = function(target, windows){
-    
+  
   checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
-    checkClass(windows, 'GRanges')
-    
-    mcols(windows)$X_rank = 1:length(windows)
-    r.chr.len = elementLengths(target)
-    constraint = GRanges(seqnames=names(r.chr.len),
-                         IRanges(start=rep(1,length(r.chr.len)),
-                                   end=as.numeric(r.chr.len)))
-    # suppressWarnings is done becuause GenomicRanges function give warnings 
+  checkClass(windows, 'GRanges')
+  
+  mcols(windows)$X_rank = 1:length(windows)
+  r.chr.len = elementLengths(target)
+  constraint = GRanges(seqnames=names(r.chr.len),
+                       IRanges(start=rep(1,length(r.chr.len)),
+                               end=as.numeric(r.chr.len)))
+  # suppressWarnings is done becuause GenomicRanges function give warnings 
   #if you don't have the same seqnames in both objects
   win.list.chr = suppressWarnings(subsetByOverlaps(windows, 
                                                    constraint,
                                                    type = "within",
                                                    ignore.strand = TRUE))
-    
-    if(length(win.list.chr) == 0)
+  
+  if(length(win.list.chr) == 0)
     stop('All windows fell have coordinates outside windows boundaries')
-    return(win.list.chr)
+  return(win.list.chr)
 }
 
 
 # ---------------------------------------------------------------------------- #
 # checkw whether the x object corresponds to the given class
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
-
-    fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
-    if(!class(x) %in% class.name)
-        stop(paste(fun.name,': ', 
+  
+  fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
+  if(!class(x) %in% class.name)
+    stop(paste(fun.name,': ', 
                var.name, 
                ' is not of class: ', 
                paste(class.name, collapse=' '), 
                '\n', sep=''))
 }
 
+galpTo2Ranges <- function(x)
+{
+  gr1 <- granges(first(x))
+  gr2 <- granges(GenomicAlignments:::invertRleStrand(last(x)))
+  ans <- split(c(gr1, gr2), rep.int(seq_along(x), 2L))
+  names(ans) <- names(x)
+  ans
+}
 
 # ---------------------------------------------------------------------------- #
 # given a big bam path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
 readBam = function(target, windows, rpm=FALSE,
-                   unique=FALSE, extend=0, param=NULL, ...){
- 
+                   unique=FALSE, extend=0, param=NULL, paired.end=FALSE, stranded=TRUE, ...){
+    
   # generates the ScanBamParam object
   if(is.null(param)){
-    param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE))
+    if(paired.end){
+      param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE), 
+                            flag=scanBamFlag(isPaired=TRUE, isProperPair=TRUE, 
+                                             isUnmappedQuery=FALSE, hasUnmappedMate=FALSE))
+    }else{
+      param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE))  
+    }
   }else{
     if(class(param) == 'ScanBamParam'){
-      bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
+      bamWhich(param) <- reduce(windows, ignore.strand=TRUE) #TODO?
     }else{
-      stop('param needs to be an object of clas ScanBamParam')
+      stop('param needs to be an object of class ScanBamParam')
     }
   }
   
-  # get the coverage vector for 
-  # given locations
-  alns <- granges(readGAlignments(target, param=param))# read alignments
+  if(paired.end){
+    
+    alnpairs <- readGAlignmentPairs(target, param=param, use.names=TRUE)
+    # remove duplicate rows
+    #e.g. when every read from pair maps into two different windows, then the pair is duplicated in alnpairs
+    uniq.names.alnpairs <- unique(names(alnpairs))
+    ap <- GAlignmentPairs(names=names(alnpairs[1]), first=first(alnpairs[1]), last=last(alnpairs[1]), isProperPair=TRUE)
+    for(i in 2:length(uniq.names.alnpairs)){
+      ap <- append(ap, alnpairs[names(alnpairs)==uniq.names.alnpairs[i]][1])
+    }
+
+    alns <- granges(ap)
+
+    if(stranded){
+      # if first read is on - (resp. +) strand then return - (+)
+      strand(alns) = ifelse(start(first(ap)) < start(last(ap)), "+", "-") 
+    }
+    
+  }else{
+    alns <- granges(readGAlignments(target, param=param, use.names=TRUE))
+  }
+
+  if(!stranded)
+    strand(alns) = "*"
+  
   if(unique)
     alns = unique(alns)
   
@@ -78,7 +114,7 @@ readBam = function(target, windows, rpm=FALSE,
   if(extend < 0)
     stop('extend needs to be a positive integer')
   
-  
+  # get the coverage vector for given locations
   covs=coverage(alns)
   
   if(rpm){
@@ -98,7 +134,7 @@ readBigWig = function(target, windows=NULL, ...){
   
   
   if(class(windows) != 'GRanges')
-      stop('windows argument needs to be a GRanges object')
+    stop('windows argument needs to be a GRanges object')
   
   
   if(is.null(windows)){
@@ -162,6 +198,11 @@ readBigWig = function(target, windows=NULL, ...){
 #'              based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
+#' @param bam.paired.end boolean indicating whether given BAM file contains paired-end reads (default:FALSE).
+#'                       Paired-reads will be treated as fragments.
+#' @param stranded boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then 
+#'                 strands of reads will be set up to "*".
+#'                         
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
@@ -183,21 +224,22 @@ readBigWig = function(target, windows=NULL, ...){
 #' # windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
 #' # scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
 #'  
-#'  
 #' @docType methods
 #' @rdname ScoreMatrix-methods           
 #' @export
 setGeneric("ScoreMatrix",
-                    function(target,windows,
-                             strand.aware=FALSE,
-                             weight.col=NULL,
-                             is.noCovNA=FALSE,
-                             type='',
-                             rpm=FALSE, 
-                             unique=FALSE, 
-                             extend=0,
-                             param=NULL) 
-                                standardGeneric("ScoreMatrix") )
+           function(target,windows,
+                    strand.aware=FALSE,
+                    weight.col=NULL,
+                    is.noCovNA=FALSE,
+                    type='',
+                    rpm=FALSE, 
+                    unique=FALSE, 
+                    extend=0,
+                    param=NULL,
+                    bam.paired.end=FALSE,
+                    stranded=TRUE) 
+             standardGeneric("ScoreMatrix") )
 
 
 
@@ -207,52 +249,51 @@ setGeneric("ScoreMatrix",
 setMethod("ScoreMatrix",signature("RleList","GRanges"),
           function(target,windows,strand.aware){
             
-   #check if all windows are equal length
-    if( length(unique(width(windows))) >1 ){
-        stop("width of 'windows' are not equal, provide 'windows' with equal widths")
-    }     
-        
-    # set a uniq id for the GRanges
-    windows = constrainRanges(target, windows)
-        
-   
-      # fetches the windows and the scores
-    chrs = intersect(names(target), as.character(unique(seqnames(windows))))
-    myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
-    
-    #  get a list of matrices from Views object
-    #  operation below lists a matrix for each chromosome
-    mat = lapply(myViews,function(x) t(viewApply(x,as.vector)) )
-    #mat=as.matrix(myViews) # this might work as well - have to check which one is faster
-    
-    # combine the matrices from chromosomes 
-    mat = do.call("rbind",mat)   
-    
-    # get the ranks of windows, when things are reorganized by as(...,"RangesList")
-    r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )    
-    ranks=do.call("c",r.list)
-    
-    # put original window order as rownames
-    # this is very important to keep
-    # if we have multiple RleLists for the same set of windows
-    # we need to know which windows are removed from which set
-    # so when we are doing something comparative (clustering windows
-    # based on different histone marks) we only work with windows
-    # that are covered by all histone marks
-      rownames(mat) = ranks  
-    
-    # if strand aware is TRUE, we need to flip the windows on the minus strand
-      if(strand.aware == TRUE){
-      orig.rows=which(as.character(strand(windows)) == '-')
-      mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
-                                               orig.rows, ncol(mat):1]
-      }
-
-    # reorder matrix
-      mat = mat[order(ranks),] 
-    
-  return(new("ScoreMatrix",mat))
-})
+            #check if all windows are equal length
+            if( length(unique(width(windows))) >1 ){
+              stop("width of 'windows' are not equal, provide 'windows' with equal widths")
+            }     
+            
+            # set a uniq id for the GRanges
+            windows = constrainRanges(target, windows)
+            
+            
+            # fetches the windows and the scores
+            chrs = intersect(names(target), as.character(unique(seqnames(windows))))
+            myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
+            
+            #  get a list of matrices from Views object
+            #  operation below lists a matrix for each chromosome
+            mat = lapply(myViews,function(x) t(viewApply(x,as.vector)) )
+            
+            # combine the matrices from chromosomes 
+            mat = do.call("rbind",mat)   
+            
+            # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+            r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )    
+            ranks=do.call("c",r.list)
+            
+            # put original window order as rownames
+            # this is very important to keep
+            # if we have multiple RleLists for the same set of windows
+            # we need to know which windows are removed from which set
+            # so when we are doing something comparative (clustering windows
+            # based on different histone marks) we only work with windows
+            # that are covered by all histone marks
+            rownames(mat) = ranks  
+            
+            # if strand aware is TRUE, we need to flip the windows on the minus strand
+            if(strand.aware == TRUE){
+              orig.rows=which(as.character(strand(windows)) == '-')
+              mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
+                                                         orig.rows, ncol(mat):1]
+            }
+            
+            # reorder matrix
+            mat = mat[order(ranks),] 
+            
+            return(new("ScoreMatrix",mat))
+          })
 
 
 
@@ -265,38 +306,42 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
             
             #make coverage vector  from target
             if(is.null(weight.col)){
-                      target.rle=coverage(target)
+              target.rle=coverage(target)
             }else{
               if(! weight.col %in% names(mcols(target)) ){
-                  stop("provided column 'weight.col' does not exist in tartget\n")
+                stop("provided column 'weight.col' does not exist in tartget\n")
               }
               if(is.noCovNA)
-                { # adding 1 to figure out NA columns later
-                  target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
-                  mat=ScoreMatrix(target.rle,windows,strand.aware)
-                  mat=mat-1 # substract 1
-                  mat[mat<0]=NA # everything that are <0 are NA
-                  return(mat)
-                }
-                target.rle=coverage(target,weight= weight.col ) 
-                
+              { # adding 1 to figure out NA columns later
+                target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
+                mat=ScoreMatrix(target.rle,windows,strand.aware)
+                mat=mat-1 # substract 1
+                mat[mat<0]=NA # everything that are <0 are NA
+                return(mat)
+              }
+              target.rle=coverage(target,weight= weight.col ) 
+              
             }
             
-
+            
             # call ScoreMatrix function
             ScoreMatrix(target.rle,windows,strand.aware)
-})
+          })
 
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
-#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target,windows, strand.aware, type='', rpm=FALSE, unique=FALSE, extend=0, param=NULL)
+#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, type='', rpm=FALSE,
+#'                                                   unique=FALSE, extend=0, param=NULL, 
+#'                                                   bam.paired.end=FALSE, stranded=TRUE)
 setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows, strand.aware, type='', 
-                   rpm=FALSE, unique=FALSE, extend=0, param=NULL){
-            
+                   rpm=FALSE, unique=FALSE, extend=0, 
+                   param=NULL, bam.paired.end=FALSE, 
+                   stranded=TRUE){
+                        
             if(!file.exists(target)){
-                      stop("Indicated 'target' file does not exist\n")
+              stop("Indicated 'target' file does not exist\n")
             }
             
             fm = c('bam','bigWig')
@@ -310,11 +355,12 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             if(type == 'bam')
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
-                             extend=extend, param=param)
+                             extend=extend, param=param, paired.end=bam.paired.end,
+                             stranded=stranded)
             if(type == 'bigWig')
               covs = readBigWig(target=target, windows=windows)            
             
-            # get coverage vectors
+            #get coverage vectors
             ScoreMatrix(covs,windows,strand.aware)
           })
 
@@ -345,29 +391,29 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @rdname binMatrix-methods
 #' @export
 setGeneric("binMatrix", 
-              function(x, bin.num=NULL, fun='mean')
-                standardGeneric("binMatrix") )
+           function(x, bin.num=NULL, fun='mean')
+             standardGeneric("binMatrix") )
 
 #' @aliases binMatrix,ScoreMatrix-method
 #' @rdname binMatrix-methods
 setMethod("binMatrix", signature("ScoreMatrix"),
-            function(x, bin.num=NULL, fun='mean'){
-          
-                if(is.null(bin.num))
-                    return(x)
-                    
-                if(bin.num > ncol(x))
-                    stop("number of given bins is bigger 
-                than the number of matrix columns")
-          
-        if(is.character(fun))
-                  fun = match.fun(fun)
-        
-                coord = binner(1, ncol(x), bin.num)
-                bmat = mapply(function(a,b)apply(x[,a:b],1,fun), coord[1,], coord[2,])
-                                        
-                return(new("ScoreMatrix", bmat))
-         }
+          function(x, bin.num=NULL, fun='mean'){
+            
+            if(is.null(bin.num))
+              return(x)
+            
+            if(bin.num > ncol(x))
+              stop("number of given bins is bigger 
+                   than the number of matrix columns")
+            
+            if(is.character(fun))
+              fun = match.fun(fun)
+            
+            coord = binner(1, ncol(x), bin.num)
+            bmat = mapply(function(a,b)apply(x[,a:b],1,fun), coord[1,], coord[2,])
+            
+            return(new("ScoreMatrix", bmat))
+          }
 )
 
 # ---------------------------------------------------------------------------- #
@@ -409,10 +455,10 @@ setMethod("show", "ScoreMatrix",
 #' @rdname scaleScoreMatrix-methods
 #' @export
 setGeneric("scaleScoreMatrix", 
-                function(mat, 
-                         columns=FALSE, rows=TRUE, 
-                         scalefun=NULL) 
-                        standardGeneric("scaleScoreMatrix") )
+           function(mat, 
+                    columns=FALSE, rows=TRUE, 
+                    scalefun=NULL) 
+             standardGeneric("scaleScoreMatrix") )
 
 #' @aliases scaleScoreMatrix,ScoreMatrix-method
 #' @rdname scaleScoreMatrix-methods
