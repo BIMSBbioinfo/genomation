@@ -37,7 +37,7 @@ constrainRanges = function(target, windows){
 
 
 # ---------------------------------------------------------------------------- #
-# checkw whether the x object corresponds to the given class
+# check whether the x object corresponds to the given class
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
   
   fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
@@ -58,51 +58,77 @@ galpTo2Ranges <- function(x)
   ans
 }
 
+windows.range <- function(windows){
+  chrs <- unique(as.character(seqnames(windows)))
+  s<-c();e<-c()
+  for(i in 1:length(chrs)){
+    k <- windows[seqnames(windows)==chrs[i],]
+    s <- c(s, start(k)[1])
+    e <- c(e, end(k)[length(k)])
+  }
+  GRanges(chrs, IRanges(start=s, end=e), strand="*")
+}
+
+
 # ---------------------------------------------------------------------------- #
 # given a big bam path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
 readBam = function(target, windows, rpm=FALSE,
                    unique=FALSE, extend=0, param=NULL, paired.end=FALSE, stranded=TRUE, ...){
-    
-  # generates the ScanBamParam object
-  if(is.null(param)){
-    if(paired.end){
-      param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE), 
-                            flag=scanBamFlag(isPaired=TRUE, isProperPair=TRUE, 
-                                             isUnmappedQuery=FALSE, hasUnmappedMate=FALSE))
-    }else{
-      param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE))  
-    }
-  }else{
-    if(class(param) == 'ScanBamParam'){
-      bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
-    }else{
-      stop('param needs to be an object of class ScanBamParam')
-    }
-  }
+  
+  # check the ScanBamParam object
+  if(!is.null(param) & class(param)!='ScanBamParam')
+    stop('param needs to be an object of class ScanBamParam')
+
   
   if(paired.end){
     
-    alnpairs <- readGAlignmentPairs(target, param=param, use.names=TRUE)
-    # remove duplicate rows
-    #e.g. when each read from pair maps into two different windows, then the pair is duplicated in alnpairs
-    uniq.names.alnpairs <- unique(names(alnpairs))
-    ap <- GAlignmentPairs(names=names(alnpairs[1]), first=first(alnpairs[1]), last=last(alnpairs[1]), isProperPair=TRUE)
-    for(i in 2:length(uniq.names.alnpairs)){
-      ap <- append(ap, alnpairs[names(alnpairs)==uniq.names.alnpairs[i]][1])
+    flag <- scanBamFlag(isPaired=TRUE, isProperPair=TRUE, 
+                        isUnmappedQuery=FALSE, hasUnmappedMate=FALSE)
+    #reads that map into window which stretches from start of the first windows to end of the last window
+    wind = windows.range(windows)
+    if(is.null(param)){
+      param <- ScanBamParam(which=reduce(wind, ignore.strand=TRUE), flag=flag)
+    }else{
+      bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
     }
-
-    alns <- granges(ap)
-
+    alnp <- readGAlignmentPairs(target, param=param, use.names=TRUE)
+    
+    #reads within gaps between windows
+    gaps.wind <- gaps(windows)
+    if(is.null(param)){
+      param2 <- ScanBamParam(which=reduce(gaps.wind, ignore.strand=TRUE), flag=flag)
+    }else{
+      bamWhich(param) <- reduce(gaps.wind, ignore.strand=TRUE)
+    }
+    alnp.gap <- readGAlignmentPairs(target, param=param2, use.names=TRUE)
+    alnp.gap.uniq <- unique(granges(alnp.gap))
+    reads.within.gaps <- alnp.gap.uniq[as.data.frame(findOverlaps(alnp.gap.uniq, gaps.wind, type="within"))$queryHits]
+    
+    #reads that overlap with windows (at least one read from pair)
+    if(length(reads.within.gaps)!=0){
+      g <- findOverlaps(alnp, reads.within.gaps, type="equal")
+      alns <- alnp[-unique(as.data.frame(g)$queryHits)]
+    }else{
+      alns <- alnp
+    }
+    
     if(stranded){
       # if first read is on - (resp. +) strand then return - (+)
       strand(alns) = ifelse(start(first(ap)) < start(last(ap)), "+", "-") 
     }
+    alns <- granges(alns)
     
   }else{
+    
+    if(is.null(param)){
+      param <- ScanBamParam(which=reduce(wind, ignore.strand=TRUE))
+    }else{
+      bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
+    }
     alns <- granges(readGAlignments(target, param=param, use.names=TRUE))
   }
-
+  
   if(!stranded)
     strand(alns) = "*"
   
@@ -339,7 +365,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
                    rpm=FALSE, unique=FALSE, extend=0, 
                    param=NULL, bam.paired.end=FALSE, 
                    stranded=TRUE){
-                        
+            
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
