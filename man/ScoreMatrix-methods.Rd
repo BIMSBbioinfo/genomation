@@ -10,13 +10,15 @@
 \usage{
 ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
   is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
-  extend = 0, param = NULL)
+  extend = 0, param = NULL, bam.paired.end = FALSE, stranded = TRUE)
 
 \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 
 \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware, weight.col, is.noCovNA)
 
-\\S4method{ScoreMatrix}{character,GRanges}(target,windows, strand.aware, type='', rpm=FALSE, unique=FALSE, extend=0, param=NULL)
+\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, type='', rpm=FALSE,
+                                                  unique=FALSE, extend=0, param=NULL,
+                                                  bam.paired.end=FALSE, stranded=TRUE)
 }
 \arguments{
 \item{target}{\code{RleList} , \code{GRanges}, a BAM file or a BigWig
@@ -57,6 +59,12 @@ based on chr, start, end and strand}
 \item{extend}{numeric which tells the function to extend the reads to width=extend}
 
 \item{param}{ScanBamParam object}
+
+\item{bam.paired.end}{boolean indicating whether given BAM file contains paired-end reads (default:FALSE).
+Paired-reads will be treated as fragments.}
+
+\item{stranded}{boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then
+                strands of reads will be set up to "*".}
 }
 \value{
 returns a \code{ScoreMatrix} object
