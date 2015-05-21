@@ -100,7 +100,11 @@ test_ScoreMatrixBin_character_GRanges = function()
                    strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
   windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
                     strand=c('-','+','-','+'))
-  
+  target.paired.end = GRanges(rep(1,each=7), 
+                              IRanges(c(1,1,2,3,7,8,9), width=c(19, 19, 19, 19, 16, 16, 16)),
+                              strand=rep("+", times=7))
+  windows.paired.end = GRanges(rep(c(1),each=4), IRanges(c(7,8,20, 21), width=10), 
+                               strand=c('+','+','+','+'))
   # -----------------------------------------------#
   # usage
   # bam file
@@ -121,9 +125,15 @@ test_ScoreMatrixBin_character_GRanges = function()
   checkEquals(s3,m3)
   
   #bam file, rpm=FALSE, unique=TRUE, extend=1
-  s4 = ScoreMatrixBin(bam.file, windows, type='bam',bin.num=2, unique=T, extend=1)
+  s4 = ScoreMatrixBin(bam.file, windows, type='bam', bin.num=2, unique=T, extend=1)
   m4 = ScoreMatrixBin(resize(unique(target), width=1), windows, bin.num=2)
   checkEquals(s4,m4)
+  
+  # bam file with paired-end reads, rpm=FALSE, unique=TRUE, extend=16
+  bam.pe.file = system.file('unitTests/test_pairedend.bam', package='genomation')
+  s5 = ScoreMatrixBin(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE, unique=TRUE, extend=16)
+  m5 = ScoreMatrixBin(resize(unique(target.paired.end), width=16), windows.paired.end)
+  checkEquals(s5,m5)
   
   #bigWig file - missing
   
