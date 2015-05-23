@@ -15,6 +15,7 @@ LazyLoad: yes
 VignetteBuilder: knitr
 biocViews: Annotation, Sequencing, Visualization, CpGIsland
 Encoding: latin1
+URL: http://bioinformatics.mdc-berlin.de/genomation/
 Depends:
     R (>= 3.0.0),grid
 Imports:
