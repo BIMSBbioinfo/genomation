@@ -24,6 +24,7 @@ Imports:
 	IRanges,
 	Rsamtools,
 	readr,
+  data.table,
 	plyr,
 	reshape2,
 	ggplot2,
@@ -31,7 +32,8 @@ Imports:
 	rtracklayer,
 	gridBase,
 	impute,
-  parallel
+  parallel,
+  plotrix
 Suggests:
   RUnit,
 	knitr,
