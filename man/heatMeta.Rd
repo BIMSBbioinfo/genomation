@@ -4,12 +4,16 @@
 \alias{heatMeta}
 \title{Heatmap for meta-region profiles}
 \usage{
-heatMeta(mat, profile.names = NULL, xcoords = NULL, col = NULL,
-  meta.rescale = FALSE, legend.name = NULL, cex.legend = 1, xlab = NULL,
-  main = "", cex.lab = 1, cex.axis = 1)
+heatMeta(mat, centralTend = "mean", profile.names = NULL, xcoords = NULL,
+  col = NULL, meta.rescale = FALSE, winsorize = c(0, 100),
+  legend.name = NULL, cex.legend = 1, xlab = NULL, main = "",
+  cex.lab = 1, cex.axis = 1)
 }
 \arguments{
 \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList} to be plotted}
+
+\item{centralTend}{a character that determines central tendency of meta-profile(s).
+It takes "mean" (default) or "median".}
 
 \item{profile.names}{a character vector for names of profiles. If NULL,
 the names
@@ -32,6 +36,13 @@ color scheme to be used. If NULL, a version of jet colors will be
 \item{meta.rescale}{if TRUE meta-region profiles are scaled to 0 to 1 range by
 subracting the min from profiles and dividing them by
 max-min.}
+
+\item{winsorize}{Numeric vector of two, defaults to c(0,100). This vector
+determines the upper and lower percentile values to limit the
+extreme values. For example, c(0,99) will limit the values to
+only 99th percentile, everything above the 99 percentile will
+be equalized to the value of 99th percentile. This is useful
+for visualization of matrices that have outliers.}
 
 \item{legend.name}{a character label plotted next to the legend}
 

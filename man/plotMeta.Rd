@@ -5,9 +5,10 @@
 \alias{plotMeta}
 \title{Line plot(s) for meta-region profiles}
 \usage{
-plotMeta(mat, overlay = TRUE, profile.names = NULL, xcoords = NULL,
-  meta.rescale = FALSE, line.col = NULL, ylim = NULL,
-  ylab = "average score", xlab = "bases", ...)
+plotMeta(mat, centralTend = "mean", overlay = TRUE, winsorize = c(0, 100),
+  profile.names = NULL, xcoords = NULL, meta.rescale = FALSE,
+  line.col = NULL, dispersion = FALSE, dispersion.col = NULL,
+  ylim = NULL, ylab = "average score", xlab = "bases", ...)
 }
 \arguments{
 \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList} object. If it is a
@@ -15,10 +16,20 @@ plotMeta(mat, overlay = TRUE, profile.names = NULL, xcoords = NULL,
 the same number of
 columns.}
 
+\item{centralTend}{a character that determines central tendency of meta-profile(s).
+It takes "mean" (default) or "median".}
+
 \item{overlay}{If TRUE multiple profiles will be overlayed in the same plot
 (Default:TRUE). If FALSE, and mat is a ScoreMatrixList, consider
 using par(mfrow=c(1,length(mat)))  to see the plots from all
 matrices at once.}
+
+\item{winsorize}{Numeric vector of two, defaults to c(0,100). This vector
+determines the upper and lower percentile values to limit the
+extreme values. For example, c(0,99) will limit the values to
+only 99th percentile, everything above the 99 percentile will
+be equalized to the value of 99th percentile.This is useful
+for visualization of matrices that have outliers.}
 
 \item{profile.names}{a character vector for names of the profiles. The order
 should be same as the as the order of ScoreMatrixList.}
@@ -30,10 +41,23 @@ relative positions of each column in the score matrix. If NULL (Default),
 xcoords equals to 1:ncol(mat)}
 
 \item{meta.rescale}{if TRUE meta-region profiles are scaled to 0 to 1 range by
-subracting the min from profiles and dividing them by max-min.}
+subtracting the min from profiles and dividing them by max-min.
+If dispersion is not FALSE, then dispersion will be scaled as well.}
 
-\item{line.col}{color of lines for the meta-region profiles. Defaults to colors from
+\item{line.col}{color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
 \code{rainbow()} function.}
+
+\item{dispersion}{show dispersion around \code{centralTend} (default:FALSE). It takes values:
+\itemize{
+ \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
+ \item{"sd"}{shows standard deviation and 2*(standard deviation)}
+ \item{"IQR"}{shows s1st and 3rd quartile) and
+              confidence interval around the median based on the median +/- 1.57 * IQR/sqrt(n) (notches)}
+}}
+
+\item{dispersion.col}{color of band of \code{dispersion}.
+Defaults to colors from \code{rainbow()} function with 0.5 transparency
+(rainbow(length(mat), alpha = 0.5, start=0.1)).}
 
 \item{ylim}{same as \code{ylim} at \code{\link{plot}} function.
 if NULL ylim is estimated from all meta-region profiles.}
@@ -53,6 +77,12 @@ returns the meta-region profiles invisibly as a matrix.
 Function calculates meta-profile(s) from a ScoreMatrix or a ScoreMatrixList, then
 produces a line plot or a set of line plots for meta-region profiles
 }
+\note{
+Notches show the 95 percent confidence interval for the median
+according to an approximation based on the normal distribution
+They are used to compare groups - if notches corresponding to adjacent base pairs
+on the plot do not overlap, this is strong evidence that median differs.
+}
 \examples{
 # data(cage)
 # data(promoters)
@@ -64,5 +94,9 @@ produces a line plot or a set of line plots for meta-region profiles
 # create a new ScoreMatrixList
 # x=new("ScoreMatrixList",list(scores1,scores2))
 # plotMeta(mat=x,overlay=TRUE,main="my plotowski")
+
+# plot dispersion
+# plotMeta(mat=x, centralTend="median", dispersion="IQR", winsorize=c(0,99),
+#         main="Dispersion as interquartile band", lwd=4)
 }
 

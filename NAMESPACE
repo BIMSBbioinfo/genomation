@@ -21,11 +21,13 @@ importMethodsFrom("rtracklayer", import)
 
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
-
 importFrom("readr", read_delim)
+importFrom("data.table",data.table)
 importFrom("plyr",rbind.fill)
 importFrom("reshape2", melt)
 importFrom("parallel", mclapply)
+importFrom("plotrix", dispersion)
+importFrom("plotrix", std.error)
 
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
