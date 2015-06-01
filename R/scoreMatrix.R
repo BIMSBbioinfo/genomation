@@ -58,7 +58,7 @@ galpTo2Ranges <- function(x)
   ans
 }
 
-windows.range <- function(windows){
+.windows.range <- function(windows){
   chrs <- unique(as.character(seqnames(windows)))
   s<-c();e<-c()
   for(i in 1:length(chrs)){
@@ -80,13 +80,13 @@ readBam = function(target, windows, rpm=FALSE,
   if(!is.null(param) & class(param)!='ScanBamParam')
     stop('param needs to be an object of class ScanBamParam')
 
+  wind = .windows.range(windows)
   
   if(paired.end){
     
     flag <- scanBamFlag(isPaired=TRUE, isProperPair=TRUE, 
                         isUnmappedQuery=FALSE, hasUnmappedMate=FALSE)
     #reads that map into window which stretches from start of the first windows to end of the last window
-    wind = windows.range(windows)
     if(is.null(param)){
       param <- ScanBamParam(which=reduce(wind, ignore.strand=TRUE), flag=flag)
     }else{
@@ -97,11 +97,11 @@ readBam = function(target, windows, rpm=FALSE,
     #reads within gaps between windows
     gaps.wind <- gaps(windows)
     if(is.null(param)){
-      param2 <- ScanBamParam(which=reduce(gaps.wind, ignore.strand=TRUE), flag=flag)
+      param <- ScanBamParam(which=reduce(gaps.wind, ignore.strand=TRUE), flag=flag)
     }else{
       bamWhich(param) <- reduce(gaps.wind, ignore.strand=TRUE)
     }
-    alnp.gap <- readGAlignmentPairs(target, param=param2, use.names=TRUE)
+    alnp.gap <- readGAlignmentPairs(target, param=param, use.names=TRUE)
     alnp.gap.uniq <- unique(granges(alnp.gap))
     reads.within.gaps <- alnp.gap.uniq[as.data.frame(findOverlaps(alnp.gap.uniq, gaps.wind, type="within"))$queryHits]
     
@@ -115,7 +115,7 @@ readBam = function(target, windows, rpm=FALSE,
     
     if(stranded){
       # if first read is on - (resp. +) strand then return - (+)
-      strand(alns) = ifelse(start(first(ap)) < start(last(ap)), "+", "-") 
+      strand(alns) = ifelse(start(first(alns)) < start(last(alns)), "+", "-") 
     }
     alns <- granges(alns)
     
