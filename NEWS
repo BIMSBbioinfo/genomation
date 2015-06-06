@@ -1,3 +1,12 @@
+genomation 1.1.5
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* extended capabilities for meta-plots; added new parameters to plotMeta()
+  that enable to show dispersion interval bands around 
+  a central tendency (mean or median) and smoothing them.
+
 genomation 1.1.4
 --------------
 
