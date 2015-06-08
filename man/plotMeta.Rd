@@ -87,8 +87,8 @@ Notches show the 95 percent confidence interval for the median
 according to an approximation based on the normal distribution.
 They are used to compare groups - if notches corresponding to adjacent base pairs
 on the plot do not overlap, this is strong evidence that median differs.
-Small sample sizes (5–10) can yield that notches are likely to extend beyond the IQR
-(Martin Krzywinski \emph{iet al}. \emph{Nature Methods 11}, 119–120 (2014)).
+Small sample sizes (5-10) can cause notches to extend beyond the IQR
+(Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
 }
 \examples{
 # data(cage)

@@ -221,7 +221,7 @@ heatMeta<-function(mat, centralTend="mean",
 #'                     subtracting the min from profiles and dividing them by max-min.
 #'                     If dispersion is not FALSE, then dispersion will be scaled as well. 
 #' @param smooth.func the function to smooth central tendency and dispersion bands (Default: NULL), e.g. 
-#'                    stats::lowess. 
+#'                    stats::lowess. All NA's will be removed before smoothing.
 #' @param line.col color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
 #'        \code{rainbow()} function.
 #' @param ylim same as \code{ylim} at \code{\link{plot}} function. 
@@ -250,8 +250,8 @@ heatMeta<-function(mat, centralTend="mean",
 #' according to an approximation based on the normal distribution.
 #' They are used to compare groups - if notches corresponding to adjacent base pairs
 #' on the plot do not overlap, this is strong evidence that median differs.
-#' Small sample sizes (5–10) can yield that notches are likely to extend beyond the IQR 
-#' (Martin Krzywinski \emph{iet al}. \emph{Nature Methods 11}, 119–120 (2014)).
+#' Small sample sizes (5-10) can cause notches to extend beyond the IQR
+#' (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
 #' 
 #' @examples
 #' 
@@ -266,22 +266,23 @@ heatMeta<-function(mat, centralTend="mean",
 #' # x=new("ScoreMatrixList",list(scores1,scores2))
 #' # plotMeta(mat=x,overlay=TRUE,main="my plotowski")
 #' 
-#' # plot dispersion 
+#' # plot dispersion nd smooth central tendency and variation interval bands
 #' # plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99), 
-#' #         main="Dispersion as interquartile band", lwd=4, smooth.func=function(x) stats::lowess(x, f = 1/5))
+#' #         main="Dispersion as interquartile band", lwd=4, 
+#' #         smooth.func=function(x) stats::lowess(x, f = 1/5))
 #' 
 #' @export
 #' @docType methods
 #' @rdname plotMeta
 #' 
 plotMeta<-function(mat, centralTend="mean",
-                   overlay=TRUE,winsorize=c(0,100),
-                   profile.names=NULL,xcoords=NULL,
-                   meta.rescale=FALSE,
-                   smooth.func=NULL,
-                   line.col=NULL,
-                   dispersion=FALSE,dispersion.col=NULL,
-                   ylim=NULL,ylab="average score",xlab="bases", ...){
+                    overlay=TRUE,winsorize=c(0,100),
+                    profile.names=NULL,xcoords=NULL,
+                    meta.rescale=FALSE,
+                    smooth.func=NULL,
+                    line.col=NULL,
+                    dispersion=FALSE,dispersion.col=NULL,
+                    ylim=NULL,ylab="average score",xlab="bases", ...){
   
   # check class
   if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
@@ -313,101 +314,108 @@ plotMeta<-function(mat, centralTend="mean",
     mat <- list(mat)
   }
   
-  # this can set extreme values to given percentile
-  if(winsorize[2]<100 | winsorize[1]>0){
-    mat=lapply(mat,function(x) .winsorize(x,winsorize) )
-  }
-  
-  print("calculating central tendency..")
-  # get meta profiles by taking the mean/median
-  if(centralTend=="mean"){
-    if(dispersion=="IQR"){
-      warning("dispersion is set to show 1st and 3rd quartile and 
-               confidence interval around the median, 
-               but centralTend is 'mean'. Setting centralTend to 'median'..\n")
-      metas=lapply(mat,function(a) apply(a, 2, function(x) median(x,na.rm=TRUE)) )
-    }else{
-      metas=lapply(mat,function(a) colMeans(a,na.rm=TRUE) )
-    }
-  }else if(centralTend=="median"){
-    if(dispersion=="se"){
-      warning("dispersion is set to standard error of the mean and 95% confidence interval for the mean, but
-            centralTend is 'median'. Setting centralTend to 'mean'\n")
-      metas=lapply(mat,function(a) colMeans(a,na.rm=TRUE) )
-    }else{
-      metas=lapply(mat,function(a) apply(a, 2, function(x) median(x,na.rm=TRUE)) )
-    }
-  }
-  
-  
   # if the ncols of matrices do not match do not plot anything
-  if(length(unique(sapply(metas,length))) != 1){
+  if(length(unique(sapply(mat,length))) != 1){
     stop("ScoreMatrix number of columns do not match\n",
          "Try using binMatrix to make matrices with high number of columns",
          "equal\n")
   }
   
-  # calculate dispersion around the mean/median
+  #init
   if(dispersion %in% disp.args){
-    print("calculating dispersion..")
-    if(dispersion=="se"){
-      bound1 <- lapply(mat, function(x) std.error(x, na.rm = TRUE))
-      bound2 <- lapply(bound1, function(x) 1.96*x)
-    }else if(dispersion=="sd"){
-      .fsd = function(x){sd(x, na.rm = TRUE)}
-      bound1 <- lapply(mat, function(x) apply(x, 2, .fsd))
-      bound2 <- lapply(bound1, function(x) 2*x)
-    }else if(dispersion=="IQR"){
-      .countquartiles <- function(x){
-        data.frame(q1 = quantile(x, 1/4, na.rm = TRUE),
-                   q3 = quantile(x, 3/4, na.rm = TRUE),
-                   IQR = IQR(x, na.rm = TRUE))
-      }
-      q1<-list(); q3<-list(); bound2<-list()
-      n<-ncol(mat[[1]])
-      for(i in 1:length(mat)){
-        dd <- do.call("rbind", apply(mat[[i]], 2, .countquartiles))
-        q1[[i]] <- dd$q1
-        q3[[i]] <- dd$q3 
-        bound2[[i]] <- (1.57*dd$IQR) / sqrt(n) #notch
-      }
+    bound2<-list()
+    if(dispersion=="IQR"){
+      q1<-list(); q3<-list();
+    }else{
+      bound1 <- list()
     }
   }
+  metas<-list()
   
   
-  if(meta.rescale){
-    print("rescaling meta-profile....")
-    val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
-    metas=lapply(metas, function(x) val2unit(x)  )
-    if(dispersion %in% disp.args){
+  for(i in 1:length(mat)){
+    
+    # this can set extreme values to given percentile
+    if(winsorize[2]<100 | winsorize[1]>0){
+      mat[[i]]=.winsorize(mat[[i]],winsorize)
+    }
+    
+    print("calculating central tendency..")
+    # get meta profiles by taking the mean/median
+    if(centralTend=="mean"){
       if(dispersion=="IQR"){
-        bound1=lapply(bound1, function(x) val2unit(x) )
-        bound2=lapply(bound2, function(x) val2unit(x) ) 
+        warning("dispersion is set to show 1st and 3rd quartile and 
+                confidence interval around the median, 
+                but centralTend is 'mean'. Setting centralTend to 'median'..\n")
+        metas[[i]]=colMedians(mat[[i]], na.rm=TRUE)
       }else{
-        q1=lapply(q1, function(x) val2unit(x) )
-        q3=lapply(q3, function(x) val2unit(x) ) 
-        bound2=lapply(bound2, function(x) val2unit(x) )
+        metas[[i]]=colMeans(mat[[i]], na.rm=TRUE) 
+      }
+    }else if(centralTend=="median"){
+      if(dispersion=="se"){
+        warning("dispersion is set to standard error of the mean and 95% confidence interval for the mean, but
+                centralTend is 'median'. Setting centralTend to 'mean'\n")
+        metas[[i]]=colMeans(mat[[i]],na.rm=TRUE) 
+      }else{
+        metas[[i]]=colMedians(mat[[i]], na.rm=TRUE)
       }
     }
-  }
-  
-  #smoothing using function smooth.func defined by user
-  if(!is.null(smooth.func)){
-    print("smoothing meta-profile....")
-    for(i in 1:length(mat)){
-      #first removing NA's and then smoothing
-      metas[[i]] <- smooth.func(metas[[i]][!is.na(metas[[i]])])$y
+    
+    # calculate dispersion around the mean/median
+    if(dispersion %in% disp.args){
+      print("calculating dispersion..")
+      
+      if(dispersion=="se"){
+        bound1[[i]] <- std.error(mat[[i]], na.rm = TRUE)
+        bound2[[i]] <- bound1[[i]] * 1.96
+      }else if(dispersion=="sd"){
+        bound1 <- colSds(mat[[i]])
+        bound2[[i]] <- bound1[[i]] * 2
+      }else if(dispersion=="IQR"){
+        q <- colQuantiles(mat[[i]], probs=c(0.25, 0.75))
+        q1[[i]] <- q[,1]
+        q3[[i]] <- q[,2]
+        
+        n<-ncol(mat[[i]])
+        bound2[[i]] <- (1.57*(q3[[i]] - q1[[i]])) / sqrt(n) #notch
+      }
+    }
+    
+    
+    if(meta.rescale){
+      print("rescaling meta-profile....")
+      val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
+      metas[[i]]=val2unit(metas[[i]])
       if(dispersion %in% disp.args){
-        bound2[[i]] <- smooth.func(bound2[[i]][!is.na(bound2[[i]])])$y
         if(dispersion=="IQR"){
-          q1[[i]] <- smooth.func(q1[[i]][!is.na(q1[[i]])])$y
-          q3[[i]] <- smooth.func(q3[[i]][!is.na(q3[[i]])])$y
+          bound1[[i]]=val2unit(bound1)
+          bound2[[i]]=val2unit(bound2)
         }else{
-          bound1[[i]] <- smooth.func(bound1[[i]][!is.na(bound1[[i]])])$y
+          q1[[i]]=val2unit(q1)
+          q3[[i]]=val2unit(q3) 
+          bound2[[i]]=val2unit(bound2)
         }
       }
     }
+    
+    #smoothing using function smooth.func defined by user
+    if(!is.null(smooth.func)){
+      print("smoothing meta-profile....")
+      #first removing NA's and then smoothing
+      metas[[i]] <- smooth.func(metas[[i]])$y
+      if(dispersion %in% disp.args){
+        bound2[[i]] <- smooth.func(bound2[[i]])$y
+        if(dispersion=="IQR"){
+          q1[[i]] <- smooth.func(q1[[i]])$y
+          q3[[i]] <- smooth.func(q3[[i]])$y
+        }else{
+          bound1[[i]] <- smooth.func(bound1[[i]])$y
+        }
+      }
+    }
+    
   }
+  
   
   
   # get the default xcoordinates to plot

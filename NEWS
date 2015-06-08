@@ -5,7 +5,8 @@ IMPROVEMENTS AND BUG FIXES
 
 * extended capabilities for meta-plots; added new parameters to plotMeta()
   that enable to show dispersion interval bands around 
-  a central tendency (mean or median) and smoothing them.
+  a central tendency (mean or median) and smoothing them. 
+  Implemented by Katarzyna Wręczycka.
 
 genomation 1.1.4
 --------------
@@ -13,7 +14,7 @@ genomation 1.1.4
 IMPROVEMENTS AND BUG FIXES
 
 * scoreMatrix, scoreMatrixBin and ScoreMatrixList read paired-end BAM files. 
-  Paired reads are treated as fragments.
+  Paired reads are treated as fragments. Implemented by Katarzyna Wręczycka.
 
 genomation 1.1.3
 --------------
@@ -28,13 +29,14 @@ IMPROVEMENTS AND BUG FIXES
   "auto" or an integer indicating number of first lines to skip.
   The zero.based argument was added to readBed() that tells whether ranges in the bed file
   are in 0 or 1-based coordinate system.
+  Implemented by Katarzyna Wręczycka.
 
 genomation 1.1.2
 --------------
 
 IMPROVEMENTS AND BUG FIXES
 
-* scoreMatrixList() runs in parallel by using parallel::mclapply() 
+* scoreMatrixList() runs in parallel by using parallel::mclapply(). Implemented by Katarzyna Wręczycka.
 
 genomation 1.1.1
 --------------
