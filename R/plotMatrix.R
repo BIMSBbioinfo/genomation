@@ -187,6 +187,46 @@ heatMeta<-function(mat, centralTend="mean",
   invisible(metas)
 }
 
+#function based on plotrix::dispersion, 
+#and additionally it takes into account NA values in data
+#the problem is that when scoreMatrix is calculated then
+#some of the columns have only one numerical value and rest of them is NA
+#and then mean of such column is the value, but variation e.g. sd is NA.
+.dispersion2 <- function(x,y,ulim,llim=ulim, fill = NA, border = NA, intervals=TRUE, lty=1){
+  if (intervals) {
+    llim <- y - llim
+    ulim <- y + ulim
+  }
+  ulim.na <- is.na(ulim)
+  if(any(ulim.na)){
+    #selecting segments containg numerical values that are located between NA's
+    w <- which(ulim.na)
+    previous.v <- 0 #location of NA to the left of segment
+    for(i in 1:length(w)){ #for each segment
+      if(w[i]==previous.v+1){
+        #if there are some neighboring NA
+        previous.v <- w[i]
+        next
+      }
+      from <- previous.v+1
+      to <- w[i]-1
+      #running polygon separately for each segment
+      polygon(c(x[from:to], rev(x[from:to])), 
+              c(llim[from:to], rev(ulim[from:to])), 
+              col = fill, border = border)      
+      previous.v <- w[i]
+    }
+    from <- previous.v+1
+    to <- length(x)
+    polygon(c(x[from:to], rev(x[from:to])), 
+            c(llim[from:to], rev(ulim[from:to])), 
+            col = fill, border = border,
+            lty=lty)
+  }else{
+    polygon(c(x, rev(x)), c(llim, rev(ulim)), col = fill, 
+            border = border, lty=lty)
+  }
+}
 
 # ---------------------------------------------------------------------------- #
 #' Line plot(s) for meta-region profiles
@@ -276,13 +316,13 @@ heatMeta<-function(mat, centralTend="mean",
 #' @rdname plotMeta
 #' 
 plotMeta<-function(mat, centralTend="mean",
-                    overlay=TRUE,winsorize=c(0,100),
-                    profile.names=NULL,xcoords=NULL,
-                    meta.rescale=FALSE,
-                    smooth.func=NULL,
-                    line.col=NULL,
-                    dispersion=FALSE,dispersion.col=NULL,
-                    ylim=NULL,ylab="average score",xlab="bases", ...){
+                   overlay=TRUE,winsorize=c(0,100),
+                   profile.names=NULL,xcoords=NULL,
+                   meta.rescale=FALSE,
+                   smooth.func=NULL,
+                   line.col=NULL,
+                   dispersion=FALSE,dispersion.col=NULL,
+                   ylim=NULL,ylab="average score",xlab="bases", ...){
   
   # check class
   if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
@@ -369,18 +409,16 @@ plotMeta<-function(mat, centralTend="mean",
         bound1[[i]] <- std.error(mat[[i]], na.rm = TRUE)
         bound2[[i]] <- bound1[[i]] * 1.96
       }else if(dispersion=="sd"){
-        bound1 <- colSds(mat[[i]])
+        bound1[[i]] <- colSds(mat[[i]], na.rm=TRUE)
         bound2[[i]] <- bound1[[i]] * 2
       }else if(dispersion=="IQR"){
-        q <- colQuantiles(mat[[i]], probs=c(0.25, 0.75))
-        q1[[i]] <- q[,1]
-        q3[[i]] <- q[,2]
-        
+        q <- colQuantiles(mat[[i]], probs=c(0.25, 0.75), na.rm=TRUE)
+        q1[[i]] <- q[,1] #1st quartile
+        q3[[i]] <- q[,2] #3rd quartile
         n<-ncol(mat[[i]])
         bound2[[i]] <- (1.57*(q3[[i]] - q1[[i]])) / sqrt(n) #notch
       }
     }
-    
     
     if(meta.rescale){
       print("rescaling meta-profile....")
@@ -415,9 +453,7 @@ plotMeta<-function(mat, centralTend="mean",
     }
     
   }
-  
-  
-  
+
   # get the default xcoordinates to plot
   if(!is.null(xcoords)){
     
@@ -468,14 +504,14 @@ plotMeta<-function(mat, centralTend="mean",
            ylim=myrange,ylab=ylab,xlab=xlab,...)
       for(j in 1:length(metas) ){
         i <- d$index[j]
-        dispersion(xcoords, metas[[i]], bound2[[i]], type="l",col=dispersion.col[j],
-                   fill=dispersion.col[j],lty=1,...)
+        .dispersion2(xcoords, metas[[i]], bound2[[i]],
+                   fill=dispersion.col[j],lty=1)
         if(dispersion=="IQR"){
-          dispersion(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], type="l",
-                     fill=dispersion.col[j],lty=1,...) 
+          .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], 
+                       fill=dispersion.col[j],lty=1) #TODO
         }else{
-          dispersion(xcoords, metas[[i]], bound1[[i]], type="l",col=dispersion.col[j],
-                     fill=dispersion.col[j],lty=1,...)
+          .dispersion2(xcoords, metas[[i]], bound1[[i]],
+                     fill=dispersion.col[j],lty=1)
         }  
       }
       for(j in 1:length(metas) ){
@@ -507,14 +543,14 @@ plotMeta<-function(mat, centralTend="mean",
       plot(xcoords,metas[[i]],type="l",col=line.col[i],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
       if(dispersion %in% disp.args){
-        dispersion(xcoords, metas[[i]], bound2[[i]], type="l",col=dispersion.col[j],
-                   fill=dispersion.col[j],lty=1,...)
+        .dispersion2(xcoords, metas[[i]], bound2[[i]],col=dispersion.col[j],
+                   fill=dispersion.col[j],lty=1)
         if(dispersion=="IQR"){
-          dispersion(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], type="l",
-                     fill=dispersion.col[j],...) 
+          .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]],
+                     fill=dispersion.col[j],lty=1) 
         }else{
-          dispersion(xcoords, metas[[i]], bound1[[i]], type="l",col=dispersion.col[j],
-                     fill=dispersion.col[j],lty=1,...)
+          .dispersion2(xcoords, metas[[i]], bound1[[i]],col=dispersion.col[j],
+                     fill=dispersion.col[j],lty=1)
         }
       }
       lines(xcoords,metas[[i]],col=line.col[j],...)
