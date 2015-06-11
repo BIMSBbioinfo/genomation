@@ -191,15 +191,15 @@ heatMeta<-function(mat, centralTend="mean",
 #and additionally it takes into account NA values in data
 #the problem is that when scoreMatrix is calculated then
 #some of the columns have only one numerical value and rest of them is NA
-#and then mean of such column is the value, but variation e.g. sd is NA.
-.dispersion2 <- function(x,y,ulim,llim=ulim, fill = NA, border = NA, intervals=TRUE, lty=1){
+#and then mean of such column is the value, but variation e.g. sd is NA,
+.dispersion2 <- function(x,y,ulim,llim=ulim, border = NA, intervals=TRUE, ...){
   if (intervals) {
     llim <- y - llim
     ulim <- y + ulim
   }
   ulim.na <- is.na(ulim)
   if(any(ulim.na)){
-    #selecting segments containg numerical values that are located between NA's
+    #selecting segments of numerical values that are located between NA's
     w <- which(ulim.na)
     previous.v <- 0 #location of NA to the left of segment
     for(i in 1:length(w)){ #for each segment
@@ -224,7 +224,7 @@ heatMeta<-function(mat, centralTend="mean",
             lty=lty)
   }else{
     polygon(c(x, rev(x)), c(llim, rev(ulim)), col = fill, 
-            border = border, lty=lty)
+            border = border, ...)
   }
 }
 
@@ -290,8 +290,13 @@ heatMeta<-function(mat, centralTend="mean",
 #' according to an approximation based on the normal distribution.
 #' They are used to compare groups - if notches corresponding to adjacent base pairs
 #' on the plot do not overlap, this is strong evidence that median differs.
-#' Small sample sizes (5-10) can cause notches to extend beyond the IQR
+#' Small sample sizes (5-10) can cause notches to extend beyond the interquartile range (IQR) 
 #' (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
+#' 
+#' TODO
+#' If you'd like to visualize more than one ScoreMatrix (e.g. ScoreMatrixList containing two matrices)
+#' Matrices are plotted in the same order as in the ScoreMatrixList. przydatna informacji przy
+#' tym jak ktos zwizualizowac. Ustaw je w takiej kolejnosci w jakiej je chcesz zwizualizowac.
 #' 
 #' @examples
 #' 
@@ -331,9 +336,9 @@ plotMeta<-function(mat, centralTend="mean",
   if(! centralTend %in% c("median","mean"))
     stop("centralTend is not mean or median\n")
   # check dispersion args
-  if(! dispersion %in% c("se","sd","IQR",FALSE))
+  disp.args <- c("se","sd","IQR") #dispersion arguments
+  if(! dispersion %in% c(disp.args,FALSE))
     stop("dispersion is not FALSE, 'se', 'sd' or 'IQR'\n")
-  disp.args <- c("se","sd","IQR")
   
   
   if(is.null(line.col) & dispersion==FALSE)
@@ -361,15 +366,14 @@ plotMeta<-function(mat, centralTend="mean",
          "equal\n")
   }
   
-  #init
+  #init of some variables before for loop
   if(dispersion %in% disp.args){
     bound2<-list()
     if(dispersion=="IQR"){
       q1<-list(); q3<-list();
     }else{
       bound1 <- list()
-    }
-  }
+  }}
   metas<-list()
   
   
@@ -380,7 +384,6 @@ plotMeta<-function(mat, centralTend="mean",
       mat[[i]]=.winsorize(mat[[i]],winsorize)
     }
     
-    print("calculating central tendency..")
     # get meta profiles by taking the mean/median
     if(centralTend=="mean"){
       if(dispersion=="IQR"){
@@ -402,9 +405,7 @@ plotMeta<-function(mat, centralTend="mean",
     }
     
     # calculate dispersion around the mean/median
-    if(dispersion %in% disp.args){
-      print("calculating dispersion..")
-      
+    if(dispersion %in% disp.args){      
       if(dispersion=="se"){
         bound1[[i]] <- std.error(mat[[i]], na.rm = TRUE)
         bound2[[i]] <- bound1[[i]] * 1.96
@@ -421,24 +422,22 @@ plotMeta<-function(mat, centralTend="mean",
     }
     
     if(meta.rescale){
-      print("rescaling meta-profile....")
       val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
       metas[[i]]=val2unit(metas[[i]])
       if(dispersion %in% disp.args){
         if(dispersion=="IQR"){
-          bound1[[i]]=val2unit(bound1)
-          bound2[[i]]=val2unit(bound2)
+          bound1[[i]]=val2unit(bound1[[i]])
+          bound2[[i]]=val2unit(bound2[[i]])
         }else{
-          q1[[i]]=val2unit(q1)
-          q3[[i]]=val2unit(q3) 
-          bound2[[i]]=val2unit(bound2)
+          q1[[i]]=val2unit(q1[[i]])
+          q3[[i]]=val2unit(q3[[i]]) 
+          bound2[[i]]=val2unit(bound2[[i]])
         }
       }
     }
     
     #smoothing using function smooth.func defined by user
     if(!is.null(smooth.func)){
-      print("smoothing meta-profile....")
       #first removing NA's and then smoothing
       metas[[i]] <- smooth.func(metas[[i]])$y
       if(dispersion %in% disp.args){
@@ -484,34 +483,26 @@ plotMeta<-function(mat, centralTend="mean",
     }
   }
   
-  
   marOrg=par()$mar # get original parMar to be used later
   marNew=marOrg
   marNew[4]=8
   par(mar=marNew) # extend right margin for the legend
   par(xpd=TRUE) # do this so that you can plot legend out of the plotting box
   
-  #curve/interval bands with the highest max mean is plotted first, etc.
-  .fmax <- function(x){max(x,na.rm = TRUE)}
-  max.m <- data.frame(index=1:length(metas), max=sapply(metas, .fmax))
-  d <- max.m[ order(-max.m$max), ]
-  
   if(overlay & length(metas)>1){
-    
     # plot overlayed lines
     if(dispersion %in% disp.args){
-      plot(xcoords,metas[[d$index[1]]],type="l",col=dispersion.col[1],
+      plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
-      for(j in 1:length(metas) ){
-        i <- d$index[j]
+      for(i in 1:length(metas) ){
         .dispersion2(xcoords, metas[[i]], bound2[[i]],
-                   fill=dispersion.col[j],lty=1)
+                   fill=dispersion.col[i],lty=1)
         if(dispersion=="IQR"){
           .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], 
-                       fill=dispersion.col[j],lty=1) #TODO
+                       fill=dispersion.col[i],lty=1)
         }else{
           .dispersion2(xcoords, metas[[i]], bound1[[i]],
-                     fill=dispersion.col[j],lty=1)
+                     fill=dispersion.col[i],lty=1)
         }  
       }
       for(j in 1:length(metas) ){

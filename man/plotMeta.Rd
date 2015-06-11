@@ -7,14 +7,9 @@
 \usage{
 plotMeta(mat, centralTend = "mean", overlay = TRUE, winsorize = c(0, 100),
   profile.names = NULL, xcoords = NULL, meta.rescale = FALSE,
-<<<<<<< HEAD
   smooth.func = NULL, line.col = NULL, dispersion = FALSE,
   dispersion.col = NULL, ylim = NULL, ylab = "average score",
   xlab = "bases", ...)
-=======
-  line.col = NULL, dispersion = FALSE, dispersion.col = NULL,
-  ylim = NULL, ylab = "average score", xlab = "bases", ...)
->>>>>>> e8027e534d67dfeef1a7d9a3e725a0b0f39ea490
 }
 \arguments{
 \item{mat}{\code{ScoreMatrix} or \code{ScoreMatrixList} object. If it is a
@@ -50,9 +45,8 @@ xcoords equals to 1:ncol(mat)}
 subtracting the min from profiles and dividing them by max-min.
 If dispersion is not FALSE, then dispersion will be scaled as well.}
 
-<<<<<<< HEAD
 \item{smooth.func}{the function to smooth central tendency and dispersion bands (Default: NULL), e.g.
-stats::lowess.}
+stats::lowess. All NA's will be removed before smoothing.}
 
 \item{line.col}{color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
 \code{rainbow()} function.}
@@ -63,27 +57,12 @@ stats::lowess.}
  \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
  \item{"sd"}{shows standard deviation and 2*(standard deviation)}
  \item{"IQR"}{shows 1st and 3rd quartile, and
-=======
-\item{line.col}{color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
-\code{rainbow()} function.}
-
-\item{dispersion}{show dispersion around \code{centralTend} (default:FALSE). It takes values:
-\itemize{
- \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
- \item{"sd"}{shows standard deviation and 2*(standard deviation)}
- \item{"IQR"}{shows s1st and 3rd quartile) and
->>>>>>> e8027e534d67dfeef1a7d9a3e725a0b0f39ea490
               confidence interval around the median based on the median +/- 1.57 * IQR/sqrt(n) (notches)}
 }}
 
 \item{dispersion.col}{color of band of \code{dispersion}.
-<<<<<<< HEAD
 Defaults to colors from \code{rainbow()} function and transparency set to 0.5
 (rainbow(length(mat), alpha = 0.5)).}
-=======
-Defaults to colors from \code{rainbow()} function with 0.5 transparency
-(rainbow(length(mat), alpha = 0.5, start=0.1)).}
->>>>>>> e8027e534d67dfeef1a7d9a3e725a0b0f39ea490
 
 \item{ylim}{same as \code{ylim} at \code{\link{plot}} function.
 if NULL ylim is estimated from all meta-region profiles.}
@@ -105,17 +84,16 @@ produces a line plot or a set of line plots for meta-region profiles
 }
 \note{
 Notches show the 95 percent confidence interval for the median
-<<<<<<< HEAD
 according to an approximation based on the normal distribution.
 They are used to compare groups - if notches corresponding to adjacent base pairs
 on the plot do not overlap, this is strong evidence that median differs.
-Small sample sizes (5-10) can cause notches to extend beyond the IQR
+Small sample sizes (5-10) can cause notches to extend beyond the interquartile range (IQR)
 (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
-=======
-according to an approximation based on the normal distribution
-They are used to compare groups - if notches corresponding to adjacent base pairs
-on the plot do not overlap, this is strong evidence that median differs.
->>>>>>> e8027e534d67dfeef1a7d9a3e725a0b0f39ea490
+
+TODO
+If you'd like to visualize more than one ScoreMatrix (e.g. ScoreMatrixList containing two matrices)
+Matrices are plotted in the same order as in the ScoreMatrixList. przydatna informacji przy
+tym jak ktos zwizualizowac. Ustaw je w takiej kolejnosci w jakiej je chcesz zwizualizowac.
 }
 \examples{
 # data(cage)
@@ -129,13 +107,9 @@ on the plot do not overlap, this is strong evidence that median differs.
 # x=new("ScoreMatrixList",list(scores1,scores2))
 # plotMeta(mat=x,overlay=TRUE,main="my plotowski")
 
-# plot dispersion
-<<<<<<< HEAD
+# plot dispersion nd smooth central tendency and variation interval bands
 # plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99),
-#         main="Dispersion as interquartile band", lwd=4, smooth.func=function(x) stats::lowess(x, f = 1/5))
-=======
-# plotMeta(mat=x, centralTend="median", dispersion="IQR", winsorize=c(0,99),
-#         main="Dispersion as interquartile band", lwd=4)
->>>>>>> e8027e534d67dfeef1a7d9a3e725a0b0f39ea490
+#         main="Dispersion as interquartile band", lwd=4,
+#         smooth.func=function(x) stats::lowess(x, f = 1/5))
 }
 

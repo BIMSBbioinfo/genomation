@@ -33,7 +33,8 @@ Imports:
 	gridBase,
 	impute,
   parallel,
-  plotrix
+  plotrix,
+  matrixStats
 Suggests:
   RUnit,
 	knitr,
