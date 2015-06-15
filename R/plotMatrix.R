@@ -187,19 +187,21 @@ heatMeta<-function(mat, centralTend="mean",
   invisible(metas)
 }
 
-#function based on plotrix::dispersion, 
-#and additionally it takes into account NA values in data
-#the problem is that when scoreMatrix is calculated then
-#some of the columns have only one numerical value and rest of them is NA
-#and then mean of such column is the value, but variation e.g. sd is NA,
-.dispersion2 <- function(x,y,ulim,llim=ulim, border = NA, intervals=TRUE, ...){
+# function based on plotrix::dispersion, 
+# and additionally it takes into account NA values in data
+# the problem is that when scoreMatrix is calculated then
+# some of the columns have only one numerical value and rest of them is NA
+# and then mean of such column is the value, but variation e.g. sd is NA.
+# border = NA omits borders.
+.dispersion2 <- function(x, y, ulim, llim=ulim, intervals=TRUE, 
+                               border = NA, ...){ 
   if (intervals) {
     llim <- y - llim
     ulim <- y + ulim
   }
   ulim.na <- is.na(ulim)
   if(any(ulim.na)){
-    #selecting segments of numerical values that are located between NA's
+    #selecting 'segments' of numerical values that are located between NA's
     w <- which(ulim.na)
     previous.v <- 0 #location of NA to the left of segment
     for(i in 1:length(w)){ #for each segment
@@ -213,17 +215,16 @@ heatMeta<-function(mat, centralTend="mean",
       #running polygon separately for each segment
       polygon(c(x[from:to], rev(x[from:to])), 
               c(llim[from:to], rev(ulim[from:to])), 
-              col = fill, border = border)      
+              border = border, ...)      
       previous.v <- w[i]
     }
     from <- previous.v+1
     to <- length(x)
     polygon(c(x[from:to], rev(x[from:to])), 
             c(llim[from:to], rev(ulim[from:to])), 
-            col = fill, border = border,
-            lty=lty)
+            border = border, ...)
   }else{
-    polygon(c(x, rev(x)), c(llim, rev(ulim)), col = fill, 
+    polygon(c(x, rev(x)), c(llim, rev(ulim)),
             border = border, ...)
   }
 }
@@ -242,7 +243,7 @@ heatMeta<-function(mat, centralTend="mean",
 #'                     It takes "mean" (default) or "median".
 #' @param overlay If TRUE multiple profiles will be overlayed in the same plot
 #'                (Default:TRUE). If FALSE, and mat is a ScoreMatrixList, consider
-#'                using par(mfrow=c(1,length(mat)))  to see the plots from all
+#'                using par(mfrow=c(1,length(mat))) to see the plots from all
 #'                matrices at once.
 #' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
 #'                  determines the upper and lower percentile values to limit the 
@@ -260,8 +261,8 @@ heatMeta<-function(mat, centralTend="mean",
 #' @param meta.rescale if TRUE meta-region profiles are scaled to 0 to 1 range by
 #'                     subtracting the min from profiles and dividing them by max-min.
 #'                     If dispersion is not FALSE, then dispersion will be scaled as well. 
-#' @param smooth.func the function to smooth central tendency and dispersion bands (Default: NULL), e.g. 
-#'                    stats::lowess. All NA's will be removed before smoothing.
+#' @param smoothfun a function to smooth central tendency and dispersion bands (Default: FALSE), e.g. 
+#'                    stats::lowess.
 #' @param line.col color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
 #'        \code{rainbow()} function.
 #' @param ylim same as \code{ylim} at \code{\link{plot}} function. 
@@ -278,26 +279,35 @@ heatMeta<-function(mat, centralTend="mean",
 #'  \item{"IQR"}{shows 1st and 3rd quartile, and 
 #'               confidence interval around the median based on the median +/- 1.57 * IQR/sqrt(n) (notches)}
 #' }
-#' @param dispersion.col color of band of \code{dispersion}.
-#'        Defaults to colors from \code{rainbow()} function and transparency set to 0.5
+#' @param dispersion.col color of bands of \code{dispersion}.
+#'        Defaults to colors from \code{rainbow()} and transparency is set to 0.5
 #'        (rainbow(length(mat), alpha = 0.5)).
 #' @param ... other options to \code{\link{plot}}
 #' 
 #' @return returns the meta-region profiles invisibly as a matrix.
 #' 
 #' @note
+#' Score matrices are plotted according to ScoreMatrixList order. 
+#' If ScoreMatrixList contains more than one matrix then they will
+#' overlap each other, i.e.
+#' the first one is plotted first and every next one overlays previous one(s) and 
+#' the last one is the topmost.
+#' 
+#' When dispersion around central tendency is plotted
+#' missing values in data slow down the \code{plotMeta} function. The reason is that 
+#' dispersion is plotted for non-missing values,
+#' so for each segment that
+#' contains numerical values \code{graphics::polygon} function is used to plot dispersion bands.
+#' There might be a situation, when in a column of ScoreMatrix there is only one
+#' numeric number and the rest are NAs, then at corresponding position 
+#' only central tendency will be plotted.
+#' 
 #' Notches show the 95 percent confidence interval for the median 
 #' according to an approximation based on the normal distribution.
 #' They are used to compare groups - if notches corresponding to adjacent base pairs
-#' on the plot do not overlap, this is strong evidence that median differs.
+#' on the plot do not overlap, this is strong evidence that medians differ.
 #' Small sample sizes (5-10) can cause notches to extend beyond the interquartile range (IQR) 
 #' (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
-#' 
-#' TODO
-#' If you'd like to visualize more than one ScoreMatrix (e.g. ScoreMatrixList containing two matrices)
-#' Matrices are plotted in the same order as in the ScoreMatrixList. przydatna informacji przy
-#' tym jak ktos zwizualizowac. Ustaw je w takiej kolejnosci w jakiej je chcesz zwizualizowac.
-#' 
 #' @examples
 #' 
 #' # data(cage)
@@ -314,7 +324,7 @@ heatMeta<-function(mat, centralTend="mean",
 #' # plot dispersion nd smooth central tendency and variation interval bands
 #' # plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99), 
 #' #         main="Dispersion as interquartile band", lwd=4, 
-#' #         smooth.func=function(x) stats::lowess(x, f = 1/5))
+#' #         smoothfun=function(x) stats::lowess(x, f = 1/5))
 #' 
 #' @export
 #' @docType methods
@@ -324,10 +334,11 @@ plotMeta<-function(mat, centralTend="mean",
                    overlay=TRUE,winsorize=c(0,100),
                    profile.names=NULL,xcoords=NULL,
                    meta.rescale=FALSE,
-                   smooth.func=NULL,
+                   smoothfun=FALSE,
                    line.col=NULL,
                    dispersion=FALSE,dispersion.col=NULL,
                    ylim=NULL,ylab="average score",xlab="bases", ...){
+  
   
   # check class
   if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
@@ -369,16 +380,12 @@ plotMeta<-function(mat, centralTend="mean",
   #init of some variables before for loop
   if(dispersion %in% disp.args){
     bound2<-list()
-    if(dispersion=="IQR"){
-      q1<-list(); q3<-list();
-    }else{
-      bound1 <- list()
-  }}
+    if(dispersion=="IQR"){q1<-list(); q3<-list();
+    }else{bound1 <- list()}
+  }
   metas<-list()
   
-  
   for(i in 1:length(mat)){
-    
     # this can set extreme values to given percentile
     if(winsorize[2]<100 | winsorize[1]>0){
       mat[[i]]=.winsorize(mat[[i]],winsorize)
@@ -425,28 +432,27 @@ plotMeta<-function(mat, centralTend="mean",
       val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
       metas[[i]]=val2unit(metas[[i]])
       if(dispersion %in% disp.args){
+        bound2[[i]]=val2unit(bound2[[i]])
         if(dispersion=="IQR"){
-          bound1[[i]]=val2unit(bound1[[i]])
-          bound2[[i]]=val2unit(bound2[[i]])
-        }else{
           q1[[i]]=val2unit(q1[[i]])
           q3[[i]]=val2unit(q3[[i]]) 
-          bound2[[i]]=val2unit(bound2[[i]])
+        }else{
+          bound1[[i]]=val2unit(bound1[[i]])
         }
       }
     }
     
-    #smoothing using function smooth.func defined by user
-    if(!is.null(smooth.func)){
+    #smoothing
+    if(!identical(smoothfun, FALSE)){
       #first removing NA's and then smoothing
-      metas[[i]] <- smooth.func(metas[[i]])$y
+      metas[[i]] <- smoothfun(metas[[i]])$y
       if(dispersion %in% disp.args){
-        bound2[[i]] <- smooth.func(bound2[[i]])$y
+        bound2[[i]] <- smoothfun(bound2[[i]])$y
         if(dispersion=="IQR"){
-          q1[[i]] <- smooth.func(q1[[i]])$y
-          q3[[i]] <- smooth.func(q3[[i]])$y
+          q1[[i]] <- smoothfun(q1[[i]])$y
+          q3[[i]] <- smoothfun(q3[[i]])$y
         }else{
-          bound1[[i]] <- smooth.func(bound1[[i]])$y
+          bound1[[i]] <- smoothfun(bound1[[i]])$y
         }
       }
     }
@@ -493,18 +499,19 @@ plotMeta<-function(mat, centralTend="mean",
     # plot overlayed lines
     if(dispersion %in% disp.args){
       plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
-           ylim=myrange,ylab=ylab,xlab=xlab,...)
+           ylim=myrange,ylab=ylab,xlab=xlab, ...)
       for(i in 1:length(metas) ){
         .dispersion2(xcoords, metas[[i]], bound2[[i]],
-                   fill=dispersion.col[i],lty=1)
+                   col=dispersion.col[i], ...)
         if(dispersion=="IQR"){
           .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], 
-                       fill=dispersion.col[i],lty=1)
+                       col=dispersion.col[i], ...)
         }else{
           .dispersion2(xcoords, metas[[i]], bound1[[i]],
-                     fill=dispersion.col[i],lty=1)
+                     col=dispersion.col[i], ...)
         }  
       }
+      #drawing central tendency line(s) on top
       for(j in 1:length(metas) ){
         i <- d$index[j]
         lines(xcoords,metas[[i]],col=line.col[j],...)
@@ -530,21 +537,19 @@ plotMeta<-function(mat, centralTend="mean",
   }else{ # plot things one by one, in this case user must use par
     
     for(j in 1:length(metas)){
-      i <- d$index[j]
-      plot(xcoords,metas[[i]],type="l",col=line.col[i],
+      plot(xcoords,metas[[j]],type="l",col=line.col[j],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
       if(dispersion %in% disp.args){
-        .dispersion2(xcoords, metas[[i]], bound2[[i]],col=dispersion.col[j],
-                   fill=dispersion.col[j],lty=1)
+        .dispersion2(xcoords, metas[[j]], bound2[[j]],col=dispersion.col[j], ...)
         if(dispersion=="IQR"){
-          .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]],
-                     fill=dispersion.col[j],lty=1) 
+          .dispersion2(xcoords, metas[[j]], llim=metas[[j]]-q1[[j]], ulim=q3[[j]]-metas[[j]],
+                     col=dispersion.col[j], ...) 
         }else{
-          .dispersion2(xcoords, metas[[i]], bound1[[i]],col=dispersion.col[j],
-                     fill=dispersion.col[j],lty=1)
+          .dispersion2(xcoords, metas[[j]], bound1[[j]],
+                     col=dispersion.col[j], ...)
         }
       }
-      lines(xcoords,metas[[i]],col=line.col[j],...)
+      lines(xcoords,metas[[j]],col=line.col[j],...)
     }
   }
   # revert par shit to its original state
