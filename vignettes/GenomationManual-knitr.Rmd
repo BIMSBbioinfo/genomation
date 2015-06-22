@@ -414,9 +414,9 @@ have a uniform width of 500 bases, fixed on the center of the peak.
 ```{r readCtcfPeaks, eval=TRUE, tidy=TRUE}
 ctcf.peaks = readBroadPeak(file.path(genomationDataPath, 
                                      'wgEncodeBroadHistoneH1hescCtcfStdPk.broadPeak.gz'))
-ctcf.peaks = ctcf.peaks[seqnames(ctcf.peaks) == 'chr21']
+ctcf.peaks = ctcf.peaks[GenomicRanges::seqnames(ctcf.peaks) == 'chr21']
 ctcf.peaks = ctcf.peaks[order(-ctcf.peaks$signalValue)]
-ctcf.peaks = resize(ctcf.peaks, width=1000, fix='center')
+ctcf.peaks = GenomicRanges::resize(ctcf.peaks, width=1000, fix='center')
 ```
   
 In order to extract the coverage values of all transcription factors around 
