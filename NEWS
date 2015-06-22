@@ -1,3 +1,10 @@
+genomation 1.1.5
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* changes in the vignette,explicit call to GenomicRanges::countOverlaps, thanks to Christopher Bottoms
+  
 genomation 1.1.4
 --------------
 
