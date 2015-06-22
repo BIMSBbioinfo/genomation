@@ -270,7 +270,8 @@ The *heatMatrix* function can also take a list of numeric vectors
 designating row names, or a factor variable that represent our 
 annotation over the windows.
 ```{r heatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4, fig.height=3}
-  data(cage)
+library(GenomicRanges)   # provides function "countOverlaps"
+data(cage)
 data(promoters)
 data(cpgi)
 
