@@ -275,8 +275,8 @@ data(promoters)
 data(cpgi)
 
 sm = ScoreMatrix(target=cage, windows=promoters, strand.aware=TRUE)
-cpg.ind = which(countOverlaps(promoters, cpgi)>0)
-nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
+cpg.ind = which(GenomicRanges::countOverlaps(promoters, cpgi)>0)
+nocpg.ind = which(GenomicRanges::countOverlaps(promoters, cpgi)==0)
 heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 ```
 <center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix2-1.png", width=350></center>
