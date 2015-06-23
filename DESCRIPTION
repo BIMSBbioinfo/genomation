@@ -32,15 +32,15 @@ Imports:
 	rtracklayer,
 	gridBase,
 	impute,
-  parallel
+  	parallel
 Suggests:
-  RUnit,
+  	RUnit,
 	knitr,
 	RColorBrewer,
 	genomationData,
-  BiocGenerics,
-  rmarkdown,
-  knitrBootstrap
+  	BiocGenerics,
+  	rmarkdown,
+  	knitrBootstrap
 Collate:
     'documentData.R'
     'genomation-classes.R'
