@@ -192,7 +192,7 @@ The target data can be in 3 forms: a GRanges, a RLeList or a path to an indexed
 As an example we will extract the density of cage tags around the promoters on 
 the human chromosome 21.
 ```{r ScoreMatrixExample, eval=TRUE, tidy=TRUE}
-  data(cage)
+data(cage)
 data(promoters)
 sm = ScoreMatrix(target=cage, windows=promoters)
 sm
@@ -203,7 +203,7 @@ specifies the number of bins that will represent each windot window
 (ie. it converts windows of unequal width into ones of equal width.). 
 By default, the binning function is set to *mean*.
 ```{r ScoreMatrixBinExample, eval=FALSE, tidy=TRUE}
-  data(cage)
+data(cage)
 gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
 exons = gffToGRanges(gff.file, filter='exon')
 sm = ScoreMatrixBin(target=cage, windows=exons, bin.num=50)
@@ -270,6 +270,7 @@ The *heatMatrix* function can also take a list of numeric vectors
 designating row names, or a factor variable that represent our 
 annotation over the windows.
 ```{r heatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4, fig.height=3}
+library(GenomicRanges) 
 data(cage)
 data(promoters)
 data(cpgi)
@@ -446,7 +447,7 @@ will not show the true extent of colocalization. To get around this, it is advis
 to independently scale the rows of each element in the ScoreMatrixList.
 
 ```{r plotScaledProfile, eval=FALSE, tidy=TRUE, fig.width=5, fig.height=3.5, dpi=300}
-  sml.scaled = scaleScoreMatrixList(sml)
+sml.scaled = scaleScoreMatrixList(sml)
 multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
 <center>
