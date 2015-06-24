@@ -228,7 +228,7 @@ It can be in one of the three formats: a list of RleLists, a list of GRanges
 (or a GRangesList object), or a character vector designating a set of 
 .bam or .bigWig files.
 ```{r ScoreMatrixList, eval=TRUE, tidy=TRUE}
-  data(promoters)
+data(promoters)
 data(cpgi)
 data(cage)
 
@@ -270,7 +270,7 @@ The *heatMatrix* function can also take a list of numeric vectors
 designating row names, or a factor variable that represent our 
 annotation over the windows.
 ```{r heatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4, fig.height=3}
-  data(cage)
+data(cage)
 data(promoters)
 data(cpgi)
 
