@@ -1,4 +1,4 @@
-genomation 1.1.5
+genomation 1.1.6
 --------------
 
 IMPROVEMENTS AND BUG FIXES
@@ -8,6 +8,13 @@ IMPROVEMENTS AND BUG FIXES
   a central tendency (mean or median) and smoothing them. 
   Implemented by Katarzyna Wręczycka.
 
+genomation 1.1.5
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* changes in the vignette,explicit call to GenomicRanges::countOverlaps, thanks to Christopher Bottoms
+  
 genomation 1.1.4
 --------------
 

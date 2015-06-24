@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 1.1.5
+Version: 1.1.6
 Author: Altuna Akalin, Vedran Franke, Katarzyna Wreczycka, Liz Ing-Simmons	
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users can visualize and 
@@ -16,6 +16,7 @@ VignetteBuilder: knitr
 biocViews: Annotation, Sequencing, Visualization, CpGIsland
 Encoding: latin1
 URL: http://bioinformatics.mdc-berlin.de/genomation/
+BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
@@ -36,13 +37,13 @@ Imports:
   plotrix,
   matrixStats
 Suggests:
-  RUnit,
+  	RUnit,
 	knitr,
 	RColorBrewer,
 	genomationData,
-  BiocGenerics,
-  rmarkdown,
-  knitrBootstrap
+  	BiocGenerics,
+  	rmarkdown,
+  	knitrBootstrap
 Collate:
     'documentData.R'
     'genomation-classes.R'
