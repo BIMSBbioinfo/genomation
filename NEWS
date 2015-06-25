@@ -42,7 +42,7 @@ genomation 1.1.2
 
 IMPROVEMENTS AND BUG FIXES
 
-* scoreMatrixList() runs in parallel by using parallel::mclapply() 
+* scoreMatrixList() runs in parallel by using parallel::mclapply(). Implemented by Katarzyna Wręczycka.
 
 genomation 1.1.1
 --------------
