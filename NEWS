@@ -3,9 +3,9 @@ genomation 1.1.6
 
 IMPROVEMENTS AND BUG FIXES
 
-* scoreMatrix and scoreMatrixList can be clustered using other algorithms than k-means,
-  there is clustfun argument that overrides kmeans and k arguments and clusters 
-  matrices based the input clustfun. Implemented by Katarzyna Wreczycka.
+* heatMatrix() and multiHeatMatrix() can visualizate score matrix/matrices clustered
+  by using not only kmeans, but custom clustering function (clustfun argument).
+  Implemented by Katarzyna Wreczycka.
   
 genomation 1.1.5
 --------------

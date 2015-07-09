@@ -138,10 +138,7 @@ is obtained from same regions or neighbouring regions.
 # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
 # sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
-# multiHeatMatrix(sml,clustfun=function(x) kmeans(x, centers=2)$cluster,
-#                 matrix.main=c("cage","CpGi"),cex.axis=0.8)
-
-# use with K-means
+# use with k-means
 # multiHeatMatrix(sml,
 #                 clustfun=function(x) kmeans(x, centers=2)$cluster,
 #                 cex.axis=0.8,xcoords=c(-1000,1000),
@@ -149,9 +146,9 @@ is obtained from same regions or neighbouring regions.
 #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 # use with hierarchical clustering
 # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
-# heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+# multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
 #         xcoords=-1000:1000,clustfun=cl2,
-#         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#         cex.legend=0.8,cex.lab=1,
 #         cex.axis=0.9,grid=FALSE)
 #
 # use different colors

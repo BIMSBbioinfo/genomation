@@ -499,7 +499,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #'                invoked if \code{grid=TRUE}.
 #'                
 #' @return
-#' returns clustering result invisibly, if clustfun is definied by user
+#' returns clustering result invisibly, if clustfun is definied
 #'                                    
 #' @examples
 #' # data(cage)
@@ -514,7 +514,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #' #           cex.axis=0.9,grid=FALSE)
 #'
 #' ## examples using clustering functions
-#' # k-means
+#' ## k-means
 #' # cl1 <- function(x) kmeans(x, centers=3)$cluster
 #' # set.seed(1000)
 #' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
@@ -523,7 +523,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #' #         cex.axis=0.9,grid=FALSE,
 #' #         user.order=c(1,3,2))
 #' 
-#' # hierarchical clustering
+#' ## hierarchical clustering
 #' # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
 #' # set.seed(1000)
 #' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
@@ -578,11 +578,10 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
       clu=clustfun(mat2)
     }
     
-    # get group.vector centers, will be used at ordering later
     group.vector=clu
     # order things by clusters only
-    mat2=mat2[order(group.vector),] #posortowane wiersze, czyli promotory np.
-    group.vector=group.vector[order(group.vector)] #posortowane numery wierszy - names(group.vector)
+    mat2=mat2[order(group.vector),] 
+    group.vector=group.vector[order(group.vector)]
     
     # if user wants to order
     if(order){ 
@@ -903,10 +902,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' 
 #' # sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
 
-#' # multiHeatMatrix(sml,clustfun=function(x) kmeans(x, centers=2)$cluster,
-#' #                 matrix.main=c("cage","CpGi"),cex.axis=0.8)
-#' 
-#' # use with K-means
+#' # use with k-means
 #' # multiHeatMatrix(sml,
 #' #                 clustfun=function(x) kmeans(x, centers=2)$cluster,
 #' #                 cex.axis=0.8,xcoords=c(-1000,1000),
@@ -914,9 +910,9 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' # use with hierarchical clustering
 #' # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
-#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#' # multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
 #' #         xcoords=-1000:1000,clustfun=cl2,
-#' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#' #         cex.legend=0.8,cex.lab=1,
 #' #         cex.axis=0.9,grid=FALSE)
 #' #
 #' # use different colors

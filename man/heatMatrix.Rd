@@ -88,7 +88,7 @@ axis marks should be magnified relative to the default}
                invoked if \code{grid=TRUE}.}
 }
 \value{
-returns clustering result invisibly, if clustfun is definied by user
+returns clustering result invisibly, if clustfun is definied
 }
 \description{
 The function makes a heatmap out of given \code{ScoreMatrix} object. If desired
@@ -109,7 +109,7 @@ In addition, user can define groups of rows using 'group' argument.
 #           cex.axis=0.9,grid=FALSE)
 
 ## examples using clustering functions
-# k-means
+## k-means
 # cl1 <- function(x) kmeans(x, centers=3)$cluster
 # set.seed(1000)
 # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
@@ -118,7 +118,7 @@ In addition, user can define groups of rows using 'group' argument.
 #         cex.axis=0.9,grid=FALSE,
 #         user.order=c(1,3,2))
 
-# hierarchical clustering
+## hierarchical clustering
 # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
 # set.seed(1000)
 # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
