@@ -8,6 +8,15 @@
 .jets<-colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
                           "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
 
+# winsorize a matrix using percentile ranges
+.winsorize<-function(mat,rng){
+  hi.th=quantile(mat,rng[2]/100,na.rm=TRUE)
+  lo.th=quantile(mat,rng[1]/100,na.rm=TRUE)
+  mat[mat>hi.th]=hi.th
+  mat[mat<lo.th]=lo.th
+  mat
+}
+
 # ---------------------------------------------------------------------------- #
 #' Heatmap for meta-region profiles
 #' 
@@ -422,7 +431,8 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #' 
 #' 
 #' The function makes a heatmap out of given \code{ScoreMatrix} object. If desired
-#' it can use clustering using k-means and plot cluster color codes as a sidebar. 
+#' it can use clustering using given clustering function 
+#' (e.g. k-means) and plot cluster color codes as a sidebar. 
 #' In addition, user can define groups of rows using 'group' argument.
 #' 
 #' @param mat a \code{ScoreMatrix} object
@@ -446,25 +456,33 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #'              , it's length must match the number of rows of the matrix, and 
 #'              factor levels will be used as the names of the groups in the plot.
 #
-#'               
 #' @param group.col a vector of color names to be used at the rowside colors if
-#'                  \code{group} argument is given or \code{kmeans=TRUE}
+#'                  \code{group} argument is given or \code{clustfun} function is given.
 #' @param order    Logical indicating if the rows should be ordered or not 
 #'                 (Default:FALSE). If \code{order=TRUE} the matrix will be ordered
-#'                 with rowSums(mat) values in descending order. If kmeans=TRUE
-#'                 or \code{group} argument is provided, first the groups/clusters
+#'                 with rowSums(mat) values in descending order. 
+#'                 If \code{group} argument is provided, first the groups
 #'                 will be ordered in descending order of sums of rows then, everything
 #'                 within the clusters will be ordered by sums of rows.
+#'                 If \code{clustfun} is given then rows within clusters
+#'                 will be order in descending order of sums of rows.
+#'                 
+#' @param user.order a numerical vector indicating the order of groups/clusters (it works only
+#'                   when \code{group} or \code{clustfun} argument is given). 
+#'                   
 #' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
 #'                  determines the upper and lower percentile values to limit the 
 #'                  extreme values. For example, c(0,99) will limit the values to
 #'                  only 99th percentile, everything above the 99 percentile will 
 #'                  be equalized to the value of 99th percentile.This is useful 
 #'                  for visualization of matrices that have outliers.
-#' @param kmeans    Logical indicating if kmeans clustering should be done on the 
-#'                  rows or not (Default:FALSE).
-#' @param k     Defaults to 3. It designates the number of clusters to be returned
-#'              by kmeans clustering.
+#' @param clustfun  a function for clustering
+#'                  rows of \code{mat} that returns 
+#'                  a vector of integers indicating the cluster to which 
+#'                  each point is allocated (a vector of cluster membership),
+#'                  e.g. k-means algorithm with 3 centers: 
+#'                  function(x) kmeans(x, centers=3)$cluster. 
+#'                  By default FALSE.
 #' @param main a character string for the plot title
 #' @param legend.name a character label plotted next to the legend
 #' @param cex.legend  A numerical value giving the amount by which 
@@ -481,35 +499,47 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
 #'                invoked if \code{grid=TRUE}.
 #'                
 #' @return
-#'  returns kmeans clustering result invisibly, if kmeans=TRUE
+#' returns clustering result invisibly, if clustfun is definied
 #'                                    
 #' @examples
 #' # data(cage)
 #' # data(promoters)
 #' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
 #' #                   weight.col="tpm")
-#'
-#'
-#'
+#' 
+#' # set.seed(1000)
 #' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
 #' #           xcoords=-1000:1000,
 #' #           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
 #' #           cex.axis=0.9,grid=FALSE)
 #'
+#' ## examples using clustering functions
+#' ## k-means
+#' # cl1 <- function(x) kmeans(x, centers=3)$cluster
 #' # set.seed(1000)
 #' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#' #         xcoords=-1000:1000,kmeans=TRUE,k=3,
+#' #         xcoords=-1000:1000,clustfun=cl1,
+#' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#' #         cex.axis=0.9,grid=FALSE,
+#' #         user.order=c(1,3,2))
+#' 
+#' ## hierarchical clustering
+#' # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
+#' # set.seed(1000)
+#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#' #         xcoords=-1000:1000,clustfun=cl2,
 #' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
 #' #         cex.axis=0.9,grid=FALSE)
-#'           
-#' 
+#' #
+#' #
 #' 
 #' @export
 #' @rdname heatMatrix
 heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
-                     group=NULL,group.col=NULL,order=FALSE,
+                     group=NULL,group.col=NULL,
+                     order=FALSE,user.order=FALSE,
                      winsorize=c(0,100),
-                     kmeans=FALSE,k=3,
+                     clustfun=FALSE,
                      main="",legend.name=NULL,cex.legend=1,xlab=NULL,cex.main=1,
                      cex.lab=1,cex.axis=1,newpage=TRUE
 ){
@@ -519,7 +549,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   mat2=mat@.Data # get the matrix class, some operations are not transitive
   
   # if this is changed, a rowSide color map will be drawn
-  # setting kmeans or group.list will populate this vector
+  # setting clustering function or group.list will populate this vector
   # and this function will check on its value later on
   # to decide to plot rowside colors or not
   group.vector=NULL
@@ -531,59 +561,47 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   # alternative is to take log or sth
   # but that should be done prior to heatMatrix
   if(winsorize[2]<100 | winsorize[1]>0){
-    hi.th=quantile(mat2,winsorize[2]/100,na.rm=TRUE)
-    lo.th=quantile(mat2,winsorize[1]/100,na.rm=TRUE)
-    mat2[mat2>hi.th]=hi.th
-    mat2[mat2<lo.th]=lo.th
-    
+    mat2=.winsorize(mat2, winsorize)
   }
   
-  # do kmeans if requested
-  if(kmeans){
+  # do clustfun if requested
+  if(!identical(clustfun, FALSE)){
     
     # impute values if there are NAs
     if(any(is.na(mat2)) ) {
-      mat3=impute.knn(mat2 ,k = 10, 
+      mat3=impute.knn(mat2, k = 10, 
                       rowmax = 0.5, colmax = 0.8, 
                       maxp = 1500)$data
-      clu=kmeans(mat3,c=k)
+      clu=clustfun(mat3)
     }
     else{
-      # cluster 
-      clu=kmeans(mat2,c=k)
+      clu=clustfun(mat2)
     }
     
-    # get group.vector centers, will be used at ordering later
-    group.vector=clu$cluster
-    kcenters=clu$centers
-    
+    group.vector=clu
     # order things by clusters only
-    mat2=mat2[order(group.vector),]
+    mat2=mat2[order(group.vector),] 
     group.vector=group.vector[order(group.vector)]
     
     # if user wants to order
-    if(order){
-      
-      # replicate center value for each cluster
-      g.factor=factor(group.vector,levels=unique(group.vector))
-      cent.val=rowSums(kcenters,na.rm=TRUE)[g.factor]
-      
-      # order by centers,cluster id, and do ordering within clusters
-      my.order=order(-cent.val,group.vector,-rowSums(mat2,na.rm=TRUE))
-      
-      # commence the new order: Novus Ordo Seclorum
-      mat2=mat2[my.order,]
-      group.vector=group.vector[my.order]
-    }
+    if(order){ 
+       
+       # ordering within clusters
+       my.order=order(group.vector,-rowSums(mat2,na.rm=TRUE))
+       
+       # commence the new order: Novus Ordo Seclorum
+       mat2=mat2[my.order,]
+       group.vector=group.vector[my.order]
+     }
     
     group.names=unique(group.vector) # to be used for the rowSide colors
+    
   }
-  
   
   # check conditions of group.list
   # group must not have duplicated numbers
   # warn if total number group elements is below nrow(mat)
-  if(!is.null(group)  & !kmeans){
+  if(!is.null(group) & identical(clustfun, FALSE)){ #if grouping then without clustering
     
     # if group is a list of rowids, row numbers for original windows argument
     if(is.list(group)){
@@ -618,7 +636,6 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
         group.vector=group.vector[group.vector>0]
       }       
       
-      
     }
     else if(is.factor(group)){
       
@@ -640,9 +657,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
     # order things by clusters only
     mat2=mat2[order(group.vector),]
     group.vector=group.vector[order(group.vector)]
-    
-    
-    
+
     if(order){
       my.order=order(group.vector,-rowSums(mat2,na.rm=TRUE))
       
@@ -652,12 +667,27 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
       names(group.vector)=rownames(mat2)
     }
     
-  }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
+ }else if(order & identical(clustfun, FALSE) ){ # if only ordering is needed, no grouping or clustering
+    #czy napewno clustfun FALSE? chyba tak?
     order.vector       =rep(1,nrow(mat2))
     names(order.vector)=rownames(mat2)
     order.vector       = order.vector[order(-rowSums(mat2,na.rm=TRUE))]
     mat2               =mat2[order(-rowSums(mat2,na.rm=TRUE)),]
-    
+  }
+  
+ 
+ 
+  #if user.order is provided
+  if(!identical(user.order, FALSE) & !is.null(group.names)){
+    if(length(user.order)!=length(group.names)){
+      warning(paste0("length of 'user.order' vector (", length(user.order) ,") should be the the same as number of clusters (",length(group.names),"). Skipping it..\n"))
+    }else{
+      gv.fac.ord <- sort(factor(group.vector, levels = user.order))
+      group.vector <- group.vector[names(gv.fac.ord)] #convert factor to vector
+      #group.names <- user.order
+    }
+  }else if(!identical(user.order, FALSE) & is.null(group.names)){
+    warning("There are no groups or clusters to order. Skipping it..")
   }
   
   
@@ -744,26 +774,17 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
             x = unit(0.45, "npc"),
             gp=gpar(cex=cex.main))
   
-  #return groups if k-means==TRUE
+  #return groups if clustfun is given
   if(!grid)popViewport()
   
-  if(kmeans | !is.null(group.vector)){
+  if(identical(clustfun, FALSE) | !is.null(group.vector)){
     return(invisible(group.vector)) 
   }else if(order & is.null(group.vector) ){
     return(invisible(order.vector)) 
   }
-
+  
 }
 
-
-# winsorize a matrix using percentile ranges
-.winsorize<-function(mat,rng){
-  hi.th=quantile(mat,rng[2]/100,na.rm=TRUE)
-  lo.th=quantile(mat,rng[1]/100,na.rm=TRUE)
-  mat[mat>hi.th]=hi.th
-  mat[mat<lo.th]=lo.th
-  mat
-}
 
 # ---------------------------------------------------------------------------- #
 #' Draw multiple heatmaps from a ScoreMatrixList object
@@ -803,13 +824,18 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #
 #'               
 #' @param group.col a vector of color names to be used at the rowside colors if
-#'                  \code{group} argument is given or \code{kmeans=TRUE}
+#'                  \code{group} and \code{clustfun} arguments are given
 #' @param order    Logical indicating if the rows should be ordered or not 
 #'                 (Default:FALSE). If \code{order=TRUE} the matrix will be ordered
-#'                 with rowSums of all matrices in descending order. If kmeans=TRUE
-#'                 or \code{group} argument is provided, first the groups/clusters
-#'                 will be ordered in descending order by the sums of rows, then everything
-#'                 within the clusters will be ordered by the sums of rows.
+#'                 with rowSums(mat) values in descending order. 
+#'                 If \code{group} argument is provided, first the groups
+#'                 will be ordered in descending order of sums of rows then, everything
+#'                 within the clusters will be ordered by sums of rows.
+#'                 If \code{clustfun} is given then rows within clusters
+#'                 will be order in descending order of sums of rows.
+#'                 
+#' @param user.order a numerical vector indicating the order of groups/clusters (it works only
+#'                   when \code{group} or \code{clustfun} argument is given). 
 #'
 #' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
 #'                  determines the upper and lower percentile values to limit the 
@@ -818,10 +844,13 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                  everything above the 99 percentile will 
 #'                  be equalized to the value of 99th percentile.This is useful 
 #'                  for visualization of matrices that have outliers.
-#' @param kmeans    Logical indicating if kmeans clustering should be done on the 
-#'                  rows or not (Default:FALSE).
-#' @param k     Defaults to 3. It designates the number of clusters to be returned
-#'              by kmeans clustering.
+#' @param clustfun  a function for clustering
+#'                  rows of \code{mat} that returns 
+#'                  a vector of integers indicating the cluster to which 
+#'                  each point is allocated (a vector of cluster membership),
+#'                  e.g. k-means algorithm with 3 centers: 
+#'                  function(x) kmeans(x, centers=3)$cluster. 
+#'                  By default FALSE.
 #' @param column.scale Logical indicating if matrices should be scaled or not,
 #'                     prior to k-means clustering or ordering. Setting this
 #'                     to TRUE scales the columns of the 
@@ -860,7 +889,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                invoked if \code{grid=TRUE}.
 #' 
 #' @return
-#'  invisibly returns the order of rows, if kmeans=TRUE and/or order=TRUE
+#'  invisibly returns the order of rows, if clustfun is provided and/or order=TRUE
 #'  
 #' @examples
 #' 
@@ -873,18 +902,26 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' 
 #' # sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
 
-#' # multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
-#' 
-#' # use with K-means
-#' # multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#' # use with k-means
+#' # multiHeatMatrix(sml,
+#' #                 clustfun=function(x) kmeans(x, centers=2)$cluster,
+#' #                 cex.axis=0.8,xcoords=c(-1000,1000),
 #' #                 winsorize=c(0,99),
 #' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
-#' 
+#' # use with hierarchical clustering
+#' # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
+#' # multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#' #         xcoords=-1000:1000,clustfun=cl2,
+#' #         cex.legend=0.8,cex.lab=1,
+#' #         cex.axis=0.9,grid=FALSE)
+#' #
 #' # use different colors
 #' # require(RColorBrewer)
 #' # col.cage= brewer.pal(9,"Blues")
 #' # col.cpgi= brewer.pal(9,"YlGn")
-#' # multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+#' # multiHeatMatrix(sml,
+#' #                 clustfun=function(x) kmeans(x, centers=2)$cluster,
+#' #                 cex.axis=0.8,xcoords=c(-1000,1000),
 #' #                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
 #' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 #' 
@@ -894,9 +931,11 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' @export
 #'
 multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
-                          group=NULL,group.col=NULL,order=FALSE,
+                          group=NULL,group.col=NULL,
+                          order=FALSE,user.order=FALSE,
                           winsorize=c(0,100),
-                          kmeans=FALSE,k=3,column.scale=TRUE,
+                          clustfun=FALSE,
+                          column.scale=TRUE,
                           matrix.main=NULL,
                           common.scale=FALSE,legend=TRUE,
                           legend.name=NULL,cex.legend=0.8,
@@ -949,7 +988,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   
   
   # if this is changed, a rowSide color map will be drawn
-  # setting kmeans or group.list will populate this vector
+  # setting clustfun or group.list will populate this vector
   # and this function will check on its value later on
   # to decide to plot rowside colors or not
   group.vector=NULL
@@ -961,15 +1000,13 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   # alternative is to take log or sth
   # but that should be done prior to heatMatrix
   if(winsorize[2]<100 | winsorize[1]>0){
-    
     mat.list=lapply(mat.list,function(x) .winsorize(x,winsorize) )
-    
   }
   
   
-  # if order | kmeans is true
+  # if order is true | clustfun is provided
   # make a one large matrix by cbind
-  if(kmeans | order){
+  if(!identical(clustfun, FALSE) | order){
     mat2=do.call("cbind",mat.list)
     if(column.scale){
       mat2=scale(mat2)
@@ -977,25 +1014,23 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     }
   }
   
-  # do kmeans if requested
-  if(kmeans){
-    
+  # do clustfun if requested
+  if(!identical(clustfun, FALSE)){
     
     # impute values if there are NAs
     if(any(is.na(mat2)) ) {
       mat3=impute.knn(mat2 ,k = 10, 
                       rowmax = 0.5, colmax = 0.8, 
                       maxp = 1500)$data
-      clu=kmeans(mat3,c=k)
+      clu=clustfun(mat3)
     }
     else{
       # cluster 
-      clu=kmeans(mat2,c=k)
+      clu=clustfun(mat2)
     }
     
     # get group.vector centers, will be used at ordering later
-    group.vector=clu$cluster
-    kcenters=clu$centers
+    group.vector=clu
     
     # order things by clusters only
     mat.list=lapply(mat.list,function(x) x[order(group.vector),])
@@ -1006,10 +1041,9 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
       
       # replicate center value for each cluster
       g.factor=factor(group.vector,levels=unique(group.vector))
-      cent.val=rowSums(kcenters,na.rm=TRUE)[g.factor]
       
-      # order by centers,cluster id, and do ordering within clusters
-      my.order=order(-cent.val,group.vector,-rowSums(mat2,na.rm=TRUE))
+      # do ordering within clusters
+      my.order=order(group.vector,-rowSums(mat2,na.rm=TRUE))
       
       # commence the new order: Novus Ordo Seclorum
       mat.list=lapply(mat.list,function(x) x[my.order,])
@@ -1023,7 +1057,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   # check conditions of group.list
   # group must not have duplicated numbers
   # warn if total number group elements is below nrow(mat)
-  if(!is.null(group)  & !kmeans){
+  if(!is.null(group)  & identical(clustfun, FALSE)){
     
     # if group is a list of rowids, row numbers for original windows argument
     if(is.list(group)){
@@ -1083,7 +1117,6 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     group.vector=group.vector[order(group.vector)]
     
     
-    
     if(order){
       
       # get cbound matrix for ordering
@@ -1099,7 +1132,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
       group.vector=group.vector[my.order]
     }
     
-  }else if(order & !kmeans ){ # if only ordering is needed no group or clustering
+  }else if(order & identical(clustfun, FALSE) ){ # if only ordering is needed no group or clustering
     
     # get cbound matrix for ordering
     mat2=do.call("cbind",mat.list)
@@ -1115,7 +1148,20 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     
   }
   
-
+  #if user.order is provided
+  if(!identical(user.order, FALSE) & !is.null(group.names)){
+    if(length(user.order)!=length(group.names)){
+      warning(paste0("length of 'user.order' vector (", length(user.order) ,") should be the the same as number of clusters (",length(group.names),"). Skipping it..\n"))
+    }else{
+      gv.fac.ord <- sort(factor(group.vector, levels = user.order))
+      group.vector <- group.vector[names(gv.fac.ord)] #convert factor to vector
+      group.names <- user.order
+    }
+  }else if(!identical(user.order, FALSE) & is.null(group.names)){
+    warning("There are no groups or clusters to order. Skipping it..")
+  }
+  
+  
   
   # THE PLOTTING STARTS HERE with ordered mat.list
   if(!grid){
@@ -1273,7 +1319,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     popViewport()
   }
   
-  if(kmeans | !is.null(group.vector)){
+  if(!identical(clustfun, FALSE) | !is.null(group.vector)){
     return(invisible(group.vector)) 
   }else if(order & is.null(group.vector) ){
     return(invisible(order.vector)) 
