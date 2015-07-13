@@ -5,11 +5,11 @@
 \title{Draw multiple heatmaps from a ScoreMatrixList object}
 \usage{
 multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
-  group = NULL, group.col = NULL, order = FALSE, winsorize = c(0, 100),
-  kmeans = FALSE, k = 3, column.scale = TRUE, matrix.main = NULL,
-  common.scale = FALSE, legend = TRUE, legend.name = NULL,
-  cex.legend = 0.8, xlab = NULL, cex.lab = 1, cex.main = 1,
-  cex.axis = 0.8, newpage = TRUE)
+  group = NULL, group.col = NULL, order = FALSE, user.order = FALSE,
+  winsorize = c(0, 100), clustfun = FALSE, column.scale = TRUE,
+  matrix.main = NULL, common.scale = FALSE, legend = TRUE,
+  legend.name = NULL, cex.legend = 0.8, xlab = NULL, cex.lab = 1,
+  cex.main = 1, cex.axis = 0.8, newpage = TRUE)
 }
 \arguments{
 \item{sml}{a \code{ScoreMatrixList} object}
@@ -45,14 +45,19 @@ every heatmap will have the same colors.}
              factor levels will be used as the names of the groups in the plot.}
 
 \item{group.col}{a vector of color names to be used at the rowside colors if
-\code{group} argument is given or \code{kmeans=TRUE}}
+\code{group} and \code{clustfun} arguments are given}
 
 \item{order}{Logical indicating if the rows should be ordered or not
                 (Default:FALSE). If \code{order=TRUE} the matrix will be ordered
-                with rowSums of all matrices in descending order. If kmeans=TRUE
-                or \code{group} argument is provided, first the groups/clusters
-                will be ordered in descending order by the sums of rows, then everything
-                within the clusters will be ordered by the sums of rows.}
+                with rowSums(mat) values in descending order.
+                If \code{group} argument is provided, first the groups
+                will be ordered in descending order of sums of rows then, everything
+                within the clusters will be ordered by sums of rows.
+                If \code{clustfun} is given then rows within clusters
+                will be order in descending order of sums of rows.}
+
+\item{user.order}{a numerical vector indicating the order of groups/clusters (it works only
+                  when \code{group} or \code{clustfun} argument is given).}
 
 \item{winsorize}{Numeric vector of two, defaults to c(0,100). This vector
 determines the upper and lower percentile values to limit the
@@ -62,11 +67,13 @@ everything above the 99 percentile will
 be equalized to the value of 99th percentile.This is useful
 for visualization of matrices that have outliers.}
 
-\item{kmeans}{Logical indicating if kmeans clustering should be done on the
-rows or not (Default:FALSE).}
-
-\item{k}{Defaults to 3. It designates the number of clusters to be returned
-by kmeans clustering.}
+\item{clustfun}{a function for clustering
+rows of \code{mat} that returns
+a vector of integers indicating the cluster to which
+each point is allocated (a vector of cluster membership),
+e.g. k-means algorithm with 3 centers:
+function(x) kmeans(x, centers=3)$cluster.
+By default FALSE.}
 
 \item{column.scale}{Logical indicating if matrices should be scaled or not,
 prior to k-means clustering or ordering. Setting this
@@ -115,7 +122,7 @@ axis marks should be magnified relative to the default}
                invoked if \code{grid=TRUE}.}
 }
 \value{
-invisibly returns the order of rows, if kmeans=TRUE and/or order=TRUE
+invisibly returns the order of rows, if clustfun is provided and/or order=TRUE
 }
 \description{
 The function plots multiple heatmaps for a ScoreMatrixList object side by side.
@@ -131,18 +138,26 @@ is obtained from same regions or neighbouring regions.
 # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
 # sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
-# multiHeatMatrix(sml,kmeans=TRUE,k=2,matrix.main=c("cage","CpGi"),cex.axis=0.8)
-
-# use with K-means
-# multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+# use with k-means
+# multiHeatMatrix(sml,
+#                 clustfun=function(x) kmeans(x, centers=2)$cluster,
+#                 cex.axis=0.8,xcoords=c(-1000,1000),
 #                 winsorize=c(0,99),
 #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
-
+# use with hierarchical clustering
+# cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
+# multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#         xcoords=-1000:1000,clustfun=cl2,
+#         cex.legend=0.8,cex.lab=1,
+#         cex.axis=0.9,grid=FALSE)
+#
 # use different colors
 # require(RColorBrewer)
 # col.cage= brewer.pal(9,"Blues")
 # col.cpgi= brewer.pal(9,"YlGn")
-# multiHeatMatrix(sml,kmeans=TRUE,k=2,cex.axis=0.8,xcoords=c(-1000,1000),
+# multiHeatMatrix(sml,
+#                 clustfun=function(x) kmeans(x, centers=2)$cluster,
+#                 cex.axis=0.8,xcoords=c(-1000,1000),
 #                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
 #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
 }

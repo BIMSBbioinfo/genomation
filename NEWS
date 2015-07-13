@@ -1,4 +1,4 @@
-genomation 1.1.6
+genomation 1.1.7
 --------------
 
 IMPROVEMENTS AND BUG FIXES
@@ -8,6 +8,15 @@ IMPROVEMENTS AND BUG FIXES
   a central tendency (mean or median) and smoothing them. 
   Implemented by Katarzyna Wręczycka.
 
+genomation 1.1.6
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* heatMatrix() and multiHeatMatrix() can visualizate score matrix/matrices clustered
+  by using not only kmeans, but custom clustering function (clustfun argument).
+  Implemented by Katarzyna Wreczycka.
+  
 genomation 1.1.5
 --------------
 
