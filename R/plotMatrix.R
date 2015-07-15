@@ -24,6 +24,8 @@
 #' produces a heatmap or a set of stacked heatmaps for meta-region profiles
 #'
 #' @param mat \code{ScoreMatrix} or \code{ScoreMatrixList} to be plotted 
+#' @param centralTend a character that determines central tendency of meta-profile(s). 
+#'                     It takes "mean" (default) or "median".
 #' @param profile.names a character vector for names of profiles. If NULL, 
 #'                      the names
 #'                      will be taken from names(mat) if mat is a 
@@ -38,7 +40,13 @@
 #'                to 1:ncol(mat).
 #' @param meta.rescale if TRUE meta-region profiles are scaled to 0 to 1 range by
 #'                     subracting the min from profiles and dividing them by 
-#'                     max-min.                
+#'                     max-min.
+#' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
+#'                  determines the upper and lower percentile values to limit the 
+#'                  extreme values. For example, c(0,99) will limit the values to
+#'                  only 99th percentile, everything above the 99 percentile will 
+#'                  be equalized to the value of 99th percentile. This is useful 
+#'                  for visualization of matrices that have outliers.             
 #' @param col a vector of color pallete. 
 #'        color scheme to be used. If NULL, a version of jet colors will be
 #'            used.
@@ -68,24 +76,33 @@
 #' #          cex.axis=0.9)
 #' @export
 #' 
-heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
-                   meta.rescale=FALSE,
+heatMeta<-function(mat, centralTend="mean",
+                   profile.names=NULL,xcoords=NULL,col=NULL,
+                   meta.rescale=FALSE, winsorize=c(0,100),
                    legend.name=NULL,cex.legend=1,xlab=NULL,
                    main="",cex.lab=1,cex.axis=1){
   
   # check class
   if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
     stop("mat is not ScoreMatrix or ScoreMatrixList\n")
-  
+  # check centralTend
+  if(! centralTend %in% c("median","mean"))
+    stop("centralTend is not mean or median\n")
   
   
   # get meta profiles by taking the mean
   if( class(mat)=="ScoreMatrix" ){
-    metas=list(colMeans(mat,na.rm=TRUE))
-    
+    if(centralTend=="mean"){
+      metas=list(colMeans(mat,na.rm=TRUE))
+    }else{
+      metas=list(apply(a, 2, function(x) median(x,na.rm=TRUE)))
+    }
   }else if( class(mat)=="ScoreMatrixList" ){
+    if(centralTend=="mean"){
     metas=lapply(mat,function(a) colMeans(a,na.rm=TRUE) )
-    
+    }else{
+    metas=lapply(mat,function(a) apply(a, 2, function(x) median(x,na.rm=TRUE)) )
+    }
   }  
   
   # if the ncols of matrices do not match do not plot anything
@@ -116,7 +133,7 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
   # try to get profile names from names of ScoreMatrixList
   if(is.null(profile.names) & !is.null(names(mat)) & class(mat)=="ScoreMatrixList" )
   {
-    profile.names=  names(mat)
+    profile.names=names(mat)
   }
   # if user wants scaling
   if(meta.rescale){
@@ -169,6 +186,48 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
   invisible(metas)
 }
 
+# function based on plotrix::dispersion, 
+# and additionally it takes into account NA values in data
+# the problem is that when scoreMatrix is calculated then
+# some of the columns have only one numerical value and rest of them is NA
+# and then mean of such column is a numerical value, but variation e.g. sd is NA.
+# border = NA omits borders.
+.dispersion2 <- function(x, y, ulim, llim=ulim, intervals=TRUE, 
+                               border = NA, ...){ 
+  if (intervals) {
+    llim <- y - llim
+    ulim <- y + ulim
+  }
+  ulim.na <- is.na(ulim)
+  if(any(ulim.na)){
+    #selecting 'segments' of numerical values that are located between NA's
+    w <- which(ulim.na)
+    previous.v <- 0 #location of NA to the left of segment
+    for(i in 1:length(w)){ #for each segment
+      if(w[i]==previous.v+1){
+        #if there are some neighboring NA
+        previous.v <- w[i]
+        next
+      }
+      from <- previous.v+1
+      to <- w[i]-1
+      #running polygon separately for each segment
+      polygon(c(x[from:to], rev(x[from:to])), 
+              c(llim[from:to], rev(ulim[from:to])), 
+              border = border, ...)      
+      previous.v <- w[i]
+    }
+    from <- previous.v+1
+    to <- length(x)
+    polygon(c(x[from:to], rev(x[from:to])), 
+            c(llim[from:to], rev(ulim[from:to])), 
+            border = border, ...)
+  }else{
+    polygon(c(x, rev(x)), c(llim, rev(ulim)),
+            border = border, ...)
+  }
+}
+
 # ---------------------------------------------------------------------------- #
 #' Line plot(s) for meta-region profiles
 #' 
@@ -179,10 +238,18 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #' \code{ScoreMatrixList} object, all matrices in the ScoreMatrixList should have 
 #' the same number of 
 #' columns.
+#' @param centralTend a character that determines central tendency of meta-profile(s). 
+#'                     It takes "mean" (default) or "median".
 #' @param overlay If TRUE multiple profiles will be overlayed in the same plot
 #'                (Default:TRUE). If FALSE, and mat is a ScoreMatrixList, consider
-#'                using par(mfrow=c(1,length(mat)))  to see the plots from all
+#'                using par(mfrow=c(1,length(mat))) to see the plots from all
 #'                matrices at once.
+#' @param winsorize Numeric vector of two, defaults to c(0,100). This vector 
+#'                  determines the upper and lower percentile values to limit the 
+#'                  extreme values. For example, c(0,99) will limit the values to
+#'                  only 99th percentile, everything above the 99 percentile will 
+#'                  be equalized to the value of 99th percentile.This is useful 
+#'                  for visualization of matrices that have outliers.
 #' @param profile.names a character vector for names of the profiles. The order
 #'        should be same as the as the order of ScoreMatrixList.
 #' @param xcoords a numeric vector which designates 
@@ -191,8 +258,11 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #'        relative positions of each column in the score matrix. If NULL (Default),
 #'        xcoords equals to 1:ncol(mat) 
 #' @param meta.rescale if TRUE meta-region profiles are scaled to 0 to 1 range by
-#'                     subracting the min from profiles and dividing them by max-min.
-#' @param line.col color of lines for the meta-region profiles. Defaults to colors from
+#'                     subtracting the min from profiles and dividing them by max-min.
+#'                     If dispersion is not FALSE, then dispersion will be scaled as well. 
+#' @param smoothfun a function to smooth central tendency and dispersion bands (Default: FALSE), e.g. 
+#'                    stats::lowess.
+#' @param line.col color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
 #'        \code{rainbow()} function.
 #' @param ylim same as \code{ylim} at \code{\link{plot}} function. 
 #'             if NULL ylim is estimated from all meta-region profiles.
@@ -200,10 +270,42 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #'             Default: "average score"
 #' @param xlab same as \code{xlab} at \code{\link{plot}} function. 
 #'             Default: "bases"
+#' @param dispersion shows dispersion interval bands around \code{centralTend} (defualt:FALSE). It takes 
+#'        one of the character:
+#' \itemize{
+#'  \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
+#'  \item{"sd"}{shows standard deviation and 2*(standard deviation)}
+#'  \item{"IQR"}{shows 1st and 3rd quartile and 
+#'               confidence interval around the median based on the median +/- 1.57 * IQR/sqrt(n) (notches)}
+#' }
+#' @param dispersion.col color of bands of \code{dispersion}.
+#'        Defaults to colors from \code{rainbow()} and transparency is set to 0.5
+#'        (rainbow(length(mat), alpha = 0.5)).
 #' @param ... other options to \code{\link{plot}}
 #' 
 #' @return returns the meta-region profiles invisibly as a matrix.
 #' 
+#' @note
+#' Score matrices are plotted according to ScoreMatrixList order. 
+#' If ScoreMatrixList contains more than one matrix then they will
+#' overlap each other on a plot, i.e.
+#' the first one is plotted first and every next one overlays previous one(s) and 
+#' the last one is the topmost.
+#' 
+#' Missing values in data slow down plotting dispersion around central tendency.
+#' The reason is that dispersion is plotted only for non-missing values,
+#' for each segment that
+#' contains numerical values \code{graphics::polygon} function is used to plot dispersion bands.
+#' There might be a situation, when in a column of ScoreMatrix there is only one
+#' numeric number and the rest are NAs, then at corresponding position 
+#' only central tendency will be plotted.
+#' 
+#' Notches show the 95 percent confidence interval for the median 
+#' according to an approximation based on the normal distribution.
+#' They are used to compare groups - if notches corresponding to adjacent base pairs
+#' on the plot do not overlap, this is strong evidence that medians differ.
+#' Small sample sizes (5-10) can cause notches to extend beyond the interquartile range (IQR) 
+#' (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
 #' @examples
 #' 
 #' # data(cage)
@@ -217,41 +319,146 @@ heatMeta<-function(mat,profile.names=NULL,xcoords=NULL,col=NULL,
 #' # x=new("ScoreMatrixList",list(scores1,scores2))
 #' # plotMeta(mat=x,overlay=TRUE,main="my plotowski")
 #' 
+#' # plot dispersion nd smooth central tendency and variation interval bands
+#' # plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99), 
+#' #         main="Dispersion as interquartile band", lwd=4, 
+#' #         smoothfun=function(x) stats::lowess(x, f = 1/5))
+#' 
 #' @export
 #' @docType methods
 #' @rdname plotMeta
 #' 
-plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
+plotMeta<-function(mat, centralTend="mean",
+                   overlay=TRUE,winsorize=c(0,100),
+                   profile.names=NULL,xcoords=NULL,
                    meta.rescale=FALSE,
+                   smoothfun=FALSE,
                    line.col=NULL,
-                   ylim=NULL,ylab="average score",xlab="bases",...){
+                   dispersion=FALSE,dispersion.col=NULL,
+                   ylim=NULL,ylab="average score",xlab="bases", ...){
   
-  if(is.null(line.col))
-    line.col=ifelse(is.list(mat),list(rainbow(length(mat))),"black")[[1]]
   
   # check class
   if(! class(mat) %in% c("ScoreMatrix","ScoreMatrixList"))
     stop("mat is not ScoreMatrix or ScoreMatrixList\n")
+  # check centralTend args
+  if(! centralTend %in% c("median","mean"))
+    stop("centralTend is not mean or median\n")
+  # check dispersion args
+  disp.args <- c("se","sd","IQR") #dispersion arguments
+  if(! dispersion %in% c(disp.args,FALSE))
+    stop("dispersion is not FALSE, 'se', 'sd' or 'IQR'\n")
   
   
+  if(is.null(line.col) & dispersion==FALSE)
+    line.col=ifelse(is.list(mat),
+                    list(rainbow(length(mat))),
+                    "black")[[1]]
+  if(is.null(line.col) & dispersion!=FALSE & is.null(dispersion.col)){
+    dispersion.col=ifelse(is.list(mat),
+                          list(rainbow(length(mat), alpha = 0.4)),
+                          rainbow(1, alpha=0.4))[[1]]
+    line.col=ifelse(is.list(mat),
+                    list(rainbow(length(mat))),
+                    rainbow(1))[[1]]
+  }
   
-  # get meta profiles by taking the mean
+  #mat is always a list/ScoreMatrixList
   if( class(mat)=="ScoreMatrix" ){
-    metas=list(colMeans(mat,na.rm=TRUE))
-    if(is.null(ylim))myrange=range(metas[[1]])
-  }else if( class(mat)=="ScoreMatrixList" ){
-    metas=lapply(mat,function(a) colMeans(a,na.rm=TRUE) )
-    if(is.null(ylim))myrange=range(unlist(metas))
-  }  
+    mat <- list(mat)
+  }
   
   # if the ncols of matrices do not match do not plot anything
-  if(length(unique(sapply(metas,length))) != 1){
+  if(length(unique(sapply(mat,length))) != 1){
     stop("ScoreMatrix number of columns do not match\n",
          "Try using binMatrix to make matrices with high number of columns",
          "equal\n")
   }
   
+  #init of some variables before for loop
+  if(dispersion %in% disp.args){
+    bound2<-list()
+    if(dispersion=="IQR"){q1<-list(); q3<-list();
+    }else{bound1 <- list()}
+  }
+  metas<-list()
   
+  a <-  Sys.time()
+  for(i in 1:length(mat)){ #for every score matrix
+    
+    # this can set extreme values to given percentile
+    if(winsorize[2]<100 | winsorize[1]>0){
+      mat[[i]]=.winsorize(mat[[i]],winsorize)
+    }
+  
+    # get meta profiles by taking the mean/median
+    if(centralTend=="mean"){
+      if(dispersion=="IQR"){
+        warning("dispersion is set to show 1st and 3rd quartile and 
+                confidence interval around the median, 
+                but centralTend is 'mean'. Setting centralTend to 'median'..\n")
+        metas[[i]]=colMedians(mat[[i]], na.rm=TRUE)
+      }else{
+        metas[[i]]=colMeans(mat[[i]], na.rm=TRUE) 
+      }
+    }else if(centralTend=="median"){
+      if(dispersion=="se"){
+        warning("dispersion is set to standard error of the mean and 95% confidence interval for the mean, but
+                centralTend is 'median'. Setting centralTend to 'mean'..\n")
+        metas[[i]]=colMeans(mat[[i]],na.rm=TRUE) 
+      }else{
+        metas[[i]]=colMedians(mat[[i]], na.rm=TRUE)
+      }
+    }
+
+    # calculate dispersion around the mean/median
+    if(dispersion %in% disp.args){      
+      if(dispersion=="se"){
+        bound1[[i]] <- std.error(mat[[i]], na.rm = TRUE)
+        bound2[[i]] <- bound1[[i]] * 1.96
+      }else if(dispersion=="sd"){
+        bound1[[i]] <- colSds(mat[[i]], na.rm=TRUE)
+        bound2[[i]] <- bound1[[i]] * 2
+      }else if(dispersion=="IQR"){
+        q <- colQuantiles(mat[[i]], probs=c(0.25, 0.75), na.rm=TRUE)
+        q1[[i]] <- q[,1] #1st quartile
+        q3[[i]] <- q[,2] #3rd quartile
+        n<-ncol(mat[[i]])
+        bound2[[i]] <- (1.57*(q3[[i]] - q1[[i]])) / sqrt(n) #notch
+      }
+    }
+    
+    if(meta.rescale){
+      val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
+      metas[[i]]=val2unit(metas[[i]])
+      if(dispersion %in% disp.args){
+        bound2[[i]]=val2unit(bound2[[i]])
+        if(dispersion=="IQR"){
+          q1[[i]]=val2unit(q1[[i]])
+          q3[[i]]=val2unit(q3[[i]]) 
+        }else{
+          bound1[[i]]=val2unit(bound1[[i]])
+        }
+      }
+    }
+
+    #smoothing
+    if(!identical(smoothfun, FALSE)){
+      metas[[i]] <- smoothfun(metas[[i]])$y
+      if(dispersion %in% disp.args){
+        bound2[[i]] <- smoothfun(bound2[[i]])$y
+        if(dispersion=="IQR"){
+          q1[[i]] <- smoothfun(q1[[i]])$y
+          q3[[i]] <- smoothfun(q3[[i]])$y
+        }else{
+          bound1[[i]] <- smoothfun(bound1[[i]])$y
+        }
+      }
+    }
+
+  }#end of for loop
+  
+
   # get the default xcoordinates to plot
   if(!is.null(xcoords)){
     
@@ -269,38 +476,79 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
     xcoords=1:length(metas[[1]])
   }
   
-  if(meta.rescale){
-    metas=lapply(metas,function(x) (x-min(x))/(max(x)-min(x)  )  )
-    myrange=c(0,1.1)
-  }
-  
-  
   
   # if ylim is not NULL, change the ranges to plot to ylim
-  if(!is.null(ylim))myrange=ylim
+  if(!is.null(ylim)){
+    myrange=ylim
+  }else{
+    myrange=range(unlist(metas), na.rm = TRUE)
+    if(dispersion %in% disp.args){
+      bound2.max <- max(unlist(bound2), na.rm = TRUE)
+      myrange[2] <- myrange[2] + abs(bound2.max)
+      myrange[1] <- myrange[1] - abs(bound2.max)
+    }
+  }
   
   marOrg=par()$mar # get original parMar to be used later
   marNew=marOrg
-  marNew[4]=6.1
+  marNew[4]=8
   par(mar=marNew) # extend right margin for the legend
   par(xpd=TRUE) # do this so that you can plot legend out of the plotting box
+  
   if(overlay & length(metas)>1){
     # plot overlayed lines
-    plot(xcoords,metas[[1]],type="l",col=line.col[1],
-         ylim=myrange,ylab=ylab,xlab=xlab,...)
-    for(i in 2:length(metas) ){
-      lines(xcoords,metas[[i]],col=line.col[i])
+    
+    if(dispersion %in% disp.args){
+      plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
+           ylim=myrange,ylab=ylab,xlab=xlab, ...)
+      for(i in 1:length(metas) ){
+        .dispersion2(xcoords, metas[[i]], bound2[[i]],
+                   col=dispersion.col[i], ...)
+        if(dispersion=="IQR"){
+          .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], 
+                       col=dispersion.col[i], ...)
+        }else{
+          .dispersion2(xcoords, metas[[i]], bound1[[i]],
+                     col=dispersion.col[i], ...)
+        }  
+      }
+      for(j in 1:length(metas) ){ #drawing central tendency line(s) on top
+        lines(xcoords,metas[[j]],col=line.col[j],...)
+      }
+      
+    }else{ #without plotting dispersion
+      plot(xcoords,metas[[1]],type="l",col=line.col[1],
+           ylim=myrange,ylab=ylab,xlab=xlab,...)
+      for(i in 2:length(metas) ){ #drawing central tendency line(s) on top
+        lines(xcoords,metas[[i]],col=line.col[i],...)
+      }
     }
     
     # if profile names are given, plot them as legend
     if(!is.null(profile.names))
-      legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
-             ,fill=line.col,bty="n")
+      if(dispersion %in% disp.args){
+        legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
+               ,fill=dispersion.col[d$index],bty="n", border=line.col)
+      }else{
+        legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
+               ,fill=line.col,bty="n")
+      }
   }else{ # plot things one by one, in this case user must use par
     
-    for(i in 1:length(metas) ){
-      plot(xcoords,metas[[i]],type="l",col=line.col[i],
+    for(j in 1:length(metas)){
+      plot(xcoords,metas[[j]],type="l",col=line.col[j],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
+      if(dispersion %in% disp.args){
+        .dispersion2(xcoords, metas[[j]], bound2[[j]],col=dispersion.col[j], ...)
+        if(dispersion=="IQR"){
+          .dispersion2(xcoords, metas[[j]], llim=metas[[j]]-q1[[j]], ulim=q3[[j]]-metas[[j]],
+                     col=dispersion.col[j], ...) 
+        }else{
+          .dispersion2(xcoords, metas[[j]], bound1[[j]],
+                     col=dispersion.col[j], ...)
+        }
+      }
+      lines(xcoords,metas[[j]],col=line.col[j],...)
     }
   }
   # revert par shit to its original state
@@ -309,6 +557,7 @@ plotMeta<-function(mat,overlay=TRUE,profile.names=NULL,xcoords=NULL,
   
   invisible(do.call("rbind",metas))
 }
+
 
 # put a y axis legend
 .heatLegendY<-function(min,max,cols,legend.name,main=TRUE,cex.legend=1,
