@@ -56,7 +56,7 @@ stats::lowess.}
 \itemize{
  \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
  \item{"sd"}{shows standard deviation and 2*(standard deviation)}
- \item{"IQR"}{shows 1st and 3rd quartile, and
+ \item{"IQR"}{shows 1st and 3rd quartile and
               confidence interval around the median based on the median +/- 1.57 * IQR/sqrt(n) (notches)}
 }}
 
@@ -85,14 +85,13 @@ produces a line plot or a set of line plots for meta-region profiles
 \note{
 Score matrices are plotted according to ScoreMatrixList order.
 If ScoreMatrixList contains more than one matrix then they will
-overlap each other, i.e.
+overlap each other on a plot, i.e.
 the first one is plotted first and every next one overlays previous one(s) and
 the last one is the topmost.
 
-When dispersion around central tendency is plotted
-missing values in data slow down the \code{plotMeta} function. The reason is that
-dispersion is plotted for non-missing values,
-so for each segment that
+Missing values in data slow down plotting dispersion around central tendency.
+The reason is that dispersion is plotted only for non-missing values,
+for each segment that
 contains numerical values \code{graphics::polygon} function is used to plot dispersion bands.
 There might be a situation, when in a column of ScoreMatrix there is only one
 numeric number and the rest are NAs, then at corresponding position

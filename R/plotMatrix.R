@@ -190,7 +190,7 @@ heatMeta<-function(mat, centralTend="mean",
 # and additionally it takes into account NA values in data
 # the problem is that when scoreMatrix is calculated then
 # some of the columns have only one numerical value and rest of them is NA
-# and then mean of such column is the value, but variation e.g. sd is NA.
+# and then mean of such column is a numerical value, but variation e.g. sd is NA.
 # border = NA omits borders.
 .dispersion2 <- function(x, y, ulim, llim=ulim, intervals=TRUE, 
                                border = NA, ...){ 
@@ -275,7 +275,7 @@ heatMeta<-function(mat, centralTend="mean",
 #' \itemize{
 #'  \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
 #'  \item{"sd"}{shows standard deviation and 2*(standard deviation)}
-#'  \item{"IQR"}{shows 1st and 3rd quartile, and 
+#'  \item{"IQR"}{shows 1st and 3rd quartile and 
 #'               confidence interval around the median based on the median +/- 1.57 * IQR/sqrt(n) (notches)}
 #' }
 #' @param dispersion.col color of bands of \code{dispersion}.
@@ -288,14 +288,13 @@ heatMeta<-function(mat, centralTend="mean",
 #' @note
 #' Score matrices are plotted according to ScoreMatrixList order. 
 #' If ScoreMatrixList contains more than one matrix then they will
-#' overlap each other, i.e.
+#' overlap each other on a plot, i.e.
 #' the first one is plotted first and every next one overlays previous one(s) and 
 #' the last one is the topmost.
 #' 
-#' When dispersion around central tendency is plotted
-#' missing values in data slow down the \code{plotMeta} function. The reason is that 
-#' dispersion is plotted for non-missing values,
-#' so for each segment that
+#' Missing values in data slow down plotting dispersion around central tendency.
+#' The reason is that dispersion is plotted only for non-missing values,
+#' for each segment that
 #' contains numerical values \code{graphics::polygon} function is used to plot dispersion bands.
 #' There might be a situation, when in a column of ScoreMatrix there is only one
 #' numeric number and the rest are NAs, then at corresponding position 
@@ -384,12 +383,14 @@ plotMeta<-function(mat, centralTend="mean",
   }
   metas<-list()
   
-  for(i in 1:length(mat)){
+  a <-  Sys.time()
+  for(i in 1:length(mat)){ #for every score matrix
+    
     # this can set extreme values to given percentile
     if(winsorize[2]<100 | winsorize[1]>0){
       mat[[i]]=.winsorize(mat[[i]],winsorize)
     }
-    
+  
     # get meta profiles by taking the mean/median
     if(centralTend=="mean"){
       if(dispersion=="IQR"){
@@ -403,13 +404,13 @@ plotMeta<-function(mat, centralTend="mean",
     }else if(centralTend=="median"){
       if(dispersion=="se"){
         warning("dispersion is set to standard error of the mean and 95% confidence interval for the mean, but
-                centralTend is 'median'. Setting centralTend to 'mean'\n")
+                centralTend is 'median'. Setting centralTend to 'mean'..\n")
         metas[[i]]=colMeans(mat[[i]],na.rm=TRUE) 
       }else{
         metas[[i]]=colMedians(mat[[i]], na.rm=TRUE)
       }
     }
-    
+
     # calculate dispersion around the mean/median
     if(dispersion %in% disp.args){      
       if(dispersion=="se"){
@@ -440,10 +441,9 @@ plotMeta<-function(mat, centralTend="mean",
         }
       }
     }
-    
+
     #smoothing
     if(!identical(smoothfun, FALSE)){
-      #first removing NA's and then smoothing
       metas[[i]] <- smoothfun(metas[[i]])$y
       if(dispersion %in% disp.args){
         bound2[[i]] <- smoothfun(bound2[[i]])$y
@@ -455,8 +455,9 @@ plotMeta<-function(mat, centralTend="mean",
         }
       }
     }
-    
-  }
+
+  }#end of for loop
+  
 
   # get the default xcoordinates to plot
   if(!is.null(xcoords)){
@@ -480,7 +481,7 @@ plotMeta<-function(mat, centralTend="mean",
   if(!is.null(ylim)){
     myrange=ylim
   }else{
-    myrange=range(unlist(metas),na.rm = TRUE)
+    myrange=range(unlist(metas), na.rm = TRUE)
     if(dispersion %in% disp.args){
       bound2.max <- max(unlist(bound2), na.rm = TRUE)
       myrange[2] <- myrange[2] + abs(bound2.max)
@@ -496,6 +497,7 @@ plotMeta<-function(mat, centralTend="mean",
   
   if(overlay & length(metas)>1){
     # plot overlayed lines
+    
     if(dispersion %in% disp.args){
       plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
            ylim=myrange,ylab=ylab,xlab=xlab, ...)
@@ -510,16 +512,14 @@ plotMeta<-function(mat, centralTend="mean",
                      col=dispersion.col[i], ...)
         }  
       }
-      #drawing central tendency line(s) on top
-      for(j in 1:length(metas) ){
-        i <- d$index[j]
-        lines(xcoords,metas[[i]],col=line.col[j],...)
+      for(j in 1:length(metas) ){ #drawing central tendency line(s) on top
+        lines(xcoords,metas[[j]],col=line.col[j],...)
       }
       
     }else{ #without plotting dispersion
-      plot(xcoords,metas[[d$index[1]]],type="l",col=line.col[1],
+      plot(xcoords,metas[[1]],type="l",col=line.col[1],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
-      for(i in 2:length(metas) ){
+      for(i in 2:length(metas) ){ #drawing central tendency line(s) on top
         lines(xcoords,metas[[i]],col=line.col[i],...)
       }
     }
