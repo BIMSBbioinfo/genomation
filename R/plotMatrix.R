@@ -383,7 +383,6 @@ plotMeta<-function(mat, centralTend="mean",
   }
   metas<-list()
   
-  a <-  Sys.time()
   for(i in 1:length(mat)){ #for every score matrix
     
     # this can set extreme values to given percentile

@@ -517,18 +517,15 @@ when using overlaps.
 
 ### Using data from AnnotationHub
 
-We can also use data from AnnotationHub since it can return data as GRanges object.  Below we download CpG island and DNAse peak locations from AnnotationHub and get a scoreMatrix on the CpG islands.
+We can also use data from AnnotationHub since it can return data as GRanges object. Below we download CpG island and DNAse peak locations from AnnotationHub and get a scoreMatrix on the CpG islands.
 
 ```{r annotationHubExample1, eval=FALSE, tidy=TRUE}
 library(AnnotationHub)
 ah = AnnotationHub()
 # retrieve CpG island data from annotationHub
-cpgi=ah$goldenpath.hg19.database.cpgIslandExt_0.0.1.RData
-dnase=paste('goldenpath',
-            'hg19.encodeDCC',
-            'wgEncodeOpenChromDnase',
-            'wgEncodeOpenChromDnase8988tPk',
-            'narrowPeak_0.0.1.RData', sep='.')
-dnaseP=ah[[dnase]]
+cpgi_query <- query(ah, c("CpG Islands", "UCSC", "hg19"))
+cpgi <- ah[[names(cpgi_query)]]
+dnase_query <- query(ah, c("wgEncodeOpenChromDnase8988tPk.narrowPeak.gz", "UCSC", "hg19"))
+dnaseP <- ah[[names(dnase_query)]]
 sm = ScoreMatrixBin(target=dnaseP, windows=cpgi, strand.aware=FALSE)
 ```
