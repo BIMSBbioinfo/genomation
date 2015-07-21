@@ -3,8 +3,8 @@ genomation 1.1.9
 
 IMPROVEMENTS AND BUG FIXES
 
-* ScoreMatrix function bug fixed. The bug occured when RleList object (target arg) and 
-  GRanges object (windows) argument did not have the same chromosome ordering. In that case,
+* ScoreMatrix function bug fixed. The bug occured when RleList object ("target" argument) and 
+  GRanges object ("windows" argument) did not have the same chromosome ordering. In that case,
   the returned score matrix was correct but the row ordering did not correspond to the row
   ordering supplied in the windows argument.
   
