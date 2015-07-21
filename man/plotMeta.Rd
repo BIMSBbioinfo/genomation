@@ -106,7 +106,7 @@ Small sample sizes (5-10) can cause notches to extend beyond the interquartile r
 }
 \examples{
 # data(cage)
-# data(cage)
+# data(promoters)
 # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 
 # data(cpgi)

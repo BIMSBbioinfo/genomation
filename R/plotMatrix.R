@@ -309,7 +309,7 @@ heatMeta<-function(mat, centralTend="mean",
 #' @examples
 #' 
 #' # data(cage)
-#' # data(cage)
+#' # data(promoters)
 #' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 #'
 #' # data(cpgi)
