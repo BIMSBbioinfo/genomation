@@ -268,7 +268,6 @@ setGeneric("ScoreMatrix",
              standardGeneric("ScoreMatrix") )
 
 
-
 #' @aliases ScoreMatrix,RleList,GRanges-method
 #' @rdname ScoreMatrix-methods
 #' @usage  \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
@@ -285,7 +284,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             
             
             # fetches the windows and the scores
-            chrs = intersect(names(target), as.character(unique(seqnames(windows))))
+            chrs = sort(intersect(names(target), as.character(unique(seqnames(windows)))))
             myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
             
             #  get a list of matrices from Views object
@@ -296,7 +295,8 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             mat = do.call("rbind",mat)   
             
             # get the ranks of windows, when things are reorganized by as(...,"RangesList")
-            r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )    
+            r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
+            r.list=r.list[order(names(r.list))]
             ranks=do.call("c",r.list)
             
             # put original window order as rownames
