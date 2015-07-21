@@ -1,3 +1,11 @@
+genomation 1.2.0
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* changes in heatMatrix() and plotMeta() - dispersion, smoothfun and clustfun arguments
+  changed from be default FALSE to NULL.
+
 genomation 1.1.9
 --------------
 

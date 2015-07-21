@@ -259,8 +259,8 @@ heatMeta<-function(mat, centralTend="mean",
 #'        xcoords equals to 1:ncol(mat) 
 #' @param meta.rescale if TRUE meta-region profiles are scaled to 0 to 1 range by
 #'                     subtracting the min from profiles and dividing them by max-min.
-#'                     If dispersion is not FALSE, then dispersion will be scaled as well. 
-#' @param smoothfun a function to smooth central tendency and dispersion bands (Default: FALSE), e.g. 
+#'                     If dispersion is not NULL, then dispersion will be scaled as well. 
+#' @param smoothfun a function to smooth central tendency and dispersion bands (Default: NULL), e.g. 
 #'                    stats::lowess.
 #' @param line.col color of lines for \code{centralTend} of meta-region profiles. Defaults to colors from
 #'        \code{rainbow()} function.
@@ -270,7 +270,7 @@ heatMeta<-function(mat, centralTend="mean",
 #'             Default: "average score"
 #' @param xlab same as \code{xlab} at \code{\link{plot}} function. 
 #'             Default: "bases"
-#' @param dispersion shows dispersion interval bands around \code{centralTend} (defualt:FALSE). It takes 
+#' @param dispersion shows dispersion interval bands around \code{centralTend} (default:NULL). It takes 
 #'        one of the character:
 #' \itemize{
 #'  \item{"se"}{shows standard error of the mean and 95 percent confidence interval for the mean}
@@ -296,7 +296,7 @@ heatMeta<-function(mat, centralTend="mean",
 #' The reason is that dispersion is plotted only for non-missing values,
 #' for each segment that
 #' contains numerical values \code{graphics::polygon} function is used to plot dispersion bands.
-#' There might be a situation, when in a column of ScoreMatrix there is only one
+#' There might be a situation, when in a column of ScoreMatrix is only one
 #' numeric number and the rest are NAs, then at corresponding position 
 #' only central tendency will be plotted.
 #' 
@@ -309,7 +309,7 @@ heatMeta<-function(mat, centralTend="mean",
 #' @examples
 #' 
 #' # data(cage)
-#' # data(promoters)
+#' # data(cage)
 #' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 #'
 #' # data(cpgi)
@@ -332,9 +332,9 @@ plotMeta<-function(mat, centralTend="mean",
                    overlay=TRUE,winsorize=c(0,100),
                    profile.names=NULL,xcoords=NULL,
                    meta.rescale=FALSE,
-                   smoothfun=FALSE,
+                   smoothfun=NULL,
                    line.col=NULL,
-                   dispersion=FALSE,dispersion.col=NULL,
+                   dispersion=NULL,dispersion.col=NULL,
                    ylim=NULL,ylab="average score",xlab="bases", ...){
   
   
@@ -346,15 +346,17 @@ plotMeta<-function(mat, centralTend="mean",
     stop("centralTend is not mean or median\n")
   # check dispersion args
   disp.args <- c("se","sd","IQR") #dispersion arguments
-  if(! dispersion %in% c(disp.args,FALSE))
+  if(! dispersion %in% c(disp.args,NULL))
     stop("dispersion is not FALSE, 'se', 'sd' or 'IQR'\n")
+  # check smoothfun
+  if(!is.null(smoothfun) & !is.function(smoothfun)){stop("'smoothfun' has to be a function or NULL\n")}
   
   
-  if(is.null(line.col) & dispersion==FALSE)
+  if(is.null(line.col) & is.null(dispersion))
     line.col=ifelse(is.list(mat),
                     list(rainbow(length(mat))),
                     "black")[[1]]
-  if(is.null(line.col) & dispersion!=FALSE & is.null(dispersion.col)){
+  if(is.null(line.col) & is.null(dispersion.col)){
     dispersion.col=ifelse(is.list(mat),
                           list(rainbow(length(mat), alpha = 0.4)),
                           rainbow(1, alpha=0.4))[[1]]
@@ -442,7 +444,7 @@ plotMeta<-function(mat, centralTend="mean",
     }
 
     #smoothing
-    if(!identical(smoothfun, FALSE)){
+    if(!is.null(smoothfun)){
       metas[[i]] <- smoothfun(metas[[i]])$y
       if(dispersion %in% disp.args){
         bound2[[i]] <- smoothfun(bound2[[i]])$y
@@ -526,8 +528,9 @@ plotMeta<-function(mat, centralTend="mean",
     # if profile names are given, plot them as legend
     if(!is.null(profile.names))
       if(dispersion %in% disp.args){
+        print(paste("dispersion.col",dispersion.col,"line.cole", line.col))
         legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
-               ,fill=dispersion.col[d$index],bty="n", border=line.col)
+               ,fill=dispersion.col,bty="n", border=line.col)
       }else{
         legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
                ,fill=line.col,bty="n")
@@ -787,12 +790,13 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
                      group=NULL,group.col=NULL,
                      order=FALSE,user.order=FALSE,
                      winsorize=c(0,100),
-                     clustfun=FALSE,
+                     clustfun=NULL,
                      main="",legend.name=NULL,cex.legend=1,xlab=NULL,cex.main=1,
                      cex.lab=1,cex.axis=1,newpage=TRUE
 ){
   
   if( class(mat) !="ScoreMatrix" ){stop("'mat' is not a ScoreMatrix object\n")}
+  if(!is.null(clustfun) & !is.function(clustfun)){stop("'clustfun' has to be a function or NULL\n")}
   
   mat2=mat@.Data # get the matrix class, some operations are not transitive
   
@@ -813,7 +817,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   }
   
   # do clustfun if requested
-  if(!identical(clustfun, FALSE)){
+  if(!is.null(clustfun)){
     
     # impute values if there are NAs
     if(any(is.na(mat2)) ) {
@@ -849,7 +853,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   # check conditions of group.list
   # group must not have duplicated numbers
   # warn if total number group elements is below nrow(mat)
-  if(!is.null(group) & identical(clustfun, FALSE)){ #if grouping then without clustering
+  if(!is.null(group) & is.null(clustfun)){ #if grouping then without clustering
     
     # if group is a list of rowids, row numbers for original windows argument
     if(is.list(group)){
@@ -915,7 +919,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
       names(group.vector)=rownames(mat2)
     }
     
- }else if(order & identical(clustfun, FALSE) ){ # if only ordering is needed, no grouping or clustering
+ }else if(order & is.null(clustfun) ){ # if only ordering is needed, no grouping or clustering
     #czy napewno clustfun FALSE? chyba tak?
     order.vector       =rep(1,nrow(mat2))
     names(order.vector)=rownames(mat2)
