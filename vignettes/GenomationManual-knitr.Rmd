@@ -301,9 +301,9 @@ multiHeatMatrix(sml, xcoords=c(-1000, 1000))
 ```
 <center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix1-1.png", width=350></center>
 
-We can put the kmeans=TRUE to see whether there are any patterns present in the data.
+We can put the clustering function clustfun to see whether there are any patterns present in the data.
 ```{r multiHeatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4.5, fig.height=3, dpi=300}
-multiHeatMatrix(sml, xcoords=c(-1000, 1000), kmeans=TRUE, k=2)
+multiHeatMatrix(sml, xcoords=c(-1000, 1000), clustfun=function(x) kmeans(x, centers=2)$cluster)
 ```
 <center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix2-1.png", width=350></center>
 
