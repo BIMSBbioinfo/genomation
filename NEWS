@@ -1,3 +1,11 @@
+genomation 1.1.11
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* plotMeta function bug fixed. The error occured during plotting meta-profile when dispersion=NULL.
+  Implemented by Katarzyna Wreczycka.
+
 genomation 1.1.10
 --------------
 
