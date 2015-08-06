@@ -346,8 +346,10 @@ plotMeta<-function(mat, centralTend="mean",
     stop("centralTend is not mean or median\n")
   # check dispersion args
   disp.args <- c("se","sd","IQR") #dispersion arguments
-  if(! dispersion %in% c(disp.args,NULL))
-    stop("dispersion is not FALSE, 'se', 'sd' or 'IQR'\n")
+  if(!is.null(dispersion) && !dispersion %in% c(disp.args)){
+      stop("dispersion is not FALSE, 'se', 'sd' or 'IQR'\n")
+  }
+
   # check smoothfun
   if(!is.null(smoothfun) & !is.function(smoothfun)){stop("'smoothfun' has to be a function or NULL\n")}
   
@@ -378,7 +380,7 @@ plotMeta<-function(mat, centralTend="mean",
   }
   
   #init of some variables before for loop
-  if(dispersion %in% disp.args){
+  if(!is.null(dispersion) && dispersion %in% disp.args){
     bound2<-list()
     if(dispersion=="IQR"){q1<-list(); q3<-list();
     }else{bound1 <- list()}
@@ -394,8 +396,8 @@ plotMeta<-function(mat, centralTend="mean",
   
     # get meta profiles by taking the mean/median
     if(centralTend=="mean"){
-      if(dispersion=="IQR"){
-        warning("dispersion is set to show 1st and 3rd quartile and 
+      if(!is.null(dispersion) && dispersion=="IQR"){
+           warning("dispersion is set to show 1st and 3rd quartile and 
                 confidence interval around the median, 
                 but centralTend is 'mean'. Setting centralTend to 'median'..\n")
         metas[[i]]=colMedians(mat[[i]], na.rm=TRUE)
@@ -403,7 +405,7 @@ plotMeta<-function(mat, centralTend="mean",
         metas[[i]]=colMeans(mat[[i]], na.rm=TRUE) 
       }
     }else if(centralTend=="median"){
-      if(dispersion=="se"){
+      if(!is.null(dispersion) && dispersion=="se"){
         warning("dispersion is set to standard error of the mean and 95% confidence interval for the mean, but
                 centralTend is 'median'. Setting centralTend to 'mean'..\n")
         metas[[i]]=colMeans(mat[[i]],na.rm=TRUE) 
@@ -413,7 +415,7 @@ plotMeta<-function(mat, centralTend="mean",
     }
 
     # calculate dispersion around the mean/median
-    if(dispersion %in% disp.args){      
+    if(!is.null(dispersion) && dispersion %in% disp.args){      
       if(dispersion=="se"){
         bound1[[i]] <- std.error(mat[[i]], na.rm = TRUE)
         bound2[[i]] <- bound1[[i]] * 1.96
@@ -483,7 +485,7 @@ plotMeta<-function(mat, centralTend="mean",
     myrange=ylim
   }else{
     myrange=range(unlist(metas), na.rm = TRUE)
-    if(dispersion %in% disp.args){
+    if(!is.null(dispersion) && dispersion %in% disp.args){
       bound2.max <- max(unlist(bound2), na.rm = TRUE)
       myrange[2] <- myrange[2] + abs(bound2.max)
       myrange[1] <- myrange[1] - abs(bound2.max)
@@ -499,7 +501,7 @@ plotMeta<-function(mat, centralTend="mean",
   if(overlay & length(metas)>1){
     # plot overlayed lines
     
-    if(dispersion %in% disp.args){
+    if(!is.null(dispersion) && dispersion %in% disp.args){
       plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
            ylim=myrange,ylab=ylab,xlab=xlab, ...)
       for(i in 1:length(metas) ){
@@ -527,8 +529,7 @@ plotMeta<-function(mat, centralTend="mean",
     
     # if profile names are given, plot them as legend
     if(!is.null(profile.names))
-      if(dispersion %in% disp.args){
-        print(paste("dispersion.col",dispersion.col,"line.cole", line.col))
+      if(!is.null(dispersion) && dispersion %in% disp.args){
         legend(max(xcoords)+0.05*max(xcoords),myrange[2],legend=profile.names
                ,fill=dispersion.col,bty="n", border=line.col)
       }else{
@@ -540,7 +541,7 @@ plotMeta<-function(mat, centralTend="mean",
     for(j in 1:length(metas)){
       plot(xcoords,metas[[j]],type="l",col=line.col[j],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
-      if(dispersion %in% disp.args){
+      if(!is.null(dispersion) && dispersion %in% disp.args){
         .dispersion2(xcoords, metas[[j]], bound2[[j]],col=dispersion.col[j], ...)
         if(dispersion=="IQR"){
           .dispersion2(xcoords, metas[[j]], llim=metas[[j]]-q1[[j]], ulim=q3[[j]]-metas[[j]],
