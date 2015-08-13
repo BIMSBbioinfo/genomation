@@ -20,30 +20,30 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
-	GenomicRanges,
+	data.table,
+  GenomicRanges,
 	GenomicAlignments,
-	IRanges,
-	Rsamtools,
-	readr,
-  data.table,
-	plyr,
-	reshape2,
-	ggplot2,
-	methods,
-	rtracklayer,
+  ggplot2,
 	gridBase,
-	impute,
+  impute,
+  IRanges,
+  matrixStats,
+	methods,
   parallel,
   plotrix,
-  matrixStats
+  plyr,
+  readr,
+  reshape2,
+  Rsamtools,
+  rtracklayer
 Suggests:
-  	RUnit,
-	knitr,
-	RColorBrewer,
-	genomationData,
   	BiocGenerics,
-  	rmarkdown,
-  	knitrBootstrap
+    genomationData,
+    knitr,
+    knitrBootstrap,
+    RColorBrewer,
+    rmarkdown,
+    RUnit  
 Collate:
     'documentData.R'
     'genomation-classes.R'

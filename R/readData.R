@@ -505,14 +505,14 @@ gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.cha
     group = strsplit(gff$group, '\\s+')
     group = lapply(group, function(x){
                               vals = x[seq(2,length(x),2)]
-                              vals = str_replace(vals, split.char,'')
-                              vals = str_replace(vals, '^"', '')
-                              vals = str_replace(vals, '"$', '')
+                              vals = sub(split.char, '', vals)
+                              vals = sub('^"', '', vals)
+                              vals = sub('"$', '', vals)
                               d = data.table(t(vals))
-                              setnames(d, x[seq(1,length(x),2)])
+                              data.table::setnames(d, x[seq(1,length(x),2)])
                               d
     })
-    group = rbindlist(group, fill=TRUE)
+    group = data.table::rbindlist(group, fill=TRUE)
     gff$group = NULL
     values(gff) = cbind(values(gff), as.data.frame(group))
   }
@@ -527,7 +527,7 @@ gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.cha
   }
   
   if(ensembl)
-    seqlevels(gff) = paste('chr',seqlevels(gff))
+    seqlevels(gff) = paste('chr',seqlevels(gff),sep='')
   
   return(gff)
 }
