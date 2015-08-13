@@ -1,3 +1,10 @@
+genomation 1.1.12
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* gffToGRanges parses column 9 of the gff file correctly; added ensembl=TRUE to prepend chr to seqlevels
+
 genomation 1.1.11
 --------------
 

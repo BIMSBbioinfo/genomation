@@ -118,4 +118,18 @@ test_readGeneric = function()
   checkIdentical(g8, r10)
 }
 
+test_gffToGRanges = function()
+{
+  library(GenomicRanges)
+  tab.test = system.file('unitTests/test.gtf', package='genomation')
+  gff1 = gffToGRanges(tab.test, track.line='auto')
+  checkIdentical(length(gff1), 3L)
+  checkIdentical(ncol(values(gff1)), 5L)
+  
+  gff2 = gffToGRanges(tab.test, track.line='auto', split.group=TRUE)
+  checkIdentical(ncol(values(gff2)), 13L)
+  
+  gff3 = gffToGRanges(tab.test, track.line='auto',ensembl=TRUE)
+  checkIdentical(as.character(seqlevels(gff3)), 'chr1')
+}
 
