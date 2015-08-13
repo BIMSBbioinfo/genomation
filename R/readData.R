@@ -466,12 +466,15 @@ setMethod("readTranscriptFeatures",
 #'                 The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
 #'                 and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
 #'                 it can also start with \code{https://} or \code{ftps://}.
-#' @param track.line the number of track lines to skip, "auto" to detect them automatically
-#'                   or FALSE(default) if the bed file doesn't have track lines
+#' @param track.line Can be an integer specifying the number of track lines to skip, 
+#'                  "auto" to detect the header lines automatically
+#'                   or FALSE(default) if the bed file doesn't have track lines.
+#'                   "auto" detects both UCSC header lines and lines starting with #
 #' @param split.group boolean, whether to split the 9th column of the file
 #' @param split.char character that is used as a separator of the 9th column. ';' by default
 #' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
 #' @param zero.based \code{boolean} whether the coordinates are 0 or 1 based. 0 is the default
+#' @param ensembl \code{boolean} if TRUE, add the chr prefix to seqlevels. FALSE by default
 #' @return returns a \code{GenomicRanges} object
 #' 
 #' @examples
@@ -482,7 +485,7 @@ setMethod("readTranscriptFeatures",
 #' @docType methods
 #' @export
 gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.char=';',filter=NULL, 
-                        zero.based=FALSE){
+                        zero.based=FALSE, ensembl=FALSE){
   
   gff = readGeneric(gff.file, 
                     chr=1,
@@ -500,15 +503,18 @@ gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.cha
   if(split.group){
     message('splitting the group.column...')
     group = strsplit(gff$group, '\\s+')
-    gnames = group[[1]][seq(1,length(group[[1]]),2)]
-    gids = seq(2,length(group[[1]]),2)
-    group = data.frame(do.call(rbind, 
-                              lapply(group, 
-                                     function(x)gsub(split.char,'',x[gids]))), 
-                       stringsAsFactors=FALSE)
-    colnames(group) = gnames
+    group = lapply(group, function(x){
+                              vals = x[seq(2,length(x),2)]
+                              vals = sub(split.char, '', vals)
+                              vals = sub('^"', '', vals)
+                              vals = sub('"$', '', vals)
+                              d = data.table(t(vals))
+                              data.table::setnames(d, x[seq(1,length(x),2)])
+                              d
+    })
+    group = data.table::rbindlist(group, fill=TRUE)
     gff$group = NULL
-    values(gff) = cbind(values(gff), group)
+    values(gff) = cbind(values(gff), as.data.frame(group))
   }
   
   if(!is.null(filter)){        
@@ -519,6 +525,9 @@ gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.cha
       stop("The given feature is not present in the gff file")
     }
   }
+  
+  if(ensembl)
+    seqlevels(gff) = paste('chr',seqlevels(gff),sep='')
   
   return(gff)
 }
