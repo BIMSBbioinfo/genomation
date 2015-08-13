@@ -484,8 +484,7 @@ setMethod("readTranscriptFeatures",
 #' 
 #' @docType methods
 #' @export
-gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.char=';',filter=NULL, 
-                        zero.based=FALSE, ensembl=FALSE){
+gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.char=';',filter=NULL, zero.based=FALSE, ensembl=FALSE){
   
   gff = readGeneric(gff.file, 
                     chr=1,
@@ -505,14 +504,13 @@ gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.cha
     group = strsplit(gff$group, '\\s+')
     group = lapply(group, function(x){
                               vals = x[seq(2,length(x),2)]
-                              vals = sub(split.char, '', vals)
-                              vals = sub('^"', '', vals)
-                              vals = sub('"$', '', vals)
+                              
                               d = data.table(t(vals))
                               data.table::setnames(d, x[seq(1,length(x),2)])
                               d
     })
     group = data.table::rbindlist(group, fill=TRUE)
+    group = group[,lapply(.SD, function(x)gsub(split.char,'',gsub('"','',x)))]
     gff$group = NULL
     values(gff) = cbind(values(gff), as.data.frame(group))
   }
