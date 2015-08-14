@@ -122,14 +122,13 @@ test_gffToGRanges = function()
 {
   library(GenomicRanges)
   tab.test = system.file('unitTests/test.gtf', package='genomation')
-  gff1 = gffToGRanges(tab.test, track.line='auto')
+  gff1 = gffToGRanges(tab.test)
   checkIdentical(length(gff1), 3L)
-  checkIdentical(ncol(values(gff1)), 5L)
+ 
+  gff2 = gffToGRanges(tab.test, filter='exon')
+  checkIdentical(length(gff2), 1L)
   
-  gff2 = gffToGRanges(tab.test, track.line='auto', split.group=TRUE)
-  checkIdentical(ncol(values(gff2)), 13L)
-  
-  gff3 = gffToGRanges(tab.test, track.line='auto',ensembl=TRUE)
+  gff3 = gffToGRanges(tab.test, ensembl=TRUE)
   checkIdentical(as.character(seqlevels(gff3)), 'chr1')
 }
 

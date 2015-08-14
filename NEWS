@@ -3,7 +3,7 @@ genomation 1.1.12
 
 IMPROVEMENTS AND BUG FIXES
 
-* gffToGRanges parses column 9 of the gff file correctly; added ensembl=TRUE to prepend chr to seqlevels
+* gffToGRanges is now a wrapper for import from rtracklayer
 
 genomation 1.1.11
 --------------
