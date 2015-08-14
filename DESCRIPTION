@@ -21,6 +21,7 @@ Depends:
     R (>= 3.0.0),grid
 Imports:
 	data.table,
+  GenomeInfoDb,
   GenomicRanges,
 	GenomicAlignments,
   ggplot2,
