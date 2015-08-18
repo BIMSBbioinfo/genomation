@@ -466,12 +466,6 @@ setMethod("readTranscriptFeatures",
 #'                 The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
 #'                 and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
 #'                 it can also start with \code{https://} or \code{ftps://}.
-#' @param track.line Can be an integer specifying the number of track lines to skip, 
-#'                  "auto" to detect the header lines automatically
-#'                   or FALSE(default) if the bed file doesn't have track lines.
-#'                   "auto" detects both UCSC header lines and lines starting with #
-#' @param split.group boolean, whether to split the 9th column of the file
-#' @param split.char character that is used as a separator of the 9th column. ';' by default
 #' @param filter a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)
 #' @param zero.based \code{boolean} whether the coordinates are 0 or 1 based. 0 is the default
 #' @param ensembl \code{boolean} if TRUE, add the chr prefix to seqlevels. FALSE by default
@@ -484,50 +478,20 @@ setMethod("readTranscriptFeatures",
 #' 
 #' @docType methods
 #' @export
-gffToGRanges = function(gff.file, track.line=FALSE, split.group=FALSE, split.char=';',filter=NULL, 
-                        zero.based=FALSE, ensembl=FALSE){
+gffToGRanges = function(gff.file, filter=NULL, zero.based=FALSE, ensembl=FALSE){
   
-  gff = readGeneric(gff.file, 
-                    chr=1,
-                    start=4,
-                    end=5, 
-                    strand=7,
-                    meta.cols=list(source=2,
-                                  feature=3,
-                                  score=6,
-                                  frame=8,
-                                  group=9), 
-                    zero.based=zero.based,
-                    skip=track.line)
-  
-  if(split.group){
-    message('splitting the group.column...')
-    group = strsplit(gff$group, '\\s+')
-    group = lapply(group, function(x){
-                              vals = x[seq(2,length(x),2)]
-                              vals = sub(split.char, '', vals)
-                              vals = sub('^"', '', vals)
-                              vals = sub('"$', '', vals)
-                              d = data.table(t(vals))
-                              data.table::setnames(d, x[seq(1,length(x),2)])
-                              d
-    })
-    group = data.table::rbindlist(group, fill=TRUE)
-    gff$group = NULL
-    values(gff) = cbind(values(gff), as.data.frame(group))
-  }
-  
-  if(!is.null(filter)){        
-    if(filter %in% gff$feature){
-      message(paste("Filtering", filter, "features...\n"))
-      gff = gff[gff$feature == filter,]
-    }else{
-      stop("The given feature is not present in the gff file")
-    }
-  }
+  gff = rtracklayer::import(gff.file)
+  if(zero.based)
+    gff$start = gff$start + 1
   
   if(ensembl)
     seqlevels(gff) = paste('chr',seqlevels(gff),sep='')
   
+  if(!is.null(filter)){
+    if(!any(gff$type == filter))
+      stop(paste(filter, 'category does not exist in the gff file'))
+    gff = gff[grepl(filter, gff$type)]
+  }
+    
   return(gff)
 }
