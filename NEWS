@@ -1,3 +1,10 @@
+genomation 1.1.14
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* improve checking if the ncols of matrices match in heatMeta() and plotMeta()
+
 genomation 1.1.13
 --------------
 
