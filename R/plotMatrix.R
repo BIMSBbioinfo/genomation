@@ -106,7 +106,7 @@ heatMeta<-function(mat, centralTend="mean",
   }  
   
   # if the ncols of matrices do not match do not plot anything
-  if(length(unique(sapply(metas,length))) != 1){
+  if(length(unique(sapply(metas,ncol))) != 1){
     stop("ScoreMatrix number of columns do not match\n",
          "Try using binMatrix to make matrices with large number of columns",
          "equal to the smaller ones\n")
@@ -373,7 +373,7 @@ plotMeta<-function(mat, centralTend="mean",
   }
   
   # if the ncols of matrices do not match do not plot anything
-  if(length(unique(sapply(mat,length))) != 1){
+  if(length(unique(sapply(mat,ncol))) != 1){
     stop("ScoreMatrix number of columns do not match\n",
          "Try using binMatrix to make matrices with high number of columns",
          "equal\n")
