@@ -232,9 +232,8 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
                   # figure out which ones are real 0 score
                   # which ones has no coverage
                   # put NAs for no coverage bases
-                  target.rle= endoapply( target.rle,function(x){ x=x-1 
-                                                        x[x<0]=NA
-                                                        x})
+                  runValue(target.rle)=runValue(target.rle)-1
+                  runValue(target.rle)[runValue(target.rle)<0]=NA
 
               }else{
                 # get coverage with weights
@@ -270,7 +269,7 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !grepl('bw$',target))
+            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
             if(type == 'bam')
