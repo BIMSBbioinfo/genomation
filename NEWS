@@ -5,6 +5,7 @@ IMPROVEMENTS AND BUG FIXES
 
 * add new argument cex.legend to plotTargetAnnotation() to specify the size of the legend.
 * changed ScoreMatrixBin() to run faster when noCovNA=TRUE
+* check not only for .bw but also .bigWig and .bigwig extensions of BigWig file in ScoreMatrix() and ScoreMatrixBin()
 
 genomation 1.1.12
 --------------

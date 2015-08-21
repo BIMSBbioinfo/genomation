@@ -376,7 +376,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !(grepl('bw$',target) | grepl('bigWig$',target)))
+            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
             if(type == 'bam')
