@@ -957,10 +957,9 @@ setMethod("getAssociationWithTSS",
 #'        This option is only valid when x is a 
 #'        \code{AnnotationByGeneParts} object
 #' @param col a vector of colors for piechart or the bar plot
+#' @param cex.legend a numeric value of length 1 to specify the size of the legend. By default 1.
 #' @param ... graphical parameters to be passed to \code{pie} 
 #'            or \code{barplot} functions
-#'
-#' @usage  plotTargetAnnotation(x,precedence=TRUE,col,...)
 #'
 #'
 #' @examples
@@ -981,7 +980,8 @@ setMethod("getAssociationWithTSS",
 setGeneric("plotTargetAnnotation", 
               function(x,
                        precedence=TRUE,
-                       col=getColors(length(x@annotation)),...) 
+                       col=getColors(length(x@annotation)),
+                       cex.legend=1,...) 
                        standardGeneric("plotTargetAnnotation"))
 
 #' @rdname plotTargetAnnotation-methods
@@ -989,7 +989,7 @@ setGeneric("plotTargetAnnotation",
 #' @aliases plotTargetAnnotation,AnnotationByFeature-method
 setMethod("plotTargetAnnotation", 
             signature(x = "AnnotationByFeature"),
-            function(x,precedence,col,...){
+            function(x,precedence,col,cex.legend,...){
                 
                 props=getTargetAnnotationStats(x,precedence)
 
@@ -999,7 +999,7 @@ setMethod("plotTargetAnnotation",
                 names(props)=paste( paste(round(props),"%"),sep=" ")
 
                 pie(props,cex=0.9,col=col,...)
-                legend("topright",legend=slice.names,fill=col )
+                legend("topright",legend=slice.names,fill=col, cex=cex.legend)
 
             }else{
 
