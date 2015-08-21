@@ -6,10 +6,11 @@
 \alias{plotTargetAnnotation,AnnotationByFeature-method}
 \title{Plot annotation categories from AnnotationByGeneParts or AnnotationByFeature}
 \usage{
-plotTargetAnnotation(x,precedence=TRUE,col,...)
+plotTargetAnnotation(x, precedence = TRUE,
+  col = getColors(length(x@annotation)), cex.legend = 1, ...)
 
 \S4method{plotTargetAnnotation}{AnnotationByFeature}(x, precedence = TRUE,
-  col = getColors(length(x@annotation)), ...)
+  col = getColors(length(x@annotation)), cex.legend = 1, ...)
 }
 \arguments{
 \item{x}{a \code{AnnotationByFeature} or
@@ -22,6 +23,8 @@ This option is only valid when x is a
 \code{AnnotationByGeneParts} object}
 
 \item{col}{a vector of colors for piechart or the bar plot}
+
+\item{cex.legend}{a numeric value of length 1 to specify the size of the legend. By default 1.}
 
 \item{...}{graphical parameters to be passed to \code{pie}
            or \code{barplot} functions}

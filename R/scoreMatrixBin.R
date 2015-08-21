@@ -232,9 +232,8 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
                   # figure out which ones are real 0 score
                   # which ones has no coverage
                   # put NAs for no coverage bases
-                  target.rle= endoapply( target.rle,function(x){ x=x-1 
-                                                        x[x<0]=NA
-                                                        x})
+                  runValue(target.rle)=runValue(target.rle)-1
+                  runValue(target.rle)[runValue(target.rle)<0]=NA
 
               }else{
                 # get coverage with weights

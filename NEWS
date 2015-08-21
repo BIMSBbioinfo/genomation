@@ -1,3 +1,11 @@
+genomation 1.1.13
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* add new argument cex.legend to plotTargetAnnotation() to specify the size of the legend.
+* changed ScoreMatrixBin() to run faster when noCovNA=TRUE
+
 genomation 1.1.12
 --------------
 
