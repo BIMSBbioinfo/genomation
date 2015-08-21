@@ -120,7 +120,7 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
                       keep.all.metadata=FALSE, zero.based=FALSE, 
                       remove.unusual=FALSE, header=FALSE, 
                       skip=0, sep="\t"){
-    
+  
   # reads the bed files
   df=readTableFast(file, header=header, skip=skip, sep=sep)                    
   
@@ -144,12 +144,12 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
   # removes nonstandard chromosome names
   if(remove.unusual)
     df = df[grep("_", as.character(df$chr),invert=TRUE),]
-
+  
   g = makeGRangesFromDataFrame(
-                          df, 
-                          keep.extra.columns=FALSE, 
-                          starts.in.df.are.0based=zero.based,
-                          ignore.strand=is.null(strand))
+    df, 
+    keep.extra.columns=FALSE, 
+    starts.in.df.are.0based=zero.based,
+    ignore.strand=is.null(strand))
   
   # this names can not be column names in meta-data
   black.names=c("seqnames", "ranges", "strand", "seqlevels", "seqlengths",
@@ -269,7 +269,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 #' @rdname readBroadPeak
 #' @export
 readBroadPeak<-function(file, track.line=FALSE){
-   
+  
   g = readGeneric(file,
                   strand=6,
                   meta.cols=list(name=4,
@@ -305,15 +305,15 @@ readBroadPeak<-function(file, track.line=FALSE){
 #' @rdname readNarrowPeak
 #' @export
 readNarrowPeak<-function(file, track.line=FALSE){
-
+  
   g = readGeneric(file,
                   strand=6,
                   meta.cols=list(name=4,
-                                score=5,
-                                signalValue=7,
-                                pvalue=8,
-                                qvalue=9,
-                                peak=10),
+                                 score=5,
+                                 signalValue=7,
+                                 pvalue=8,
+                                 qvalue=9,
+                                 peak=10),
                   header=FALSE,
                   skip=track.line)
   return(g)
@@ -473,7 +473,7 @@ setMethod("readTranscriptFeatures",
 #' 
 #' @examples
 #' # gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
-#' # gff = gffToGRanges(gff.file, split.group=TRUE)
+#' # gff = gffToGRanges(gff.file)
 #' 
 #' 
 #' @docType methods
@@ -492,6 +492,6 @@ gffToGRanges = function(gff.file, filter=NULL, zero.based=FALSE, ensembl=FALSE){
       stop(paste(filter, 'category does not exist in the gff file'))
     gff = gff[grepl(filter, gff$type)]
   }
-    
+  
   return(gff)
 }

@@ -6,23 +6,13 @@
 \title{Converts a gff formated data.frame into a GenomicRanges object.
 The GenomicRanges object needs to be properly formated for the function to work.}
 \usage{
-gffToGRanges(gff.file, track.line = FALSE, split.group = FALSE,
-  split.char = ";", filter = NULL, zero.based = FALSE, ensembl = FALSE)
+gffToGRanges(gff.file, filter = NULL, zero.based = FALSE, ensembl = FALSE)
 }
 \arguments{
 \item{gff.file}{path to a gff formatted file.
 The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
 and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
 it can also start with \code{https://} or \code{ftps://}.}
-
-\item{track.line}{Can be an integer specifying the number of track lines to skip,
-"auto" to detect the header lines automatically
- or FALSE(default) if the bed file doesn't have track lines.
- "auto" detects both UCSC header lines and lines starting with #}
-
-\item{split.group}{boolean, whether to split the 9th column of the file}
-
-\item{split.char}{character that is used as a separator of the 9th column. ';' by default}
 
 \item{filter}{a character designating which elements to retain from the gff file (e.g. exon, CDS, ...)}
 
@@ -39,6 +29,6 @@ The GenomicRanges object needs to be properly formated for the function to work.
 }
 \examples{
 # gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
-# gff = gffToGRanges(gff.file, split.group=TRUE)
+# gff = gffToGRanges(gff.file)
 }
 
