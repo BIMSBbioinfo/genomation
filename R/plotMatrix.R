@@ -393,7 +393,7 @@ plotMeta<-function(mat, centralTend="mean",
     if(winsorize[2]<100 | winsorize[1]>0){
       mat[[i]]=.winsorize(mat[[i]],winsorize)
     }
-  
+    
     # get meta profiles by taking the mean/median
     if(centralTend=="mean"){
       if(!is.null(dispersion) && dispersion=="IQR"){
@@ -434,7 +434,7 @@ plotMeta<-function(mat, centralTend="mean",
     if(meta.rescale){
       val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
       metas[[i]]=val2unit(metas[[i]])
-      if(dispersion %in% disp.args){
+      if(!is.null(dispersion) && dispersion %in% disp.args){
         bound2[[i]]=val2unit(bound2[[i]])
         if(dispersion=="IQR"){
           q1[[i]]=val2unit(q1[[i]])
@@ -448,7 +448,7 @@ plotMeta<-function(mat, centralTend="mean",
     #smoothing
     if(!is.null(smoothfun)){
       metas[[i]] <- smoothfun(metas[[i]])$y
-      if(dispersion %in% disp.args){
+      if(!is.null(dispersion) && dispersion %in% disp.args){
         bound2[[i]] <- smoothfun(bound2[[i]])$y
         if(dispersion=="IQR"){
           q1[[i]] <- smoothfun(q1[[i]])$y
