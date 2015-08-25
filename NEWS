@@ -1,3 +1,10 @@
+genomation 1.1.15
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* fix bug of plotMeta() when dispersion=NULL and smoothfun is not NULL
+
 genomation 1.1.14
 --------------
 
