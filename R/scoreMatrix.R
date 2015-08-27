@@ -79,8 +79,6 @@ readBam = function(target, windows, rpm=FALSE,
   # check the ScanBamParam object
   if(!is.null(param) & class(param)!='ScanBamParam')
     stop('param needs to be an object of class ScanBamParam')
-
-  wind = .windows.range(windows)
   
   if(paired.end){
     
@@ -88,41 +86,22 @@ readBam = function(target, windows, rpm=FALSE,
                         isUnmappedQuery=FALSE, hasUnmappedMate=FALSE)
     #reads that map into window which stretches from start of the first windows to end of the last window
     if(is.null(param)){
-      param <- ScanBamParam(which=reduce(wind, ignore.strand=TRUE), flag=flag)
+      param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE), flag=flag)
     }else{
       bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
     }
     alnp <- readGAlignmentPairs(target, param=param, use.names=TRUE)
     
-    #reads within gaps between windows
-    gaps.wind <- gaps(windows)
-    if(is.null(param)){
-      param <- ScanBamParam(which=reduce(gaps.wind, ignore.strand=TRUE), flag=flag)
-    }else{
-      bamWhich(param) <- reduce(gaps.wind, ignore.strand=TRUE)
-    }
-    alnp.gap <- readGAlignmentPairs(target, param=param, use.names=TRUE)
-    alnp.gap.uniq <- unique(granges(alnp.gap))
-    reads.within.gaps <- alnp.gap.uniq[as.data.frame(findOverlaps(alnp.gap.uniq, gaps.wind, type="within"))$queryHits]
-    
-    #reads that overlap with windows (at least one read from pair)
-    if(length(reads.within.gaps)!=0){
-      g <- findOverlaps(alnp, reads.within.gaps, type="equal")
-      alns <- alnp[-unique(as.data.frame(g)$queryHits)]
-    }else{
-      alns <- alnp
-    }
-    
     if(stranded){
-      # if first read is on - (resp. +) strand then return - (+)
-      strand(alns) = ifelse(start(first(alns)) < start(last(alns)), "+", "-") 
+      # if first read is on - (resp. +) strand then return - (+) 
+      strand(alnp) = ifelse(start(first(alnp)) < start(last(alnp)), "+", "-") 
     }
-    alns <- granges(alns)
+    alns <- granges(alnp)
     
   }else{
     
     if(is.null(param)){
-      param <- ScanBamParam(which=reduce(wind, ignore.strand=TRUE))
+      param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE))
     }else{
       bamWhich(param) <- reduce(windows, ignore.strand=TRUE)
     }

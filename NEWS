@@ -1,3 +1,14 @@
+genomation 1.1.16
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* issue with readBam() used in scoreMatrix() to read bam files.
+  Reading paired-end reads was extremely slow, because of lines of code
+  that were responsible for checking if both mates from pair are not counted twice,
+  e.g. when mates map into two different windows of interest. Right now we allow it.
+  Fixed bug in reading single-end reads.
+
 genomation 1.1.15
 --------------
 
