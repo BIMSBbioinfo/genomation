@@ -96,11 +96,12 @@ test_ScoreMatrix_character_GRanges = function()
   windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
                     strand=c('-','+','-','+'))
   
-  target.paired.end = GRanges(rep(1,each=7), 
-                              IRanges(c(1,1,2,3,7,8,9), width=c(19, 19, 19, 19, 16, 16, 16)),
-                              strand=rep("+", times=7))
+  target.paired.end = GRanges(rep(1,each=12), 
+                              IRanges(start=c(1,1,2,2,3,3,7,7,8,8,9,9), end=c(19, 19, 20, 20, 21, 21,22,22,23,23,24,24)),
+                              strand=rep("+", times=12))
   windows.paired.end = GRanges(rep(c(1),each=4), IRanges(c(7,8,20, 21), width=10), 
                                strand=c('+','+','+','+'))
+    
 
   # -----------------------------------------------#
   # usage
@@ -126,10 +127,10 @@ test_ScoreMatrix_character_GRanges = function()
   m4 = ScoreMatrix(resize(unique(target), width=1), windows)
   checkEquals(s4,m4)
   
-  # bam file with paired-end reads, rpm=FALSE, unique=TRUE, extend=16
+  # bam file with paired-end reads
   bam.pe.file = system.file('unitTests/test_pairedend.bam', package='genomation')
-  s5 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE, unique=TRUE, extend=16)
-  m5 = ScoreMatrix(resize(unique(target.paired.end), width=16), windows.paired.end)
+  s5 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE)
+  m5 = ScoreMatrix(target.paired.end, windows.paired.end, bam.paired.end=TRUE)
   checkEquals(s5,m5)
 
   # -----------------------------------------------#
