@@ -110,7 +110,7 @@ test_ScoreMatrixListBin_bigWig = function()
           
   st = seq(200, 300, 20)
   g = GRanges(rep('chr2', length(st)), IRanges(st, width=10))
-#   b = import(test_bw, asRangedData=FALSE, which=g)
+#   b = import(test_bw, which=g)
 #   covs = coverage(b, weight=b$score)        
 #   s = ScoreMatrixBin(covs, g, bin.num=5)
           
