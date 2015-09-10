@@ -143,9 +143,9 @@ readBigWig = function(target, windows=NULL, ...){
   
   
   if(is.null(windows)){
-    bw = import(target, asRangedData = FALSE)
+    bw = import(target)
   }else{
-    bw = import(target, asRangedData = FALSE, which=windows)
+    bw = import(target, which=windows)
   }
   if(length(bw) == 0)
     stop('There are no ranges selected')
