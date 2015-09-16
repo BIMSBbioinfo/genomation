@@ -1,3 +1,18 @@
+genomation 1.1.18
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* Arithmetic, indicator and logic operations work on ScoreMatrix and ScoreMatrixBin objects
+
+genomation 1.1.17
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* Bioconductor Git-SVN bridge improved rtracklayer::import() function 
+  that has no more 'asRangedData' arg.
+
 genomation 1.1.16
 --------------
 
