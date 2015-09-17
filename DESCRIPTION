@@ -57,5 +57,5 @@ Collate:
     'scoreMatrix.R'
     'scoreMatrixBin.R'
     'scoreMatrixList.R'
-    'Ops.scoreMatrix.R'
+    'Ops.R'
     'test_genomation_package.R'

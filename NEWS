@@ -3,7 +3,7 @@ genomation 1.1.18
 
 NEW FUNCTIONS AND FEATURES
 
-* Arithmetic, indicator and logic operations work on ScoreMatrix and ScoreMatrixBin objects
+* Arithmetic, indicator and logic operations as well as subsetting work on ScoreMatrix, ScoreMatrixBin and ScoreMatrixList objects.
 
 genomation 1.1.17
 --------------

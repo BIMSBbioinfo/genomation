@@ -76,7 +76,6 @@ setClass("ScoreMatrixList",
 #            validity=.valid.ScoreMatrixList
             )
 
-
 # ---------------------------------------------------------------------------- #
 # ------------------ #
 # Annotation Classes #
