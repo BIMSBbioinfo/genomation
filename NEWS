@@ -1,9 +1,16 @@
-genomation 1.1.18
+genomation 1.1.19
 --------------
 
 NEW FUNCTIONS AND FEATURES
 
 * Arithmetic, indicator and logic operations as well as subsetting work on ScoreMatrix, ScoreMatrixBin and ScoreMatrixList objects.
+
+genomation 1.1.18
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* Integration of Travis CI
 
 genomation 1.1.17
 --------------

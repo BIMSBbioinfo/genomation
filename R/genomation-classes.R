@@ -55,6 +55,16 @@ setMethod("show", "RandomEnrichment", function(object) {
 #' The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
 #' Each row on the ScoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
 #'
+#' @section Contructors:
+#' see \code{ScoreMatrix}
+#' 
+#' @section Coercion:
+#' as(from, "matrix"): Creates a matrix from \code{ScoreMatrix} object. You can also use S3Part() function to extract the matrix from \code{ScoreMatrix} object.
+#' 
+#' @section Subsetting:
+#' In the code snippets below, x is a ScoreMatrix object.
+#' 'x[i,j]': Get elements i and column j and return a subset ScoreMatrix object.
+#' 
 #' @name ScoreMatrix-class
 #' @rdname ScoreMatrix-class
 #' @seealso \code{\link{ScoreMatrix}}
@@ -66,6 +76,20 @@ setClass("ScoreMatrix",contains = "matrix")
 #' An S4 class for storing a set of \code{ScoreMatrixList} 
 #'
 #' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
+#' 
+#' @section Contructors:
+#' see \code{ScoreMatrixList}
+#' 
+#' @section Coercion:
+#' as(from, "ScoreMatrixList"): Creates a \code{ScoreMatrixList} object from a list containing \code{ScoreMatrix} or \code{ScoreMatrixBin} objects. 
+#' 
+#' @section Subsetting:
+#' In the code snippets below, x is a ScoreMatrixList object.
+#' 
+#' \code{x[[i]]},\code{x[[i]]}: Get or set elements \code{i}, where i is a numeric or character vector of length 1.
+#' 
+#' \code{x$name}, \code{x$name}: value: Get or set element name, where name is a name or character vector of length 1.
+#' 
 #'
 #' @name ScoreMatrixList-class
 #' @rdname ScoreMatrixList-class
