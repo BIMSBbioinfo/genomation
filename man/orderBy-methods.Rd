@@ -22,17 +22,19 @@ orderBy(sml, ord.vec)
 Reorder all elements of a ScoreMatrixList to a given ordering vector
 }
 \examples{
-#  library(GenomicRanges)
-#  data(cage)
-#  data(cpgi)
-#  data(promoters)
+\donttest{
+library(GenomicRanges)
+data(cage)
+data(cpgi)
+data(promoters)
 
-#  cage$tpm = NULL
-#  targets = GRangesList(cage=cage, cpgi=cpgi)
-#  sml = ScoreMatrixList(targets, promoters, bin.num=10)
-#  kmeans.clust = kmeans(sml$cage,3)
+cage$tpm = NULL
+targets = GRangesList(cage=cage, cpgi=cpgi)
+sml = ScoreMatrixList(targets, promoters, bin.num=10)
+kmeans.clust = kmeans(sml$cage,3)
 
-#  sml.ordered = orderBy(sml, kmeans.clust$cluster)
-#  multiHeatMatrix(sml.ordered)
+sml.ordered = orderBy(sml, kmeans.clust$cluster)
+multiHeatMatrix(sml.ordered)
+}
 }
 

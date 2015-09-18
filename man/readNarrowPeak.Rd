@@ -24,9 +24,11 @@ a GRanges object
 A function to read the Encode formatted narrowPeak file into a GRanges object
 }
 \examples{
-# narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
+\donttest{
+narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
 
-# narrow.peak = readBroadPeak(narrow.peak.file)
-# head(narrow.peak)
+narrow.peak = readBroadPeak(narrow.peak.file)
+head(narrow.peak)
+}
 }
 

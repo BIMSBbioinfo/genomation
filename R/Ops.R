@@ -1,6 +1,10 @@
-## Ops methods for genomation classes: ScoreMatrix, ScoreMatrixList
+## Ops methods for ScoreMatrix and ScoreMatrixList classes
 
-# Ops method for a ScoreMatrix object. It enables to use arithmetic, indicator and logic operations on ScoreMatrix objects.
+#' @title Ops method for a ScoreMatrix object. It enables to use arithmetic, indicator and logic operations on ScoreMatrix objects.
+#' @param e1 the \code{\link{ScoreMatrix}} object or numeric value
+#' @param e2 the \code{\link{ScoreMatrix}} object or numeric value
+#' @return \code{ScoreMatrix} 
+#' @aliases Ops,ScoreMatrix-method
 setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
           function(e1, e2) {
             e1@.Data=callGeneric(e1@.Data, e2@.Data)
@@ -9,7 +13,12 @@ setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
           }
 )
 
-# Subseting method for a ScoreMatrix object.
+#' @title Subsetting method for a ScoreMatrix object.
+#' @param x the \code{\link{ScoreMatrix}} object
+#' @param i numeric value
+#' @param j numeric value
+#' @return \code{ScoreMatrix} 
+#' @aliases Ops,ScoreMatrix-method
 setMethod("[", signature(x="ScoreMatrix", i = "ANY", j="ANY"),  
           function(x,i,j){
             if(missing(j)){
@@ -26,7 +35,11 @@ setMethod("[", signature(x="ScoreMatrix", i = "ANY", j="ANY"),
           }
 )
 
-# Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
+#' @title Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
+#' @param e1 the \code{\link{ScoreMatrixList}} object 
+#' @param e2 the \code{\link{ScoreMatrixList}} object
+#' @return \code{ScoreMatrixList} 
+#' @aliases Ops,ScoreMatrixList-method
 setMethod("Ops", signature(e1="ScoreMatrixList", e2="ScoreMatrixList"),
           function(e1, e2) {
             e1d = e1@.Data
@@ -46,7 +59,11 @@ setMethod("Ops", signature(e1="ScoreMatrixList", e2="ScoreMatrixList"),
             return(sml)
           }
 )
-
+#' @title Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
+#' @param e1 the \code{\link{ScoreMatrixList}} object 
+#' @param e2 the numeric value
+#' @return \code{ScoreMatrixList} 
+#' @aliases Ops,ScoreMatrixList-method
 setMethod("Ops", signature(e1="ScoreMatrixList", e2="numeric"),
           function(e1, e2) {
             e1d <- e1@.Data #list
@@ -59,7 +76,11 @@ setMethod("Ops", signature(e1="ScoreMatrixList", e2="numeric"),
             return(sml)
           }
 )
-
+#' @title Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
+#' @param e1 the numeric value
+#' @param e2 the \code{\link{ScoreMatrixList}} object
+#' @return \code{ScoreMatrixList} 
+#' @aliases Ops,ScoreMatrixList-method
 setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
           function(e1, e2) {
             e2d <- e2@.Data #list
@@ -72,8 +93,11 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
             return(sml)
           }
 )
-
-# Subseting method for a ScoreMatrixList object.
+#' @title Subsetting method for a ScoreMatrixList object
+#' @param x the \code{\link{ScoreMatrixList}} object
+#' @param i numeric value
+#' @return \code{ScoreMatrixList}
+#' @aliases Ops,ScoreMatrixList-method
 setMethod("[",signature(x="ScoreMatrixList", i = "ANY"), 
           function(x,i){
             ScoreMatrixList(x@.Data[i])

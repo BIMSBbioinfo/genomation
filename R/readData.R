@@ -107,12 +107,11 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
 #' @return \code{\link{GRanges}} object
 #'
 #' @examples
-#' # my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
-#' # refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
-#' #                      meta.cols=list(score=5,name=4),
-#' #                      keep.all.metadata=FALSE, zero.based=TRUE)
-#' # head(refseq)
-#'
+#' my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+#' refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
+#'                       meta.cols=list(score=5,name=4),
+#'                       keep.all.metadata=FALSE, zero.based=TRUE)
+#' head(refseq)
 #' @export
 #' @docType methods
 #' @rdname readGeneric
@@ -192,10 +191,11 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #' @return \code{\link{GRanges}} object
 #'
 #' @examples
-#' # my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
-#' # refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
-#' # head(refseq)
-#'
+#' \donttest{
+#' my.file=system.file("extdata","chr21.refseq.hg19.bed",package="genomation")
+#' refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
+#' head(refseq)
+#' }
 #' @export
 #' @docType methods
 #' @rdname readBed
@@ -259,12 +259,12 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 #' @return a GRanges object
 #'
 #' @examples
-#' 
-#' # broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
+#' \donttest{
+#' broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
 #'                            
-#' # broad.peak = readBroadPeak(broad.peak.file)
-#' # head(broad.peak)
-#'
+#' broad.peak = readBroadPeak(broad.peak.file)
+#' head(broad.peak)
+#' }
 #' @docType methods
 #' @rdname readBroadPeak
 #' @export
@@ -295,12 +295,12 @@ readBroadPeak<-function(file, track.line=FALSE){
 #' @return a GRanges object
 #'
 #' @examples
-#' 
-#' # narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
+#' \donttest{
+#' narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
 #'                  
-#' # narrow.peak = readBroadPeak(narrow.peak.file)
-#' # head(narrow.peak)
-#'
+#' narrow.peak = readBroadPeak(narrow.peak.file)
+#' head(narrow.peak)
+#' }
 #' @docType methods
 #' @rdname readNarrowPeak
 #' @export
@@ -335,9 +335,10 @@ readNarrowPeak<-function(file, track.line=FALSE){
 #'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
 #'
 #' @examples
-#' # cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
-#' # cgi.shores = readFeatureFlank(cgi.path)
-#'
+#' \donttest{
+#' cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
+#' cgi.shores = readFeatureFlank(cgi.path)
+#' }
 #' @export
 #' @docType methods
 #' @rdname readFeatureFlank-methods
@@ -379,11 +380,13 @@ setMethod("readFeatureFlank",
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #' 
 #' @examples
-#' # my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # my.bed12.file
-#' # feats = readTranscriptFeatures(my.bed12.file) 
-#' # names(feats)
-#' # sapply(feats, head)
+#' \donttest{
+#' my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' my.bed12.file
+#' feats = readTranscriptFeatures(my.bed12.file) 
+#' names(feats)
+#' sapply(feats, head)
+#' }
 #' @export
 #' @docType methods
 #' @rdname readTranscriptFeatures-methods
@@ -472,9 +475,10 @@ setMethod("readTranscriptFeatures",
 #' @return returns a \code{GenomicRanges} object
 #' 
 #' @examples
-#' # gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
-#' # gff = gffToGRanges(gff.file)
-#' 
+#' \donttest{
+#' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
+#' gff = gffToGRanges(gff.file)
+#' }
 #' 
 #' @docType methods
 #' @export

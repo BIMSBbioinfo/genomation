@@ -211,6 +211,7 @@ readBigWig = function(target, windows=NULL, ...){
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
+#' 
 #' @examples
 #
 #' # When target is GRanges
@@ -442,20 +443,20 @@ setMethod("show", "ScoreMatrix",
 #' @param rows  \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun function object that takes as input a matrix and returns a matrix. 
 #'         By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
-#'
+#' 
 #' @return \code{ScoreMatrix} object
 #'
 #' @examples
 #' 
 #' # scale the rows of a scoreMatrix object
-#' #library(GenomicRanges)
-#' #target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-#' #         weight = rep(c(1,2),each=7), 
-#' #         strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' #windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
-#' #           strand=c('-','+','-','+'))
-#' #sm = ScoreMatrix(target, windows)
-#' #ssm = scaleScoreMatrix(sm, rows=TRUE)
+#' library(GenomicRanges)
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#'          weight = rep(c(1,2),each=7), 
+#'          strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#'            strand=c('-','+','-','+'))
+#' sm = ScoreMatrix(target, windows)
+#' ssm = scaleScoreMatrix(sm, rows=TRUE)
 #'
 #' @docType methods
 #' @rdname scaleScoreMatrix-methods

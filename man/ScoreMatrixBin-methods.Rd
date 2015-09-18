@@ -84,17 +84,21 @@ A scoreMatrix object can be used to draw average profiles or heatmap of read cov
 Each window will be chopped to equal number of bins based on \code{bin.num} option.
 }
 \examples{
-#  data(cage)
-#  data(cpgi)
-#  data(promoters)
-#  myMat=ScoreMatrixBin(target=cage,
-#                      windows=cpgi,bin.num=10,bin.op="mean",weight.col="tpm")
-# plot(colMeans(myMat,na.rm=TRUE),type="l")
+data(cage)
+data(cpgi)
+data(promoters)
+myMat=ScoreMatrixBin(target=cage,
+                      windows=cpgi,bin.num=10,bin.op="mean",weight.col="tpm")
+\donttest{
+plot(colMeans(myMat,na.rm=TRUE),type="l")
+}
 
-# myMat2=ScoreMatrixBin(target=cage,
-#                       windows=promoters,bin.num=10,bin.op="mean",
-#                       weight.col="tpm",strand.aware=TRUE)
-# plot(colMeans(myMat2,na.rm=TRUE),type="l")
+myMat2=ScoreMatrixBin(target=cage,
+                       windows=promoters,bin.num=10,bin.op="mean",
+                       weight.col="tpm",strand.aware=TRUE)
+\donttest{
+plot(colMeans(myMat2,na.rm=TRUE),type="l")
+}
 }
 \seealso{
 \code{\link{ScoreMatrix}}
