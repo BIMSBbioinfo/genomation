@@ -1085,7 +1085,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                 will be ordered in descending order of sums of rows then, everything
 #'                 within the clusters will be ordered by sums of rows.
 #'                 If \code{clustfun} is given then rows within clusters
-#'                 will be order in descending order of sums of rows.
+#'                 will be order in descending order by sums of rows.
 #'                 
 #' @param user.order a numerical vector indicating the order of groups/clusters (it works only
 #'                   when \code{group} or \code{clustfun} argument is given). 
@@ -1104,8 +1104,14 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'                  e.g. k-means algorithm with 3 centers: 
 #'                  function(x) kmeans(x, centers=3)$cluster. 
 #'                  By default FALSE.
+#' @param clust.matrix a numerical vector of indexes or a character vector of names
+#'                     of the \code{ScoreMatrix} objects in 'sml' 
+#'                     to be used in clustering (if \code{clustfun} argument is provided).
+#'                     By default all matrices are clustered. Matrices that are
+#'                     not indicated in clust.matrix are ordered according to
+#'                     result of clustering algorithm.
 #' @param column.scale Logical indicating if matrices should be scaled or not,
-#'                     prior to k-means clustering or ordering. Setting this
+#'                     prior to clustering or ordering. Setting this
 #'                     to TRUE scales the columns of the 
 #'                     matrices using,
 #'                     \code{scale()} function. scaled columns are only used for
@@ -1188,6 +1194,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
                           order=FALSE,user.order=FALSE,
                           winsorize=c(0,100),
                           clustfun=FALSE,
+                          clust.matrix=NULL,
                           column.scale=TRUE,
                           matrix.main=NULL,
                           common.scale=FALSE,legend=TRUE,
@@ -1235,6 +1242,24 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     sml=intersectScoreMatrixList(sml,reorder=TRUE)
   }
   
+  # check clust.matrix arg
+  clust.matrix = unique(clust.matrix)
+  if(is.numeric(clust.matrix)){
+    if(length(clust.matrix)>length(sml) | max(clust.matrix) > length(sml) | 0 %in% clust.matrix){
+      warning("\n'clust.matrix' vector shouldn't be longer than 'sml'\n",
+             "and shouldn't have greater values that length of 'sml'\n",
+              "clustering all matrices\n")
+      clust.matrix = NULL 
+    }
+  }else{
+    if(length(clust.matrix)>length(sml) | sum(clust.matrix %in% names(sml)) == length(clust.matrix)){
+      warning("\n'clust.matrix' vector shouldn't be longer than 'sml'\n", 
+              "and should contain names of matrices of 'sml'\n",
+              "clustering all matrices\n")
+      clust.matrix = NULL
+    }
+  }
+  
   
   
   mat.list=lapply(sml,function(x) x) # get the matrix class, some operations are not transitive
@@ -1260,7 +1285,11 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   # if order is true | clustfun is provided
   # make a one large matrix by cbind
   if(!identical(clustfun, FALSE) | order){
-    mat2=do.call("cbind",mat.list)
+    if(!is.null(clust.matrix)){
+       mat2=do.call("cbind",mat.list[clust.matrix])
+    }else{
+       mat2=do.call("cbind",mat.list)
+    }
     if(column.scale){
       mat2=scale(mat2)
       mat2[is.nan(mat2)]=0
