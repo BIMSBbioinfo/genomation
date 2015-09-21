@@ -2,7 +2,7 @@
 % Please edit documentation in R/Ops.R
 \docType{methods}
 \name{[,ScoreMatrix,ANY,ANY-method}
-\alias{Ops,ScoreMatrix-method}
+\alias{Ops,ScoreMatrix,ANY,ANY-method}
 \alias{[,ScoreMatrix,ANY,ANY-method}
 \title{Subsetting method for a ScoreMatrix object.}
 \usage{

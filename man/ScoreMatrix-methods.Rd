@@ -87,17 +87,18 @@ data(promoters)
 scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
                                 weight.col="tpm")
 
-\donttest{
+
 # When target is RleList
 library(GenomicRanges)
 covs = coverage(cage)
 scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)
+scores2
 
 # When target is a bam file
-bam.file = system.file('tests/test.bam', package='genomation')
+bam.file = system.file('unitTests/test.bam', package='genomation')
 windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
 scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam')
-}
+scores3
 }
 \seealso{
 \code{\link{ScoreMatrixBin}}

@@ -68,16 +68,16 @@ Function calculates meta-profile(s) from a ScoreMatrix or a ScoreMatrixList, the
 produces a heatmap or a set of stacked heatmaps for meta-region profiles
 }
 \examples{
-\donttest{
- data(cage)
+data(cage)
  data(promoters)
  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
  data(cpgi)
  scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
  x=new("ScoreMatrixList",list(scores1,scores2))
+ \donttest{
  heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
           cex.axis=0.9)
-}
+ }
 }
 
