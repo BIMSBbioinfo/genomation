@@ -92,6 +92,9 @@ readBam = function(target, windows, rpm=FALSE,
     }
     alnp <- readGAlignmentPairs(target, param=param, use.names=TRUE)
     
+    # remove rows that are duplicated when mates of pair map into two different windows
+    alnp = alnp[!duplicated(names(alnp))]
+    
     if(stranded){
       # if first read is on - (resp. +) strand then return - (+) 
       strand(alnp) = ifelse(start(first(alnp)) < start(last(alnp)), "+", "-") 
