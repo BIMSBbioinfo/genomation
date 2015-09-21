@@ -130,6 +130,9 @@ test_ScoreMatrix_character_GRanges = function()
   # bam file with paired-end reads
   bam.pe.file = system.file('unitTests/test_pairedend.bam', package='genomation')
   s5 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE)
+  names(target.paired.end) <-c("1:1-19","1:1-19.1","1:2-20","1:2-20","1:3-21","1:3-21",
+                               "1:7-22","1:7-22","1:8-23","1:8-23","1:9-24","1:9-24")
+  target.paired.end = target.paired.end[!duplicated(names(target.paired.end))]
   m5 = ScoreMatrix(target.paired.end, windows.paired.end, bam.paired.end=TRUE)
   checkEquals(s5,m5)
 
