@@ -165,3 +165,25 @@ test_ScoreMatrixList_Bam = function()
   checkEquals(s4,m4)        
 }
 
+# ---------------------------------------------------------------------------- #
+# test arithmetic on ScoreMatrixList
+test_ScoreMatrixList_Ops = function()
+{
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', '-', 
+                            '-', '-', '-', '-', '-', '+'))
+  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+                    strand=c('-','+','-','+'))
+  
+  tar.list = list(tar1=target, tar2=target)
+  sml = ScoreMatrixList(tar.list, windows)
+  sml1 = sml*10
+  sml2 = as(lapply(sml, function(x) x*10), "ScoreMatrixList")
+  checkEquals(sml1, sml2, checkNames=FALSE)
+}
+
+
+
+

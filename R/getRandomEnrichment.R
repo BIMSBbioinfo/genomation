@@ -12,12 +12,12 @@
 #' @return returns a \code{RandomEnrichment} object
 #' @seealso \code{\link{randomizeFeature}}
 #' @examples
-#' # data(cage)
-#' # data(cpgi)
+#' \donttest{
+#' data(cage)
+#' data(cpgi)
 #'  
-#' # enr = getRandomEnrichment(cage, cpgi, randomizations=50)
-#' 
-#' 
+#' enr = getRandomEnrichment(cage, cpgi, randomizations=50)
+#' }
 #' @export
 #' @docType methods
 #' @rdname getRandomEnrichment-methods
