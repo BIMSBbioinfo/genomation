@@ -72,16 +72,18 @@
 #' @examples
 #' 
 #' # visualize the distribution of cage clusters and cpg islands around promoters
-#' # library(GenomicRanges)
-#' # data(cage)
-#' # data(cpgi)
-#' # data(promoters)
+#' library(GenomicRanges)
+#' data(cage)
+#' data(cpgi)
+#' data(promoters)
 #'  
-#' # cage$tpm = NULL
-#' # targets = GRangesList(cage=cage, cpgi=cpgi)
-#' # sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
-#' # multiHeatMatrix(sml)
-#' 
+#' cage$tpm = NULL
+#' targets = GRangesList(cage=cage, cpgi=cpgi)
+#' sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
+#' sml
+#' \donttest{
+#' multiHeatMatrix(sml)
+#' }
 #' @export
 #' @docType methods
 #' @rdname ScoreMatrixList-methods
@@ -233,17 +235,19 @@ setMethod("show", "ScoreMatrixList",
 #' @usage scaleScoreMatrixList(sml, columns, rows, scalefun)
 #' @return \code{ScoreMatrixList} object
 #' @examples 
-#' # library(GenomicRanges)
-#' # data(cage)
-#' # data(cpgi)
-#' # data(promoters)
+#' library(GenomicRanges)
+#' data(cage)
+#' data(cpgi)
+#' data(promoters)
 #'  
-#' # cage$tpm = NULL
-#' # targets = GRangesList(cage=cage, cpgi=cpgi)
-#' # sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
-#' # sml.scaled = scaleScoreMatrixList(sml, rows=TRUE)
-#' # multiHeatMatrix(sml) 
-#'
+#' cage$tpm = NULL
+#' targets = GRangesList(cage=cage, cpgi=cpgi)
+#' sml = ScoreMatrixList(targets, promoters, bin.num=10, strand.aware=TRUE)
+#' sml.scaled = scaleScoreMatrixList(sml, rows=TRUE)
+#' sml.scaled
+#' \donttest{
+#' multiHeatMatrix(sml) 
+#' }
 #'
 #' @docType methods
 #' @rdname scaleScoreMatrixList
@@ -283,19 +287,19 @@ setMethod("scaleScoreMatrixList", signature("ScoreMatrixList"),
 #'
 #' @return \code{ScoreMatrixList} object
 #' @examples
-#' # library(GenomicRanges)
-#' # target = GRanges(rep(c(1,2),each=7), 
-#' #                  IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-#' #                  weight = rep(c(1,2),each=7))
+#' library(GenomicRanges)
+#' target = GRanges(rep(c(1,2),each=7), 
+#'                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#'                   weight = rep(c(1,2),each=7))
 #'                  
-#' # windows1 = GRanges(rep(c(1,2),each=2), 
-#' #                    IRanges(rep(c(1,2), times=2), width=5), 
-#' #                    strand=c('-','+','-','+'))
-#' # windows2 = windows1[c(1,3)]
-#' # sml = as(list(ScoreMatrix(target, windows1),
-#' #               ScoreMatrix(target, windows2)), 'ScoreMatrixList')
-#' # sml
-#' # intersectScoreMatrixList(sml)
+#' windows1 = GRanges(rep(c(1,2),each=2), 
+#'                     IRanges(rep(c(1,2), times=2), width=5), 
+#'                     strand=c('-','+','-','+'))
+#' windows2 = windows1[c(1,3)]
+#' sml = as(list(ScoreMatrix(target, windows1),
+#'                ScoreMatrix(target, windows2)), 'ScoreMatrixList')
+#' sml
+#' intersectScoreMatrixList(sml)
 #'
 #' @docType methods
 #' @rdname intersectScoreMatrixList-methods
@@ -332,19 +336,20 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #' 
 #' @examples
-#' #  library(GenomicRanges)
-#' #  data(cage)
-#' #  data(cpgi)
-#' #  data(promoters)
+#' \donttest{
+#' library(GenomicRanges)
+#' data(cage)
+#' data(cpgi)
+#' data(promoters)
 #' 
-#' #  cage$tpm = NULL
-#' #  targets = GRangesList(cage=cage, cpgi=cpgi)
-#' #  sml = ScoreMatrixList(targets, promoters, bin.num=10)
-#' #  kmeans.clust = kmeans(sml$cage,3)
+#' cage$tpm = NULL
+#' targets = GRangesList(cage=cage, cpgi=cpgi)
+#' sml = ScoreMatrixList(targets, promoters, bin.num=10)
+#' kmeans.clust = kmeans(sml$cage,3)
 #'  
-#' #  sml.ordered = orderBy(sml, kmeans.clust$cluster)
-#' #  multiHeatMatrix(sml.ordered)
-#' 
+#' sml.ordered = orderBy(sml, kmeans.clust$cluster)
+#' multiHeatMatrix(sml.ordered)
+#' }
 #' @docType methods
 #' @rdname orderBy-methods
 #' @export

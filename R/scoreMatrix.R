@@ -211,24 +211,26 @@ readBigWig = function(target, windows=NULL, ...){
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
+#' 
 #' @examples
-#' 
+#
 #' # When target is GRanges
-#' #data(cage)
-#' #data(promoters)
-#' #scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#' #                                weight.col="tpm")                                
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#'                                 weight.col="tpm")                                
 #'                                  
+#' \donttest{
 #' # When target is RleList
-#' #library(GenomicRanges)
-#' #covs = coverage(cage)
-#' #scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
-#' 
+#' library(GenomicRanges)
+#' covs = coverage(cage)
+#' scores2 = ScoreMatrix(target=covs,windows=promoters,strand.aware=TRUE)    
+#'
 #' # When target is a bam file
-#' # bam.file = system.file('tests/test.bam', package='genomation')
-#' # windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
-#' # scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
-#'  
+#' bam.file = system.file('tests/test.bam', package='genomation')
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5))
+#' scores3 = ScoreMatrix(target=bam.file,windows=windows, type='bam') 
+#' } 
 #' @docType methods
 #' @rdname ScoreMatrix-methods           
 #' @export
@@ -383,14 +385,14 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
 #' @examples
 #' 
 #' # binning the columns in a ScoreMatrix object
-#' #library(GenomicRanges)
-#' #target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-#' #weight = rep(c(1,2),each=7), 
-#' #strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' #windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
-#' #strand=c('-','+','-','+'))
-#' #sm = ScoreMatrix(target, windows)
-#' #bin = binMatrix(sm, bin.num=2)
+#' library(GenomicRanges)
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#' weight = rep(c(1,2),each=7), 
+#' strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#' strand=c('-','+','-','+'))
+#' sm = ScoreMatrix(target, windows)
+#' bin = binMatrix(sm, bin.num=2)
 #'
 #' @docType methods
 #' @rdname binMatrix-methods
@@ -441,20 +443,20 @@ setMethod("show", "ScoreMatrix",
 #' @param rows  \code{rows} Whether to scale the matrix by rows. Set by default to TRUE
 #' @param scalefun function object that takes as input a matrix and returns a matrix. 
 #'         By default  the argument is set to (x - mean(x))/(max(x)-min(x)+1)
-#'
+#' 
 #' @return \code{ScoreMatrix} object
 #'
 #' @examples
 #' 
 #' # scale the rows of a scoreMatrix object
-#' #library(GenomicRanges)
-#' #target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
-#' #         weight = rep(c(1,2),each=7), 
-#' #         strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#' #windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
-#' #           strand=c('-','+','-','+'))
-#' #sm = ScoreMatrix(target, windows)
-#' #ssm = scaleScoreMatrix(sm, rows=TRUE)
+#' library(GenomicRanges)
+#' target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5), 
+#'          weight = rep(c(1,2),each=7), 
+#'          strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+#' windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+#'            strand=c('-','+','-','+'))
+#' sm = ScoreMatrix(target, windows)
+#' ssm = scaleScoreMatrix(sm, rows=TRUE)
 #'
 #' @docType methods
 #' @rdname scaleScoreMatrix-methods

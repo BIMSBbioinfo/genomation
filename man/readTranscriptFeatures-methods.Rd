@@ -35,10 +35,12 @@ Function for reading exon intron and promoter structure from a given bed file
 one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 }
 \examples{
-# my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-# my.bed12.file
-# feats = readTranscriptFeatures(my.bed12.file)
-# names(feats)
-# sapply(feats, head)
+\donttest{
+my.bed12.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+my.bed12.file
+feats = readTranscriptFeatures(my.bed12.file)
+names(feats)
+sapply(feats, head)
+}
 }
 
