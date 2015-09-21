@@ -1,3 +1,13 @@
+genomation 1.1.19
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* Arithmetic, indicator and logic operations as well as subsetting work on ScoreMatrix, 
+  ScoreMatrixBin and ScoreMatrixList objects. New functionality at "ScoreMatrix-class"
+  and "ScoreMatrixList-class" are documented in help pages.
+* Commented examples of functions are uncommented or \donttest{} is used.
+
 genomation 1.1.18
 --------------
 

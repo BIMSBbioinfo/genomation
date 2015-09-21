@@ -23,9 +23,11 @@ a GRanges object
 A function to read the Encode formatted broad peak file into a GRanges object
 }
 \examples{
-# broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
+\donttest{
+broad.peak.file = system.file('extdata',"ex.broadPeak", package='genomation')
 
-# broad.peak = readBroadPeak(broad.peak.file)
-# head(broad.peak)
+broad.peak = readBroadPeak(broad.peak.file)
+head(broad.peak)
+}
 }
 
