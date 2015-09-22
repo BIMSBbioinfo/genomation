@@ -20,6 +20,8 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
+  Biostrings,
+  BSgenome,
 	data.table,
   GenomeInfoDb,
   GenomicRanges,
@@ -36,6 +38,7 @@ Imports:
   readr,
   reshape2,
   Rsamtools,
+  seqPattern,
   rtracklayer
 Suggests:
   	BiocGenerics,
@@ -50,6 +53,7 @@ Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
     'findFeatureComb.R'
+    'patternMatrix.R'
     'plotMatrix.R'
     'randomizeFeature.R'
     'readAnnotate.R'
