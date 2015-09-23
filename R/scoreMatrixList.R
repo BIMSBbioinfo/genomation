@@ -336,7 +336,6 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #' @return \code{ScoreMatrixList} object
 #' 
 #' @examples
-#' \donttest{
 #' library(GenomicRanges)
 #' data(cage)
 #' data(cpgi)
@@ -348,6 +347,7 @@ setMethod("intersectScoreMatrixList", signature("ScoreMatrixList"),
 #' kmeans.clust = kmeans(sml$cage,3)
 #'  
 #' sml.ordered = orderBy(sml, kmeans.clust$cluster)
+#' \donttest{
 #' multiHeatMatrix(sml.ordered)
 #' }
 #' @docType methods

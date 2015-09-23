@@ -22,7 +22,6 @@ orderBy(sml, ord.vec)
 Reorder all elements of a ScoreMatrixList to a given ordering vector
 }
 \examples{
-\donttest{
 library(GenomicRanges)
 data(cage)
 data(cpgi)
@@ -34,6 +33,7 @@ sml = ScoreMatrixList(targets, promoters, bin.num=10)
 kmeans.clust = kmeans(sml$cage,3)
 
 sml.ordered = orderBy(sml, kmeans.clust$cluster)
+\donttest{
 multiHeatMatrix(sml.ordered)
 }
 }

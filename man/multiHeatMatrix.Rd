@@ -130,7 +130,6 @@ Each matrix can have different color schemes but it is essential that each matri
 is obtained from same regions or neighbouring regions.
 }
 \examples{
-\donttest{
 data(cage)
 data(promoters)
 scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
@@ -139,12 +138,15 @@ data(cpgi)
 scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
 sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+
 # use with k-means
+\donttest{
 multiHeatMatrix(sml,
                  clustfun=function(x) kmeans(x, centers=2)$cluster,
                  cex.axis=0.8,xcoords=c(-1000,1000),
                  winsorize=c(0,99),
                  legend.name=c("tpm","coverage"),xlab="region around TSS")
+
 # use with hierarchical clustering
 cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
 multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",

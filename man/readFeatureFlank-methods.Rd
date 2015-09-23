@@ -31,9 +31,8 @@ a GenomicRangesList contatining one GRanges object for flanks and one for GRange
 A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores
 }
 \examples{
-\donttest{
 cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
 cgi.shores = readFeatureFlank(cgi.path)
-}
+cgi.shores
 }
 
