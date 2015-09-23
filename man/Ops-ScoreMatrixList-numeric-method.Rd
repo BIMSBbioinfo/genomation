@@ -3,7 +3,6 @@
 \docType{methods}
 \name{Ops,ScoreMatrixList,numeric-method}
 \alias{Ops,ScoreMatrixList,numeric-method}
-\alias{Ops,ScoreMatrixList-method}
 \title{Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.}
 \usage{
 \S4method{Ops}{ScoreMatrixList,numeric}(e1, e2)

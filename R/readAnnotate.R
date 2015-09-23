@@ -494,13 +494,11 @@ distance2NearestFeature<-function(g.idh,tss){
 #'         objects if target is a  \code{\link{GRangesList}} object.
 #' 
 #' @examples
-#' \donttest{
 #' data(cage)
 #' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
 #' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 #' cage.annot
-#' }
 #' @export
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
@@ -1023,7 +1021,7 @@ setMethod("plotTargetAnnotation",
 #'        The first color is the lowest one, the second is the highest one
 #' 
 #' @examples
-#' \donttest{
+#' 
 #' library(GenomicRanges)
 #' data(cage)
 #' data(cpgi)
@@ -1033,7 +1031,8 @@ setMethod("plotTargetAnnotation",
 #' 
 #' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
-#' annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)        
+#' annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)      
+#' \donttest{  
 #' plotGeneAnnotation(annot)
 #' }
 #' @return plots a heatmap of enrichment of target in each gene functional 
