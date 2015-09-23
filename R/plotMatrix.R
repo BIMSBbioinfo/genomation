@@ -65,15 +65,17 @@
 #' 
 #' 
 #' @examples
-#' # data(cage)
-#' # data(promoters)
-#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
-#' # data(cpgi)
-#' # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#'  data(cage)
+#'  data(promoters)
+#'  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#'  data(cpgi)
+#'  scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 #' 
-#' # x=new("ScoreMatrixList",list(scores1,scores2))
-#' # heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
-#' #          cex.axis=0.9)
+#'  x=new("ScoreMatrixList",list(scores1,scores2))
+#'  \donttest{
+#'  heatMeta(mat=x,legend.name="fg",cex.legend=0.8,main="fdf",cex.lab=6,
+#'           cex.axis=0.9)
+#'  }
 #' @export
 #' 
 heatMeta<-function(mat, centralTend="mean",
@@ -307,23 +309,23 @@ heatMeta<-function(mat, centralTend="mean",
 #' Small sample sizes (5-10) can cause notches to extend beyond the interquartile range (IQR) 
 #' (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
 #' @examples
-#' 
-#' # data(cage)
-#' # data(promoters)
-#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#'  data(cage)
+#'  data(promoters)
+#'  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 #'
-#' # data(cpgi)
-#' # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+#'  data(cpgi)
+#'  scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 #' 
-#' # create a new ScoreMatrixList
-#' # x=new("ScoreMatrixList",list(scores1,scores2))
-#' # plotMeta(mat=x,overlay=TRUE,main="my plotowski")
+#'  # create a new ScoreMatrixList
+#'  x=new("ScoreMatrixList",list(scores1,scores2))
+#'  \donttest{
+#'  plotMeta(mat=x,overlay=TRUE,main="my plotowski")
 #' 
-#' # plot dispersion nd smooth central tendency and variation interval bands
-#' # plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99), 
-#' #         main="Dispersion as interquartile band", lwd=4, 
-#' #         smoothfun=function(x) stats::lowess(x, f = 1/5))
-#' 
+#'  # plot dispersion nd smooth central tendency and variation interval bands
+#'  plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99), 
+#'          main="Dispersion as interquartile band", lwd=4, 
+#'          smoothfun=function(x) stats::lowess(x, f = 1/5))
+#'  }
 #' @export
 #' @docType methods
 #' @rdname plotMeta
@@ -754,36 +756,38 @@ plotMeta<-function(mat, centralTend="mean",
 #' returns clustering result invisibly, if clustfun is definied
 #'                                    
 #' @examples
-#' # data(cage)
-#' # data(promoters)
-#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#' #                   weight.col="tpm")
 #' 
-#' # set.seed(1000)
-#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#' #           xcoords=-1000:1000,
-#' #           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#' #           cex.axis=0.9,grid=FALSE)
-#'
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+#'                    weight.col="tpm")
+#' 
+#' set.seed(1000)
+#' \donttest{
+#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#'            xcoords=-1000:1000,
+#'            cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#'            cex.axis=0.9,grid=FALSE)
+#'            
 #' ## examples using clustering functions
 #' ## k-means
-#' # cl1 <- function(x) kmeans(x, centers=3)$cluster
-#' # set.seed(1000)
-#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#' #         xcoords=-1000:1000,clustfun=cl1,
-#' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#' #         cex.axis=0.9,grid=FALSE,
-#' #         user.order=c(1,3,2))
+#' cl1 <- function(x) kmeans(x, centers=3)$cluster
+#' set.seed(1000)
+#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#'          xcoords=-1000:1000,clustfun=cl1,
+#'          cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#'          cex.axis=0.9,grid=FALSE,
+#'          user.order=c(1,3,2))
 #' 
 #' ## hierarchical clustering
-#' # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
-#' # set.seed(1000)
-#' # heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#' #         xcoords=-1000:1000,clustfun=cl2,
-#' #         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#' #         cex.axis=0.9,grid=FALSE)
-#' #
-#' #
+#' cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
+#' set.seed(1000)
+#' heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#'          xcoords=-1000:1000,clustfun=cl2,
+#'          cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+#'          cex.axis=0.9,grid=FALSE)
+#' }
+#' 
 #' 
 #' @export
 #' @rdname heatMatrix
@@ -1145,39 +1149,40 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #'  invisibly returns the order of rows, if clustfun is provided and/or order=TRUE
 #'  
 #' @examples
+#' data(cage)
+#' data(promoters)
+#' scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 #' 
-#' # data(cage)
-#' # data(promoters)
-#' # scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+#' data(cpgi)
+#' scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 #' 
-#' # data(cpgi)
-#' # scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
-#' 
-#' # sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
-
+#' sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+#'
 #' # use with k-means
-#' # multiHeatMatrix(sml,
-#' #                 clustfun=function(x) kmeans(x, centers=2)$cluster,
-#' #                 cex.axis=0.8,xcoords=c(-1000,1000),
-#' #                 winsorize=c(0,99),
-#' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' \donttest{
+#' multiHeatMatrix(sml,
+#'                  clustfun=function(x) kmeans(x, centers=2)$cluster,
+#'                  cex.axis=0.8,xcoords=c(-1000,1000),
+#'                  winsorize=c(0,99),
+#'                  legend.name=c("tpm","coverage"),xlab="region around TSS")
+#'                  
 #' # use with hierarchical clustering
-#' # cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
-#' # multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#' #         xcoords=-1000:1000,clustfun=cl2,
-#' #         cex.legend=0.8,cex.lab=1,
-#' #         cex.axis=0.9,grid=FALSE)
-#' #
-#' # use different colors
-#' # require(RColorBrewer)
-#' # col.cage= brewer.pal(9,"Blues")
-#' # col.cpgi= brewer.pal(9,"YlGn")
-#' # multiHeatMatrix(sml,
-#' #                 clustfun=function(x) kmeans(x, centers=2)$cluster,
-#' #                 cex.axis=0.8,xcoords=c(-1000,1000),
-#' #                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
-#' #                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
+#' multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+#'          xcoords=-1000:1000,clustfun=cl2,
+#'          cex.legend=0.8,cex.lab=1,
+#'          cex.axis=0.9,grid=FALSE)
 #' 
+#' # use different colors
+#' require(RColorBrewer)
+#' col.cage= brewer.pal(9,"Blues")
+#' col.cpgi= brewer.pal(9,"YlGn")
+#' multiHeatMatrix(sml,
+#'                  clustfun=function(x) kmeans(x, centers=2)$cluster,
+#'                  cex.axis=0.8,xcoords=c(-1000,1000),
+#'                  winsorize=c(0,99),col=list(col.cage,col.cpgi),
+#'                  legend.name=c("tpm","coverage"),xlab="region around TSS")
+#' }
 #' 
 #' 
 #' 

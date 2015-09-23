@@ -31,10 +31,11 @@ This function measures the association between two genomic features by randomizi
 That is to say, \code{query} feature will be randomly distributed over the genome (constrained by provided options), and the overlap of \code{target} with these randomized features will be measured.
 }
 \examples{
-# data(cage)
-# data(cpgi)
-
-# enr = getRandomEnrichment(cage, cpgi, randomizations=50)
+data(cage)
+data(cpgi)
+\donttest{
+enr = getRandomEnrichment(cage, cpgi, randomizations=50)
+}
 }
 \seealso{
 \code{\link{randomizeFeature}}

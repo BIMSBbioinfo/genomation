@@ -43,6 +43,8 @@ data(cage)
 bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 gene.parts = readTranscriptFeatures(bed.file)
 annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-# plotTargetAnnotation(annot)
+\donttest{
+plotTargetAnnotation(annot)
+}
 }
 

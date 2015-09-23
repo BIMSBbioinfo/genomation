@@ -164,6 +164,26 @@ test_ScoreMatrix_character_GRanges_bigWig = function()
   checkEquals(s, m)
 }
 
+
+# ---------------------------------------------------------------------------- #
+# test arithmetic and logic operations on ScoreMatrix
+test_ScoreMatrix_Ops = function()
+{
+  target1 = GRanges(rep(c(1,2),times=6), 
+                   IRanges(rep(c(1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=6))
+  target2 = GRanges(rep(c(1,2),times=12), 
+                   IRanges(rep(c(1,2,3,7,8,9), times=4), width=5),
+                   weight = rep(c(1,2),each=12))
+  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+                    strand=c('-','+','-','+'))
+  
+  s1 = ScoreMatrix(target=target1, windows=windows)
+  s2 = ScoreMatrix(target=target2, windows=windows)
+  checkEquals(s1*2,s2)
+
+  checkEquals(sum(s1==s1), nrow(s1)*ncol(s1))
+}
 	
 # ---------------------------------------------------------------------------- #
 # test for constrainRanges

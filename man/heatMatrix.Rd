@@ -97,35 +97,35 @@ it can use clustering using given clustering function
 In addition, user can define groups of rows using 'group' argument.
 }
 \examples{
-# data(cage)
-# data(promoters)
-# scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
-#                   weight.col="tpm")
+data(cage)
+data(promoters)
+scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
+                   weight.col="tpm")
 
-# set.seed(1000)
-# heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#           xcoords=-1000:1000,
-#           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#           cex.axis=0.9,grid=FALSE)
+set.seed(1000)
+\donttest{
+heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+           xcoords=-1000:1000,
+           cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+           cex.axis=0.9,grid=FALSE)
 
 ## examples using clustering functions
 ## k-means
-# cl1 <- function(x) kmeans(x, centers=3)$cluster
-# set.seed(1000)
-# heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#         xcoords=-1000:1000,clustfun=cl1,
-#         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#         cex.axis=0.9,grid=FALSE,
-#         user.order=c(1,3,2))
+cl1 <- function(x) kmeans(x, centers=3)$cluster
+set.seed(1000)
+heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+         xcoords=-1000:1000,clustfun=cl1,
+         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+         cex.axis=0.9,grid=FALSE,
+         user.order=c(1,3,2))
 
 ## hierarchical clustering
-# cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
-# set.seed(1000)
-# heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#         xcoords=-1000:1000,clustfun=cl2,
-#         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
-#         cex.axis=0.9,grid=FALSE)
-#
-#
+cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=3)
+set.seed(1000)
+heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+         xcoords=-1000:1000,clustfun=cl2,
+         cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,
+         cex.axis=0.9,grid=FALSE)
+}
 }
 

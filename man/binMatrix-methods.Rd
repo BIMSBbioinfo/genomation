@@ -28,13 +28,13 @@ Bins the columns of a matrix using a user provided function
 }
 \examples{
 # binning the columns in a ScoreMatrix object
-#library(GenomicRanges)
-#target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
-#weight = rep(c(1,2),each=7),
-#strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
-#windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5),
-#strand=c('-','+','-','+'))
-#sm = ScoreMatrix(target, windows)
-#bin = binMatrix(sm, bin.num=2)
+library(GenomicRanges)
+target = GRanges(rep(c(1,2),each=7), IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+weight = rep(c(1,2),each=7),
+strand=c('-', '-', '-', '-', '+', '-', '+', '-', '-', '-', '-', '-', '-', '+'))
+windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5),
+strand=c('-','+','-','+'))
+sm = ScoreMatrix(target, windows)
+bin = binMatrix(sm, bin.num=2)
 }
 

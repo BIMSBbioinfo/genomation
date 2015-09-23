@@ -130,35 +130,39 @@ Each matrix can have different color schemes but it is essential that each matri
 is obtained from same regions or neighbouring regions.
 }
 \examples{
-# data(cage)
-# data(promoters)
-# scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
+data(cage)
+data(promoters)
+scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 
-# data(cpgi)
-# scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
+data(cpgi)
+scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
-# sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
+
 # use with k-means
-# multiHeatMatrix(sml,
-#                 clustfun=function(x) kmeans(x, centers=2)$cluster,
-#                 cex.axis=0.8,xcoords=c(-1000,1000),
-#                 winsorize=c(0,99),
-#                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+\donttest{
+multiHeatMatrix(sml,
+                 clustfun=function(x) kmeans(x, centers=2)$cluster,
+                 cex.axis=0.8,xcoords=c(-1000,1000),
+                 winsorize=c(0,99),
+                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+
 # use with hierarchical clustering
-# cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
-# multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
-#         xcoords=-1000:1000,clustfun=cl2,
-#         cex.legend=0.8,cex.lab=1,
-#         cex.axis=0.9,grid=FALSE)
-#
+cl2 <- function(x) cutree(hclust(dist(x), method="complete"), k=2)
+multiHeatMatrix(sml,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
+         xcoords=-1000:1000,clustfun=cl2,
+         cex.legend=0.8,cex.lab=1,
+         cex.axis=0.9,grid=FALSE)
+
 # use different colors
-# require(RColorBrewer)
-# col.cage= brewer.pal(9,"Blues")
-# col.cpgi= brewer.pal(9,"YlGn")
-# multiHeatMatrix(sml,
-#                 clustfun=function(x) kmeans(x, centers=2)$cluster,
-#                 cex.axis=0.8,xcoords=c(-1000,1000),
-#                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
-#                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+require(RColorBrewer)
+col.cage= brewer.pal(9,"Blues")
+col.cpgi= brewer.pal(9,"YlGn")
+multiHeatMatrix(sml,
+                 clustfun=function(x) kmeans(x, centers=2)$cluster,
+                 cex.axis=0.8,xcoords=c(-1000,1000),
+                 winsorize=c(0,99),col=list(col.cage,col.cpgi),
+                 legend.name=c("tpm","coverage"),xlab="region around TSS")
+}
 }
 
