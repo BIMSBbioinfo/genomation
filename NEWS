@@ -1,3 +1,12 @@
+genomation 1.1.20
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  test more examples (remove \donttest{} from examples
+   responsible for reading data, e.g. readBed, include into \donttest{}
+   only those parts of examples that are slow, e.g. plotMeta(.,.))
+
 genomation 1.1.19
 --------------
 
