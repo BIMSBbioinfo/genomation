@@ -1,3 +1,13 @@
+genomation 1.1.21
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Improve reading paired-end alignment in score matrix functions.
+   In order to avoid duplicated reads from GenomicAlignments:readGAlignmentPairs
+   reads with repeated ids are removed (with assumption that reads have unique ids).
+   
+
 genomation 1.1.20
 --------------
 
