@@ -4,7 +4,7 @@
 #' @param e1 the \code{\link{ScoreMatrix}} object or numeric value
 #' @param e2 the \code{\link{ScoreMatrix}} object or numeric value
 #' @return \code{ScoreMatrix} 
-#' @aliases Ops,ScoreMatrix-method
+#' @aliases Ops,ScoreMatrix,ScoreMatrix-method
 setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
           function(e1, e2) {
             e1@.Data=callGeneric(e1@.Data, e2@.Data)
@@ -18,7 +18,7 @@ setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
 #' @param i numeric value
 #' @param j numeric value
 #' @return \code{ScoreMatrix} 
-#' @aliases Ops,ScoreMatrix-method
+#' @aliases Ops,ScoreMatrix,ANY,ANY-method
 setMethod("[", signature(x="ScoreMatrix", i = "ANY", j="ANY"),  
           function(x,i,j){
             if(missing(j)){
@@ -39,7 +39,7 @@ setMethod("[", signature(x="ScoreMatrix", i = "ANY", j="ANY"),
 #' @param e1 the \code{\link{ScoreMatrixList}} object 
 #' @param e2 the \code{\link{ScoreMatrixList}} object
 #' @return \code{ScoreMatrixList} 
-#' @aliases Ops,ScoreMatrixList-method
+#' @aliases Ops,ScoreMatrixList,ScoreMatrixList-method
 setMethod("Ops", signature(e1="ScoreMatrixList", e2="ScoreMatrixList"),
           function(e1, e2) {
             e1d = e1@.Data
@@ -63,7 +63,7 @@ setMethod("Ops", signature(e1="ScoreMatrixList", e2="ScoreMatrixList"),
 #' @param e1 the \code{\link{ScoreMatrixList}} object 
 #' @param e2 the numeric value
 #' @return \code{ScoreMatrixList} 
-#' @aliases Ops,ScoreMatrixList-method
+#' @aliases Ops,ScoreMatrixList,numeric-method
 setMethod("Ops", signature(e1="ScoreMatrixList", e2="numeric"),
           function(e1, e2) {
             e1d <- e1@.Data #list
@@ -80,7 +80,7 @@ setMethod("Ops", signature(e1="ScoreMatrixList", e2="numeric"),
 #' @param e1 the numeric value
 #' @param e2 the \code{\link{ScoreMatrixList}} object
 #' @return \code{ScoreMatrixList} 
-#' @aliases Ops,ScoreMatrixList-method
+#' @aliases Ops,numeric,ScoreMatrixList-method
 setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
           function(e1, e2) {
             e2d <- e2@.Data #list
@@ -97,7 +97,7 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
 #' @param x the \code{\link{ScoreMatrixList}} object
 #' @param i numeric value
 #' @return \code{ScoreMatrixList}
-#' @aliases Ops,ScoreMatrixList-method
+#' @aliases Ops,ScoreMatrixList,ANY-method
 setMethod("[",signature(x="ScoreMatrixList", i = "ANY"), 
           function(x,i){
             ScoreMatrixList(x@.Data[i])
