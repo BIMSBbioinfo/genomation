@@ -1267,7 +1267,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     }
   }
     
-  mat.list=lapply(sml,function(x) x) # get the matrix class, some operations are not transitive
+  mat.list=lapply(sml,function(x) x@.Data) # get the matrix class, some operations are not transitive
   
   
   # if this is changed, a rowSide color map will be drawn
