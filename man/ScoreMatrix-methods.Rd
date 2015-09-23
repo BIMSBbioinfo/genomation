@@ -64,7 +64,7 @@ based on chr, start, end and strand}
 Paired-reads will be treated as fragments.}
 
 \item{stranded}{boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then
-                strands of reads will be set up to "*".}
+strands of reads will be set up to "*".}
 }
 \value{
 returns a \code{ScoreMatrix} object
@@ -79,6 +79,11 @@ The function removes all window that fall off the Rle object -
 have the start coordinate < 1 or end coordinate > length(Rle)
 The function takes the intersection of names in the Rle and GRanges objects.
 On Windows OS the function will give an error if the target is a file in .bigWig format.
+}
+\note{
+We assume that a paired-end BAM file contains reads with unique ids and we remove both mates of reads if they are repeated.
+Due to the fact that \code{ScoreMatrix} uses the GenomicAlignments:readGAlignmentPairs function to read
+paired-end BAM files a duplication of reads occurs when mates of one pair map into two different windows.
 }
 \examples{
 # When target is GRanges
