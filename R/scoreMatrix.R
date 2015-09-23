@@ -92,6 +92,9 @@ readBam = function(target, windows, rpm=FALSE,
     }
     alnp <- readGAlignmentPairs(target, param=param, use.names=TRUE)
     
+    # remove rows that are duplicated when mates of pair map into two different windows
+    alnp = alnp[!duplicated(names(alnp))]
+    
     if(stranded){
       # if first read is on - (resp. +) strand then return - (+) 
       strand(alnp) = ifelse(start(first(alnp)) < start(last(alnp)), "+", "-") 
@@ -207,7 +210,10 @@ readBigWig = function(target, windows=NULL, ...){
 #'                       Paired-reads will be treated as fragments.
 #' @param stranded boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then 
 #'                 strands of reads will be set up to "*".
-#'                         
+#' @note
+#' We assume that a paired-end BAM file contains reads with unique ids and we remove both mates of reads if they are repeated.
+#' Due to the fact that \code{ScoreMatrix} uses the GenomicAlignments:readGAlignmentPairs function to read
+#' paired-end BAM files a duplication of reads occurs when mates of one pair map into two different windows.
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
