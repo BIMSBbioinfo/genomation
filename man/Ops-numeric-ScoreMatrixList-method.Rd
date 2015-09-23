@@ -2,7 +2,6 @@
 % Please edit documentation in R/Ops.R
 \docType{methods}
 \name{Ops,numeric,ScoreMatrixList-method}
-\alias{Ops,ScoreMatrixList-method}
 \alias{Ops,numeric,ScoreMatrixList-method}
 \title{Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.}
 \usage{

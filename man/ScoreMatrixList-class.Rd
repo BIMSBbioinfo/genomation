@@ -9,7 +9,7 @@ The resulting object is an extension of a \code{list} object, where each element
 }
 \section{Constructors}{
 
-see \code{ScoreMatrixList}
+see \code{\link{ScoreMatrixList}}
 }
 
 \section{Coercion}{

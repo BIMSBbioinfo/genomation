@@ -97,13 +97,13 @@ it can use clustering using given clustering function
 In addition, user can define groups of rows using 'group' argument.
 }
 \examples{
-\donttest{
 data(cage)
 data(promoters)
 scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE,
                    weight.col="tpm")
 
 set.seed(1000)
+\donttest{
 heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around TSS",
            xcoords=-1000:1000,
            cex.legend=0.8,main="CAGE clusters on promoters",cex.lab=1,

@@ -105,22 +105,22 @@ Small sample sizes (5-10) can cause notches to extend beyond the interquartile r
 (Martin Krzywinski \emph{et al}. \emph{Nature Methods 11}, 119-120 (2014))
 }
 \examples{
-\donttest{
- data(cage)
+data(cage)
  data(promoters)
  scores1=ScoreMatrix(target=cage,windows=promoters,strand.aware=TRUE)
 
  data(cpgi)
  scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 
- create a new ScoreMatrixList
+ # create a new ScoreMatrixList
  x=new("ScoreMatrixList",list(scores1,scores2))
+ \donttest{
  plotMeta(mat=x,overlay=TRUE,main="my plotowski")
 
- plot dispersion nd smooth central tendency and variation interval bands
+ # plot dispersion nd smooth central tendency and variation interval bands
  plotMeta(mat=x, centralTend="mean", dispersion="se", winsorize=c(0,99),
          main="Dispersion as interquartile band", lwd=4,
          smoothfun=function(x) stats::lowess(x, f = 1/5))
-}
+ }
 }
 

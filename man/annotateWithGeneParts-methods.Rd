@@ -41,12 +41,10 @@ The function annotates \code{GRangesList} or \code{GRanges} object as
 overlapping with promoter,exon,intron or intergenic regions.
 }
 \examples{
-\donttest{
 data(cage)
 bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 gene.parts = readTranscriptFeatures(bed.file)
 cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 cage.annot
-}
 }
 

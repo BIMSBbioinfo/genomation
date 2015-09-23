@@ -12,10 +12,9 @@
 #' @return returns a \code{RandomEnrichment} object
 #' @seealso \code{\link{randomizeFeature}}
 #' @examples
-#' \donttest{
 #' data(cage)
 #' data(cpgi)
-#'  
+#' \donttest{ 
 #' enr = getRandomEnrichment(cage, cpgi, randomizations=50)
 #' }
 #' @export

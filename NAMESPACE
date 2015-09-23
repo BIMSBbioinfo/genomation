@@ -9,6 +9,7 @@ import(ggplot2)
 import(grid)
 import(gridBase)
 import(impute)
+import("GenomeInfoDb")
 importMethodsFrom("rtracklayer", import)
 
 
@@ -27,7 +28,6 @@ importMethodsFrom("rtracklayer", import)
 
 #importFrom("BSgenome", getSeq)
 importFrom("data.table",data.table)
-importFrom("GenomeInfoDb",seqlevels)
 importFrom("matrixStats",colMedians)
 importFrom("matrixStats",colSds)
 importFrom("matrixStats",colQuantiles)
