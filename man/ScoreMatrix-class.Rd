@@ -8,6 +8,21 @@
 The resulting object is an extension of a \code{matrix} object, and stores values (typically genome-wide scores) for a predefined set of regions
 Each row on the ScoreMatrix is a predefined region (Ex: CpG islands, promoters) and columns are values across those regions.
 }
+\section{Constructors}{
+
+see \code{\link{ScoreMatrix}}
+}
+
+\section{Coercion}{
+
+as(from, "matrix"): Creates a matrix from \code{ScoreMatrix} object. You can also use S3Part() function to extract the matrix from \code{ScoreMatrix} object.
+}
+
+\section{Subsetting}{
+
+In the code snippets below, x is a ScoreMatrix object.
+\code{'x[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset ScoreMatrix object.
+}
 \seealso{
 \code{\link{ScoreMatrix}}
 }

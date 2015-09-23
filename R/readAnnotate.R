@@ -494,12 +494,11 @@ distance2NearestFeature<-function(g.idh,tss){
 #'         objects if target is a  \code{\link{GRangesList}} object.
 #' 
 #' @examples
-#' # data(cage)
-#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # gene.parts = readTranscriptFeatures(bed.file)
-#' # cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-#  # cage.annot
-#' 
+#' data(cage)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' cage.annot
 #' @export
 #' @docType methods
 #' @rdname annotateWithGeneParts-methods
@@ -968,8 +967,9 @@ setMethod("getAssociationWithTSS",
 #' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
 #' annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
-#' # plotTargetAnnotation(annot)
-#'
+#' \donttest{
+#' plotTargetAnnotation(annot)
+#' }
 #'
 #' @return plots a piechart or a barplot for percentage of 
 #'         the target features overlapping with annotation
@@ -1021,18 +1021,20 @@ setMethod("plotTargetAnnotation",
 #'        The first color is the lowest one, the second is the highest one
 #' 
 #' @examples
-#' # library(GenomicRanges)
-#' # data(cage)
-#' # data(cpgi)
 #' 
-#' # cage$tpm = NULL
-#' # gl = GRangesList(cage=cage, cpgi=cpgi)
+#' library(GenomicRanges)
+#' data(cage)
+#' data(cpgi)
 #' 
-#' # bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
-#' # gene.parts = readTranscriptFeatures(bed.file)
-#' # annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)        
-#' # plotGeneAnnotation(annot)
+#' cage$tpm = NULL
+#' gl = GRangesList(cage=cage, cpgi=cpgi)
 #' 
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)      
+#' \donttest{  
+#' plotGeneAnnotation(annot)
+#' }
 #' @return plots a heatmap of enrichment of target in each gene functional 
 #'         category
 #' 

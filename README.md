@@ -1,6 +1,6 @@
 # genomation: convenience functions for visualing and summarizing genomic intervals
 
-Status [![Build Status](https://api.travis-ci.org/katwre/genomation.svg?branch=master)](https://travis-ci.org/katwre/genomation) [![codecov.io](https://codecov.io/github/katwre/genomation/coverage.svg?branch=master)](https://codecov.io/github/katwre/genomation?branch=master)    [![BioC_years](http://www.bioconductor.org/shields/years-in-bioc/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html) [![BioC_availability](http://www.bioconductor.org/shields/availability/release/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html)
+Status [![Build Status](https://api.travis-ci.org/BIMSBbioinfo/genomation.svg?branch=master)](https://travis-ci.org/BIMSBbioinfo/genomation) [![codecov.io](https://codecov.io/github/BIMSBbioinfo/genomation/coverage.svg?branch=master)](https://codecov.io/github/BIMSBbioinfo/genomation?branch=master)    [![BioC_years](http://www.bioconductor.org/shields/years-in-bioc/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html) [![BioC_availability](http://www.bioconductor.org/shields/availability/release/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html)
 
 
 This package is a collection of functions for simplfiying common tasks in genomic feature

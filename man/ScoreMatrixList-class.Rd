@@ -7,6 +7,24 @@
 \description{
 The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
 }
+\section{Constructors}{
+
+see \code{\link{ScoreMatrixList}}
+}
+
+\section{Coercion}{
+
+as(from, "ScoreMatrixList"): Creates a \code{ScoreMatrixList} object from a list containing \code{\link{ScoreMatrix}} or \code{\link{ScoreMatrixBin}} objects.
+}
+
+\section{Subsetting}{
+
+In the code snippets below, x is a ScoreMatrixList object.
+
+\code{x[[i]]},\code{x[[i]]}: Get or set elements \code{i}, where \code{i} is a numeric or character vector of length 1.
+
+\code{x$name}, \code{x$name}: value: Get or set element \code{name}, where \code{name} is a name or character vector of length 1.
+}
 \seealso{
 \code{\link{ScoreMatrixList}}
 }
