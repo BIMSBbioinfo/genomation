@@ -20,16 +20,16 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
-	data.table,
+  data.table,
   GenomeInfoDb,
   GenomicRanges,
-	GenomicAlignments,
+  GenomicAlignments,
   ggplot2,
-	gridBase,
+  gridBase,
   impute,
   IRanges,
   matrixStats,
-	methods,
+  methods,
   parallel,
   plotrix,
   plyr,
@@ -38,7 +38,7 @@ Imports:
   Rsamtools,
   rtracklayer
 Suggests:
-  	BiocGenerics,
+    BiocGenerics,
     genomationData,
     knitr,
     knitrBootstrap,

@@ -3,8 +3,18 @@ genomation 1.1.22
 
 NEW FUNCTIONS AND FEATURES
 
-*  new argument of multiHeatMatrix clust.matrix defines 
+*  New argument of multiHeatMatrix clust.matrix defines 
    which matrices are used for clustering
+
+genomation 1.1.21
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Improve reading paired-end alignment in score matrix functions.
+   In order to avoid duplicated reads from GenomicAlignments:readGAlignmentPairs
+   reads with repeated ids are removed (with assumption that reads have unique ids).
+
 
 genomation 1.1.20
 --------------

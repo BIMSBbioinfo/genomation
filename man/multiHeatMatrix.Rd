@@ -75,9 +75,12 @@ e.g. k-means algorithm with 3 centers:
 function(x) kmeans(x, centers=3)$cluster.
 By default FALSE.}
 
-\item{clust.matrix}{a numerical vector indicating which matrices are used in
-clustering (if \code{clustfun} argument is provided).
-By default all matrices are clustered.}
+\item{clust.matrix}{a numerical vector of indexes or a character vector of names
+of the \code{ScoreMatrix} objects in 'sml'
+to be used in clustering (if \code{clustfun} argument is provided).
+By default all matrices are clustered. Matrices that are
+not indicated in clust.matrix are ordered according to
+result of clustering algorithm.}
 
 \item{column.scale}{Logical indicating if matrices should be scaled or not,
 prior to clustering or ordering. Setting this

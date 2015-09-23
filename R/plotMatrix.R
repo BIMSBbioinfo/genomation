@@ -1248,25 +1248,25 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   }
   
   # check clust.matrix arg
-  clust.matrix = unique(clust.matrix)
-  if(is.numeric(clust.matrix)){
-    if(length(clust.matrix)>length(sml) | max(clust.matrix) > length(sml) | 0 %in% clust.matrix){
-      warning("\n'clust.matrix' vector shouldn't be longer than 'sml'\n",
+  if(!is.null(clust.matrix)){
+    clust.matrix = unique(clust.matrix)
+    if(is.numeric(clust.matrix)){
+      if(length(clust.matrix)>length(sml) | max(clust.matrix) > length(sml) | 0 %in% clust.matrix){
+	warning("\n'clust.matrix' vector shouldn't be longer than 'sml'\n",
              "and shouldn't have greater values that length of 'sml'\n",
               "clustering all matrices\n")
-      clust.matrix = NULL 
-    }
-  }else{
-    if(length(clust.matrix)>length(sml) | sum(clust.matrix %in% names(sml)) == length(clust.matrix)){
-      warning("\n'clust.matrix' vector shouldn't be longer than 'sml'\n", 
+	clust.matrix = NULL 
+      }
+    }else{
+      if(length(clust.matrix)>length(sml) | sum(clust.matrix %in% names(sml)) == length(clust.matrix)){
+	warning("\n'clust.matrix' vector shouldn't be longer than 'sml'\n", 
               "and should contain names of matrices of 'sml'\n",
               "clustering all matrices\n")
-      clust.matrix = NULL
+	clust.matrix = NULL
+      }
     }
   }
-  
-  
-  
+    
   mat.list=lapply(sml,function(x) x) # get the matrix class, some operations are not transitive
   
   
