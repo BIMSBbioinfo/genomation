@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 1.1.19
+Version: 1.1.X
 Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka [aut], Liz Ing-Simmons [ctb]	
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users can visualize and 

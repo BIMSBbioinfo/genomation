@@ -1,3 +1,12 @@
+genomation 1.1.X
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* new function patternMatrix loook for kmer and PWM occurence within
+  given DNA sequences or windows in given genome.
+  It depends on BioString and seqPattern R packages.
+
 genomation 1.1.19
 --------------
 

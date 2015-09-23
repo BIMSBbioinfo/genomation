@@ -1,8 +1,19 @@
+
+# Notes:
+# windows can have "N" but then score is set to 0 by
+# patterns cannot contain "N"
+
+# BSgenome:matchPattern
+
+# Questions:
+# if windows contain only N then return matrix with 0s or nothing (right now nothing)
+
+
 #######################################
 # S3 functions
 #######################################
 
-# adated from seqPattern::motifScanHits
+# adapted from seqPattern::motifScanHits
 # it returns granges instead of start(granges)
 .scan.sequence.with.pwm <- function(pwm, seq, minScore){
   
@@ -26,42 +37,12 @@
 }
 
 
-#######################################
-# S4 functions
-#######################################
+
+.patternDNAStringSet_windowsDNAStringSet2matrix = function(pattern, windows, cores){
 
 
-#useMulticore  
-#Logical, should multicore be used. useMulticore = TRUE is supported only on Unix-like platforms.
-#nrCores	
-#Number of cores to use when useMulticore = TRUE. Default value NULL uses all detected cores.
-#it uses mclapply function
-
-# i dont use getPatternOccurrenceList, i use it actually.
-# because 
-# https://github.com/Bioconductor-mirror/seqPattern/blob/master/R/MotifScanningMethods.R
-
-#CHeck as percentage
-
-
-setGeneric(
-  name="patternMatrix",
-  def=function(pattern, windows, genome=NULL, min.score = NULL, cores=1, asPercentage=FALSE){
-    standardGeneric("patternMatrix")
-  }
-)
-
-
-setMethod("patternMatrix",
-          signature(pattern = "DNAStringSet", windows = "DNAStringSet"),
-          function(pattern, windows, cores = 1){
-            
-            if(!(length(unique(width(windows))) == 1)){
-              stop("All sequences in windows must have the same 
-                    length!")
-            }
-                        
-            if(cores>1){
+	   # Improve it for ScoreMatrixList
+	   if(cores>1){
               # they use parallel::mclapply for parallelization
               pat = getPatternOccurrenceList(windows, pattern,
                                              useMulticore=TRUE, nrCores=cores)
@@ -69,11 +50,14 @@ setMethod("patternMatrix",
               pat = getPatternOccurrenceList(windows, pattern)
             }
             
-            if(length(pattern)==1){
+              pat = pat[[1]] #first 'pattern' -> for ScoreMatrix, if more then sml 
               
-              pat = pat[[1]]
+              if(is.null(pat)){
+		stop("Windows contain letters not in [ACGT], e.g. contain only 'N'")
+              }
+              
               gr <- GRanges(seqnames = "chrN",
-                            ranges = IRanges(start=pat$position, width=length(pattern)),
+                            ranges = IRanges(start=pat$position, width=length(pattern[[1]])),
                             strand = "*",
                             sequence = pat$sequence,
                             seqinfo = Seqinfo(seqnames="chrN",
@@ -83,30 +67,18 @@ setMethod("patternMatrix",
               # calculate coverage of occurence of each pattern, 1-present, 0-absent
               grl.reduce <- reduce(grl)
               ma <- lapply(1:length(windows), function(x) as.vector(coverage(grl.reduce[x])[[1]]) )
-              
               # convert list to matrix
               mat <- matrix(unlist(ma), ncol = length(ma[[1]]), byrow = TRUE)
-              
-              return(new("ScoreMatrix",mat))
-            }else{
-              #TODO
-              print("ScoreMatrixList TODO")
-            }
-          }
-)
+              return(mat)
+
+}
 
 
 
-setMethod("patternMatrix",
-          signature(pattern = "matrix", windows = "DNAStringSet"),
-          function(pattern, windows, min.score = NULL, asPercentage=FALSE){
-            
-            if(!(length(unique(width(windows))) == 1)){
-              stop("All sequences in the input DNAStringSet must have the same 
-            length!")
-            }
-                        
-            if(is.null(min.score)){
+.patternPWM_windowsDNAStringSet2matrix = function(pattern, windows, 
+                                                  min.score, asPercentage){
+
+	    if(is.null(min.score)){
               mat <- motifScanScores(regionsSeq = windows,
                                              motifPWM = pattern,
                                              asPercentage = asPercentage)
@@ -125,6 +97,92 @@ setMethod("patternMatrix",
               
             }
             
+            return(mat)
+}
+
+
+#######################################
+# S4 functions
+#######################################
+
+
+setGeneric(
+  name="patternMatrix",
+  def=function(pattern, windows, genome=NULL, min.score = NULL, cores=1, asPercentage=FALSE){
+    standardGeneric("patternMatrix")
+  }
+)
+
+
+setMethod("patternMatrix",
+          signature(pattern = "DNAStringSet", windows = "DNAStringSet"),
+          function(pattern, windows, cores = 1){
+            
+            if(!(length(unique(width(windows))) == 1)){
+              stop("All sequences in windows must have the same 
+                    length!")
+            }
+            if(!(length(unique(width(pattern))) == 1)){
+              stop("All sequences in pattern must have the same 
+                    length!")
+            }
+            
+            if(length(pattern)==1){
+            
+	      ma <- .patternDNAStringSet_windowsDNAStringSet2matrix(pattern, windows, cores)
+              return(new("ScoreMatrix",mat))
+              
+            }else{
+              #TODO
+              print("ScoreMatrixList TODO")
+            }
+          }
+)
+
+
+
+setMethod("patternMatrix",
+          signature(pattern = "DNAStringSet", windows = "GRanges", genome="BSgenome"),
+          function(pattern, windows, genome, min.score = NULL, cores=1, asPercentage=FALSE){
+            
+            if(!(length(unique(width(windows))) == 1)){
+              stop("All sequences in the input DNAStringSet must have the same 
+                   length!")
+            }
+            if(!(length(unique(width(pattern))) == 1)){
+              stop("All sequences in pattern must have the same 
+                    length!")
+            }
+            
+            #Error in .starfreeStrand(strand(names)) : 
+            #cannot mix "*" with other strand values
+            strand(windows) <- c("*")
+            
+            # Questions
+            # ?trim windows that are out of chromosomes based on seqinfo from the BSgenome object
+            seqinfo(windows) <- seqinfo(genome)[seqnames(seqinfo(windows))]
+  
+            #TODO: check if windows are not out of chromosomes?
+            windows = getSeq(genome, windows)
+            
+            ma <- .patternDNAStringSet_windowsDNAStringSet2matrix(pattern, windows, cores)
+            return(new("ScoreMatrix",mat))
+
+            }
+)
+
+
+setMethod("patternMatrix",
+          signature(pattern = "matrix", windows = "DNAStringSet"),
+          function(pattern, windows, min.score = NULL, asPercentage=FALSE){
+            
+            if(!(length(unique(width(windows))) == 1)){
+              stop("All sequences in the input DNAStringSet must have the same 
+            length!")
+            }
+                        
+            mat <- .patternPWM_windowsDNAStringSet2matrix(pattern, windows, 
+                                                          min.score, asPercentage)
             new("ScoreMatrix",mat)
 
           }
@@ -133,69 +191,35 @@ setMethod("patternMatrix",
 
 
 setMethod("patternMatrix",
-          signature(pattern = "matrix", windows = "GRanges"),
-          function(pattern, windows, genome, min.score = NULL){
+          signature(pattern = "matrix", windows = "GRanges", genome="BSgenome"),
+          function(pattern, windows, genome, min.score = NULL, asPercentage=FALSE){
             
             if(!(length(unique(width(windows))) == 1)){
               stop("All sequences in the input DNAStringSet must have the same 
                    length!")
             }
-            
-            source("https://bioconductor.org/biocLite.R")
-            biocLite("BSgenome.Hsapiens.UCSC.hg19")
-            library(BSgenome.Hsapiens.UCSC.hg19)
-            
-            genome = BSgenome.Hsapiens.UCSC.hg19
-            
-            seqinfo <- Seqinfo(paste0("chr", 1:3), c(1000, 2000, 1500), NA, "mock1")
-            gr <-
-              GRanges(seqnames =
-                        Rle(c("chr1", "chr2", "chr1", "chr3"), c(1, 3, 2, 4)),
-                      ranges = IRanges(
-                        1:10, width = 10:1, names = head(letters,10)),
-                      strand = Rle(
-                        strand(c("-", "+", "*", "+", "-")),
-                        c(1, 2, 2, 3, 2)),
-                      score = 1:10,
-                      GC = seq(1, 0, length=10),
-                      seqinfo=seqinfo(genome))
-            
-            seqinfo(gr) <- seqinfo(genome)
-            
-            windows=gr
-            
+                        
             #Error in .starfreeStrand(strand(names)) : 
             #cannot mix "*" with other strand values
             strand(windows) <- c("*")
+            
+            # Questions
+            # ?trim windows that are out of chromosomes based on seqinfo from the BSgenome object
+            seqinfo(windows) <- seqinfo(genome)[seqnames(seqinfo(windows))]
+            # after shows info 
+            #In valid.GenomicRanges.seqinfo(x, suggest.trim = TRUE) :
+	    #GRanges object contains 1 out-of-bound range located on sequence chr3.
+      #Note that only ranges located on a non-circular sequence whose length
+  #is not NA can be considered out-of-bound (use seqlengths() and
+  #isCircular() to get the lengths and circularity flags of the underlying
+  #sequences). You can use trim() to trim these ranges. See
+  #?`trim,GenomicRanges-method` for more information.
+            #windows = trim(windows)
   
-            #TODO: check if windows are not out of chromosomes?
             windows = getSeq(genome, windows)
             
-            # e.g. when windows="hg19"
-            #if(class(windows)=="character"){
-              ##genome: A string identifying a genome, usually one assigned by UCSC, like "hg19"
-              #windows = GRangesForUCSCGenome(genome, chrom = NULL, ranges = NULL)
-            #}
-            
-            if(is.null(min.score)){
-              mat <- motifScanScores(regionsSeq = windows,
-                                     motifPWM = pattern,
-                                     asPercentage = asPercentage)
-            }else{
-              
-              pwm.match <- lapply(1:length(windows), function(x){
-                .scan.sequence.with.pwm(pwm = pattern, seq = toString(windows[x]), minScore=min.score) 
-              })
-              
-              #ma <- lapply(1:length(windows), function(x) as.vector(coverage(pwm.match[[x]])) )
-              # calculate coverage of occurence of each pattern, 1-present, 0-absent
-              ma <- lapply(1:length(windows), function(x) as.vector(coverage(reduce(pwm.match[[x]]))) )
-              
-              # convert list to matrix
-              mat <- matrix(unlist(ma), ncol = length(ma[[1]]), byrow = TRUE)
-              
-            }
-            
+            mat <- .patternPWM_windowsDNAStringSet2matrix(pattern, windows, 
+                                                          min.score, asPercentage)
             new("ScoreMatrix",mat)
             
             }
