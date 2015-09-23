@@ -1,3 +1,11 @@
+genomation 1.1.22
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+*  new argument of multiHeatMatrix clust.matrix defines 
+   which matrices are used for clustering
+
 genomation 1.1.20
 --------------
 
