@@ -1165,8 +1165,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
 #'
 #' # use with k-means
-#' \donttest{
-#' multiHeatMatrix(sml,
+#' \donttest{multiHeatMatrix(sml,
 #'                  clustfun=function(x) kmeans(x, centers=2)$cluster,
 #'                  cex.axis=0.8,xcoords=c(-1000,1000),
 #'                  winsorize=c(0,99),
@@ -1283,7 +1282,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   # alternative is to take log or sth
   # but that should be done prior to heatMatrix
   if(winsorize[2]<100 | winsorize[1]>0){
-    mat.list=lapply(mat.list,function(x) .winsorize(x,winsorize) )
+    mat.list=lapply(mat.list,function(x) .winsorize(x@.Data, winsorize) )
   }
   
   
