@@ -147,8 +147,7 @@ scores2=ScoreMatrix(target=cpgi,windows=promoters,strand.aware=TRUE)
 sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
 
 # use with k-means
-\donttest{
-multiHeatMatrix(sml,
+\donttest{multiHeatMatrix(sml,
                  clustfun=function(x) kmeans(x, centers=2)$cluster,
                  cex.axis=0.8,xcoords=c(-1000,1000),
                  winsorize=c(0,99),
