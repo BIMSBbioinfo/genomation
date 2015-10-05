@@ -393,7 +393,7 @@ plotMeta<-function(mat, centralTend="mean",
     
     # this can set extreme values to given percentile
     if(winsorize[2]<100 | winsorize[1]>0){
-      mat[[i]]=.winsorize(mat[[i]]@.Data,winsorize)
+      mat[[i]]=.winsorize(mat[[i]]@.Data, winsorize)
     }
     
     # get meta profiles by taking the mean/median
