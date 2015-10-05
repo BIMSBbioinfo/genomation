@@ -1,4 +1,4 @@
-genomation 1.1.24
+genomation 1.1.25
 --------------
 
 NEW FUNCTIONS AND FEATURES
@@ -7,10 +7,17 @@ NEW FUNCTIONS AND FEATURES
   given DNA sequences or windows in given genome.
   It depends on BioString and seqPattern R packages.
 
+genomation 1.1.24
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Fixed a bug in multiHeatMatrix that occured after version 1.1.19
+   
 genomation 1.1.23
 --------------
 
-NEW FUNCTIONS AND FEATURES
+IMPROVEMENTS AND BUG FIXES
 
 *  Fixed a bug in plotMeta that occured after version 1.1.19
    

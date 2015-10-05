@@ -393,7 +393,7 @@ plotMeta<-function(mat, centralTend="mean",
     
     # this can set extreme values to given percentile
     if(winsorize[2]<100 | winsorize[1]>0){
-      mat[[i]]=.winsorize(mat[[i]]@.Data,winsorize)
+      mat[[i]]=.winsorize(mat[[i]]@.Data, winsorize)
     }
     
     # get meta profiles by taking the mean/median
@@ -488,9 +488,30 @@ plotMeta<-function(mat, centralTend="mean",
   }else{
     myrange=range(unlist(metas), na.rm = TRUE)
     if(!is.null(dispersion) && dispersion %in% disp.args){
+      if(dispersion!="IQR"){
       bound2.max <- max(unlist(bound2), na.rm = TRUE)
-      myrange[2] <- myrange[2] + abs(bound2.max)
-      myrange[1] <- myrange[1] - abs(bound2.max)
+      bound1.max <- max(unlist(bound1), na.rm = TRUE)
+      bound2.min <- min(unlist(bound2), na.rm = TRUE)
+      bound1.min <- min(unlist(bound1), na.rm = TRUE)
+      myrange[2] <- myrange[2] + abs(max(bound2.max, bound1.max))
+      myrange[1] <- myrange[1] - abs(max(bound2.min, bound1.min))
+      }else{
+        q3.max <- max(unlist(q3), na.rm = TRUE)
+        q1.min <- min(unlist(q1), na.rm = TRUE)
+        bound2.min <- min(unlist(bound2), na.rm = TRUE)
+        bound2.max <- max(unlist(bound2), na.rm = TRUE)
+        if(q3.max < bound2.max){
+          # if notches extend 1st or 3rd quartile
+          myrange[2] <- myrange[2] + abs(max(q3.max, bound2.max))
+        }else{
+          myrange[2] <- q3.max
+        }
+        if(q1.min > bound2.min){
+          myrange[1] <- myrange[1] - abs(max(q1.min, bound2.min))
+        }else{
+          myrange[2] <- q1.min
+        }
+      }
     }
   }
   
@@ -1165,8 +1186,7 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' sml=new("ScoreMatrixList",list(a=scores1,b=scores2))
 #'
 #' # use with k-means
-#' \donttest{
-#' multiHeatMatrix(sml,
+#' \donttest{multiHeatMatrix(sml,
 #'                  clustfun=function(x) kmeans(x, centers=2)$cluster,
 #'                  cex.axis=0.8,xcoords=c(-1000,1000),
 #'                  winsorize=c(0,99),
@@ -1283,7 +1303,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
   # alternative is to take log or sth
   # but that should be done prior to heatMatrix
   if(winsorize[2]<100 | winsorize[1]>0){
-    mat.list=lapply(mat.list,function(x) .winsorize(x,winsorize) )
+    mat.list=lapply(mat.list,function(x) .winsorize(x@.Data, winsorize) )
   }
   
   
