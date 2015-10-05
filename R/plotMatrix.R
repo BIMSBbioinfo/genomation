@@ -489,12 +489,12 @@ plotMeta<-function(mat, centralTend="mean",
     myrange=range(unlist(metas), na.rm = TRUE)
     if(!is.null(dispersion) && dispersion %in% disp.args){
       if(dispersion!="IQR"){
-      bound2.max <- max(unlist(bound2), na.rm = TRUE)
-      bound1.max <- max(unlist(bound1), na.rm = TRUE)
-      bound2.min <- min(unlist(bound2), na.rm = TRUE)
-      bound1.min <- min(unlist(bound1), na.rm = TRUE)
-      myrange[2] <- myrange[2] + abs(max(bound2.max, bound1.max))
-      myrange[1] <- myrange[1] - abs(max(bound2.min, bound1.min))
+        bound2.max <- max(unlist(bound2), na.rm = TRUE)
+        bound1.max <- max(unlist(bound1), na.rm = TRUE)
+        bound2.min <- min(unlist(bound2), na.rm = TRUE)
+        bound1.min <- min(unlist(bound1), na.rm = TRUE)
+        myrange[2] <- myrange[2] + abs(max(bound2.max, bound1.max))
+        myrange[1] <- myrange[1] - abs(max(bound2.min, bound1.min))
       }else{
         q3.max <- max(unlist(q3), na.rm = TRUE)
         q1.min <- min(unlist(q1), na.rm = TRUE)
