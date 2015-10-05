@@ -6,10 +6,10 @@
 \usage{
 multiHeatMatrix(sml, grid = TRUE, col = NULL, xcoords = NULL,
   group = NULL, group.col = NULL, order = FALSE, user.order = FALSE,
-  winsorize = c(0, 100), clustfun = FALSE, column.scale = TRUE,
-  matrix.main = NULL, common.scale = FALSE, legend = TRUE,
-  legend.name = NULL, cex.legend = 0.8, xlab = NULL, cex.lab = 1,
-  cex.main = 1, cex.axis = 0.8, newpage = TRUE)
+  winsorize = c(0, 100), clustfun = FALSE, clust.matrix = NULL,
+  column.scale = TRUE, matrix.main = NULL, common.scale = FALSE,
+  legend = TRUE, legend.name = NULL, cex.legend = 0.8, xlab = NULL,
+  cex.lab = 1, cex.main = 1, cex.axis = 0.8, newpage = TRUE)
 }
 \arguments{
 \item{sml}{a \code{ScoreMatrixList} object}
@@ -54,7 +54,7 @@ every heatmap will have the same colors.}
                 will be ordered in descending order of sums of rows then, everything
                 within the clusters will be ordered by sums of rows.
                 If \code{clustfun} is given then rows within clusters
-                will be order in descending order of sums of rows.}
+                will be order in descending order by sums of rows.}
 
 \item{user.order}{a numerical vector indicating the order of groups/clusters (it works only
                   when \code{group} or \code{clustfun} argument is given).}
@@ -75,8 +75,15 @@ e.g. k-means algorithm with 3 centers:
 function(x) kmeans(x, centers=3)$cluster.
 By default FALSE.}
 
+\item{clust.matrix}{a numerical vector of indexes or a character vector of names
+of the \code{ScoreMatrix} objects in 'sml'
+to be used in clustering (if \code{clustfun} argument is provided).
+By default all matrices are clustered. Matrices that are
+not indicated in clust.matrix are ordered according to
+result of clustering algorithm.}
+
 \item{column.scale}{Logical indicating if matrices should be scaled or not,
-prior to k-means clustering or ordering. Setting this
+prior to clustering or ordering. Setting this
 to TRUE scales the columns of the
 matrices using,
 \code{scale()} function. scaled columns are only used for

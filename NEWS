@@ -1,11 +1,35 @@
-genomation 1.1.21
+genomation 1.1.24
 --------------
 
 NEW FUNCTIONS AND FEATURES
 
-* new function patternMatrix loook for kmer and PWM occurence within
+* new function patternMatrix look for kmer and PWM occurence within
   given DNA sequences or windows in given genome.
   It depends on BioString and seqPattern R packages.
+
+genomation 1.1.23
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+*  Fixed a bug in plotMeta that occured after version 1.1.19
+   
+genomation 1.1.22
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+*  New argument of multiHeatMatrix clust.matrix defines 
+   which matrices are used for clustering
+
+genomation 1.1.21
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Improve reading paired-end alignment in score matrix functions.
+   In order to avoid duplicated reads from GenomicAlignments:readGAlignmentPairs
+   reads with repeated ids are removed (with assumption that reads have unique ids).
 
 genomation 1.1.20
 --------------
