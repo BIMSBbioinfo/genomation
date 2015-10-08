@@ -4,6 +4,7 @@
 
 test_PatternMatrix_matrix_DNAStringSet = function()
 {
+  # one pwm matrix
   patterns <- DNAStringSet(c("AAA", "AAA", "AAA"))
   pwm <- PWM(patterns)
   windows = as(list(DNAString("AAAGCTAAAGGTAAAGCAAAA"),
@@ -19,6 +20,7 @@ hits <- matchPWM(pwm, windows[[1]], with.score=TRUE)
 
 test_PatternMatrix_character_DNAStringSet = function()
 {
+  # one pattern
   pattern <- "AAA"
   windows = as(list(DNAString("AAAGCTAAAGGTAAAGCAAAA"),
 		    DNAString("AAAGCTAAAGGTAAAGCAAAA"),
@@ -27,7 +29,7 @@ test_PatternMatrix_character_DNAStringSet = function()
   mat1=as((as.matrix(windows)=="A")*1, "ScoreMatrix")
   
   checkEquals(p2, mat1) 
-  
+
   # Questions
   #pattern <- DNAStringSet(c("AAA"))
   #windows = as(list(DNAString("NNNNNNNNNNNNNN"),
@@ -36,11 +38,24 @@ test_PatternMatrix_character_DNAStringSet = function()
   #mat1=as((as.matrix(windows)=="A")*1, "ScoreMatrix")
   #checkEquals(p2, mat1) 
   
+  
+  # more than one pattern
+  pattern <- c("AAA","AAA")
+  windows = as(list(DNAString("AAAGCTAAAGGTAAAGCAAAA"),
+                    DNAString("AAAGCTAAAGGTAAAGCAAAA"),
+                    DNAString("AAAGCTAAAGGTAAAGCAAAA")), "DNAStringSet")
+  p3 = patternMatrix(pattern=pattern, windows=windows)
+  mat3=as(list((as.matrix(windows)=="A")*1, (as.matrix(windows)=="A")*1), 
+          "ScoreMatrixList")
+  checkEquals(p3, mat3) 
+  
 }
 
 #TODO: how to create small BSgenome object?
 test_PatternMatrix_matrix_GRanges_BSgenome = function()
 {
+  
+  # one PWM matrix
 
   #TODO: how to get small BSgenome object?
   #source("https://bioconductor.org/biocLite.R")
@@ -75,7 +90,7 @@ test_PatternMatrix_matrix_GRanges_BSgenome = function()
 }
 
 
-test_PatternMatrix_DNAStringSet_GRanges_BSgenome = function()
+test_PatternMatrix_character_GRanges_BSgenome = function()
 {
   
   genome = BSgenome.Hsapiens.UCSC.hg19
@@ -85,8 +100,12 @@ test_PatternMatrix_DNAStringSet_GRanges_BSgenome = function()
 				 names = head(letters,10)),
 		strand = "+")
   
-  pattern <- DNAStringSet(c("AAA", "AAA", "AAA"))
-
+  # one pattern
+  pattern <- "AAA"
+  p = patternMatrix(pattern=pattern, windows=windows, genome=genome)
+  
+  # more than one pattern
+  pattern <- c("AAA","AAA")
   p = patternMatrix(pattern=pattern, windows=windows, genome=genome)
   
   # silent these warnings?
