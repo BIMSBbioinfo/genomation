@@ -25,6 +25,7 @@
 # Adapted from seqPattern::motifScanHits - 
 # it returns vector of 0s and 1s instead of start positions
 # of pattern occurences
+# Args:
 # pwm: matrix, subject: character or DNAString or Views on a DNAString subject
 .scan.sequence.with.pwm <- function(pwm, seq, minScore){
   
@@ -79,6 +80,8 @@
 
 # Find positions of specified PWM 
 # and calculate score matrix
+# Args:
+# pwm: matrix, subject: character or DNAString or Views on a DNAString subject
 .patternPWM_windowsDNAStringSet2matrix = function(pattern, windows, 
                                                   min.score, asPercentage){
   if(is.null(min.score)){
@@ -100,10 +103,10 @@
 
 # Find positions of specified sequence patterns 
 # and calculate score matrices (list of matrices)
-.patternDNAStringSet_windowsDNAStringSet2matrix = function(pattern, windows){
+.patterncharacter_windowsDNAStringSet2matrix = function(pattern, windows){
   
-  # getPatternOccurrenceList has nrCores and useMulticore args for paralelization
-  # they use mclapply for every pattern
+  # getPatternOccurrenceList has nrCores and useMulticore args for paralelization,
+  # it uses mclapply for every pattern
   # and before mclappling there is only one such line:
   # regionsSeq <- DNAStringSet(gsub("N", "+", regionsSeq)), 
   # where regionsSeq=windows 
@@ -125,15 +128,13 @@
     return(res)
   }
   
+  pat = pat[[1]]
+  
   # number windows from result of getPatternOccurrenceList
   pat.windows = unique(pat$sequence)
   
   # for each window calculate vector of 1 and 0s
-  pwm.match <- lapply(1:length(windows), function(i, pat=pat, pat.windows=pat.windows, windows=windows){
-    print(i)
-    print(pat.windows)
-    print(i %in% pat.windows)
-    # TODOOOOOOOOO
+  pwm.match <- lapply(1:length(windows), function(i){
     if(i %in% pat.windows){
       positions_of_01(pat[pat$sequence==i,], pattern, windows)
     }else{
@@ -145,8 +146,6 @@
   mat <- matrix(unlist(pwm.match), ncol = length(pwm.match[[1]]), byrow = TRUE)
 }
 
-#TODO:
-#czy napewno clustfun FALSE? chyba tak?
 
 #######################################
 # S4 functions
@@ -162,10 +161,10 @@
 #' A patternMatrix object can be used to ..
 #' \code{windows} can be a predefined region such as CpG islands or gene bodies that have the same width.
 #'
-#' @param pattern matrix (a PWM matrix), a DNAStringSet object or list of matrices or DNAStringSet objects. 
-#'                A matrix has to have one row for each nucleotide ("A","C","G" and "T").
+#' @param pattern matrix (a PWM matrix) or a character vector.
+#'                A matrix needs to have one row for each nucleotide ("A","C","G" and "T").
 #'                IUPAC ambiguity codes can be used and will match any letter in the subject that is associated with the code.
-#'                (can not contain "N").
+#'                (pattern can not contain "N").
 #' @param windows \code{\link{GRanges}} object 
 #' @param genome \code{\link{BSgenome}} object
 #' @param min.score numeric or string indicating minimum score to count a match. 
@@ -201,7 +200,7 @@ setGeneric(
 )
 
 setMethod("patternMatrix",
-          signature(pattern = "DNAStringSet", windows = "DNAStringSet"),
+          signature(pattern = "character", windows = "DNAStringSet"),
           function(pattern, windows, cores = 1){
             
             if(!(length(unique(width(windows))) == 1)){
@@ -217,21 +216,21 @@ setMethod("patternMatrix",
               cores=1
             }
 
-           if(length(pattern)==1){
+           if(length(nchar(pattern))==1){
                 # if there is only one pattern then create ScoreMatrix
-                mat <- .patternDNAStringSet_windowsDNAStringSet2matrix(pattern, windows)
+                mat <- .patterncharacter_windowsDNAStringSet2matrix(pattern, windows)
                 
                 return(new("ScoreMatrix",mat))
               
             }else{
                if(cores==1){
                  lmat <- lapply(1:length(pattern), 
-                               function(i) .patternDNAStringSet_windowsDNAStringSet2matrix(pattern[i],
+                               function(i) .patterncharacter_windowsDNAStringSet2matrix(pattern[i],
                                                                                            windows))
                }else{
                  # TODO: i dont know if it works :P
                   lmat <- mclapply(pattern, 
-                                 patternDNAStringSet_windowsDNAStringSet2matrix,
+                                 patterncharacter_windowsDNAStringSet2matrix,
                                  windows,
                                  mc.cores=cores)
                }
@@ -242,7 +241,7 @@ setMethod("patternMatrix",
 
 
 setMethod("patternMatrix",
-          signature(pattern = "DNAStringSet", windows = "GRanges", genome="BSgenome"),
+          signature(pattern = "character", windows = "GRanges", genome="BSgenome"),
           function(pattern, windows, genome, min.score = NULL, cores=1, asPercentage=FALSE){
             
             if(!(length(unique(width(windows))) == 1)){
@@ -312,8 +311,6 @@ setMethod("patternMatrix",
             #  stop("Pattern argument contains not only matrices!")
             #}
             
-            #Error in .starfreeStrand(strand(names)) : 
-            #cannot mix "*" with other strand values
             strand(windows) <- c("*")
             
             # Questions
@@ -334,5 +331,5 @@ setMethod("patternMatrix",
             # call patternMatrix function
             # pattern: matrix, windows: DNAStringSet
             patternMatrix(pattern=pattern, windows=windows, min.score=min.score)
-})
+})   
 

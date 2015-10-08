@@ -17,9 +17,9 @@ test_PatternMatrix_matrix_DNAStringSet = function()
 
 hits <- matchPWM(pwm, windows[[1]], with.score=TRUE)
 
-test_PatternMatrix_DNAStringSet_DNAStringSet = function()
+test_PatternMatrix_character_DNAStringSet = function()
 {
-  pattern <- DNAStringSet(c("AAA","CCC"))
+  pattern <- "AAA"
   windows = as(list(DNAString("AAAGCTAAAGGTAAAGCAAAA"),
 		    DNAString("AAAGCTAAAGGTAAAGCAAAA"),
                     DNAString("AAAGCTAAAGGTAAAGCAAAA")), "DNAStringSet")
@@ -38,15 +38,14 @@ test_PatternMatrix_DNAStringSet_DNAStringSet = function()
   
 }
 
-
-#only check if it is somehow working
+#TODO: how to create small BSgenome object?
 test_PatternMatrix_matrix_GRanges_BSgenome = function()
 {
 
-  #TODO: small BSgenome object?
+  #TODO: how to get small BSgenome object?
   #source("https://bioconductor.org/biocLite.R")
   #biocLite("BSgenome.Hsapiens.UCSC.hg19")
-  library(BSgenome.Hsapiens.UCSC.hg19)
+  #library(BSgenome.Hsapiens.UCSC.hg19)
   genome = BSgenome.Hsapiens.UCSC.hg19
 
   windows <- GRanges(seqnames = "chr3",
@@ -64,33 +63,23 @@ test_PatternMatrix_matrix_GRanges_BSgenome = function()
   #'subject' contains letters not in [ACGT] ==> assigned weight 0 to them
 
   # what if coordinates out of chromosomes:
-  #windows <- GRanges(seqnames = "chr3",
+  # windows <- GRanges(seqnames = "chr3",
   #		ranges = IRanges(c(1,999999999), width = 10),
   #		strand = "+")
   
   # when windows contain only "N"
-  windows <- GRanges(seqnames = "chr3",
-                     ranges = IRanges(9001:9010, width = 10,
-                                      names = head(letters,10)),
-                     strand = "+")
-  
-  
+  #windows <- GRanges(seqnames = "chr3",
+  #                   ranges = IRanges(9001:9010, width = 10,
+  #                                    names = head(letters,10)),
+  #                   strand = "+")
 }
 
 
 test_PatternMatrix_DNAStringSet_GRanges_BSgenome = function()
 {
-
-  #TODO: small BSgenome object?
-  #source("https://bioconductor.org/biocLite.R")
-  #biocLite("BSgenome.Hsapiens.UCSC.hg19")
-  #library(BSgenome.Hsapiens.UCSC.hg19)
-  #genome = BSgenome.Hsapiens.UCSC.hg19
   
-  file <- system.file("extdata", "ce2chrM.fa.gz", package="BSgenome")
-  forgeBSgenomeDataPkg(file)
+  genome = BSgenome.Hsapiens.UCSC.hg19
   
-
   windows <- GRanges(seqnames = "chr3",
 		ranges = IRanges(9001:90010, width = 10,
 				 names = head(letters,10)),
@@ -105,10 +94,9 @@ test_PatternMatrix_DNAStringSet_GRanges_BSgenome = function()
   #'subject' contains letters not in [ACGT] ==> assigned weight 0 to them
 
   # what if coordinates out of chromosomes:
-  #windows <- GRanges(seqnames = "chr3",
+  # windows <- GRanges(seqnames = "chr3",
   #		ranges = IRanges(c(1,999999999), width = 10),
   #		strand = "+")
-  
 }
 
 
