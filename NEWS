@@ -1,3 +1,10 @@
+genomation 1.1.25
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  faster assigning colors to the heatmap in heatMatrix function
+ 
 genomation 1.1.24
 --------------
 
