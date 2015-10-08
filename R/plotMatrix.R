@@ -194,6 +194,10 @@ heatMeta<-function(mat, centralTend="mean",
 # some of the columns have only one numerical value and rest of them is NA
 # and then mean of such column is a numerical value, but variation e.g. sd is NA.
 # border = NA omits borders.
+# Args:
+# ulim and llim: the extent of the dispersion measures (upper and lower band)           
+# intervals: whether the limits are intervals (TRUE) or absolute values (FALSE)
+# border: line type for drawing a border on the confidence band, e.g. 2
 .dispersion2 <- function(x, y, ulim, llim=ulim, intervals=TRUE, 
                                border = NA, ...){ 
   if (intervals) {
@@ -229,7 +233,7 @@ heatMeta<-function(mat, centralTend="mean",
             border = border, ...)
   }
 }
-
+           
 # ---------------------------------------------------------------------------- #
 #' Line plot(s) for meta-region profiles
 #' 
@@ -383,9 +387,9 @@ plotMeta<-function(mat, centralTend="mean",
   
   #init of some variables before for loop
   if(!is.null(dispersion) && dispersion %in% disp.args){
-    bound2<-list()
+    bound1<-list()
     if(dispersion=="IQR"){q1<-list(); q3<-list();
-    }else{bound1 <- list()}
+    }else{bound2 <- list()}
   }
   metas<-list()
   
@@ -428,8 +432,8 @@ plotMeta<-function(mat, centralTend="mean",
         q <- colQuantiles(mat[[i]], probs=c(0.25, 0.75), na.rm=TRUE)
         q1[[i]] <- q[,1] #1st quartile
         q3[[i]] <- q[,2] #3rd quartile
-        n<-ncol(mat[[i]])
-        bound2[[i]] <- (1.57*(q3[[i]] - q1[[i]])) / sqrt(n) #notch
+        n<-nrow(mat[[i]])
+        bound1[[i]] <- (1.57*(q3[[i]] - q1[[i]])) / sqrt(n) #notch
       }
     }
     
@@ -437,12 +441,12 @@ plotMeta<-function(mat, centralTend="mean",
       val2unit <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))} 
       metas[[i]]=val2unit(metas[[i]])
       if(!is.null(dispersion) && dispersion %in% disp.args){
-        bound2[[i]]=val2unit(bound2[[i]])
+        bound1[[i]]=val2unit(bound1[[i]])
         if(dispersion=="IQR"){
           q1[[i]]=val2unit(q1[[i]])
           q3[[i]]=val2unit(q3[[i]]) 
         }else{
-          bound1[[i]]=val2unit(bound1[[i]])
+          bound2[[i]]=val2unit(bound2[[i]])
         }
       }
     }
@@ -451,12 +455,12 @@ plotMeta<-function(mat, centralTend="mean",
     if(!is.null(smoothfun)){
       metas[[i]] <- smoothfun(metas[[i]])$y
       if(!is.null(dispersion) && dispersion %in% disp.args){
-        bound2[[i]] <- smoothfun(bound2[[i]])$y
+        bound1[[i]] <- smoothfun(bound1[[i]])$y
         if(dispersion=="IQR"){
           q1[[i]] <- smoothfun(q1[[i]])$y
           q3[[i]] <- smoothfun(q3[[i]])$y
         }else{
-          bound1[[i]] <- smoothfun(bound1[[i]])$y
+          bound2[[i]] <- smoothfun(bound2[[i]])$y
         }
       }
     }
@@ -489,28 +493,25 @@ plotMeta<-function(mat, centralTend="mean",
     myrange=range(unlist(metas), na.rm = TRUE)
     if(!is.null(dispersion) && dispersion %in% disp.args){
       if(dispersion!="IQR"){
-        bound2.max <- max(unlist(bound2), na.rm = TRUE)
-        bound1.max <- max(unlist(bound1), na.rm = TRUE)
-        bound2.min <- min(unlist(bound2), na.rm = TRUE)
-        bound1.min <- min(unlist(bound1), na.rm = TRUE)
-        myrange[2] <- myrange[2] + abs(max(bound2.max, bound1.max))
-        myrange[1] <- myrange[1] - abs(max(bound2.min, bound1.min))
+        myrange[2] <- max(unlist(metas) + unlist(bound2), na.rm = TRUE)
+        myrange[1] <- min(unlist(metas) - unlist(bound2), na.rm = TRUE)
       }else{
-        q3.max <- max(unlist(q3), na.rm = TRUE)
-        q1.min <- min(unlist(q1), na.rm = TRUE)
-        bound2.min <- min(unlist(bound2), na.rm = TRUE)
-        bound2.max <- max(unlist(bound2), na.rm = TRUE)
-        if(q3.max < bound2.max){
-          # if notches extend 1st or 3rd quartile
-          myrange[2] <- myrange[2] + abs(max(q3.max, bound2.max))
-        }else{
-          myrange[2] <- q3.max
+        # can be a situation when q1 or q2 are equal to median
+	max.q3 <- max(unlist(metas) + unlist(q3), na.rm = TRUE)
+	min.q1 <- min(unlist(metas) - unlist(q1), na.rm = TRUE)
+	max.notch.upper <- max(unlist(metas) + unlist(bound1), na.rm = TRUE) 
+	min.notch.lower <- min(unlist(metas) - unlist(bound1), na.rm = TRUE)
+	if(min.notch.lower < min.q1){
+	    myrange[1] <- min.notch.lower
+	}else{
+	    myrange[1] <- min.q1
+	}
+	if(max.notch.upper > max.q3){
+	    myrange[2] <- max.notch.upper
+	}else{
+	    myrange[2] <- max.q3
         }
-        if(q1.min > bound2.min){
-          myrange[1] <- myrange[1] - abs(max(q1.min, bound2.min))
-        }else{
-          myrange[2] <- q1.min
-        }
+
       }
     }
   }
@@ -528,12 +529,35 @@ plotMeta<-function(mat, centralTend="mean",
       plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
            ylim=myrange,ylab=ylab,xlab=xlab, ...)
       for(i in 1:length(metas) ){
-        .dispersion2(xcoords, metas[[i]], bound2[[i]],
-                   col=dispersion.col[i], ...)
-        if(dispersion=="IQR"){
-          .dispersion2(xcoords, metas[[i]], llim=metas[[i]]-q1[[i]], ulim=q3[[i]]-metas[[i]], 
+        
+        # "IQR"
+        if(dispersion=="IQR"){ 
+          # plotting notches             
+          .dispersion2(xcoords, metas[[i]], bound1[[i]],
+                     col=dispersion.col[i], ...)
+          # plotting 1st and 3rd quartile
+          .dispersion2(xcoords, metas[[i]], 
+		       llim=q1[[i]], ulim=q3[[i]], intervals=FALSE,
                        col=dispersion.col[i], ...)
+          # if 1st or 3rd quartile is equal to median, then
+          # colour notch(es) again
+          if(all(metas[[i]]==q1[[i]])){
+             # then colour 'lower' notch again
+             .dispersion2(xcoords, metas[[i]], 
+                       llim=bound1[[i]], ulim=metas[[i]],
+                       col=dispersion.col[i], ...)
+          }
+          if(all(metas[[i]]==q3[[i]])){
+	     # then colour 'upper' notch again
+	     .dispersion2(xcoords, metas[[i]], 
+	                  ulim=bound1[[i]], llim=metas[[i]],
+                          col=dispersion.col[i], ...)
+          }
+        
+        # "sd" or "se"
         }else{
+	  .dispersion2(xcoords, metas[[i]], bound2[[i]],
+                   col=dispersion.col[i], ...)
           .dispersion2(xcoords, metas[[i]], bound1[[i]],
                      col=dispersion.col[i], ...)
         }  
@@ -565,12 +589,16 @@ plotMeta<-function(mat, centralTend="mean",
       plot(xcoords,metas[[j]],type="l",col=line.col[j],
            ylim=myrange,ylab=ylab,xlab=xlab,...)
       if(!is.null(dispersion) && dispersion %in% disp.args){
-        .dispersion2(xcoords, metas[[j]], bound2[[j]],col=dispersion.col[j], ...)
         if(dispersion=="IQR"){
-          .dispersion2(xcoords, metas[[j]], llim=metas[[j]]-q1[[j]], ulim=q3[[j]]-metas[[j]],
-                     col=dispersion.col[j], ...) 
+          .dispersion2(xcoords, metas[[j]], bound1[[j]],
+                       col=dispersion.col[j], ...)
+          .dispersion2(xcoords, metas[[j]], 
+                       llim=metas[[j]]-q1[[j]], ulim=q3[[j]]-metas[[j]],
+                       col=dispersion.col[j], ...)                                         
         }else{
           .dispersion2(xcoords, metas[[j]], bound1[[j]],
+                     col=dispersion.col[j], ...)
+          .dispersion2(xcoords, metas[[j]], bound2[[j]],
                      col=dispersion.col[j], ...)
         }
       }
