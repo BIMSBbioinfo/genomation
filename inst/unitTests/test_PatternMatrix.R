@@ -15,10 +15,11 @@ test_PatternMatrix_matrix_DNAStringSet = function()
   checkEquals(p1, mat1)
 }
 
+hits <- matchPWM(pwm, windows[[1]], with.score=TRUE)
 
 test_PatternMatrix_DNAStringSet_DNAStringSet = function()
 {
-  pattern <- DNAStringSet(c("AAA"))
+  pattern <- DNAStringSet(c("AAA","CCC"))
   windows = as(list(DNAString("AAAGCTAAAGGTAAAGCAAAA"),
 		    DNAString("AAAGCTAAAGGTAAAGCAAAA"),
                     DNAString("AAAGCTAAAGGTAAAGCAAAA")), "DNAStringSet")
@@ -45,11 +46,11 @@ test_PatternMatrix_matrix_GRanges_BSgenome = function()
   #TODO: small BSgenome object?
   #source("https://bioconductor.org/biocLite.R")
   #biocLite("BSgenome.Hsapiens.UCSC.hg19")
-  #library(BSgenome.Hsapiens.UCSC.hg19)
-  #genome = BSgenome.Hsapiens.UCSC.hg19
+  library(BSgenome.Hsapiens.UCSC.hg19)
+  genome = BSgenome.Hsapiens.UCSC.hg19
 
   windows <- GRanges(seqnames = "chr3",
-		ranges = IRanges(1:10, width = 10,
+		ranges = IRanges(9001:9010, width = 10,
 				 names = head(letters,10)),
 		strand = "+")
   
@@ -66,6 +67,13 @@ test_PatternMatrix_matrix_GRanges_BSgenome = function()
   #windows <- GRanges(seqnames = "chr3",
   #		ranges = IRanges(c(1,999999999), width = 10),
   #		strand = "+")
+  
+  # when windows contain only "N"
+  windows <- GRanges(seqnames = "chr3",
+                     ranges = IRanges(9001:9010, width = 10,
+                                      names = head(letters,10)),
+                     strand = "+")
+  
   
 }
 
@@ -84,7 +92,7 @@ test_PatternMatrix_DNAStringSet_GRanges_BSgenome = function()
   
 
   windows <- GRanges(seqnames = "chr3",
-		ranges = IRanges(1:10, width = 10,
+		ranges = IRanges(9001:90010, width = 10,
 				 names = head(letters,10)),
 		strand = "+")
   

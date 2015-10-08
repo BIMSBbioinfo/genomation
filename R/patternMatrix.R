@@ -23,115 +23,62 @@
 # It finds positions of sequence motif hits above
 # a specified threshold in a list of sequences of the same length.
 # Adapted from seqPattern::motifScanHits - 
-# it returns granges instead of start(granges).
+# it returns vector of 0s and 1s instead of start positions
+# of pattern occurences
+# pwm: matrix, subject: character or DNAString or Views on a DNAString subject
 .scan.sequence.with.pwm <- function(pwm, seq, minScore){
   
-  # convert minScore character to number (e.g. 80% to 0.8)
-  nc <- nchar(minScore)
-  if (substr(minScore, nc, nc) == "%"){
-    perc.threshold <- substr(minScore, 1L, nc-1L)
-    min.score <- minScore(pwm)
-    max.score <- maxScore(pwm)
-    score.threshold = min.score + as.double(perc.threshold)/100 *
-      (max.score-min.score)
+  if(minScore==NULL){
+    # calculate scores themselves
+    
+    pwm.match <- matchPWM(pwm = pwm.corr, subject = seq, with.score=TRUE)
+    return(mcols(pwm.match)$score)
+    
   }else{
-    score.threshold <- minScore
-  }
-  
-  # make all PWM scores positive to avoid matching the Ns which are assigned score 0
-  pwm.corr <- pwm + abs(min(pwm))
-  score.threshold <- score.threshold + ncol(pwm) * abs(min(pwm))
-  
-  pwm.match <- matchPWM(pwm = pwm.corr, subject = seq, min.score = score.threshold)
-  
-  # if pwm does not match to any position in the sequence
-  # return only 0s
-  if(length(pwm.match)==0){
-    return(rep(0,length(seq)))
-  }
-  
-  # gets the indeces where hits occur
-  indeces=unlist(mapply(function(x,y) x:y, start(pwm.match),end(pwm.match), SIMPLIFY=FALSE))
-  
-  # create output vector
-  res=rep(0,length(seq))
-  
-  # count how many times a PWM occurs in a given index
-  ind.rle=rle(indeces)
-  
-  # get the indeces and assign the number of occurrence for that index
-  res[ind.rle$values]=ind.rle$lengths
-  
-  return(res)
-}
-
-
-# Find positions of specified sequence patterns 
-# and calculate score matrices (list of matrices)
-.patternDNAStringSet_windowsDNAStringSet2list = function(pattern, windows, cores){
-  
-  if(class(pattern)=="list"){
-    # because getPatternOccurrenceList takes a character vector as pattern arg
-    pattern <- unlist(pattern) 
-  }
-  
-  # Calculate start positions of specified sequence patterns
-  if(length(nchar(pattern)) > 1){
-    # create ScoreMatrixList if more than one pattern
-    if(cores>1){
-      # seqPattern::getPatternOccurrenceList uses parallel::mclapply for parallelization
-      pat = getPatternOccurrenceList(windows, pattern,
-                                     useMulticore=TRUE, nrCores=cores)
+    # calculate 0 and 1s
+    
+    # if minScore is a character then convert it to a number 
+    # (e.g. 80% to 0.8)
+    nc <- nchar(minScore)
+    if (substr(minScore, nc, nc) == "%"){
+      perc.threshold <- substr(minScore, 1L, nc-1L)
+      min.score <- minScore(pwm)
+      max.score <- maxScore(pwm)
+      score.threshold = min.score + as.double(perc.threshold)/100 *
+        (max.score-min.score)
+    }else{
+      score.threshold <- minScore
     }
-  }else{
-    # create ScoreMatrixList if >1 pattern or ScoreMatrix if only 1 pattern
-    pat = getPatternOccurrenceList(windows, pattern)
-  }  
   
-  # pat is always a list       
-  # check if patterns map into sequences that contain only "N" 'nucleotide'
-  isnull <- sapply(1:length(pat), function(x) is.null(pat[x]))
-  if(all(isnull)){
-    stop(paste0("All patterns map into windows that contain letters not in [ACGT],",
-                " e.g. they contain only 'N'"))
-  }else if(any(isnull)){
-    warning(paste0("All windows in ", paste(which(isnull), sep=","),
-                   " element of the list contain letters not in [ACGT], e.g. they contain only 'N'.",
-                   " Selecting only those that are valid")) #TODO
-    pat <- pat[which(!isnull)]
+    # make all PWM scores positive to avoid matching the Ns which are assigned score 0
+    pwm.corr <- pwm + abs(min(pwm))
+    score.threshold <- score.threshold + ncol(pwm) * abs(min(pwm))
+  
+    pwm.match <- matchPWM(pwm = pwm.corr, subject = seq, min.score = score.threshold)
+  
+    # if PWM does not match any position in the sequence then return only 0s
+    if(length(pwm.match)==0){
+      return(rep(0,length(seq)))
+    }
+  
+    # gets the indeces where hits occur
+    indeces=unlist(mapply(function(x,y) x:y, start(pwm.match),end(pwm.match), SIMPLIFY=FALSE))
+  
+    # create output vector
+    res=rep(0,length(seq))
+  
+    # count how many times a PWM occurs in a given index
+    ind.rle=rle(indeces)
+  
+    # get the indeces and assign the number of occurrence for that index
+    res[ind.rle$values]=ind.rle$lengths
+  
+    return(res)
   }
-  
-  calc.OccurenceCov = function(pat, pattern){
-    # convert data.frame with coordinates of the positions within which sequence pattern occurs to GRanges
-    # TODO: sprawdzic czy napewno dlugosc tego gr sie zgadza z dlugoscia patternu
-    gr <- GRanges(seqnames = "chrN",
-                  ranges = IRanges(start=pat$position, 
-                                   width=width(pattern)),
-                  strand = "*",
-                  sequence = pat$sequence)
-    #seqinfo = Seqinfo(seqnames="chrN",
-    #                   seqlengths=max(end(windows)))) # po co to??
-    
-    # some of windows are not included, because pattern did not map into them
-    seqq <- as.factor(gr$sequence)
-    levels(seqq) <- as.character(1:length(windows))
-    grl <- split(gr, seqq, drop=FALSE)
-    
-    # calculate coverage of occurence of each pattern per base pair, 1-present, 0-absent
-    grl.reduce <- reduce(grl)
-    ma <- lapply(1:length(grl.reduce), 
-                 function(x) coverage(grl.reduce[x])[[1]] )
-    # convert list to matrix
-    mat <- matrix(unlist(ma), ncol = length(ma[[1]]), byrow = TRUE)
-    return(mat)
-  }
-  
-  # for each pattern calculate .. TODO
-  pattern = list(pattern)
-  #return(lapply(1:length(pat), function(i) calc.OccurenceCov(pat[[i]], pattern[[i]])))
 }
 
-
+# Find positions of specified PWM 
+# and calculate score matrix
 .patternPWM_windowsDNAStringSet2matrix = function(pattern, windows, 
                                                   min.score, asPercentage){
   if(is.null(min.score)){
@@ -144,7 +91,6 @@
     pwm.match <- lapply(1:length(windows), function(x){
       .scan.sequence.with.pwm(pwm = pattern, seq = windows[[x]], minScore=min.score) 
     })
-    
     # convert list to matrix
     mat <- matrix(unlist(pwm.match), ncol = length(pwm.match[[1]]), byrow = TRUE)
   }
@@ -152,6 +98,55 @@
 }
 
 
+# Find positions of specified sequence patterns 
+# and calculate score matrices (list of matrices)
+.patternDNAStringSet_windowsDNAStringSet2matrix = function(pattern, windows){
+  
+  # getPatternOccurrenceList has nrCores and useMulticore args for paralelization
+  # they use mclapply for every pattern
+  # and before mclappling there is only one such line:
+  # regionsSeq <- DNAStringSet(gsub("N", "+", regionsSeq)), 
+  # where regionsSeq=windows 
+  pat = getPatternOccurrenceList(windows, pattern)
+  
+  positions_of_01 = function(pat, pattern, windows){
+    # gets the indeces where hits occur
+    indeces=unlist(mapply(function(x,y) x:y, pat$position, pat$position+width(pattern[1])-1, SIMPLIFY=FALSE))
+  
+    # create output vector
+    res=rep(0,length(windows[[1]]))
+  
+    # count how many times a PWM occurs in a given index
+    ind.rle=rle(indeces)
+  
+    # get the indeces and assign the number of occurrence for that index
+    res[ind.rle$values]=ind.rle$lengths
+  
+    return(res)
+  }
+  
+  # number windows from result of getPatternOccurrenceList
+  pat.windows = unique(pat$sequence)
+  
+  # for each window calculate vector of 1 and 0s
+  pwm.match <- lapply(1:length(windows), function(i, pat=pat, pat.windows=pat.windows, windows=windows){
+    print(i)
+    print(pat.windows)
+    print(i %in% pat.windows)
+    # TODOOOOOOOOO
+    if(i %in% pat.windows){
+      positions_of_01(pat[pat$sequence==i,], pattern, windows)
+    }else{
+      # if pattern did not match to window
+      rep(0,length(windows[[1]]))
+    }
+  })
+  # convert list to matrix
+  mat <- matrix(unlist(pwm.match), ncol = length(pwm.match[[1]]), byrow = TRUE)
+}
+
+#TODO:
+#czy napewno clustfun FALSE? chyba tak?
 
 #######################################
 # S4 functions
@@ -205,7 +200,6 @@ setGeneric(
   }
 )
 
-
 setMethod("patternMatrix",
           signature(pattern = "DNAStringSet", windows = "DNAStringSet"),
           function(pattern, windows, cores = 1){
@@ -222,22 +216,29 @@ setMethod("patternMatrix",
               stop("There is only one pattern provided. Setting number of cores to 1..")
               cores=1
             }
-            
-            #TODO
-            if(cores==1){
-              # if there is only one pattern then create ScoreMatrix
-              mat <- .patternDNAStringSet_windowsDNAStringSet2matrix(pattern, windows, cores)
-              return(new("ScoreMatrix",mat))
+
+           if(length(pattern)==1){
+                # if there is only one pattern then create ScoreMatrix
+                mat <- .patternDNAStringSet_windowsDNAStringSet2matrix(pattern, windows)
+                
+                return(new("ScoreMatrix",mat))
               
             }else{
-              # if more than one pattern
-              lmat <- lapply(1:length(pattern), 
-                             function(i) .patternDNAStringSet_windowsDNAStringSet2matrix(pattern[i], 
-                                                                                         windows, 
-                                                                                         cores))
-              return(new("ScoreMatrixList", lmat))
+               if(cores==1){
+                 lmat <- lapply(1:length(pattern), 
+                               function(i) .patternDNAStringSet_windowsDNAStringSet2matrix(pattern[i],
+                                                                                           windows))
+               }else{
+                 # TODO: i dont know if it works :P
+                  lmat <- mclapply(pattern, 
+                                 patternDNAStringSet_windowsDNAStringSet2matrix,
+                                 windows,
+                                 mc.cores=cores)
+               }
+               
+               return(new("ScoreMatrixList", lmat))
             }
-            })
+})
 
 
 setMethod("patternMatrix",
@@ -266,8 +267,8 @@ setMethod("patternMatrix",
             
             # call patternMatrix function
             # pattern: DNAStringSet, windows: DNAStringSet
-            pattern(pattern, windows, min.score)
-            })
+            patternMatrix(pattern=pattern, windows=windows, min.score=min.score)
+})
 
 
 setMethod("patternMatrix",
@@ -278,87 +279,21 @@ setMethod("patternMatrix",
               stop("All sequences in the input DNAStringSet must have the same 
                    length!")
             }
-            if(class(pattern)=="list" &
-                 !all(sapply(1:length(patternlist), 
-                             function(x) class(patternlist[[x]])=="matrix"))
-            ){
-              stop("Pattern argument contain not only matrices!")
-            }
+            #if(class(pattern)=="list" &
+            #     !all(sapply(1:length(pattern), 
+            #                 function(x) class(pattern[[x]])=="matrix"))
+            #){
+            #  stop("Pattern argument contains not only matrices!")
+            #}
              
-            #returns matrix or list of matrices
+            #return matrix or list of matrices
             mat.or.lmat <- .patternPWM_windowsDNAStringSet2matrix(pattern, windows, 
                                                           min.score, asPercentage)
-            
             if(class(mat.or.lmat)=="matrix"){
               return(new("ScoreMatrix",mat.or.lmat))
             }
             return(new("ScoreMatrixList",mat.or.lmat))
-            
-            })
-
-setMethod("patternMatrix",
-          signature(pattern = "list", windows = "DNAStringSet"),
-          function(pattern, windows, min.score = NULL, asPercentage=FALSE){
-            
-            if(class(pattern[[1]])=="matrix"){
-              
-            }
-            if(class(pattern[[1]])=="character" | class(pattern[[1]])=="DNAString"){
-              pattern = DNAStringSet(unlist(pattern))
-            }
-            # call patternMatrix function
-            sml = patternMatrix(pattern, windows, min.score)
-            return(new("ScoreMatrixList",sml))
-          })
-
-
-setMethod("patternMatrix",
-          signature(pattern = "list", windows = "GRanges", genome="BSgenome"),
-          function(pattern, windows, genome, 
-                   min.score = NULL, asPercentage=FALSE,
-                   cores=1){
-            
-            if(class(pattern[[1]]) %in% c("character", "DNAString", "matrix")){
-              stop("Pattern has to be a list of character, DNAString or matrix objects")
-            }
-            
-            # for each PWM calculate score matrix separately..
-            if(class(pattern[[1]])=="matrix"){
-              
-              if(cores==1){
-                sml <- lapply(1:length(pattern), 
-                              function(i) patternMatrix(pattern=pattern[[i]], 
-                                                        windows=windows, 
-                                                        min.score=min.score,
-                                                        asPercentage=asPercentage))
-              }if else(cores > 1){
-                sml <- mclapply(pattern,
-                                patternMatrix,
-                                  windows=windows,
-                                  min.score=min.score,
-                                  asPercentage=asPercentage,
-                                  mc.cores = cores
-                                )
-              }else{
-                stop("Numer of cores has to be >= 1.")
-              }
-              return(new("ScoreMatrixList",sml))
-            }
-            
-            
-            if(class(pattern[[1]])=="character"){
-              pattern = DNAStringSet(unlist(pattern))
-            }else if(class(pattern[[1]])=="DNAString"){
-              pattern = DNAStringSet(pattern)
-            }
-            # call patternMatrix function.
-            # if pattern is a DNAStringSet, then 
-            # seqPattern::getPatternOccurrenceList function is used
-            # and for parallelization it uses parallel::mclapply
-            sml = pattern(pattern, windows, min.score)  
-            return(new("ScoreMatrixList",sml))
-          })
-
+})
 
 
 setMethod("patternMatrix",
@@ -370,12 +305,12 @@ setMethod("patternMatrix",
               stop("All sequences in the input DNAStringSet must have the same 
                    length!")
             }
-            if(class(pattern)=="list" &
-                 !all(sapply(1:length(patternlist), 
-                             function(x) class(patternlist[[x]])=="matrix"))
-            ){
-              stop("Pattern argument contain not only matrices!")
-            }
+            #if(class(pattern)=="list" &
+            #     !all(sapply(1:length(pattern), 
+            #                 function(x) class(pattern[[x]])=="matrix"))
+            #){
+            #  stop("Pattern argument contains not only matrices!")
+            #}
             
             #Error in .starfreeStrand(strand(names)) : 
             #cannot mix "*" with other strand values
@@ -398,6 +333,6 @@ setMethod("patternMatrix",
             
             # call patternMatrix function
             # pattern: matrix, windows: DNAStringSet
-            pattern(pattern, windows, min.score)
+            patternMatrix(pattern=pattern, windows=windows, min.score=min.score)
 })
 
