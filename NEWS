@@ -1,12 +1,19 @@
-genomation 1.1.25
+genomation 1.1.26
 --------------
 
 NEW FUNCTIONS AND FEATURES
 
-* new function patternMatrix look for kmer and PWM occurence within
-  given DNA sequences or windows in given genome.
+* new function patternMatrix looks for k-mer or PWM matrix occurence
+  over specified DNA sequences or windows in a given genome.
   It depends on BioString and seqPattern R packages.
 
+genomation 1.1.25
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  faster assigning colors to the heatmap in heatMatrix and multiHeatMatrix functions
+ 
 genomation 1.1.24
 --------------
 

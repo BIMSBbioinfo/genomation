@@ -3,47 +3,68 @@
 \docType{methods}
 \name{patternMatrix}
 \alias{patternMatrix}
-\title{Get scores that correspond to k-mer occurence for bases in each window}
+\title{Get scores that correspond to k-mer or PWM matrix occurrence for bases in each window}
 \usage{
-patternMatrix(pattern, windows, genome = NULL, min.score = NULL,
-  cores = 1, asPercentage = FALSE, occurence = TRUE)
+patternMatrix(pattern, windows, genome = NULL, min.score = 0.8,
+  asPercentage = FALSE, cores = 1)
 }
 \arguments{
-\item{pattern}{matrix, a PWM matrix. It has one row for each nucleotide ("A","C","G" and "T")}
+\item{pattern}{matrix (a PWM matrix), list of matrices or a character vector of length 1 or more.
+A matrix is a PWM matrix that needs to have one row for each nucleotide
+("A","C","G" and "T" respectively).
+IUPAC ambiguity codes can be used and it will match any letter
+in the subject that is associated with the code.}
 
-\item{windows}{\code{GRanges} object}
+\item{windows}{\code{\link{GRanges}} object or \code{\link{DNAStringSet}} object
+that have equal width of ranges or sequences.}
 
-\item{genome}{\code{BSgenome} object}
+\item{genome}{\code{\link{BSgenome}} object}
 
-\item{min.score}{numeric or string indicating minimum score for counting a match.
-Can be given as a character string containing
-a percentage of the highest possible score or as a single number (as default "80%").}
-
-\item{cores}{the number of cores to use (default: 1)}
+\item{min.score}{numeric or character indicating minimum score to count a match.
+It can be given as a character string containing
+a percentage of the highest possible score or a single number
+(by default "80\%" or 0.8). If min.score is set to NULL
+then \code{patternMatrix} returns scores themselves (default).}
 
 \item{asPercentage}{boolean telling whether scores represent percentage of the maximal
 motif PWM score (default: TRUE) or raw scores (FALSE).}
 
-\item{occurence}{if pattern is a matrix then function can either return occurence
-(a scoreMatrix with 1s and 0s for k-mers)
-using given score cutoff \code{min.score} (default: TRUE)
-or scores themselves (FALSE)}
+\item{cores}{the number of cores to use (default: 1). It is supported only on Unix-like platforms.}
 }
 \value{
-returns a \code{scoreMatrix} object
+returns a \code{scoreMatrix} object or a \code{scoreMatrixList} object
 }
 \description{
-we are looking for occurrence, we aim to get a scoreMatrix with 1s and 0s for k-mers.
-The function first look for and calculates
-The function firsts bins each window to equal number of bins, and calculates
-the a summary matrix for scores of each bin (currently, mean, max and min supported)
-A patternMatrix object can be used to ..
-\code{windows} can be a predefined region such as CpG islands or gene bodies that have the same width.
+The function produce a base-pair resolution matrix or matrices of scores that correspond to
+k-mer or PWM matrix occurrence over predefined equal width windows.
+It finds either positions of pattern hits above a specified threshold and
+creates score matrix filled with 1 (presence of pattern) and 0 (its absence) or
+matrix with score themselves.
+If one pattern (character of length 1 or PWM matrix) is given then it returns ScoreMatrix,
+if more than one then ScoreMatrixList.
 }
 \details{
-we are looking for occurrence, we aim to get a scoreMatrix with 1s and 0s for k-mers.
+\code{patternMatrix} is based on functions from the seqPattern package:
+getPatternOccurrenceList function to find position of pattern that is a character vector in
+a list of sequences (a DNAStringSet object)
+and adapted function motifScanHits to find pattern that is a PWM matrix
+in sequences (a DNAStringSet object).
+
+If cores > 1 is provided then for every window occurrence of pattern is counted in paralallel.
+}
+\examples{
+library(Biostrings)
+
+# consensus sequence of the ctcf motif
+motif = "CCGCGNGGNGGCAG"
+# Creates 10 random DNA sequences
+seqs = sapply(1:10,
+       function(x) paste(sample(c("A","T","G","C"), 180, replace=TRUE), collapse=""))
+windows = DNAStringSet(seqs)
+p = patternMatrix(pattern=motif, windows=windows, min.score=0.8)
+p
 }
 \seealso{
-\code{\link{ScoreMatrix}}
+\code{\link{ScoreMatrix}}, \code{\link{ScoreMatrixList}}
 }
 
