@@ -12,7 +12,7 @@
 # pwm: matrix, seq: character
 .scan.sequence.with.pwm <- function(pwm, seq, minScore){
   
-  if(minScore==NULL){
+  if(is.null(minScore)){
     # calculate scores themselves
     
     pwm.match <- matchPWM(pwm = pwm.corr, subject = seq, with.score=TRUE)
@@ -67,6 +67,9 @@
 # pwm: matrix, windows: character
 .patternPWM_windowsDNAStringSet2matrix = function(pattern, windows, 
                                                   min.score, asPercentage){
+  print(".patternPWM_windowsDNAStringSet2matrix")
+  print("min.score")
+  print(min.score)
   if(is.null(min.score)){
     # for each window calculate vector of scores themselves
     mat <- motifScanScores(regionsSeq = windows,
@@ -168,7 +171,7 @@ setGeneric(
   name="patternMatrix",
   def=function(pattern, windows, 
                genome=NULL, min.score = NULL, 
-               cores=1, asPercentage=FALSE){
+               asPercentage=FALSE,cores=1){
     standardGeneric("patternMatrix")
   }
 )
@@ -212,7 +215,7 @@ setMethod("patternMatrix",
 
 setMethod("patternMatrix",
           signature(pattern = "character", windows = "GRanges", genome="BSgenome"),
-          function(pattern, windows, genome, min.score = NULL, cores=1, asPercentage=FALSE){
+          function(pattern, windows, genome, min.score = NULL, asPercentage=FALSE, cores=1){
             
             if(!(length(unique(width(windows))) == 1)){
               stop("All sequences in the input DNAStringSet must have the same 
@@ -232,19 +235,23 @@ setMethod("patternMatrix",
             
             # call patternMatrix function
             # pattern: character, windows: DNAStringSet
-            patternMatrix(pattern=pattern, windows=windows, min.score=min.score)
+            patternMatrix(pattern=pattern, windows=windows,
+                          min.score=min.score, asPercentage=asPercentage,
+                          cores=cores)
 })
 
 
 setMethod("patternMatrix",
           signature(pattern = "matrix", windows = "DNAStringSet"),
-          function(pattern, windows, min.score = NULL, asPercentage=FALSE){
+          function(pattern, windows, min.score = NULL, asPercentage=FALSE, cores=1){
             
             if(!(length(unique(width(windows))) == 1)){
               stop("All sequences in the input DNAStringSet must have the same 
                    length!")
             }
             
+            print("min.score")
+            print(min.score)
             mat <- .patternPWM_windowsDNAStringSet2matrix(pattern, windows, 
                                                           min.score, asPercentage)
             return(new("ScoreMatrix",mat))
@@ -254,7 +261,7 @@ setMethod("patternMatrix",
 setMethod("patternMatrix",
           signature(pattern = "matrix", windows = "GRanges", genome="BSgenome"),
           function(pattern, windows, genome, 
-                   min.score = NULL, asPercentage=FALSE){
+                   min.score = NULL, asPercentage=FALSE, cores=1){
             
             if(!(length(unique(width(windows))) == 1)){
               stop("All sequences in the input DNAStringSet must have the same 
@@ -280,7 +287,9 @@ setMethod("patternMatrix",
             
             # call patternMatrix function
             # pattern: matrix, windows: DNAStringSet
-            patternMatrix(pattern=pattern, windows=windows, min.score=min.score)
+            patternMatrix(pattern=pattern, windows=windows, 
+                          min.score=min.score, asPercentage=asPercentage,
+                          cores=1)
 })   
 
 
