@@ -63,8 +63,8 @@ galpTo2Ranges <- function(x)
   s<-c();e<-c()
   for(i in 1:length(chrs)){
     k <- windows[seqnames(windows)==chrs[i],]
-    s <- c(s, start(k)[1])
-    e <- c(e, end(k)[length(k)])
+    s <- c(s, min(start(k)))
+    e <- c(e, max(end(k)))
   }
   GRanges(chrs, IRanges(start=s, end=e), strand="*")
 }
