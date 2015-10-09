@@ -12,12 +12,11 @@
 #' @return returns a \code{RandomEnrichment} object
 #' @seealso \code{\link{randomizeFeature}}
 #' @examples
-#'  data(cage)
-#'  data(cpgi)
-#'  
-#'  enr = getRandomEnrichment(cage, cpgi, randomizations=50)
-#' 
-#' 
+#' data(cage)
+#' data(cpgi)
+#' \donttest{ 
+#' enr = getRandomEnrichment(cage, cpgi, randomizations=50)
+#' }
 #' @export
 #' @docType methods
 #' @rdname getRandomEnrichment-methods
@@ -28,50 +27,51 @@ setGeneric("getRandomEnrichment",
 #' @aliases getRandomEnrichment,GRanges,GRanges-method
 #' @rdname getRandomEnrichment-methods
 setMethod("getRandomEnrichment",
-			signature(target = "GRanges",query="GRanges"),
-			function( target, query, randomizations, rand.set,... ){
+            signature(target = "GRanges",query="GRanges"),
+            function( target, query, randomizations, rand.set,... ){
 
-				orig.cnt = sum(countOverlaps(target,query) > 0)
+                orig.cnt = sum(countOverlaps(target,query) > 0)
 
-				if( is.null(rand.set) ){
-				
-					rand.olap.dist=numeric(randomizations)
-					for(i in 1:randomizations){
-						message("Iteration number:",i,"\r")
-						my.rand = randomizeFeature(query,...)
-						my.cnts = sum(countOverlaps(target,my.rand)>0)
-						rand.olap.dist[i] = my.cnts
-					}
-					message("\n")
-					
-				}else if(is(rand.set,"GRangesList")){
-					
-					randomizations = length(rand.set)
-					rand.olap.dist = numeric(randomizations)
-					for(i in 1:randomizations){
-						message("Iteration number:",i,"\r")
-						my.cnts = sum(countOverlaps(target,rand.set[[i]])>0)
-						rand.olap.dist[i] = my.cnts
-					}
-					message("\n")
-				}else{
-					stop("Wrong 'rand.set' argument supplied, it should be a 'GRangesList'")
-				}
+                if( is.null(rand.set) ){
+                
+                    rand.olap.dist=numeric(randomizations)
+                    for(i in 1:randomizations){
+#                         message("Iteration number:",i,"\r")
+                        my.rand = randomizeFeature(query,...)
+                        my.cnts = sum(countOverlaps(target,my.rand)>0)
+                        rand.olap.dist[i] = my.cnts
+                    }
+#                     message("\n")
+                    
+                }else if(is(rand.set,"GRangesList")){
+                    
+                    randomizations = length(rand.set)
+                    rand.olap.dist = numeric(randomizations)
+                    for(i in 1:randomizations){
+                        message("Iteration number:",i,"\r")
+                        my.cnts = sum(countOverlaps(target,rand.set[[i]])>0)
+                        rand.olap.dist[i] = my.cnts
+                    }
+                    message("\n")
+                }else{
+                    stop("Wrong 'rand.set' argument supplied, it should be a 'GRangesList'")
+                }
 
-				# calculate p-value assuming normal distribution
-				p.value=pnorm(orig.cnt, 
+                # calculate p-value assuming normal distribution
+                p.value=pnorm(orig.cnt, 
                       mean=mean(rand.olap.dist), 
                       sd=sd(rand.olap.dist),
                       lower.tail=FALSE )
-				#if(p1>0.5){p.value=1-p1}else{p.value=p1}
+                #if(p1>0.5){p.value=1-p1}else{p.value=p1}
 
-				# calculate randomized raw p-value
-				rand.p.value = sum(rand.olap.dist>orig.cnt)/length(rand.olap.dist)
+                # calculate randomized raw p-value
+                rand.p.value = sum(rand.olap.dist>orig.cnt)/length(rand.olap.dist)
 
-				l = list(orig.cnt = orig.cnt,
-					       rand.olap.dist = rand.olap.dist,
-					       fc = log2(orig.cnt/mean(rand.olap.dist)),
-					       p.value = p.value,
-					       rand.p.value = rand.p.value)
-        return(as(l, 'RandomEnrichment'))
+                n = new('RandomEnrichment', 
+                orig.cnt = orig.cnt,
+                          rand.olap.dist = rand.olap.dist,
+                        log2fc = log2(orig.cnt/mean(rand.olap.dist)),
+                          p.value = p.value,
+                          rand.p.value = rand.p.value)
+        return(n)
 })

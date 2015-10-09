@@ -21,12 +21,12 @@
 #' @seealso \code{\link{getRandomEnrichment}}
 #' @export
 setClass("RandomEnrichment", 
-		representation(
-			orig.cnt = "numeric", 
-			rand.olap.dist = "numeric",
-			log2fc="numeric",
-			p.value="numeric",
-			rand.p.value="numeric" 
+        representation(
+            orig.cnt = "numeric", 
+            rand.olap.dist = "numeric",
+            log2fc="numeric",
+            p.value="numeric",
+            rand.p.value="numeric" 
 ))
 
 
@@ -57,6 +57,17 @@ setMethod("show", "RandomEnrichment", function(object) {
 #'
 #' @name ScoreMatrix-class
 #' @rdname ScoreMatrix-class
+#' 
+#' @section Constructors:
+#' see \code{\link{ScoreMatrix}}
+#' 
+#' @section Coercion:
+#' as(from, "matrix"): Creates a matrix from \code{ScoreMatrix} object. You can also use S3Part() function to extract the matrix from \code{ScoreMatrix} object.
+#' 
+#' @section Subsetting:
+#' In the code snippets below, x is a ScoreMatrix object.
+#' \code{'x[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset ScoreMatrix object.
+#' 
 #' @seealso \code{\link{ScoreMatrix}}
 #' @export
 setClass("ScoreMatrix",contains = "matrix")
@@ -66,16 +77,29 @@ setClass("ScoreMatrix",contains = "matrix")
 #' An S4 class for storing a set of \code{ScoreMatrixList} 
 #'
 #' The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
-#'
+#' 
 #' @name ScoreMatrixList-class
 #' @rdname ScoreMatrixList-class
+#'  
+#' @section Constructors:
+#' see \code{\link{ScoreMatrixList}}
+#' 
+#' @section Coercion:
+#' as(from, "ScoreMatrixList"): Creates a \code{ScoreMatrixList} object from a list containing \code{\link{ScoreMatrix}} or \code{\link{ScoreMatrixBin}} objects. 
+#' 
+#' @section Subsetting:
+#' In the code snippets below, x is a ScoreMatrixList object.
+#' 
+#' \code{x[[i]]},\code{x[[i]]}: Get or set elements \code{i}, where \code{i} is a numeric or character vector of length 1.
+#' 
+#' \code{x$name}, \code{x$name}: value: Get or set element \code{name}, where \code{name} is a name or character vector of length 1.
+#' 
 #' @seealso \code{\link{ScoreMatrixList}}
 #' @export
 setClass("ScoreMatrixList", 
-			contains = "list"
-#			validity=.valid.ScoreMatrixList
-			)
-
+            contains = "list"
+#            validity=.valid.ScoreMatrixList
+            )
 
 # ---------------------------------------------------------------------------- #
 # ------------------ #
@@ -94,7 +118,9 @@ setClass("ScoreMatrixList",
 #'
 #'                  \item{\code{precedence}}{a named vector of percentages}
 #'
-#'                  \item{\code{num.hierarchica}}{vector}
+#'                  \item{\code{num.annotation}}{vector}
+
+#'                  \item{\code{num.precedence}}{vector}
 #'
 #'                  \item{\code{no.of.OlapFeat}}{vector}
 #'
@@ -125,7 +151,9 @@ setClass("AnnotationByFeature",
 #'
 #'                  \item{\code{precedence}}{a named vector of percentages}
 #'
-#'                  \item{\code{num.hierarchica}}{vector}
+#'                  \item{\code{num.annotation}}{vector}
+
+#'                  \item{\code{num.precedence}}{vector}
 #'
 #'                  \item{\code{no.of.OlapFeat}}{vector}
 #'

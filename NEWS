@@ -1,5 +1,263 @@
+genomation 1.1.25
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  faster assigning colors to the heatmap in heatMatrix function
+ 
+genomation 1.1.24
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Fixed a bug in multiHeatMatrix that occured after version 1.1.19
+   
+genomation 1.1.23
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Fixed a bug in plotMeta that occured after version 1.1.19
+   
+genomation 1.1.22
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+*  New argument of multiHeatMatrix clust.matrix defines 
+   which matrices are used for clustering
+
+genomation 1.1.21
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  Improve reading paired-end alignment in score matrix functions.
+   In order to avoid duplicated reads from GenomicAlignments:readGAlignmentPairs
+   reads with repeated ids are removed (with assumption that reads have unique ids).
+
+
+genomation 1.1.20
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  test more examples (remove \donttest{} from examples
+   responsible for reading data, e.g. readBed, include into \donttest{}
+   only those parts of examples that are slow, e.g. plotMeta(.,.))
+
+genomation 1.1.19
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* Arithmetic, indicator and logic operations as well as subsetting work on ScoreMatrix, 
+  ScoreMatrixBin and ScoreMatrixList objects. New functionality at "ScoreMatrix-class"
+  and "ScoreMatrixList-class" are documented in help pages.
+* Commented examples of functions are uncommented or \donttest{} is used.
+
+genomation 1.1.18
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* Integration of Travis CI
+
+genomation 1.1.17
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* Bioconductor Git-SVN bridge improved rtracklayer::import() function 
+  that has no more 'asRangedData' arg.
+
+genomation 1.1.16
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* issue with readBam() used in scoreMatrix() to read bam files.
+  Reading paired-end reads was extremely slow, because of lines of code
+  that were responsible for checking if both mates from pair are not counted twice,
+  e.g. when mates map into two different windows of interest. Right now we allow it.
+  Fixed bug in reading single-end reads.
+
+genomation 1.1.15
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* fix bug of plotMeta() when dispersion=NULL and smoothfun is not NULL
+
+genomation 1.1.14
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* improve checking if the ncols of matrices match in heatMeta() and plotMeta()
+
+genomation 1.1.13
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* add new argument cex.legend to plotTargetAnnotation() to specify the size of the legend.
+* changed ScoreMatrixBin() to run faster when noCovNA=TRUE
+* check not only for .bw but also .bigWig and .bigwig extensions of BigWig file in ScoreMatrix() and ScoreMatrixBin()
+
+genomation 1.1.12
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* gffToGRanges is now a wrapper for import from rtracklayer
+
+genomation 1.1.11
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* plotMeta function bug fixed. The error occured during plotting meta-profile when dispersion=NULL.
+  Implemented by Katarzyna Wreczycka.
+
+genomation 1.1.10
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* changes in heatMatrix() and plotMeta() - dispersion, smoothfun and clustfun arguments
+  changed from be default FALSE to NULL.
+
+genomation 1.1.9
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* ScoreMatrix function bug fixed. The bug occured when RleList object ("target" argument) and 
+  GRanges object ("windows" argument) did not have the same chromosome ordering. In that case,
+  the returned score matrix was correct but the row ordering did not correspond to the row
+  ordering supplied in the windows argument.
+  
+  
+genomation 1.1.8
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* changes in the vignette, updated the AnnotationHub example, thanks to Christopher Bottoms 
+  Implemented by Katarzyna Wręczycka.
+
+genomation 1.1.7
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* extended capabilities for meta-plots; added new parameters to plotMeta()
+  that enable to show dispersion interval bands around 
+  a central tendency (mean or median) and smoothing them. 
+  Implemented by Katarzyna Wręczycka.
+
+genomation 1.1.6
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* heatMatrix() and multiHeatMatrix() can visualizate score matrix/matrices clustered
+  by using not only kmeans, but custom clustering function (clustfun argument).
+  Implemented by Katarzyna Wreczycka.
+  
+genomation 1.1.5
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* changes in the vignette,explicit call to GenomicRanges::countOverlaps, thanks to Christopher Bottoms
+  
+genomation 1.1.4
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* scoreMatrix, scoreMatrixBin and ScoreMatrixList read paired-end BAM files. 
+  Paired reads are treated as fragments. Implemented by Katarzyna Wręczycka.
+
+genomation 1.1.3
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* Functions that read data from text files re-written from 
+  data.table::fread() to readr::read_delim()
+  and now they can read compressed files from a URL
+* Changes in readBed(), readNarrowPeak(), readBroadPeak() and gffToGRanges() arguments; 
+  All of them have now track.line argument that can be FALSE,
+  "auto" or an integer indicating number of first lines to skip.
+  The zero.based argument was added to readBed() that tells whether ranges in the bed file
+  are in 0 or 1-based coordinate system.
+  Implemented by Katarzyna Wręczycka.
+
+genomation 1.1.2
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* scoreMatrixList() runs in parallel by using parallel::mclapply(). Implemented by Katarzyna Wręczycka.
+
+genomation 1.1.1
+--------------
+NEW FUNCTIONS AND FEATURES
+
+* We are in BioC
+
+IMPROVEMENTS AND BUG FIXES
+
+* readGeneric() and all the functions that read data from text files are faster
+  due to use of data.table::fread(). Implemented by Katarzyna Wręczycka	
+
+genomation 0.99.9
+--------------
+IMPROVEMENTS AND BUG FIXES
+
+* vignette built with knitrBootstrap
+
+genomation 0.99.8
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* added the Bioinformatics citation
+* vignette is converted to html format
+* changed tests form test_that to RUnit
+
+genomation 0.99.0.2
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* multiHeatMatrix() works correctly when common.scale=TRUE
+
+
+genomation 0.99.0.1
+--------------
+
+NEW FUNCTIONS AND FEATURES
+
+* readBed() function to read bed files in to R as GRanges objects
+
+IMPROVEMENTS AND BUG FIXES
+
+* typo in readGeneric,readFeatureFlank,read* functions argument "remove.unusual" is fixed
+
+
+genomation 0.99
+--------------
+
+
+NEW FUNCTIONS AND FEATURES
+
 
 * new plotting functions for visualization of ScoreMatrix and ScoreMatrixList
+  multiHeatMatrix, heatMatrix, metaHeat and metaPlot
 
 * ScoreMatrix constructor can deal with a variety of inputs, including BAM and wig
 
