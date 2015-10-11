@@ -671,13 +671,26 @@ plotMeta<-function(mat, centralTend="mean",
     rng <- range(mat, na.rm = TRUE)
   }
   
-  m <- (mat - rng[1])/(diff(rng))
-  # Convert to a matrix of sRGB color strings
-  #m2 <- m; class(m2) <- "character"
-  m2<-matrix("transparent",ncol=ncol(m),nrow=nrow(m))
-  m2[!is.na(m)] <- rgb(colorRamp(cols)(m[!is.na(m)]), maxColorValue = 255)
-  #m2[is.na(m)] <- "transparent"
-  return(m2)
+  # get the color number
+  nc = length(cols)
+  
+  # arrange min and max of the matrix in different situations
+  if (diff(rng) == 0) 
+    rng <- if (rng[1L] == 0){ 
+      c(-1, 1)
+    }else{rng[1L] + c(-0.4, 0.4) * abs(rng[1L])}
+  
+  # normalize matrix
+  mat <- (mat - rng[1L])/diff(rng)
+  
+  # assign color numbers to normalized matrix for each cell
+  zi <- floor((nc - 1e-05) * mat + 1e-07)
+  zi[zi < 0 | zi >= nc] <- NA
+  
+  # construct the final matrix
+  zc <- cols[zi + 1L]
+  dim(zc) <- dim(mat)
+  return(zc)
 }
 
 # make a heatmap from a given matrix using grid.raster()
