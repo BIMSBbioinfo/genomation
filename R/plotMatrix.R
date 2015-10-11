@@ -521,15 +521,15 @@ plotMeta<-function(mat, centralTend="mean",
   marNew[4]=8
   par(mar=marNew) # extend right margin for the legend
   par(xpd=TRUE) # do this so that you can plot legend out of the plotting box
-  
+    
   if(overlay & length(metas)>1){
     # plot overlayed lines
-    
+
     if(!is.null(dispersion) && dispersion %in% disp.args){
+    
       plot(xcoords,metas[[1]],type="l",col=dispersion.col[1],
            ylim=myrange,ylab=ylab,xlab=xlab, ...)
-      for(i in 1:length(metas) ){
-        
+      for(i in 1:length(metas)){
         # "IQR"
         if(dispersion=="IQR"){ 
           # plotting notches             
@@ -555,7 +555,7 @@ plotMeta<-function(mat, centralTend="mean",
           }
         
         # "sd" or "se"
-        }else{
+        }else{        
 	  .dispersion2(xcoords, metas[[i]], bound2[[i]],
                    col=dispersion.col[i], ...)
           .dispersion2(xcoords, metas[[i]], bound1[[i]],
@@ -594,7 +594,24 @@ plotMeta<-function(mat, centralTend="mean",
                        col=dispersion.col[j], ...)
           .dispersion2(xcoords, metas[[j]], 
                        llim=metas[[j]]-q1[[j]], ulim=q3[[j]]-metas[[j]],
-                       col=dispersion.col[j], ...)                                         
+                       col=dispersion.col[j], ...)
+                       
+          # if 1st or 3rd quartile is equal to median, then
+          # colour notch(es) again             
+          if(all(metas[[i]]==q1[[i]])){
+             # then colour 'lower' notch again
+             .dispersion2(xcoords, metas[[i]], 
+                       llim=bound1[[i]], ulim=metas[[i]],
+                       col=dispersion.col[i], ...)
+          }
+          if(all(metas[[i]]==q3[[i]])){
+	     # then colour 'upper' notch again
+	     .dispersion2(xcoords, metas[[i]], 
+	                  ulim=bound1[[i]], llim=metas[[i]],
+                          col=dispersion.col[i], ...)
+          }             
+                       
+                       
         }else{
           .dispersion2(xcoords, metas[[j]], bound1[[j]],
                      col=dispersion.col[j], ...)
