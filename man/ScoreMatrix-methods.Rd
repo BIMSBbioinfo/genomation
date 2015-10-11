@@ -14,9 +14,11 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
 
 \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 
-\\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware, weight.col, is.noCovNA)
+\\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware,
+                                                weight.col, is.noCovNA)
 
-\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, type='', rpm=FALSE,
+\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware,
+                                                  type='', rpm=FALSE,
                                                   unique=FALSE, extend=0, param=NULL,
                                                   bam.paired.end=FALSE, stranded=TRUE)
 }
@@ -44,8 +46,8 @@ scores, GC content, etc.}
 if TRUE,and if 'target' is a GRanges object with 'weight.col'
  provided, the bases that are uncovered will be preserved as
  NA in the returned object. This useful for situations where
- you can not have coverage all over the genome, such as CpG methylation
- values.}
+ you can not have coverage all over the genome, such as CpG
+ methylation values.}
 
 \item{type}{if target is a character vector of file paths, then type designates
 the type of the corresponding files (bam or bigWig)}
@@ -60,11 +62,13 @@ based on chr, start, end and strand}
 
 \item{param}{ScanBamParam object}
 
-\item{bam.paired.end}{boolean indicating whether given BAM file contains paired-end reads (default:FALSE).
+\item{bam.paired.end}{boolean indicating whether given BAM file contains
+paired-end reads (default:FALSE).
 Paired-reads will be treated as fragments.}
 
-\item{stranded}{boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then
-strands of reads will be set up to "*".}
+\item{stranded}{boolean which tells whether given BAM file is from a strand-specific
+protocol (default:TRUE). If FALSE then strands of reads
+will be set up to "*".}
 }
 \value{
 returns a \code{ScoreMatrix} object
@@ -81,9 +85,10 @@ The function takes the intersection of names in the Rle and GRanges objects.
 On Windows OS the function will give an error if the target is a file in .bigWig format.
 }
 \note{
-We assume that a paired-end BAM file contains reads with unique ids and we remove both mates of reads if they are repeated.
-Due to the fact that \code{ScoreMatrix} uses the GenomicAlignments:readGAlignmentPairs function to read
-paired-end BAM files a duplication of reads occurs when mates of one pair map into two different windows.
+We assume that a paired-end BAM file contains reads with unique ids and we remove
+both mates of reads if they are repeated. Due to the fact that \code{ScoreMatrix}
+uses the GenomicAlignments:readGAlignmentPairs function to read paired-end BAM files
+a duplication of reads occurs when mates of one pair map into two different windows.
 }
 \examples{
 # When target is GRanges

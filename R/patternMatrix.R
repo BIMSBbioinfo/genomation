@@ -182,13 +182,14 @@
 # ---------------------------------------------------------------------------- #
 #' Get scores that correspond to k-mer or PWM matrix occurrence for bases in each window
 #'
-#' The function produce a base-pair resolution matrix or matrices of scores that correspond to 
-#' k-mer or PWM matrix occurrence over predefined equal width windows.
+#' The function produces a base-pair resolution matrix or matrices of scores that correspond to 
+#' k-mer or PWM matrix occurrence over predefined windows that  have equal width.
 #' It finds either positions of pattern hits above a specified threshold and 
 #' creates score matrix filled with 1 (presence of pattern) and 0 (its absence) or
-#' matrix with score themselves.
-#' If one pattern (character of length 1 or PWM matrix) is given then it returns ScoreMatrix, 
-#' if more than one then ScoreMatrixList.
+#' matrix with scores themselves.
+#' If pattern is a character of length 1 or PWM matrix then the function returns 
+#' a ScoreMatrix object, if character of length more than 1 or list of PWMs 
+#' then ScoreMatrixList.
 #'
 #' @param pattern matrix (a PWM matrix), list of matrices or a character vector of length 1 or more.
 #'                A matrix is a PWM matrix that needs to have one row for each nucleotide 
@@ -204,7 +205,7 @@
 #'                  (by default "80\%" or 0.8). If min.score is set to NULL
 #'                  then \code{patternMatrix} returns scores themselves (default).
 #' @param asPercentage boolean telling whether scores represent percentage of the maximal 
-#'                     motif PWM score (default: TRUE) or raw scores (FALSE).               
+#'                     motif PWM score (default: TRUE) or raw scores (FALSE).             
 #' @param cores the number of cores to use (default: 1). It is supported only on Unix-like platforms.
 #'              
 #' @details
@@ -239,11 +240,15 @@ setGeneric(
   name="patternMatrix",
   def=function(pattern, windows, 
                genome=NULL, min.score = 0.8, 
-               asPercentage=FALSE,cores=1){
+               asPercentage=FALSE, cores=1){
     standardGeneric("patternMatrix")
   }
 )
 
+#' @aliases patternMatrix,character,DNAStringSet-method
+#' @rdname patternMatrix-methods
+#' @usage  \\S4method{patternMatrix}{character,DNAStringSet}(pattern, windows,
+#'                                                           asPercentage, cores)
 setMethod("patternMatrix",
           signature(pattern = "character", windows = "DNAStringSet"),
           function(pattern, windows, cores = 1){
@@ -271,10 +276,13 @@ setMethod("patternMatrix",
             }
 })
 
-
+#' @aliases patternMatrix,character,GRanges,BSgenome-method
+#' @rdname patternMatrix-methods
+#' @usage  \\S4method{patternMatrix}{character,GRanges,BSgenome}(pattern, windows, genome,
+#'                                                               cores)
 setMethod("patternMatrix",
           signature(pattern = "character", windows = "GRanges", genome="BSgenome"),
-          function(pattern, windows, genome, asPercentage=FALSE, cores=1){
+          function(pattern, windows, genome, cores=1){
             
             if(!(length(unique(width(windows))) == 1)){
               stop("All sequences in the input DNAStringSet must have the same 
@@ -292,11 +300,14 @@ setMethod("patternMatrix",
             # call patternMatrix function
             # pattern: character, windows: DNAStringSet
             patternMatrix(pattern=pattern, windows=windows,
-                          asPercentage=asPercentage,
                           cores=cores)
 })
 
-
+#' @aliases patternMatrix,matrix,DNAStringSet-method
+#' @rdname patternMatrix-methods
+#' @usage  \\S4method{patternMatrix}{matrix,DNAStringSet}(pattern, windows,
+#'                                                        min.score, asPercentage, 
+#'                                                        cores)
 setMethod("patternMatrix",
           signature(pattern = "matrix", windows = "DNAStringSet"),
           function(pattern, windows, min.score = 0.8, asPercentage=FALSE, cores=1){
@@ -312,7 +323,11 @@ setMethod("patternMatrix",
             return(new("ScoreMatrix",mat))
 })
 
-
+#' @aliases patternMatrix,matrix,GRanges,BSgenome-method
+#' @rdname patternMatrix-methods
+#' @usage  \\S4method{patternMatrix}{matrix,GRanges,BSgenome}(pattern, windows, genome,
+#'                                                            min.score, asPercentage, 
+#'                                                            cores)
 setMethod("patternMatrix",
           signature(pattern = "matrix", windows = "GRanges", genome="BSgenome"),
           function(pattern, windows, genome, 
@@ -344,6 +359,11 @@ setMethod("patternMatrix",
                           cores=1)
 })   
 
+#' @aliases patternMatrix,list,DNAStringSet-method
+#' @rdname patternMatrix-methods
+#' @usage  \\S4method{patternMatrix}{list,DNAStringSet}(pattern, windows,
+#'                                                      min.score, asPercentage, 
+#'                                                      cores)
 setMethod("patternMatrix",
           signature(pattern = "list", windows = "DNAStringSet"),
           function(pattern, windows, min.score = 0.8, 
@@ -365,15 +385,17 @@ setMethod("patternMatrix",
             }
 })
 
+#' @aliases patternMatrix,list,GRanges,BSgenome-method
+#' @rdname patternMatrix-methods
+#' @usage  \\S4method{patternMatrix}{list,GRanges,BSgenome}(pattern, windows, genome, 
+#'                                                          min.score, asPercentage, 
+#'                                                          cores)
 setMethod("patternMatrix",
           signature(pattern = "list", windows = "GRanges", genome="BSgenome"),
           function(pattern, windows, genome, min.score = 0.8, 
                    asPercentage=FALSE, cores=1){
-            print("apttern 2")
-            print(pattern)
+                   
             if(class(pattern[[1]])=="matrix"){
-              
-              print("duap")
               lmat <- lapply(1:length(pattern), 
                             function(i) patternMatrix(pattern=pattern[i], 
                                                       windows=windows, 

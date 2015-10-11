@@ -177,11 +177,12 @@ readGeneric<-function(file, chr=1,start=2,end=3,strand=NULL,meta.cols=NULL,
 #' @param file location of the file, a character string such as: "/home/user/my.bed"
 #'             or the input itself as a string (containing at least one \\n).
 #'             The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
-#'             and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
-#'             it can also start with \code{https://} or \code{ftps://}.
+#'             and/or start with \code{http://} or \code{ftp://}. If the file is not 
+#'             compressed it can also start with \code{https://} or \code{ftps://}.
 #'
-#' @param track.line the number of track lines to skip, "auto" to detect them automatically
-#'                   or FALSE(default) if the bed file doesn't have track lines
+#' @param track.line the number of track lines to skip, "auto" to detect them 
+#'                   automatically or FALSE(default) if the bed file doesn't 
+#'                   have track lines
 #'                   
 #' @param remove.unusual if TRUE remove the chromosomes with unsual 
 #'        names, such as chrX_random (Default:FALSE)        
@@ -318,17 +319,22 @@ readNarrowPeak<-function(file, track.line=FALSE){
 
 
 # ---------------------------------------------------------------------------- #
-#' A function to read-in genomic features and their upstream and downstream adjecent regions such as CpG islands and their shores
+#' A function to read-in genomic features and their upstream and downstream adjecent regions
+#' such as CpG islands and their shores
 #'
 #' @param location for the bed file of the feature.
 #' @param flank number of basepairs for the flanking regions
 #' @param clean If set to TRUE, flanks overlapping with other main features will be trimmed
 #' @param remove.unusual  remove chromsomes with unsual names random, Un and antyhing with "_" character
-#' @param feature.flank.name the names for feature and flank ranges, it should be a character vector of length 2. example: c("CpGi","shores")
-#' @usage  readFeatureFlank(location,remove.unusual=TRUE,flank=2000,clean=TRUE,feature.flank.name=NULL)
-#' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object for the main feature.
-#'   NOTE:This can not return a GRangesList at the moment because flanking regions do not have to have the same column name as the feature.
-#'   GRangesList elements should resemble eachother in the column content. We can not satisfy that criteria for the flanks
+#' @param feature.flank.name the names for feature and flank ranges, it should be a character 
+#'                           vector of length 2. example: c("CpGi","shores")
+#' @usage readFeatureFlank(location,remove.unusual=TRUE,flank=2000,
+#'                         clean=TRUE,feature.flank.name=NULL)
+#' @return a GenomicRangesList contatining one GRanges object for flanks and one for GRanges object
+#'         for the main feature.
+#'   NOTE: This can not return a GRangesList at the moment because flanking regions do not
+#'   have to have the same column name as the feature. GRangesList elements should resemble 
+#'   each other in the column content. We can not satisfy that criteria for the flanks
 #'
 #' @examples
 #' cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
@@ -369,8 +375,10 @@ setMethod("readFeatureFlank",
 #' @param remove.unusual remove the chromomesomes with unsual names, mainly random chromsomes etc
 #' @param up.flank  up-stream from TSS to detect promoter boundaries
 #' @param down.flank down-stream from TSS to detect promoter boundaries
-#' @param unique.prom     get only the unique promoters, promoter boundaries will not have a gene name if you set this option to be TRUE
-#' @usage readTranscriptFeatures(location,remove.unusual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+#' @param unique.prom get only the unique promoters, promoter boundaries will not have 
+#'                    a gene name if you set this option to be TRUE
+#' @usage readTranscriptFeatures(location,remove.unusual=TRUE,
+#'                               up.flank=1000,down.flank=1000,unique.prom=TRUE)
 #' @return a \code{\link{GRangesList}} containing locations of exon/intron/promoter/TSS
 #' @note  one bed track per file is only accepted, the bed files with multiple tracks will cause en error
 #' 

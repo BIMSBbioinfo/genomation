@@ -6,7 +6,8 @@
 \alias{readTranscriptFeatures,character-method}
 \title{Function for reading exon intron and promoter structure from a given bed file}
 \usage{
-readTranscriptFeatures(location,remove.unusual=TRUE,up.flank=1000,down.flank=1000,unique.prom=TRUE)
+readTranscriptFeatures(location,remove.unusual=TRUE,
+                              up.flank=1000,down.flank=1000,unique.prom=TRUE)
 
 \S4method{readTranscriptFeatures}{character}(location, remove.unusual = TRUE,
   up.flank = 1000, down.flank = 1000, unique.prom = TRUE)
@@ -23,7 +24,8 @@ it can also start with \code{https://} or \code{ftps://}.}
 
 \item{down.flank}{down-stream from TSS to detect promoter boundaries}
 
-\item{unique.prom}{get only the unique promoters, promoter boundaries will not have a gene name if you set this option to be TRUE}
+\item{unique.prom}{get only the unique promoters, promoter boundaries will not have
+a gene name if you set this option to be TRUE}
 }
 \value{
 a \code{\link{GRangesList}} containing locations of exon/intron/promoter/TSS

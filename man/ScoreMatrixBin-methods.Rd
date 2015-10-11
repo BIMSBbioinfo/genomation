@@ -13,13 +13,17 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
   bam.paired.end = FALSE, stranded = TRUE)
 
-\\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op, strand.aware)
+\\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
+                                                   strand.aware)
 
-\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA)
+\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,
+                                                   strand.aware,weight.col,is.noCovNA)
 
-\\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10, bin.op='mean',
-                                                     strand.aware, type, rpm, unique, extend, param,
-                                                     bam.paired.end=FALSE, stranded=TRUE)
+\\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
+                                                     bin.op='mean',strand.aware, type,
+                                                     rpm, unique, extend, param,
+                                                     bam.paired.end=FALSE,
+                                                     stranded=TRUE)
 }
 \arguments{
 \item{target}{\code{RleList},  \code{GRanges}, BAM file or a bigWig file
@@ -67,11 +71,13 @@ based on chr, start, end and strand}
 
 \item{param}{ScanBamParam object}
 
-\item{bam.paired.end}{boolean indicating whether given BAM file contains paired-end reads (default:FALSE).
-Paired-reads will be treated as fragments.}
+\item{bam.paired.end}{boolean indicating whether given BAM file contains paired-end
+reads (default:FALSE). Paired-reads will be treated as
+fragments.}
 
-\item{stranded}{boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then
-                strands of reads will be set up to "*".}
+\item{stranded}{boolean which tells whether given BAM file is from a strand-specific
+                protocol (default:TRUE). If FALSE then strands of reads will
+                be set up to "*".}
 }
 \value{
 returns a \code{scoreMatrix} object
@@ -79,9 +85,10 @@ returns a \code{scoreMatrix} object
 \description{
 The function firsts bins each window to equal number of bins, and calculates
 the a summary metrix for scores of each bin (currently, mean, max and min supported)
-A scoreMatrix object can be used to draw average profiles or heatmap of read coverage or wig track-like data.
-\code{windows} can be a predefined region such as CpG islands or gene bodies that are not necessarily equi-width.
-Each window will be chopped to equal number of bins based on \code{bin.num} option.
+A scoreMatrix object can be used to draw average profiles or heatmap of read coverage
+or wig track-like data. \code{windows} can be a predefined region such as CpG islands
+or gene bodies that are not necessarily equi-width. Each window will be chopped to
+equal number of bins based on \code{bin.num} option.
 }
 \examples{
 data(cage)

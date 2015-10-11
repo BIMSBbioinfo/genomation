@@ -3,10 +3,41 @@
 \docType{methods}
 \name{patternMatrix}
 \alias{patternMatrix}
+\alias{patternMatrix,character,DNAStringSet,ANY-method}
+\alias{patternMatrix,character,DNAStringSet-method}
+\alias{patternMatrix,character,GRanges,BSgenome-method}
+\alias{patternMatrix,list,DNAStringSet,ANY-method}
+\alias{patternMatrix,list,DNAStringSet-method}
+\alias{patternMatrix,list,GRanges,BSgenome-method}
+\alias{patternMatrix,matrix,DNAStringSet,ANY-method}
+\alias{patternMatrix,matrix,DNAStringSet-method}
+\alias{patternMatrix,matrix,GRanges,BSgenome-method}
 \title{Get scores that correspond to k-mer or PWM matrix occurrence for bases in each window}
 \usage{
 patternMatrix(pattern, windows, genome = NULL, min.score = 0.8,
   asPercentage = FALSE, cores = 1)
+
+\\S4method{patternMatrix}{character,DNAStringSet}(pattern, windows,
+                                                          asPercentage, cores)
+
+\\S4method{patternMatrix}{character,GRanges,BSgenome}(pattern, windows, genome,
+                                                              cores)
+
+\\S4method{patternMatrix}{matrix,DNAStringSet}(pattern, windows,
+                                                       min.score, asPercentage,
+                                                       cores)
+
+\\S4method{patternMatrix}{matrix,GRanges,BSgenome}(pattern, windows, genome,
+                                                           min.score, asPercentage,
+                                                           cores)
+
+\\S4method{patternMatrix}{list,DNAStringSet}(pattern, windows,
+                                                     min.score, asPercentage,
+                                                     cores)
+
+\\S4method{patternMatrix}{list,GRanges,BSgenome}(pattern, windows, genome,
+                                                         min.score, asPercentage,
+                                                         cores)
 }
 \arguments{
 \item{pattern}{matrix (a PWM matrix), list of matrices or a character vector of length 1 or more.
@@ -35,13 +66,14 @@ motif PWM score (default: TRUE) or raw scores (FALSE).}
 returns a \code{scoreMatrix} object or a \code{scoreMatrixList} object
 }
 \description{
-The function produce a base-pair resolution matrix or matrices of scores that correspond to
-k-mer or PWM matrix occurrence over predefined equal width windows.
+The function produces a base-pair resolution matrix or matrices of scores that correspond to
+k-mer or PWM matrix occurrence over predefined windows that  have equal width.
 It finds either positions of pattern hits above a specified threshold and
 creates score matrix filled with 1 (presence of pattern) and 0 (its absence) or
-matrix with score themselves.
-If one pattern (character of length 1 or PWM matrix) is given then it returns ScoreMatrix,
-if more than one then ScoreMatrixList.
+matrix with scores themselves.
+If pattern is a character of length 1 or PWM matrix then the function returns
+a ScoreMatrix object, if character of length more than 1 or list of PWMs
+then ScoreMatrixList.
 }
 \details{
 \code{patternMatrix} is based on functions from the seqPattern package:
