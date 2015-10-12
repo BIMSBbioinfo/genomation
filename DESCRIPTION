@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 1.1.25
+Version: 1.1.26
 Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka [aut], Liz Ing-Simmons [ctb]	
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users can visualize and 
@@ -20,7 +20,9 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
-  data.table,
+  Biostrings,
+  BSgenome,
+	data.table,
   GenomeInfoDb,
   GenomicRanges,
   GenomicAlignments,
@@ -36,7 +38,8 @@ Imports:
   readr,
   reshape2,
   Rsamtools,
-  rtracklayer
+  seqPattern,
+  rtracklayer,
 Suggests:
     BiocGenerics,
     genomationData,
@@ -50,6 +53,7 @@ Collate:
     'genomation-classes.R'
     'getRandomEnrichment.R'
     'findFeatureComb.R'
+    'patternMatrix.R'
     'plotMatrix.R'
     'randomizeFeature.R'
     'readAnnotate.R'

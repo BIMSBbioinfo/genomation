@@ -1,4 +1,7 @@
 import(methods)
+import(Biostrings)
+import(BSgenome)
+import(GenomeInfoDb)
 import(GenomicRanges)
 import(GenomicAlignments)
 import(IRanges)
@@ -7,8 +10,9 @@ import(ggplot2)
 import(grid)
 import(gridBase)
 import(impute)
-import("GenomeInfoDb")
 importMethodsFrom("rtracklayer", import)
+
+
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)
@@ -22,7 +26,9 @@ importMethodsFrom("rtracklayer", import)
 
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
+#importFrom("BSgenome", getSeq)
 importFrom("data.table",data.table)
+importFrom("data.table", rbindlist)
 importFrom("matrixStats",colMedians)
 importFrom("matrixStats",colSds)
 importFrom("matrixStats",colQuantiles)
@@ -32,8 +38,9 @@ importFrom("plotrix", std.error)
 importFrom("plyr",rbind.fill)
 importFrom("readr", read_delim)
 importFrom("reshape2", melt)
-
-
+importFrom("seqPattern", motifScanHits)
+importFrom("seqPattern", motifScanScores)
+importFrom("seqPattern", getPatternOccurrenceList)
 
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
@@ -59,6 +66,7 @@ export(heatMatrix)
 export(heatMeta)
 export(intersectScoreMatrixList)
 export(multiHeatMatrix)
+exportMethods(patternMatrix)
 export(plotMeta)
 exportMethods(plotGeneAnnotation)
 exportMethods(plotTargetAnnotation)
