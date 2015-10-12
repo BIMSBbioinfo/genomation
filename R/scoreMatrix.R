@@ -59,18 +59,6 @@ galpTo2Ranges <- function(x)
   ans
 }
 
-.windows.range <- function(windows){
-  chrs <- unique(as.character(seqnames(windows)))
-  s<-c();e<-c()
-  for(i in 1:length(chrs)){
-    k <- windows[seqnames(windows)==chrs[i],]
-    s <- c(s, start(k)[1])
-    e <- c(e, end(k)[length(k)])
-  }
-  GRanges(chrs, IRanges(start=s, end=e), strand="*")
-}
-
-
 # ---------------------------------------------------------------------------- #
 # given a big bam path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
