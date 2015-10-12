@@ -12,11 +12,12 @@ readBed(file, track.line = FALSE, remove.unusual = FALSE,
 \item{file}{location of the file, a character string such as: "/home/user/my.bed"
             or the input itself as a string (containing at least one \\n).
             The file can end in \code{.gz}, \code{.bz2}, \code{.xz}, or \code{.zip}
-            and/or start with \code{http://} or \code{ftp://}. If the file is not compressed
-            it can also start with \code{https://} or \code{ftps://}.}
+            and/or start with \code{http://} or \code{ftp://}. If the file is not
+            compressed it can also start with \code{https://} or \code{ftps://}.}
 
-\item{track.line}{the number of track lines to skip, "auto" to detect them automatically
-                  or FALSE(default) if the bed file doesn't have track lines}
+\item{track.line}{the number of track lines to skip, "auto" to detect them
+                  automatically or FALSE(default) if the bed file doesn't
+                  have track lines}
 
 \item{remove.unusual}{if TRUE remove the chromosomes with unsual
 names, such as chrX_random (Default:FALSE)}
