@@ -12,7 +12,8 @@ getColors = function(n) {
 
 # ---------------------------------------------------------------------------- #
 # removes ranges that fell of the rle object
-# does not check for the correspondence of the chromosome names - always check before using this function
+# does not check for the correspondence of the chromosome names - always 
+# check before using this function
 constrainRanges = function(target, windows){
   
   checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
@@ -84,7 +85,8 @@ readBam = function(target, windows, rpm=FALSE,
     
     flag <- scanBamFlag(isPaired=TRUE, isProperPair=TRUE, 
                         isUnmappedQuery=FALSE, hasUnmappedMate=FALSE)
-    #reads that map into window which stretches from start of the first windows to end of the last window
+    # reads that map into window which stretches from start of the first window
+    # to end of the last window
     if(is.null(param)){
       param <- ScanBamParam(which=reduce(windows, ignore.strand=TRUE), flag=flag)
     }else{
@@ -196,8 +198,8 @@ readBigWig = function(target, windows=NULL, ...){
 #'                  if TRUE,and if 'target' is a GRanges object with 'weight.col'
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
-#'                   you can not have coverage all over the genome, such as CpG methylation
-#'                   values.
+#'                   you can not have coverage all over the genome, such as CpG 
+#'                   methylation values.
 #' @param type if target is a character vector of file paths, then type designates
 #'              the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion 
@@ -206,14 +208,17 @@ readBigWig = function(target, windows=NULL, ...){
 #'              based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
-#' @param bam.paired.end boolean indicating whether given BAM file contains paired-end reads (default:FALSE).
+#' @param bam.paired.end boolean indicating whether given BAM file contains 
+#'                       paired-end reads (default:FALSE).
 #'                       Paired-reads will be treated as fragments.
-#' @param stranded boolean which tells whether given BAM file is from a strand-specific protocol (default:TRUE). If FALSE then 
-#'                 strands of reads will be set up to "*".
+#' @param stranded boolean which tells whether given BAM file is from a strand-specific
+#'                 protocol (default:TRUE). If FALSE then strands of reads 
+#'                 will be set up to "*".
 #' @note
-#' We assume that a paired-end BAM file contains reads with unique ids and we remove both mates of reads if they are repeated.
-#' Due to the fact that \code{ScoreMatrix} uses the GenomicAlignments:readGAlignmentPairs function to read
-#' paired-end BAM files a duplication of reads occurs when mates of one pair map into two different windows.
+#' We assume that a paired-end BAM file contains reads with unique ids and we remove 
+#' both mates of reads if they are repeated. Due to the fact that \code{ScoreMatrix} 
+#' uses the GenomicAlignments:readGAlignmentPairs function to read paired-end BAM files
+#' a duplication of reads occurs when mates of one pair map into two different windows.
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
@@ -315,7 +320,8 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,GRanges,GRanges-method
 #' @rdname ScoreMatrix-methods
-#' @usage \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware, weight.col, is.noCovNA)
+#' @usage \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware,
+#'                                                 weight.col, is.noCovNA)
 setMethod("ScoreMatrix",signature("GRanges","GRanges"),
           function(target, windows, strand.aware, weight.col, is.noCovNA){
             
@@ -346,7 +352,8 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
-#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, type='', rpm=FALSE,
+#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, 
+#'                                                   type='', rpm=FALSE,
 #'                                                   unique=FALSE, extend=0, param=NULL, 
 #'                                                   bam.paired.end=FALSE, stranded=TRUE)
 setMethod("ScoreMatrix",signature("character","GRanges"),
