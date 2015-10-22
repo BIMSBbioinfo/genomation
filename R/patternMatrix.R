@@ -18,7 +18,7 @@
     # suppressWarnings is done because matchPWM function gives warnings 
     # if you there is "N" nucleotide within sequence (can be only [A,T,C,G])
     # It assigns weight 0 to them.
-    pwm.match <- suppressWarnings(matchPWM(pwm = pwm.corr, subject = seq, with.score=TRUE))
+    pwm.match <- suppressWarnings(matchPWM(pwm = pwm, subject = seq, with.score=TRUE))
     return(mcols(pwm.match)$score)
     
   }else{
@@ -311,7 +311,7 @@ setMethod("patternMatrix",
 setMethod("patternMatrix",
           signature(pattern = "matrix", windows = "DNAStringSet"),
           function(pattern, windows, min.score = 0.8, asPercentage=FALSE, cores=1){
-            
+                        
             if(!(length(unique(width(windows))) == 1)){
               stop("All sequences in the input DNAStringSet must have the same 
                    length!")

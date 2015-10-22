@@ -26,7 +26,6 @@ importMethodsFrom("rtracklayer", import)
 
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
 
-#importFrom("BSgenome", getSeq)
 importFrom("data.table",data.table)
 importFrom("data.table", rbindlist)
 importFrom("matrixStats",colMedians)
@@ -39,7 +38,6 @@ importFrom("plyr",rbind.fill)
 importFrom("readr", read_delim)
 importFrom("readr", locale)
 importFrom("reshape2", melt)
-importFrom("seqPattern", motifScanHits)
 importFrom("seqPattern", motifScanScores)
 importFrom("seqPattern", getPatternOccurrenceList)
 
