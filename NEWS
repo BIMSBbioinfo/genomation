@@ -1,3 +1,11 @@
+genomation 1.1.28
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  according to changes in behaviour of readr::read_delim() that e.g. converts "." to 0
+   readTableFast() was changed
+
 genomation 1.1.27
 --------------
 

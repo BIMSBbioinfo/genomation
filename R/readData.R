@@ -42,9 +42,12 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
     skip = detectUCSCheader(filename)
   }
   
-  tab30rows <- read_delim(file=filename, skip=skip,
-                          delim=sep, n_max = 30,
-                          col_names=header)
+  tab30rows <- read.table(file=filename, 
+                          sep=sep, 
+                          skip=skip,
+                          nrows=30,
+                          header=header,
+                          stringsAsFactors=FALSE)
   classes  <- sapply(tab30rows, class)
   cl <- paste(sapply(classes, function(x) substr(x, 0, 1)), collapse="")
   
@@ -52,11 +55,12 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
                    delim=sep, 
                    skip=skip,
                    col_names=header,
-                   col_types=cl)
+                   col_types=cl,
+                   locale=locale(decimal_mark = ",", grouping_mark = "_"))
   #changing default variables names from read_delim (X[0-9]+) to data.frame (V[0-9]+)
   colnames(df) <- gsub("^X(\\d+)$", "V\\1", colnames(df)) 
   return(as.data.frame(df))
-}  
+}   
 
 # ---------------------------------------------------------------------------- #
 #' Read a tabular file and convert it to GRanges. 
