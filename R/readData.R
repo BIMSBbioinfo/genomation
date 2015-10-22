@@ -1,4 +1,13 @@
 # ---------------------------------------------------------------------------- #
+
+read.zip <- function(file, ...) {
+  zipFileInfo <- unzip(file, list=TRUE)
+  if(nrow(zipFileInfo) > 1)
+    stop("More than one data file inside zip")
+  else
+    read.table(unz(file, as.character(zipFileInfo$Name)), ...)
+}
+
 compressedAndUrl2temp <- function(filename){ 
   if(grepl('^(http://|https://|ftp://|ftps://).*(.gz|.bz2|.xz|.zip)$',filename)){
     temp <- tempfile()
@@ -32,6 +41,7 @@ detectUCSCheader <- function(filename){
   return(skip)
 }
 
+
 # fast reading of big tables
 readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
   
@@ -42,14 +52,24 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
     skip = detectUCSCheader(filename)
   }
   
-  tab30rows <- read.table(file=filename, 
-                          sep=sep, 
-                          skip=skip,
-                          nrows=30,
-                          header=header,
-                          stringsAsFactors=FALSE)
+  if(grepl("^.*(.zip)[[:space:]]*$", filename)){
+	tab30rows <- read.zip(filename,
+			      sep=sep, 
+			      skip=skip,
+			      nrows=30,
+			      header=header,
+			      stringsAsFactors=FALSE)
+  }else{
+	tab30rows <- read.table(file=filename, 
+				sep=sep, 
+				skip=skip,
+				nrows=30,
+				header=header,
+				stringsAsFactors=FALSE)
+  }
   classes  <- sapply(tab30rows, class)
   cl <- paste(sapply(classes, function(x) substr(x, 0, 1)), collapse="")
+  
   
   df <- read_delim(file=filename, 
                    delim=sep, 

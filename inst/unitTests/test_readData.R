@@ -63,7 +63,8 @@ test_readGeneric = function()
   
   #9. test whether it can read a compressed file (.gz, .zip)
   tab.test3=system.file('unitTests/tab.test3', package='genomation')
-  
+  tab.test3.zip=system.file('unitTests/tab.test3.zip', package='genomation')
+
   tab.test3.gz <- paste(tab.test3, ".gz", sep="")
   gzf <- gzfile(tab.test3.gz, "w")
   write.table(read.table(tab.test3, header=TRUE), 
@@ -71,14 +72,11 @@ test_readGeneric = function()
               sep = "\t", row.names = FALSE)
   close(gzf)
   
-  #tab.test3.zip <- paste(tab.test3, ".zip", sep="")
-  #zip(tab.test3.zip, tab.test3)
-  
   r7.gz = readGeneric(tab.test3.gz, chr=5, start=3, end=4, strand=6, 
                       meta.col=c(score1=1, score2=2), header=TRUE)  
-  #r7.zip = readGeneric(tab.test3.zip, chr=5, start=3, end=4, strand=6, 
-  #                     meta.col=c(score1=1, score2=2), header=TRUE)
-  
+  r7.zip = readGeneric(tab.test3.zip, chr=5, start=3, end=4, strand=6, 
+                       meta.col=c(score1=1, score2=2), header=TRUE)        
+                       
   g7 =  GRanges(c('chr1','chr1'), 
                 IRanges(c(1,5), c(10,15)), 
                 strand=c('+','-'),
@@ -86,10 +84,9 @@ test_readGeneric = function()
                 score2=as.integer(c(20,25)))
   
   checkIdentical(g7, r7.gz)
-  #checkIdentical(g7, r7.zip)
+  checkIdentical(g7, r7.zip)
   
   if (file.exists(tab.test3.gz)) file.remove(tab.test3.gz)
-  #if (file.exists(tab.test3.zip)) file.remove(tab.test3.zip)
   
   #10. test a file with UCSC header
   tab.test4=system.file('unitTests/tab.test4', package='genomation')
