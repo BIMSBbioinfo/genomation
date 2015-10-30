@@ -11,7 +11,7 @@
 ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
   type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  bam.paired.end = FALSE, stranded = TRUE)
+  bam.paired.end = FALSE, library.size = NULL)
 
 \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
                                                    strand.aware)
@@ -23,7 +23,7 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
                                                      bin.op='mean',strand.aware, type,
                                                      rpm, unique, extend, param,
                                                      bam.paired.end=FALSE,
-                                                     stranded=TRUE)
+                                                     library.size=NULL)
 }
 \arguments{
 \item{target}{\code{RleList},  \code{GRanges}, BAM file or a bigWig file
@@ -62,7 +62,7 @@ if TRUE,and if 'target' is a GRanges object with 'weight.col'
 the type of the corresponding files (bam or bigWig)}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion reads.
-FALSE by default.}
+FALSE by default. See \code{library.size}.}
 
 \item{unique}{boolean which tells the function to remove duplicated reads
 based on chr, start, end and strand}
@@ -75,9 +75,11 @@ based on chr, start, end and strand}
 reads (default:FALSE). Paired-reads will be treated as
 fragments.}
 
-\item{stranded}{boolean which tells whether given BAM file is from a strand-specific
-                protocol (default:TRUE). If FALSE then strands of reads will
-                be set up to "*".}
+\item{library.size}{numeric indicating total number of mapped reads in a BAM file
+(\code{rpm} has to be set to TRUE).
+If is not given (default: NULL) then library size
+is calculated using the Rsamtools package functions:
+sum(countBam(BamFile(\code{target}))$records).}
 }
 \value{
 returns a \code{scoreMatrix} object

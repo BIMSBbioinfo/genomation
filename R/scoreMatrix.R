@@ -63,7 +63,8 @@ galpTo2Ranges <- function(x)
 # given a big bam path reads the big wig file into a RleList
 # to be used by ScoreMatrix:char,GRanges
 readBam = function(target, windows, rpm=FALSE,
-                   unique=FALSE, extend=0, param=NULL, paired.end=FALSE, stranded=TRUE, ...){
+                   unique=FALSE, extend=0, param=NULL, 
+                   paired.end=FALSE, library.size=NULL, ...){
   
   # check the ScanBamParam object
   if(!is.null(param) & class(param)!='ScanBamParam')
@@ -84,11 +85,6 @@ readBam = function(target, windows, rpm=FALSE,
     
     # remove rows that are duplicated when mates of pair map into two different windows
     alnp = alnp[!duplicated(names(alnp))]
-    
-    if(stranded){
-      # if first read is on - (resp. +) strand then return - (+) 
-      strand(alnp) = ifelse(start(first(alnp)) < start(last(alnp)), "+", "-") 
-    }
     alns <- granges(alnp)
     
   }else{
@@ -100,9 +96,6 @@ readBam = function(target, windows, rpm=FALSE,
     }
     alns <- granges(readGAlignments(target, param=param, use.names=TRUE))
   }
-  
-  if(!stranded)
-    strand(alns) = "*"
   
   if(unique)
     alns = unique(alns)
@@ -117,7 +110,11 @@ readBam = function(target, windows, rpm=FALSE,
   
   if(rpm){
     message('Normalizing to rpm ...')
-    total = 1e6/sum(countBam(BamFile(target))$records)
+    if(is.null(library.size)){
+      total = 1e6/sum(countBam(BamFile(target))$records)
+    }else{
+      total = 1e6/library.size
+    }
     covs = covs * total
   }
   
@@ -191,7 +188,7 @@ readBigWig = function(target, windows=NULL, ...){
 #' @param type if target is a character vector of file paths, then type designates
 #'              the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion 
-#'                    reads. FALSE by default.
+#'                    reads. FALSE by default. See \code{library.size}.
 #' @param unique boolean which tells the function to remove duplicated reads 
 #'              based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
@@ -199,14 +196,24 @@ readBigWig = function(target, windows=NULL, ...){
 #' @param bam.paired.end boolean indicating whether given BAM file contains 
 #'                       paired-end reads (default:FALSE).
 #'                       Paired-reads will be treated as fragments.
-#' @param stranded boolean which tells whether given BAM file is from a strand-specific
-#'                 protocol (default:TRUE). If FALSE then strands of reads 
-#'                 will be set up to "*".
+#' @param library.size numeric indicating total number of mapped reads in a BAM file
+#'                            (\code{rpm} has to be set to TRUE).
+#'                            If is not given (default: NULL) then library size 
+#'                            is calculated using the Rsamtools package functions:
+#'                            sum(countBam(BamFile(\code{target}))$records).
+#' 
 #' @note
 #' We assume that a paired-end BAM file contains reads with unique ids and we remove 
 #' both mates of reads if they are repeated. Due to the fact that \code{ScoreMatrix} 
 #' uses the GenomicAlignments:readGAlignmentPairs function to read paired-end BAM files
 #' a duplication of reads occurs when mates of one pair map into two different windows.
+#' 
+#' Strands of reads in a paired-end BAM are inferred depending on strand of 
+#' first alignment from the pair. This is a default setting in the 
+#' GenomicAlignments:readGAlignmentPairs function (see a strandMode argument). 
+#' This mode should be used when the paired-end data was generated using 
+#' one of the following stranded protocols: 
+#' Directional Illumina (Ligation), Standard SOLiD.
 #' 
 #' @return returns a \code{ScoreMatrix} object
 #' @seealso \code{\link{ScoreMatrixBin}}
@@ -246,7 +253,7 @@ setGeneric("ScoreMatrix",
                     extend=0,
                     param=NULL,
                     bam.paired.end=FALSE,
-                    stranded=TRUE) 
+                    library.size=NULL) 
              standardGeneric("ScoreMatrix") )
 
 
@@ -343,12 +350,13 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, 
 #'                                                   type='', rpm=FALSE,
 #'                                                   unique=FALSE, extend=0, param=NULL, 
-#'                                                   bam.paired.end=FALSE, stranded=TRUE)
+#'                                                   bam.paired.end=FALSE,
+#'                                                   library.size=NULL)
 setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows, strand.aware, type='', 
                    rpm=FALSE, unique=FALSE, extend=0, 
-                   param=NULL, bam.paired.end=FALSE, 
-                   stranded=TRUE){
+                   param=NULL, bam.paired.end=FALSE,
+                   library.size=NULL){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
@@ -356,7 +364,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             
             fm = c('bam','bigWig')
             if(!type %in% fm)
-              stop(paste(c('currently supported formats are', fm)))
+              stop(paste('currently supported formats are', paste(fm, collapse=", ")))
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
@@ -366,7 +374,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             if(type == 'bam')
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param, 
-                             paired.end=bam.paired.end, stranded=stranded)
+                             paired.end=bam.paired.end, library.size)
             if(type == 'bigWig')
               covs = readBigWig(target=target, windows=windows)            
             

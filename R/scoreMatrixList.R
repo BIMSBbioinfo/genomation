@@ -58,13 +58,19 @@
 #' @param type if \code{targets} is a character vector of file paths, then type 
 #'        designates the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
-#'            FALSE by default.
+#'            FALSE by default. See \code{library.size}.
 #' @param unique boolean which tells the function to remove duplicated reads 
 #'                       based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the features
 #'               ( i.e aligned reads) to total
 #'               length ofwidth+extend
 #' @param param ScanBamParam object  
+#' @param library.size a numeric vector of the same length as \code{targets} 
+#'                     indicating total number of mapped reads in BAM files (\code{targets}).
+#'                     If is not given (default: NULL) then library sizes for every target
+#'                     is calculated using the Rsamtools package functions:
+#'                     sum(countBam(BamFile(target))$records).
+#'                     \code{rpm} argument has to be set to TRUE.
 #' @param cores the number of cores to use (default: 1)
 #'
 #' @return returns a \code{ScoreMatrixList} object
@@ -90,7 +96,7 @@
 ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, weight.col=NULL, 
                            is.noCovNA=FALSE, type='', rpm=FALSE, unique=FALSE, 
-                           extend=0, param=NULL, cores=1){
+                           extend=0, param=NULL, library.size=NULL, cores=1){
   len = length(targets)
   if(len == 0L)
     stop('targets argument is empty')
@@ -134,7 +140,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
                                  strand.aware=strand.aware, weight.col=weight.col,
                                  is.noCovNA=is.noCovNA, type=type, rpm=rpm,
                                  unique=unique, extend=extend, param=param,
-                                 bin.num){
+                                 bin.num,library.size=library.size){
     
     message(paste("working on", names(targets)[i]))
     
@@ -148,7 +154,8 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
                   rpm=rpm,
                   unique=unique,
                   extend=extend,
-                  param=param)
+                  param=param,
+                  library.size=library.size[i])
     }else{
       if(is.null(bin.num))
         bin.num = 10
@@ -163,7 +170,8 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
                      rpm=rpm,
                      unique=unique,
                      extend=extend,
-                     param=param)
+                     param=param,
+                     library.size=library.size[i])
     }
   }    
   sml <- mclapply(1:length(targets), 
@@ -172,6 +180,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
                   windows=windows,strand.aware=strand.aware,
                   weight.col=weight.col,is.noCovNA=is.noCovNA,type=type,
                   rpm=rpm,unique=unique,extend=extend,param=param,bin.num,
+                  library.size=library.size,
                   mc.cores=cores)
   names(sml) = names
   return(new("ScoreMatrixList",sml))

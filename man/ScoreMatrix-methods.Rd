@@ -10,7 +10,7 @@
 \usage{
 ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
   is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
-  extend = 0, param = NULL, bam.paired.end = FALSE, stranded = TRUE)
+  extend = 0, param = NULL, bam.paired.end = FALSE, library.size = NULL)
 
 \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
 
@@ -20,7 +20,8 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
 \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware,
                                                   type='', rpm=FALSE,
                                                   unique=FALSE, extend=0, param=NULL,
-                                                  bam.paired.end=FALSE, stranded=TRUE)
+                                                  bam.paired.end=FALSE,
+                                                  library.size=NULL)
 }
 \arguments{
 \item{target}{\code{RleList} , \code{GRanges}, a BAM file or a BigWig
@@ -53,7 +54,7 @@ if TRUE,and if 'target' is a GRanges object with 'weight.col'
 the type of the corresponding files (bam or bigWig)}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion
-reads. FALSE by default.}
+reads. FALSE by default. See \code{library.size}.}
 
 \item{unique}{boolean which tells the function to remove duplicated reads
 based on chr, start, end and strand}
@@ -66,9 +67,11 @@ based on chr, start, end and strand}
 paired-end reads (default:FALSE).
 Paired-reads will be treated as fragments.}
 
-\item{stranded}{boolean which tells whether given BAM file is from a strand-specific
-protocol (default:TRUE). If FALSE then strands of reads
-will be set up to "*".}
+\item{library.size}{numeric indicating total number of mapped reads in a BAM file
+                           (\code{rpm} has to be set to TRUE).
+                           If is not given (default: NULL) then library size
+                           is calculated using the Rsamtools package functions:
+                           sum(countBam(BamFile(\code{target}))$records).}
 }
 \value{
 returns a \code{ScoreMatrix} object
@@ -89,6 +92,13 @@ We assume that a paired-end BAM file contains reads with unique ids and we remov
 both mates of reads if they are repeated. Due to the fact that \code{ScoreMatrix}
 uses the GenomicAlignments:readGAlignmentPairs function to read paired-end BAM files
 a duplication of reads occurs when mates of one pair map into two different windows.
+
+Strands of reads in a paired-end BAM are inferred depending on strand of
+first alignment from the pair. This is a default setting in the
+GenomicAlignments:readGAlignmentPairs function (see a strandMode argument).
+This mode should be used when the paired-end data was generated using
+one of the following stranded protocols:
+Directional Illumina (Ligation), Standard SOLiD.
 }
 \examples{
 # When target is GRanges
