@@ -162,7 +162,15 @@ test_ScoreMatrixList_Bam = function()
   #bam file, rpm=FALSE, unique=TRUE, extend=1
   s4 = ScoreMatrix(bam.file, windows, type='bam', unique=T, extend=1)
   m4 = ScoreMatrix(resize(unique(target), width=1), windows)
-  checkEquals(s4,m4)        
+  checkEquals(s4,m4)    
+  
+  # bam file, rpm=TRUE, library.size
+  s3 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE)
+  tot= sum(countBam(BamFile(bam.file))$records)
+  s4 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE,
+                       library.size=c(tot,tot))
+  checkEquals(s3, s4)
+  
 }
 
 # ---------------------------------------------------------------------------- #
