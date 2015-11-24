@@ -274,7 +274,7 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
               stop("Indicated 'target' file does not exist\n")
             }
             
-            m = c('bam','bigWig')
+            fm = c('bam','bigWig')
             if(!type %in% fm){
 	      if(type==""){
 		stop(paste0('set argument type to "bam" or "BigWig"\n'))
