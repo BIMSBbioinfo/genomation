@@ -274,9 +274,13 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
               stop("Indicated 'target' file does not exist\n")
             }
             
-            fm = c('bam','bigWig')
-            if(!type %in% fm)
-              stop(paste(c('currently supported formats are', paste(fm, collapse=", "))))
+            m = c('bam','bigWig')
+            if(!type %in% fm){
+	      if(type==""){
+		stop(paste0('set argument type to "bam" or "BigWig"\n'))
+	      }
+	      stop('currently supported formats are bam and BigWig\n')
+            }
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')

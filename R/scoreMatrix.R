@@ -363,9 +363,13 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             }
             
             fm = c('bam','bigWig')
-            if(!type %in% fm)
-              stop(paste(c('currently supported formats are', paste(fm, collapse=", "))))
-            
+            if(!type %in% fm){
+	      if(type==""){
+		stop(paste0('set argument type to "bam" or "BigWig"\n'))
+	      }
+	      stop('currently supported formats are bam and BigWig\n')
+            }
+              
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
             if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
