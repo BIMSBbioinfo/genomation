@@ -151,7 +151,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                            (\code{rpm} has to be set to TRUE).
 #'                            If is not given (default: NULL) then library size 
 #'                            is calculated using the Rsamtools package functions:
-#'                            sum(countBam(BamFile(\code{target}))$records).                                                
+#'                            sum(countBam(BamFile(\code{target}))$records).              
 #' @return returns a \code{scoreMatrix} object
 #' 
 #' @examples
@@ -262,7 +262,7 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
 #'                                                      bin.op='mean',strand.aware, type,
 #'                                                      rpm, unique, extend, param,
-#'                                                      bam.paired.end=FALSE,
+#'                                                      bam.paired.end=FALSE, 
 #'                                                      library.size=NULL)
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
@@ -275,8 +275,12 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             }
             
             fm = c('bam','bigWig')
-            if(!type %in% fm)
-              stop(paste('currently supported formats are', paste(fm, collapse=", ")))
+            if(!type %in% fm){
+	      if(type==""){
+		stop(paste0('set argument type to "bam" or "BigWig"\n'))
+	      }
+	      stop('currently supported formats are bam and BigWig\n')
+            }
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
