@@ -142,7 +142,7 @@ test_ScoreMatrix_character_GRanges = function()
   s7 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE,
                    rpm=TRUE)
   checkEquals(s6,s7)
-  
+
   # -----------------------------------------------#
   # errors
   # error upon not specifying the file
