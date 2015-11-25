@@ -51,7 +51,7 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
   }else if(skip=="auto"){
     skip = detectUCSCheader(filename)
   }
-  
+ 
   if(grepl("^.*(.zip)[[:space:]]*$", filename)){
 	tab30rows <- read.zip(filename,
 			      sep=sep, 
@@ -68,15 +68,25 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
 				stringsAsFactors=FALSE)
   }
   classes  <- sapply(tab30rows, class)
-  cl <- paste(sapply(classes, function(x) substr(x, 0, 1)), collapse="")
-  
+  cl=""
+  for(cla in classes){
+    if(cla=="character"){
+      cl=paste0(cl, "c")
+    }else if(cla=="numeric" | cla=="double"){
+      cl=paste0(cl, "d")
+    }else if(cla=="integer"){
+      cl=paste0(cl, "i")
+    }else if(cla=="logical")
+      cl=paste0(cl, "l")
+  }
   
   df <- read_delim(file=filename, 
                    delim=sep, 
                    skip=skip,
                    col_names=header,
                    col_types=cl,
-                   locale=locale(decimal_mark = ",", grouping_mark = "_"))
+                   locale=locale(grouping_mark = "_")
+                   )
   #changing default variables names from read_delim (X[0-9]+) to data.frame (V[0-9]+)
   colnames(df) <- gsub("^X(\\d+)$", "V\\1", colnames(df)) 
   return(as.data.frame(df))

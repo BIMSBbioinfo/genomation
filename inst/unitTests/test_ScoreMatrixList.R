@@ -170,7 +170,7 @@ test_ScoreMatrixList_Bam = function()
   s4 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE,
                        library.size=c(tot,tot))
   checkEquals(s3, s4)
-  
+        
 }
 
 # ---------------------------------------------------------------------------- #
