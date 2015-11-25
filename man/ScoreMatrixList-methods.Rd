@@ -8,7 +8,7 @@
 ScoreMatrixList(targets, windows = NULL, bin.num = NULL, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
   type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  cores = 1)
+  library.size = NULL, cores = 1)
 }
 \arguments{
 \item{targets}{can be a list of \code{scoreMatrix} objects, that are coerced
@@ -47,7 +47,7 @@ scores, GC content, etc.}
 designates the type of the corresponding files (bam or bigWig)}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion reads.
-FALSE by default.}
+FALSE by default. See \code{library.size}.}
 
 \item{unique}{boolean which tells the function to remove duplicated reads
 based on chr, start, end and strand}
@@ -57,6 +57,13 @@ based on chr, start, end and strand}
 length ofwidth+extend}
 
 \item{param}{ScanBamParam object}
+
+\item{library.size}{a numeric vector of the same length as \code{targets}
+indicating total number of mapped reads in BAM files (\code{targets}).
+If is not given (default: NULL) then library sizes for every target
+is calculated using the Rsamtools package functions:
+sum(countBam(BamFile(target))$records).
+\code{rpm} argument has to be set to TRUE.}
 
 \item{cores}{the number of cores to use (default: 1)}
 }

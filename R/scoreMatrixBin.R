@@ -139,18 +139,19 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @param type if target is a character vector of file paths, then type designates 
 #'               the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
-#'            FALSE by default.
+#'            FALSE by default. See \code{library.size}.
 #' @param unique boolean which tells the function to remove duplicated reads 
 #'               based on chr, start, end and strand
 #' @param extend numeric which tells the function to extend the reads to width=extend
 #' @param param ScanBamParam object 
 #' @param bam.paired.end boolean indicating whether given BAM file contains paired-end 
 #'                       reads (default:FALSE). Paired-reads will be treated as 
-#'                       fragments.
-#' @param stranded boolean which tells whether given BAM file is from a strand-specific
-#'                 protocol (default:TRUE). If FALSE then strands of reads will
-#'                 be set up to "*".               
-#'                                                 
+#'                       fragments.             
+#' @param library.size numeric indicating total number of mapped reads in a BAM file
+#'                            (\code{rpm} has to be set to TRUE).
+#'                            If is not given (default: NULL) then library size 
+#'                            is calculated using the Rsamtools package functions:
+#'                            sum(countBam(BamFile(\code{target}))$records).              
 #' @return returns a \code{scoreMatrix} object
 #' 
 #' @examples
@@ -184,7 +185,7 @@ setGeneric("ScoreMatrixBin",
                     extend=0,
                     param=NULL,
                     bam.paired.end=FALSE,
-                    stranded=TRUE
+                    library.size=NULL
                     ) 
              standardGeneric("ScoreMatrixBin") )
 
@@ -262,20 +263,24 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #'                                                      bin.op='mean',strand.aware, type,
 #'                                                      rpm, unique, extend, param,
 #'                                                      bam.paired.end=FALSE, 
-#'                                                      stranded=TRUE)
+#'                                                      library.size=NULL)
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
                    type, rpm, unique, extend, param,
-                   bam.paired.end=FALSE, stranded=TRUE){
+                   bam.paired.end=FALSE, library.size=NULL){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
             
             fm = c('bam','bigWig')
-            if(!type %in% fm)
-              stop(paste(c('currently supported formats are', fm)))
+            if(!type %in% fm){
+	      if(type==""){
+		stop(paste0('set argument type to "bam" or "BigWig"\n'))
+	      }
+	      stop('currently supported formats are bam and BigWig\n')
+            }
             
             if(type == 'bam' & !grepl('bam$',target))
               warning('you have set type="bam", but the designated file does not have .bam extension')
@@ -285,7 +290,7 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             if(type == 'bam')
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param,
-                             paired.end=bam.paired.end, stranded=stranded)
+                             paired.end=bam.paired.end, library.size=library.size)
             if(type == 'bigWig')
               covs = readBigWig(target=target, windows=windows)        
             

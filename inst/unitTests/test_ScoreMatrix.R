@@ -135,6 +135,13 @@ test_ScoreMatrix_character_GRanges = function()
   target.paired.end = target.paired.end[!duplicated(names(target.paired.end))]
   m5 = ScoreMatrix(target.paired.end, windows.paired.end, bam.paired.end=TRUE)
   checkEquals(s5,m5)
+  
+  # test library.size argument
+  s6 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE,
+                   rpm=TRUE, library.size=14)
+  s7 = ScoreMatrix(bam.pe.file, windows.paired.end, type='bam', bam.paired.end=TRUE,
+                   rpm=TRUE)
+  checkEquals(s6,s7)
 
   # -----------------------------------------------#
   # errors
