@@ -79,7 +79,8 @@ fragments.}
 (\code{rpm} has to be set to TRUE).
 If is not given (default: NULL) then library size
 is calculated using the Rsamtools package functions:
-sum(countBam(BamFile(\code{target}))$records).}
+param = ScanBamParam(flag = scanBamFlag(isUnmappedQuery=FALSE))
+sum(countBam(BamFile(\code{target}), param=param)$records).}
 }
 \value{
 returns a \code{scoreMatrix} object
