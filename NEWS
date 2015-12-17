@@ -1,3 +1,11 @@
+genomation 1.3.4
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+*  RPM is computed based on mapped reads only 
+   (before it was computed on all reads).
+
 genomation 1.3.3
 --------------
 
