@@ -2,14 +2,18 @@ Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
 Version: 1.3.4
-Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka [aut], Liz Ing-Simmons [ctb]	
-Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke <vedran.franke@gmail.com>
-Description: A package for summary and annotation of genomic intervals. Users can visualize and 
-	quantify genomic intervals over pre-defined functional regions, such as promoters, exons, 
-	introns, etc. The genomic intervals represent regions with a defined chromosome position,
-	which may be associated with a score, such as aligned reads from HT-seq experiments, TF binding sites, 
-	methylation scores, etc. The package can use any tabular genomic feature data as long as it has minimal 
-	information on the locations of genomic intervals. In addition, It can use BAM or BigWig files as input.
+Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka
+    [aut], Liz Ing-Simmons [ctb]
+Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
+    <vedran.franke@gmail.com>
+Description: A package for summary and annotation of genomic intervals. Users
+    can visualize and quantify genomic intervals over pre-defined functional
+    regions, such as promoters, exons, introns, etc. The genomic intervals
+    represent regions with a defined chromosome position, which may be associated
+    with a score, such as aligned reads from HT-seq experiments, TF binding sites,
+    methylation scores, etc. The package can use any tabular genomic feature data
+    as long as it has minimal information on the locations of genomic intervals. In
+    addition, It can use BAM or BigWig files as input.
 License: Artistic-2.0
 LazyLoad: yes
 VignetteBuilder: knitr
@@ -20,34 +24,34 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
-  Biostrings,
-  BSgenome,
-	data.table,
-  GenomeInfoDb,
-  GenomicRanges,
-  GenomicAlignments,
-  ggplot2,
-  gridBase,
-  impute,
-  IRanges,
-  matrixStats,
-  methods,
-  parallel,
-  plotrix,
-  plyr,
-  readr,
-  reshape2,
-  Rsamtools,
-  seqPattern,
-  rtracklayer,
+    Biostrings,
+    BSgenome,
+    data.table,
+    GenomeInfoDb,
+    GenomicRanges,
+    GenomicAlignments,
+    ggplot2,
+    gridBase,
+    impute,
+    IRanges,
+    matrixStats,
+    methods,
+    parallel,
+    plotrix,
+    plyr,
+    readr,
+    reshape2,
+    Rsamtools,
+    seqPattern,
+    rtracklayer,
+    RUnit
 Suggests:
     BiocGenerics,
     genomationData,
     knitr,
     knitrBootstrap,
     RColorBrewer,
-    rmarkdown,
-    RUnit  
+    rmarkdown
 Collate:
     'documentData.R'
     'genomation-classes.R'
@@ -63,3 +67,4 @@ Collate:
     'scoreMatrixList.R'
     'Ops.R'
     'test_genomation_package.R'
+RoxygenNote: 5.0.1
