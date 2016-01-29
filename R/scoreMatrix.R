@@ -20,7 +20,7 @@ constrainRanges = function(target, windows){
   checkClass(windows, 'GRanges')
   
   mcols(windows)$X_rank = 1:length(windows)
-  r.chr.len = elementLengths(target)
+  r.chr.len = elementNROWS(target)
   constraint = GRanges(seqnames=names(r.chr.len),
                        IRanges(start=rep(1,length(r.chr.len)),
                                end=as.numeric(r.chr.len)))
