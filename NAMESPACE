@@ -6,6 +6,7 @@ import(GenomicRanges)
 import(GenomicAlignments)
 import(IRanges)
 import(Rsamtools)
+import(S4Vectors)
 import(ggplot2)
 import(grid)
 import(gridBase)
@@ -24,7 +25,7 @@ importMethodsFrom("rtracklayer", import)
 #importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
 #           RangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,subsetByOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
 
-#importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementLengths,width,start,end)
+#importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementNROWS,width,start,end)
 
 importFrom("data.table",data.table)
 importFrom("data.table", rbindlist)
