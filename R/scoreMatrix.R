@@ -53,7 +53,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 galpTo2Ranges <- function(x)
 {
   gr1 <- granges(first(x))
-  gr2 <- granges(GenomicAlignments:::invertRleStrand(last(x)))
+  gr2 <- granges(invertStrand(last(x)))
   ans <- split(c(gr1, gr2), rep.int(seq_along(x), 2L))
   names(ans) <- names(x)
   ans
