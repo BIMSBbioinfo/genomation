@@ -10,7 +10,7 @@ opts_chunk$set(root.dir=getwd(),
                fig.path='Figures', 
                dev='png',
                fig.show='hold', 
-               cache=TRUE)
+               cache=FALSE)
 library(genomation)
 library(genomationData)
 library(GenomicRanges)

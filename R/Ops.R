@@ -1,5 +1,5 @@
-## Ops methods for ScoreMatrix and ScoreMatrixList classes
-
+# ---------------------------------------------------------------------------- #
+#' Arithmetic method for ScoreMatrix and ScoreMatrixList classes
 #' @title Ops method for a ScoreMatrix object. It enables to use arithmetic, indicator and logic operations on ScoreMatrix objects.
 #' @param e1 the \code{\link{ScoreMatrix}} object or numeric value
 #' @param e2 the \code{\link{ScoreMatrix}} object or numeric value
@@ -13,6 +13,8 @@ setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
           }
 )
 
+# ---------------------------------------------------------------------------- #
+#' Subset method for ScoreMatrix
 #' @title Subsetting method for a ScoreMatrix object.
 #' @param x the \code{\link{ScoreMatrix}} object
 #' @param i numeric value
@@ -35,6 +37,8 @@ setMethod("[", signature(x="ScoreMatrix", i = "ANY", j="ANY"),
           }
 )
 
+# ---------------------------------------------------------------------------- #
+#' Arithmetic methods for ScoreMatrixList
 #' @title Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
 #' @param e1 the \code{\link{ScoreMatrixList}} object 
 #' @param e2 the \code{\link{ScoreMatrixList}} object
@@ -52,13 +56,16 @@ setMethod("Ops", signature(e1="ScoreMatrixList", e2="ScoreMatrixList"),
             # object 'FUN' not found 
             smllist = list()
             for(i in 1:length(e1d)){
-              smllist[[i]] <- callGeneric(e1d[[i]], e2[[i]])
+              smllist[[i]] <- callGeneric(e1d[[i]], e2d[[i]])
             }
             sml = as(smllist, "ScoreMatrixList")
             validObject(sml)
             return(sml)
           }
 )
+
+# ---------------------------------------------------------------------------- #
+#' Arithmetic method for ScoreMatrixList
 #' @title Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
 #' @param e1 the \code{\link{ScoreMatrixList}} object 
 #' @param e2 the numeric value
@@ -76,6 +83,9 @@ setMethod("Ops", signature(e1="ScoreMatrixList", e2="numeric"),
             return(sml)
           }
 )
+
+# ---------------------------------------------------------------------------- #
+#' Arithmetic method for ScoreMatrixList
 #' @title Ops method for a ScoreMatrixList object. It enables to use arithmetic, indicator and logic operations on ScoreMatrixList objects.
 #' @param e1 the numeric value
 #' @param e2 the \code{\link{ScoreMatrixList}} object
@@ -93,6 +103,9 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
             return(sml)
           }
 )
+
+# ---------------------------------------------------------------------------- #
+#' Subset method for ScoreMatrixList
 #' @title Subsetting method for a ScoreMatrixList object
 #' @param x the \code{\link{ScoreMatrixList}} object
 #' @param i numeric value
