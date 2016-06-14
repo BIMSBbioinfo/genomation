@@ -111,8 +111,7 @@ readBam = function(target, windows, rpm=FALSE,
   if(rpm){
     message('Normalizing to rpm ...')
     if(is.null(library.size)){
-      param = ScanBamParam( flag = scanBamFlag(isUnmappedQuery=FALSE) )
-      total = 1e6/sum(countBam(BamFile(target), param=param)$records)
+      total = 1e6/sum(idxstats(normalizePath(target))[3])
     }else{
       total = 1e6/library.size
     }
