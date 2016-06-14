@@ -70,4 +70,5 @@ Collate:
     'scoreMatrixList.R'
     'Ops.R'
     'test_genomation_package.R'
+    'RcppExports.R'
 RoxygenNote: 5.0.1

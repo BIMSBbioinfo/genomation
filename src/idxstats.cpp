@@ -90,9 +90,17 @@ Rcpp::DataFrame bam_idxstats(std::string &bam_file)
                              _["unmapped"]=unmapped);
 }
 
-// [[Rcpp::export]]
 
-Rcpp::DataFrame idxstats(std::string bam_file)
+//' Fast retrieval of indexstats
+//' 
+//' Retrieve and print stats in the index file corresponding 
+//' to the input file. Before calling idxstats, the input BAM file
+//' must be indexed, e.g. via samtools index.
+//' 
+//' @param bam_file path to the indexed BAM file 
+//' @export 
+//[[Rcpp::export]]
+Rcpp::DataFrame idxStats(std::string bam_file)
 {
   return(bam_idxstats(bam_file));
 }

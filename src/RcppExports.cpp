@@ -5,14 +5,14 @@
 
 using namespace Rcpp;
 
-// idxstats
-Rcpp::DataFrame idxstats(std::string bam_file);
-RcppExport SEXP genomation_idxstats(SEXP bam_fileSEXP) {
+// idxStats
+Rcpp::DataFrame idxStats(std::string bam_file);
+RcppExport SEXP genomation_idxStats(SEXP bam_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type bam_file(bam_fileSEXP);
-    __result = Rcpp::wrap(idxstats(bam_file));
+    __result = Rcpp::wrap(idxStats(bam_file));
     return __result;
 END_RCPP
 }
