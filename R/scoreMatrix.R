@@ -111,7 +111,8 @@ readBam = function(target, windows, rpm=FALSE,
   if(rpm){
     message('Normalizing to rpm ...')
     if(is.null(library.size)){
-      total = 1e6/sum(countBam(BamFile(target))$records)
+      param = ScanBamParam( flag = scanBamFlag(isUnmappedQuery=FALSE) )
+      total = 1e6/sum(countBam(BamFile(target), param=param)$records)
     }else{
       total = 1e6/library.size
     }
@@ -200,7 +201,8 @@ readBigWig = function(target, windows=NULL, ...){
 #'                            (\code{rpm} has to be set to TRUE).
 #'                            If is not given (default: NULL) then library size 
 #'                            is calculated using the Rsamtools package functions:
-#'                            sum(countBam(BamFile(\code{target}))$records).
+#'                            param = ScanBamParam(flag = scanBamFlag(isUnmappedQuery=FALSE))
+#'                            sum(countBam(BamFile(\code{target}), param=param)$records).
 #' 
 #' @note
 #' We assume that a paired-end BAM file contains reads with unique ids and we remove 
