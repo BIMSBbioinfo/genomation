@@ -29,6 +29,10 @@ importMethodsFrom("rtracklayer", import)
 
 importFrom("data.table",data.table)
 importFrom("data.table", rbindlist)
+importFrom("graphics", "axis", "barplot", "image", "legend", "lines",
+             "par", "pie", "plot", "plot.new", "plot.window", "polygon",
+             "text")
+importFrom("grDevices", "colorRamp", "hcl", "rainbow", "rgb")
 importFrom("matrixStats",colMedians)
 importFrom("matrixStats",colSds)
 importFrom("matrixStats",colQuantiles)
@@ -41,6 +45,10 @@ importFrom("readr", locale)
 importFrom("reshape2", melt)
 importFrom("seqPattern", motifScanScores)
 importFrom("seqPattern", getPatternOccurrenceList)
+importFrom("stats", "dist", "hclust", "pnorm", "runif")
+importFrom("utils", "download.file", "read.table", "unzip")
+
+
 
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
