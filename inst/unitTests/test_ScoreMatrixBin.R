@@ -115,7 +115,7 @@ test_ScoreMatrixBin_character_GRanges = function()
   
   # bam file, rpm=TRUE
   s2 = ScoreMatrixBin(bam.file, windows,bin.num=2, type='bam', rpm=TRUE)
-  tot = 1e6/idxStats(normalizePath(bam.file))$mapped
+  tot = 1e6/sum(idxStats(normalizePath(bam.file))$mapped)
   m2 = m1*tot
   checkEquals(s2, m2)
   
