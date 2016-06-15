@@ -94,5 +94,6 @@ exportMethods(scaleScoreMatrixList)
 
 export(gffToGRanges)
 export(ScoreMatrixList)
+export(idxStats)
 
 useDynLib(genomation)
