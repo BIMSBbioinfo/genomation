@@ -166,7 +166,7 @@ test_ScoreMatrixList_Bam = function()
   
   # bam file, rpm=TRUE, library.size
   s3 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE)
-  tot = 1e6/idxStats(normalizePath(bam.files))$mapped
+  tot = sum(idxStats(normalizePath(bam.files))$mapped)
   s4 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE,
                        library.size=c(tot,tot))
   checkEquals(s3, s4)
