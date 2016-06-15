@@ -45,19 +45,19 @@ Rcpp::DataFrame bam_idxstats(std::string &bam_file)
     htsFile *fp = NULL ;
 
     if (bam_file == "" ) {
-        fprintf(stderr, "Usage: samtools idxstats <in.bam>\n");
+        Rcpp::stop ("No BAM file provided.\n");
         return 1;
     }
     fp = sam_open(bam_file.c_str(),"r");
-    if (fp == NULL) { fprintf(stderr, "[%s] fail to open BAM.\n", __func__); return 1; }
+    if (fp == NULL) { Rcpp::stop("[%s] fail to open BAM.\n", __func__); return 1; }
     header = sam_hdr_read(fp);
     if (header == NULL) {
-        fprintf(stderr, "[%s] failed to read header for '%s'.\n",
-                __func__, bam_file.c_str());
+        Rcpp::stop("[%s] failed to read header for '%s'.\n",
+                  __func__, bam_file.c_str());
         return 1;
     }
     idx = sam_index_load(fp, bam_file.c_str());
-    if (idx == NULL) { fprintf(stderr, "[%s] fail to load the index.\n", __func__); return 1; }
+    if (idx == NULL) { Rcpp::stop("[%s] fail to load the index.\n", __func__); return 1; }
 
     int i;
     Rcpp::CharacterVector name(header->n_targets);

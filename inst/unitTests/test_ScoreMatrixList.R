@@ -150,8 +150,7 @@ test_ScoreMatrixList_Bam = function()
           
   # bam file, rpm=TRUE
   s2 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE)
-  param = ScanBamParam( flag = scanBamFlag(isUnmappedQuery=FALSE) )
-  tot= 1e6/countBam(BamFile(bam.file), param=param)$records
+  tot = 1e6/idxStats(normalizePath(target))$mapped
   m2 = ScoreMatrixList(lapply(sml1, function(x)x*tot))
   checkEquals(s2, m2)
           
@@ -167,7 +166,7 @@ test_ScoreMatrixList_Bam = function()
   
   # bam file, rpm=TRUE, library.size
   s3 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE)
-  tot= sum(countBam(BamFile(bam.file), param=param)$records)
+  tot = 1e6/idxStats(normalizePath(target))$mapped
   s4 = ScoreMatrixList(bam.files, windows, type='bam', rpm=TRUE,
                        library.size=c(tot,tot))
   checkEquals(s3, s4)

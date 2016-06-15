@@ -113,8 +113,7 @@ test_ScoreMatrix_character_GRanges = function()
   
   # bam file, rpm=TRUE
   s2 = ScoreMatrix(bam.file, windows, type='bam', rpm=TRUE)
-  param = ScanBamParam( flag = scanBamFlag(isUnmappedQuery=FALSE) )
-  tot = 1e6/countBam(BamFile(bam.file), param=param)$records
+  tot = 1e6/idxStats(normalizePath(target))$mapped
   m2 = m1*tot
   checkEquals(s2, m2)
   
