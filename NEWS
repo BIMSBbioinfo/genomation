@@ -1,3 +1,16 @@
+genomation 1.5.2
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+
+* merged updates from BioC SVN repository:
+    - elementLengths was renamed -> elementNROWS in S4Vectors 
+      (new name reflects TRUE)
+    - use new invertStrand() instead of GenomicAlignments:::invertRleStrand() 
+    - bump version prior to creation of 3.3 branch, 
+      bump version of all packages that use knitr for vignettes,
+      and bump version to trigger package rebuilding now that purl()'ing issue.
+
 genomation 1.3.5
 --------------
 
