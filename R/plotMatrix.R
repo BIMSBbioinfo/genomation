@@ -97,7 +97,7 @@ heatMeta<-function(mat, centralTend="mean",
     if(centralTend=="mean"){
       metas=list(colMeans(mat,na.rm=TRUE))
     }else{
-      metas=list(apply(a, 2, function(x) median(x,na.rm=TRUE)))
+      metas=list(apply(mat, 2, function(x) median(x,na.rm=TRUE)))
     }
   }else if( class(mat)=="ScoreMatrixList" ){
     if(centralTend=="mean"){

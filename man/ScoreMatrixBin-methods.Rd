@@ -78,9 +78,8 @@ fragments.}
 \item{library.size}{numeric indicating total number of mapped reads in a BAM file
 (\code{rpm} has to be set to TRUE).
 If is not given (default: NULL) then library size 
-is calculated using the Rsamtools package functions:
-param = ScanBamParam(flag = scanBamFlag(isUnmappedQuery=FALSE))
-sum(countBam(BamFile(\code{target}), param=param)$records).}
+is calculated using a Samtools idxstats like function:
+sum(idxStats(target)$mapped).}
 }
 \value{
 returns a \code{scoreMatrix} object

@@ -16,6 +16,7 @@ Description: A package for summary and annotation of genomic intervals. Users
     addition, It can use BAM or BigWig files as input.
 License: Artistic-2.0
 LazyLoad: yes
+LinkingTo: Rcpp, Rhtslib
 VignetteBuilder: knitr
 biocViews: Annotation, Sequencing, Visualization, CpGIsland
 Encoding: latin1
@@ -45,6 +46,7 @@ Imports:
     Rsamtools,
     seqPattern,
     rtracklayer,
+    Rcpp,
     RUnit
 Suggests:
     BiocGenerics,
@@ -68,4 +70,5 @@ Collate:
     'scoreMatrixList.R'
     'Ops.R'
     'test_genomation_package.R'
+    'RcppExports.R'
 RoxygenNote: 5.0.1
