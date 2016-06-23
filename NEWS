@@ -1,3 +1,10 @@
+genomation 1.5.3
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+* Count bam faster in cpp. Fast retrieval of library size in c++ using
+  Samtools idxstats-like code implemented by alexg9010.
+
 genomation 1.5.2
 --------------
 
