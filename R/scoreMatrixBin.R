@@ -86,7 +86,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
   mat[is.nan(mat)]=NA
     rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=FALSE)[seq(1, length(mat), bin.num)]
     if(strand.aware){
-        orig.rows=which(as.character(strand(windows))== '-')
+        orig.rows=windows[strand(windows) == '-',]$X_rank
         mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
     }
     mat = mat[order(as.numeric(rownames(mat))),]

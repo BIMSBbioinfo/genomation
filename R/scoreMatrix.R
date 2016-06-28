@@ -301,7 +301,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             
             # if strand aware is TRUE, we need to flip the windows on the minus strand
             if(strand.aware == TRUE){
-              orig.rows=which(as.character(strand(windows)) == '-')
+              orig.rows=windows[strand(windows) == '-',]$X_rank
               mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
                                                          orig.rows, ncol(mat):1]
             }
