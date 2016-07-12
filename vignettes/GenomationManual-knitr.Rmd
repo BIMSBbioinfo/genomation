@@ -8,7 +8,7 @@
 library(knitr)
 opts_chunk$set(root.dir=getwd(),
                fig.path='Figures', 
-               dev='CairoPNG',
+               dev='png',
                fig.show='hold', 
                cache=FALSE)
 library(genomation)
