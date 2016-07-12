@@ -1,3 +1,11 @@
+genomation 1.5.5
+--------------
+
+IMPROVEMENTS AND BUG FIXES
+* fixed warnings related to "[" function of ScoreMatrix and ScoreMatrixList
+* fixed issue "scoreMatrixList drops names after subsetting #141"
+* fixed issue "heatMeta returns a list not a matrix #142"
+  
 genomation 1.5.4
 --------------
 

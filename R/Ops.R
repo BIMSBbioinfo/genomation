@@ -111,7 +111,7 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
 #' @aliases extract,ScoreMatrixList,ANY-method
 setMethod("[",signature(x="ScoreMatrixList", i = "ANY"), 
           function(x,i){
-            tmp=sml@.Data[i]
+            tmp=x@.Data[i]
             names(tmp)=names(x)[i]
             ScoreMatrixList( tmp)
           }
