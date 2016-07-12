@@ -13,14 +13,13 @@ setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
           }
 )
 
-# ---------------------------------------------------------------------------- #
-#' Subset method for ScoreMatrix
-#' @title Subsetting method for a ScoreMatrix object.
+#' Extract method for a ScoreMatrix object. 
+#' 
+# @aliases [,ScoreMatrix-method
 #' @param x the \code{\link{ScoreMatrix}} object
 #' @param i numeric value
 #' @param j numeric value
-#' @return \code{ScoreMatrix} 
-#' @aliases Ops,ScoreMatrix,ANY,ANY-method
+#' @aliases extract,ScoreMatrix,ANY-method
 setMethod("[", signature(x="ScoreMatrix", i = "ANY", j="ANY"),  
           function(x,i,j){
             if(missing(j)){
@@ -104,16 +103,17 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
           }
 )
 
-# ---------------------------------------------------------------------------- #
-#' Subset method for ScoreMatrixList
-#' @title Subsetting method for a ScoreMatrixList object
+#' Extract method for a ScoreMatrixList object. 
+#' 
+# @aliases [,ScoreMatrixList-method
 #' @param x the \code{\link{ScoreMatrixList}} object
 #' @param i numeric value
-#' @return \code{ScoreMatrixList}
-#' @aliases Ops,ScoreMatrixList,ANY-method
+#' @aliases extract,ScoreMatrixList,ANY-method
 setMethod("[",signature(x="ScoreMatrixList", i = "ANY"), 
           function(x,i){
-            ScoreMatrixList(x@.Data[i])
+            tmp=sml@.Data[i]
+            names(tmp)=names(x)[i]
+            ScoreMatrixList( tmp)
           }
 )
 
