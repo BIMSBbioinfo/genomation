@@ -61,9 +61,8 @@ length ofwidth+extend}
 \item{library.size}{a numeric vector of the same length as \code{targets} 
 indicating total number of mapped reads in BAM files (\code{targets}).
 If is not given (default: NULL) then library sizes for every target
-is calculated using the Rsamtools package functions:
-param = ScanBamParam( flag = scanBamFlag(isUnmappedQuery=FALSE) )
-sum(countBam(BamFile(target), param=param)$records).
+is calculated using a Samtools idxstats like function:
+sum(idxStats(target)$mapped).
 \code{rpm} argument has to be set to TRUE.}
 
 \item{cores}{the number of cores to use (default: 1)}

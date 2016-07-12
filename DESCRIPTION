@@ -1,9 +1,9 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 1.5.2
+Version: 1.5.4
 Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka
-    [aut], Liz Ing-Simmons [ctb]
+    [aut], Alexander Gosdschan [ctb], Liz Ing-Simmons [ctb]
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
     <vedran.franke@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users
@@ -16,6 +16,7 @@ Description: A package for summary and annotation of genomic intervals. Users
     addition, It can use BAM or BigWig files as input.
 License: Artistic-2.0
 LazyLoad: yes
+LinkingTo: Rcpp, Rhtslib
 VignetteBuilder: knitr
 biocViews: Annotation, Sequencing, Visualization, CpGIsland
 Encoding: latin1
@@ -45,6 +46,7 @@ Imports:
     Rsamtools,
     seqPattern,
     rtracklayer,
+    Rcpp,
     RUnit
 Suggests:
     BiocGenerics,
@@ -68,4 +70,5 @@ Collate:
     'scoreMatrixList.R'
     'Ops.R'
     'test_genomation_package.R'
+    'RcppExports.R'
 RoxygenNote: 5.0.1

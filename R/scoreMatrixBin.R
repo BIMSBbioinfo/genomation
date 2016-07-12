@@ -86,7 +86,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
   mat[is.nan(mat)]=NA
     rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=FALSE)[seq(1, length(mat), bin.num)]
     if(strand.aware){
-        orig.rows=which(as.character(strand(windows))== '-')
+        orig.rows=windows[strand(windows) == '-',]$X_rank
         mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
     }
     mat = mat[order(as.numeric(rownames(mat))),]
@@ -150,9 +150,9 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @param library.size numeric indicating total number of mapped reads in a BAM file
 #'                            (\code{rpm} has to be set to TRUE).
 #'                            If is not given (default: NULL) then library size 
-#'                            is calculated using the Rsamtools package functions:
-#'                            param = ScanBamParam(flag = scanBamFlag(isUnmappedQuery=FALSE))
-#'                            sum(countBam(BamFile(\code{target}), param=param)$records).              
+#'                            is calculated using a Samtools idxstats like function:
+#'                            sum(idxStats(target)$mapped).
+#'                                          
 #' @return returns a \code{scoreMatrix} object
 #' 
 #' @examples
