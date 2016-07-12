@@ -47,7 +47,7 @@ importFrom("seqPattern", motifScanScores)
 importFrom("seqPattern", getPatternOccurrenceList)
 importFrom("stats", "dist", "hclust", "pnorm", "runif")
 importFrom("utils", "download.file", "read.table", "unzip")
-
+importFrom("Rcpp", sourceCpp)
 
 
 exportClasses(AnnotationByFeature)
@@ -93,4 +93,6 @@ exportMethods(scaleScoreMatrixList)
 
 export(gffToGRanges)
 export(ScoreMatrixList)
+export(idxStats)
 
+useDynLib(genomation)
