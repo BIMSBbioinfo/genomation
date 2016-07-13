@@ -185,6 +185,7 @@ heatMeta<-function(mat, centralTend="mean",
   current.vpTree()         
   par(mar=marOrg)              
   
+  metas=do.call("rbind",metas) 
   invisible(metas)
 }
 
