@@ -1,12 +1,23 @@
+---
+title: "genomation: a toolkit for annotation and visualization of genomic data"
+date: "`r Sys.Date()`"
+output: 
+      html_document:
+        toc: true
+        toc_float: true
+        number_sections: true
+        toc_depth: 2
 
-<!--
-%% \VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{genomation}
--->
+      
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r setup2, include=FALSE, cache=FALSE, eval=TRUE}
 library(knitr)
-opts_chunk$set(root.dir=getwd(),
+opts_chunk$set(root.dir=getwd(),fig.align='center',
                fig.path='Figures', 
                dev='png',
                fig.show='hold', 
@@ -17,18 +28,20 @@ library(GenomicRanges)
 set.seed=10
 ```
 
-# `genomation`: a toolkit for annotation and visualization of genomic data
 
-## Introduction
------
 
-<img style="float: right;padding-left:9px" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/genomationFlowChart1.png", width=350/>
+# Introduction
+
+```{r,echo=FALSE,warnings=FALSE,out.width=500}
+
+knitr::include_graphics("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/genomationFlowChart1.png")
+```
 `genomation` is a  toolkit for annotation 
-and in bulk visualization of genomic features (scored or unscored)
+and in bulk visualization of genomic intervals (scored or unscored)
 over predefined regions.
-The genomic features which the package can handle can 
+The genomic intervals which the package can handle can 
 be anything with a minimal information of chromosome, start and end. 
-The features could have any length and most of the time they are 
+The intervals could have any length and most of the time they are 
 associated with a score. Typical examples of such data sets include aligned  
 reads from high-throughput sequencing (HTS) experiments, percent methylation 
 values for CpGs (or other cytosines), locations of transcription factor binding, 
@@ -37,17 +50,17 @@ and so on. On the other hand, throughout the vignette we use the phrase
 potential function which does not necessarily have a score 
 (examples: CpG islands, genes, enhancers, promoter, exons, etc. ). 
 These genomic annotations are usually the regions of interest, and distribution 
-of genomic features over/around the annotations are can make the way for 
+of genomic intervals over/around the annotations are can make the way for 
 biological interpretation of the data.
 The pipeline for computational knowledge extraction consists of three steps: 
 data filtering, integration of data from multiple sources or generation of 
 predictive models and biological interpretation of produced models, which leads 
 to novel hypotheses that can be tested in the wetlab.`genomation` aims
-to facilitate the integration of multiple sources of genomic features with 
+to facilitate the integration of multiple sources of genomic intervals with 
 genomic annotation or already published experimental results.
 
-## Access the data
------
+# Access the data
+
 
 High-throughput data which will be used to show the functonality of the 
 `genomation` are located in two places. The annotation and cap analysis
@@ -87,11 +100,9 @@ data(cpgi)
 
 list.files(system.file('extdata', package='genomation'))
 ```
-<div>
-</div>
 
-## Data input
------
+# Data input
+
 One of larger hindrances in computational genomics stems from the myriad of 
 formats that are used to store the data. Although some formats have been 
 selected as de facto standards for specific kind of biological data (e.g. BAM, VCF), 
@@ -99,7 +110,7 @@ almost all publications come with supplementary tables that do not have the
 same structure, but hold similar information. The tables usually have a tabular 
 format, contain the locationof elements in genomic coordinates and various 
 metadata colums. `genomation` contais functions to read genomic 
-features and genomic annotation provided they are in a tabular format. 
+intervals and genomic annotation provided they are in a tabular format. 
 These functions will read the data from flat files into GRanges or GRangesList 
 objects.
 
@@ -164,16 +175,15 @@ cpgi.flanks = readFeatureFlank(cpgi.file)
 head(cpgi.flanks$flanks)
 ```
 
-<div>
-</div>
-## Extraction and visualization of genomic data 
------
+
+# Extraction and visualization of genomic data 
+
 A standard step in a computational genomics experiment is visualization of 
 average enrichment over a certain predefined set of ranges, such as mean coverage
 of a certain histone modification around a transcription factor binding site,
 or visualization of histone positions around transcription start sites.
 
-### Extraction of data over genomic winows
+## Extraction of data over genomic winows
 
 *ScoreMatrix* and *ScoreMatrixBin* are functions used to extract 
 data over predefined windows.
@@ -242,9 +252,8 @@ If all of the windows have the same width *ScoreMatrixList* will use the
 *ScoreMatrix* function. That can be overridden by explicitly specifying the 
 *bin.num* argument, as we did in the example.
 
-<div>
-</div>
-### Visualization of multiple genomic experiments
+
+## Visualization of multiple genomic experiments
 
 There are 2 basic modes of visualization of enrichment over windows: either 
 as a heatmap, or as a histogram. *heatMatrix*, *plotMeta* and 
@@ -261,10 +270,12 @@ sm = ScoreMatrix(target=cage, windows=promoters)
 heatMatrix(sm, xcoords=c(-1000, 1000))
 plotMeta(sm, xcoords=c(-1000, 1000))
 ```
-<div>
-  <img src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix1-1.png", width=400>
-  <img src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix1-2.png", width=400>
-</div>
+
+```{r , echo=FALSE,out.width="300px",fig.align='default' }
+knitr::include_graphics(c("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix1-1.png",
+                          "https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix1-2.png"),dpi=30)
+```
+
 
 The *heatMatrix* function can also take a list of numeric vectors 
 designating row names, or a factor variable that represent our 
@@ -280,7 +291,10 @@ cpg.ind = which(countOverlaps(promoters, cpgi)>0)
 nocpg.ind = which(countOverlaps(promoters, cpgi)==0)
 heatMatrix(sm, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 ```
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix2-1.png", width=350></center>
+
+```{r , echo=FALSE,out.width="400px"}
+knitr::include_graphics("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrix2-1.png")
+```
 
 Because the enrichment in windows can have a high dynamic range, it is sometimes
 convenient to scale the matrix before plotting.
@@ -288,8 +302,10 @@ convenient to scale the matrix before plotting.
 sm.scaled = scaleScoreMatrix(sm)
 heatMatrix(sm.scaled, xcoords=c(-1000, 1000), group=list(CpGi=cpg.ind, noCpGi=nocpg.ind))
 ```
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrixScales-1.png", width=350></center>
 
+```{r , echo=FALSE,out.width="400px"}
+knitr::include_graphics("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/heatMatrixScales-1.png")
+```
 
 Several experiments can be plotted in a side by side fashion using a combination
 of ScoreMatrixList and multiHeatMatrix.
@@ -299,20 +315,27 @@ targets = list(cage=cage, cpgi=cpgi)
 sml = ScoreMatrixList(targets=targets, windows=promoters, bin.num=50, strand.aware=TRUE)
 multiHeatMatrix(sml, xcoords=c(-1000, 1000))
 ```
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix1-1.png", width=350></center>
+
+
+```{r , echo=FALSE,out.width="400px"}
+knitr::include_graphics("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix1-1.png")
+```
 
 We can put the clustering function clustfun to see whether there are any patterns present in the data.
 ```{r multiHeatMatrix2, eval=FALSE, tidy=TRUE, fig.width=4.5, fig.height=3, dpi=300}
 multiHeatMatrix(sml, xcoords=c(-1000, 1000), clustfun=function(x) kmeans(x, centers=2)$cluster)
 ```
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix2-1.png", width=350></center>
+
+
+```{r , echo=FALSE,out.width="400px"}
+knitr::include_graphics("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/multiHeatMatrix2-1.png")
+```
 
 More advance usage of the ScoreMatrix family of functions and their
 visualtization can be found in the specific use-cases at the end of the vignette.
 
-## Annotation of genomic features
------
-Searching for correlation between sets of genomic features is a standard exploratory
+# Annotation of genomic intervals
+Searching for correlation between sets of genomic intervals is a standard exploratory
 method in computational genomics. It is usually done by looking at the overlap between 
 2 or more sets of ranges and calculating various overlap statistics. 
 `genomation` contains two sets of functions for annotation of ranges:
@@ -320,7 +343,7 @@ the first one is used to facilitate the general annotation of any sets of ranges
 while the second one is used to annotate a given feature with gene structures (promoter, 
 exon, intron).
 
-### Annotation by generic features
+## Annotation by generic features
 
 Firstly, we will select the broadPeak files from the `genomatonData` package,
 and read in the peaks for the Ctcf transcription factor
@@ -352,9 +375,9 @@ The total number of elements in the target dataset, the percentage of target
 dataset that overlaps with the feature dataset. And the percentage of the feature
 elements that overlap the target.
 
-### Annotation of genomic features by gene structures
+## Annotation of genomic intervals by gene structures
 
-To find the distribution of our designated features around gene structures, 
+To find the distribution of our designated intervals around gene structures, 
 we will first read the transcript features from a file using the 
 *readTranscriptFeatures* function. *readTranscriptFeatures* reads
 a bed12 formatted file and parses the coordinates into a *GRangesList* containing
@@ -389,15 +412,21 @@ will use hierarhical clustering to order the heatmap.
 plotGeneAnnotation(annot.list)
 plotGeneAnnotation(annot.list, cluster=TRUE)
 ```
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotGeneAnnotation-1.png", width=350></center>
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotGeneAnnotation-2.png", width=350></center>
+ 
 
-## Use cases for `genomation` package
------
+```{r , echo=FALSE,out.width="300px",fig.align='default'}
+knitr::include_graphics(c("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotGeneAnnotation-1.png",
+                     "https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotGeneAnnotation-2.png"     
+                          ))
+```
+
+
+# Use cases for `genomation` package
+
 The `genomation` package provides generalizable functions for genomic data analysis
 and visualization. Below we will demonstrate the functionality on specific use cases
 
-### Visualization of ChiP sequencing data
+## Visualization of ChiP sequencing data
 
 We will visualize the binding profiles of 6 transcription factors around the 
 Ctcf binding sites. 
@@ -436,11 +465,11 @@ sampleInfo = read.table(system.file('extdata/SamplesInfo.txt',
 names(sml) = sampleInfo$sampleName[match(names(sml),sampleInfo$fileName)]
 multiHeatMatrix(sml, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
-<center>
-<img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/ctcfScoreMatrixList-1.png", width=350>
-<figcaption>Heatmap profile of unscaled coverage shows a slight colocalization of
-         Ctcf, Rad21 and Znf143. </figcaption>
-</center>
+
+```{r , echo=FALSE,out.width="350px",fig.cap="Heatmap profile of unscaled coverage shows a slight colocalization of Ctcf, Rad21 and Znf143."}
+knitr::include_graphics(c("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/ctcfScoreMatrixList-1.png"     
+                          ))
+```
 
 Because of the large range of signal values in chipseq peaks, the *heatmapProfile* 
 will not show the true extent of colocalization. To get around this, it is advisable
@@ -450,14 +479,15 @@ to independently scale the rows of each element in the ScoreMatrixList.
 sml.scaled = scaleScoreMatrixList(sml)
 multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
-<center>
-<img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotScaledProfile-1.png", width=350>
-<figcaption>Heatmap profile of scaled coverage shows much stronger colocalization 
-         of the transcription factors; nevertheless, it is evident that some of the CTCF 
-         peaks have a very weak enrichment.</figcaption>
-</center>
 
-### Combinatorial binding of transcription factors
+
+
+```{r , echo=FALSE,out.width="350px",fig.cap="Heatmap profile of scaled coverage shows much stronger colocalization   of the transcription factors; nevertheless, it is evident that some of the CTCF   peaks have a very weak enrichment"}
+knitr::include_graphics(c("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/plotScaledProfile-1.png"     
+                          ))
+```
+
+## Combinatorial binding of transcription factors
 
 In the first step we will read all peak files into a GRanges list. We will use 
 the SamplesInfo file from the `genomationData` to get he names of the 
@@ -507,7 +537,11 @@ Before doing that we will order the regions by their *class* argument.
   multiHeatMatrix(sml.scaled, xcoords=c(-500, 500), col=c('lightgray', 'blue'))
 ```
 
-<center><img align="midle" src="https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/visualizeFeatureComb-1.png", width=350></center>
+
+```{r , echo=FALSE,out.width="350px"}
+knitr::include_graphics(c("https://raw.githubusercontent.com/BIMSBbioinfo/genomation/master/vignettes/Figures/visualizeFeatureComb-1.png"     
+                          ))
+```
 
 The plot shows perfectly how misleading the peak calling process can be. 
 Although the plots show that CTFC, Rad21 and Znf143 have almost perfect 
@@ -528,4 +562,9 @@ cpgi <- ah[[names(cpgi_query)]]
 dnase_query <- query(ah, c("wgEncodeOpenChromDnase8988tPk.narrowPeak.gz", "UCSC", "hg19"))
 dnaseP <- ah[[names(dnase_query)]]
 sm = ScoreMatrixBin(target=dnaseP, windows=cpgi, strand.aware=FALSE)
+```
+
+# sessionInfo
+```{r }
+sessionInfo()
 ```

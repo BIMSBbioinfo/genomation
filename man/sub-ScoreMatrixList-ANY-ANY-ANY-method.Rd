@@ -2,9 +2,9 @@
 % Please edit documentation in R/Ops.R
 \docType{methods}
 \name{[,ScoreMatrixList,ANY,ANY,ANY-method}
-\alias{Ops,ScoreMatrixList,ANY-method}
 \alias{[,ScoreMatrixList,ANY,ANY,ANY-method}
-\title{Subsetting method for a ScoreMatrixList object}
+\alias{extract,ScoreMatrixList,ANY-method}
+\title{Extract method for a ScoreMatrixList object.}
 \usage{
 \S4method{[}{ScoreMatrixList,ANY,ANY,ANY}(x, i)
 }
@@ -13,10 +13,7 @@
 
 \item{i}{numeric value}
 }
-\value{
-\code{ScoreMatrixList}
-}
 \description{
-Subset method for ScoreMatrixList
+Extract method for a ScoreMatrixList object.
 }
 
