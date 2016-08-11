@@ -1280,7 +1280,8 @@ heatTargetAnnotation<-function(l, cluster=FALSE, col=c("white","blue"),
       axis.title.y = element_text(colour='white', face='bold')) 
   p = p + geom_tile(aes(fill = value)) +
     geom_text(aes(fill = m$value, label = round(m$value, 1))) +
-    scale_fill_gradient(low =col[1], high = col[2]) 
+    scale_fill_gradient(low =col[1], high = col[2]) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
   p
 }
 
