@@ -27,7 +27,7 @@ importMethodsFrom("rtracklayer", import)
 
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementNROWS,width,start,end)
 
-importFrom("data.table",data.table)
+importFrom("data.table",data.table,dcast)
 importFrom("data.table", rbindlist)
 importFrom("graphics", "axis", "barplot", "image", "legend", "lines",
              "par", "pie", "plot", "plot.new", "plot.window", "polygon",
@@ -57,6 +57,7 @@ exportClasses(ScoreMatrix)
 exportClasses(ScoreMatrixList)
 
 exportMethods(annotateWithFeature)
+exportMethods(annotateWithFeatures)
 exportMethods(annotateWithFeatureFlank)
 exportMethods(annotateWithGeneParts)
 exportMethods(binMatrix)
@@ -76,8 +77,9 @@ export(intersectScoreMatrixList)
 export(multiHeatMatrix)
 exportMethods(patternMatrix)
 export(plotMeta)
-exportMethods(plotGeneAnnotation)
-exportMethods(plotTargetAnnotation)
+export(plotGeneAnnotation)
+export(heatTargetAnnotation)
+export(plotTargetAnnotation)
 exportMethods(orderBy)
 exportMethods(randomizeFeature)
 export(readGeneric)

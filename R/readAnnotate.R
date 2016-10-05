@@ -760,6 +760,177 @@ setMethod("annotateWithFeature",
                     perc.of.OlapFeat= percOfOlapFeat)
 })
 
+
+
+#' Annotate given ranges with genomic features
+#' 
+#' The function annotates a target GRangesList or GRanges object as overlapping
+#' or not with 
+#' the elements of a named GRangesList. This is useful to annotate your regions
+#' of interest with genomic features with arbitrary categories such as repeat
+#' classes or families, or output from genome segmentation alogorithms such
+#' as chromHMM.
+#' 
+#'
+#' @param target GRanges or GRangesList object storing chromosome locations to be 
+#'        annotated (e.g. chipseq peaks)
+#' @param features a named GRangesList object containing GRanges objects different set
+#'        of features. The function calculates percent overlaps with and without
+#'        precendence at the same time. The order of objects in GRangesList
+#'        defines their precedence. If a range in \code{target} overlaps with
+#'        a more precedent range in an element of \code{features}, the other 
+#'        overlaps from other less precedent elments will be discarded. This is
+#'        useful for getting piecharts where percentages should add up to 100.
+#'        
+#' @param strand.aware	if set to TRUE, annotation features and target features will 
+#' be overlapped based on strand (def:FALSE)
+#' @param intersect.chr	logical value, whether to select only chromosomes 
+#'        that are common to feature and target. FALSE by default
+#' @return returns an \code{AnnotationByFeature} object or if target is 
+#'         a GRangesList, a list of \code{AnnotationByFeature} objects.
+#'      
+#' @export
+#'
+#' @examples
+#' library(GenomicRanges)
+#' data(cage)
+#' data(cpgi)
+#' cage$tpm=NULL
+#' gl = GRangesList(cage=cage, cpgi=cpgi)
+#' 
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' annot = annotateWithFeatures(gl, gene.parts, intersect.chr=TRUE)
+#' 
+#' @seealso 
+#' see  \code{\link{getMembers}}, 
+#'            \code{\link{heatTargetAnnotation}}, 
+#'            \code{\link{plotTargetAnnotation}}
+#' 
+#' 
+#' @docType methods
+#' @rdname annotateWithFeatures-methods
+setGeneric("annotateWithFeatures", 
+           function(target,features,strand.aware=FALSE, intersect.chr=FALSE)
+             standardGeneric("annotateWithFeatures") )
+
+#' @aliases annotateWithFeatures,GRanges,GRangesList-method
+#' @rdname annotateWithFeatures-methods
+setMethod("annotateWithFeatures", 
+          signature(target = "GRanges", features = "GRangesList"),
+          function(target, features, strand.aware, intersect.chr){
+            
+            if(intersect.chr){
+              message('intersecting chromosomes...')
+              chrs = intersect(unique(as.character(seqnames(target))), 
+                               unique(unlist(
+                                 lapply(features, 
+                                        function(x)as.character(seqnames(x))))))
+              
+              if(length(chrs) == 0)
+                stop('target and feature do not have intersecting chromosomes')
+              target=target[seqnames(target) %in% chrs]
+              features = endoapply(features, function(x)x[seqnames(x) %in% chrs])
+            }  
+            
+            
+            x=unlist(features)
+            
+            # get overlap matrix
+            overlaps <- as.matrix(GenomicRanges::findOverlaps(target  ,x,
+                                                              ignore.strand= !strand.aware ))
+            
+            # get a datable from overlaps and the annotation category names
+            dt=data.table(cbind(overlaps,annot=names(x)[overlaps[,2]]))
+            
+            # order dt by order of feature gategories in features GRangesList
+            dt=dt[order(match(dt$annot,names(features))),]
+            
+            # get the number of target ranges overlapping with feature categories
+            # and the number of features with target ranges
+            annot=queryHits=subjectHits=NULL
+            hits=dt[, list(targetHits=length(unique(queryHits )),
+                           featureHits=length(unique(subjectHits ))) ,by=annot]
+            
+            # get the number of target ranges overlapping with feature categories
+            # and the number of features with target ranges
+            # with precendence
+            
+            p.hits=dt[!duplicated(dt$queryHits), 
+                      list(targetHits=length(unique(queryHits )),
+                           featureHits=length(unique(subjectHits ))) ,by=annot]
+            
+            
+            # get a matrix of overlaps for targets
+            # this matrix shows overlap status for each element in target
+            dmemb=dcast(dt,queryHits~annot, 
+                        fun.aggregate=function(x) ifelse(length(x)>0,1,0),
+                        value.var="annot")
+            
+            # order dmemb by order of feature categories in features GRangesList
+            col.order=c(colnames(dmemb)[1],
+                        colnames(dmemb)[-1][order(match(colnames(dmemb)[-1],
+                                                        names(features)))])
+            dmemb=dmemb[,col.order,with=FALSE]
+            
+            # get an empty matrix of zeros, not all target ranges will be overlapping
+            # with an annotation
+            memb=matrix(0,nrow=length(target),ncol=ncol(dmemb)-1)
+            
+            # fill in the matrix of 0s with values from  the overlap matrix
+            memb[as.numeric(dmemb$queryHits),]=as.matrix(dmemb[,2:ncol(dmemb),
+                                                               with=FALSE])
+            colnames(memb)=colnames(dmemb)[-1]
+            
+            # calculate number of overlaps etc before hand
+            # populate stats for features that didn't overlap with the target
+            no.of.OlapFeat=num.annotation=num.precedence=rep(0,length(features))
+            
+            names(no.of.OlapFeat)=names(num.precedence)=names(num.annotation)=names(features)
+            
+            no.of.OlapFeat[match( hits$annot,names(features))]=hits$featureHits
+            num.annotation[match( hits$annot,names(features))]=hits$targetHits
+            num.precedence[match( p.hits$annot,names(features))]=p.hits$targetHits
+            
+            # output the object
+            new("AnnotationByFeature",
+                members         = memb,
+                annotation      = 100*num.annotation/length(target),
+                precedence        = 100*num.precedence/length(target),
+                num.annotation  =  num.annotation,
+                num.precedence    =  num.precedence,
+                no.of.OlapFeat  = no.of.OlapFeat ,
+                perc.of.OlapFeat= 100*no.of.OlapFeat/sapply(features,length) 
+            )
+          })
+
+
+
+#' @aliases annotateWithFeatures,GRangesList,GRangesList-method
+#' @rdname annotateWithFeatures-methods
+setMethod("annotateWithFeatures",
+          signature(target = "GRangesList", features= "GRangesList"),
+          function(target, features, strand.aware, intersect.chr){
+            
+            
+            l = list()
+            if(is.null(names(target)))
+              names(target) = 1:length(target)
+            for(i in 1:length(target)){
+              
+              name = names(target)[i]
+              message(paste('Working on:',name))
+              x = target[[name]]
+              l[[name]] = annotateWithFeatures(x, features, strand.aware, intersect.chr)
+              
+            }                          
+            return(l)
+          })
+
+
+
+
+
 # ACCESSOR FUNCTIONS
 #AnnotationByFeature
 #AnnotationByGeneParts
@@ -1009,75 +1180,109 @@ setMethod("plotTargetAnnotation",
 })
 
 
+
 # ---------------------------------------------------------------------------- #
-#' Plots the enrichment of each feature in the set in the gene annotation
+#' Plots the percentage of overlapping intervals with genomic features in a heatmap
 #'
-#' This function plots a heatmap of enrichment of each range in given gene feature
+#' This function plots a heatmap for percentage of overlapping ranges 
+#' with provided genomic features. The input object is a list of 
+#' \code{AnnotationByFeature} objects, which contains necessary information
+#' about overlap statistics to make the plot.
 #' 
-#' @param l a \code{list} of  \code{AnnotationByGeneParts} objects
+#' @param l a \code{list} of  \code{AnnotationByFeature} objects. This 
+#'        could be returned by \code{\link{annotateWithFeatures}} function.
 #' @param cluster TRUE/FALSE. If TRUE the heatmap is going to be clustered 
-#'        using hierarchical clustering
+#'        using a default hierarchical clustering scheme.
 #' @param col a vector of two colors that will be used for interpolation. 
 #'        The first color is the lowest one, the second is the highest one
+#' @param precedence TRUE|FALSE. If TRUE the precedence of annotation 
+#'        features will be used when plotting. The precedence will be taken
+#'        from the GRangesList used as annotation. The first GRanges will be 
+#'        treated as most important, and the second as the second most important
+#'        and so on. Such that, if an interval overlaps with features on that 
+#'        is part of the first GRanges object in the annotation GRangesList,
+#'        the rest of its overlaps with other elements in the annotation 
+#'        GRangesList will be ignored. This feature is important to have if 
+#'        the user desires that percentage of overlaps adds up to 100. This is
+#'        only possible when the annotation features are non-overlaping with
+#'        eachother or there is a hierarchy/precedence among them such as 
+#'        (with promoter>exon>intron precedence). In this case, anything that
+#'        overlaps with a promoter annotation will only be counted as promoter
+#'        even if it overlaps with exons or introns.
+#'    
+#'        
+#' @param plot If FALSE, does not plot the heatmap just returns the matrix
+#'        used to make the heatmap
+#' 
+#' 
+#' @return returns the matrix used to make the heatmap when plot FALSE, 
+#' otherwise returns ggplot2 object which can be modified further.
+#'          
 #' 
 #' @examples
 #' 
 #' library(GenomicRanges)
 #' data(cage)
 #' data(cpgi)
-#' 
-#' cage$tpm = NULL
+#' cage$tpm=NULL
 #' gl = GRangesList(cage=cage, cpgi=cpgi)
 #' 
 #' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
-#' annot = annotateWithGeneParts(gl, gene.parts, intersect.chr=TRUE)      
-#' \donttest{  
-#' plotGeneAnnotation(annot)
-#' }
-#' @return plots a heatmap of enrichment of target in each gene functional 
-#'         category
+#' annot = annotateWithFeatures(gl, gene.parts, intersect.chr=TRUE)
 #' 
+#'             
+#' \donttest{  
+#' heatTargetAnnotation(annot)
+#' }
+#' 
+#' @seealso 
+#' see  \code{\link{getMembers}}, 
+#'            \code{\link{annotateWithFeatures}} 
+#'          
+#'            
 #' @export
 #' @docType methods
-#' @rdname plotGeneAnnotation-methods
-setGeneric("plotGeneAnnotation", 
-                  function(l, 
-                           cluster=FALSE, 
-                           col=c('white','cornflowerblue'))
-                    standardGeneric("plotGeneAnnotation"))
-
-#' @rdname plotGeneAnnotation-methods
+#' @rdname heatTargetAnnotation-methods
+#' @aliases plotGeneAnnotation
 #' @docType methods
-#' @aliases plotGeneAnnotation,AnnotationByFeature-method
-setMethod("plotGeneAnnotation", 
-            signature(l="list"),
-            function(l, cluster, col){
-            
-                if(!all(unlist(lapply(l, class)) == "AnnotationByGeneParts"))
-                    stop("All elements of the input list need to be AnnotationByGeneParts-class")
-            
-                d = data.frame(do.call(rbind, lapply(l, function(x)x@precedence)))
-                d = data.frame('SampleName'=rownames(d), d)
-        
-                ind = 1:nrow(d)
-                if(cluster == TRUE){
-                    h = hclust(dist(d[,-1]))
-                    ind = h$order
-                }
+heatTargetAnnotation<-function(l, cluster=FALSE, col=c("white","blue"),
+                               precedence=FALSE,plot=TRUE){
+  
+  if(!all(unlist(lapply(l, class)) == "AnnotationByFeature"))
+    stop("All elements of the input list need to be AnnotationByFeature-class")
+  if(precedence){
+    d = data.frame(do.call(rbind, lapply(l, function(x)x@precedence)))
+  }else{
+    d = data.frame(do.call(rbind, lapply(l, function(x)x@annotation)))
+  }
+  
+  if(!plot){
+    return(as.matrix(d))    
+  }
+  d = data.frame('SampleName'=rownames(d), d)
+  
+  ind = 1:nrow(d)
+  if(cluster == TRUE){
+    h = hclust(dist(d[,-1]))
+    ind = h$order
+  }
+  
+  m = reshape2::melt(d, id.vars='SampleName')
+  colnames(m)[2] = 'Feature'
 
-                m = reshape2::melt(d, id.vars='SampleName')
-        colnames(m)[2] = 'Position'
-        
-                p = ggplot(m, aes(x=Position, y=SampleName, fill=value, colour="white")) +
-                  scale_fill_gradient(low =col[1], high = col[2]) +
-                     theme(
-              axis.title.x = element_text(colour='white'), 
-                          axis.text.x  = element_text(colour='black', face='bold'), 
-                          axis.text.y  = element_text(colour='black'), 
-                          axis.title.y = element_text(colour='white', face='bold')) +
-                      ylim(as.character(d$SampleName[ind]))
-                p = p + geom_tile(color='white')  
-        print(p)
-})
+  Feature=SampleName=value=NULL
+  p = ggplot(m, aes(x=Feature, y=SampleName, fill=value)) +
+    theme(
+      axis.title.x = element_text(colour='white'), 
+      axis.text.x  = element_text(colour='black', face='bold'), 
+      axis.text.y  = element_text(colour='black'), 
+      axis.title.y = element_text(colour='white', face='bold')) 
+  p = p + geom_tile(aes(fill = value)) +
+    geom_text(aes(fill = m$value, label = round(m$value, 1))) +
+    scale_fill_gradient(low =col[1], high = col[2]) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  p
+}
+
 
