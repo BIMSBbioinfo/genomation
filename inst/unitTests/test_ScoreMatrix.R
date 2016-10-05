@@ -245,35 +245,3 @@ test_scaleScoreMatrix = function()
   m3 = as(matrix(0,nrow=3,ncol=3),'ScoreMatrix')
   checkEquals(s3,m3, tolerance=1e-5)
 }
-
-
-# ---------------------------------------------------------------------------- #
-# test for ScoreMatrix function
-test_ScoreMatrixBin_RleList_GRangesList = function()
-{
-  # usage
-  # target RleList, windows GRangesList
-  
-  l = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
-  #chr1 111222333
-  #chr2 444555666
-  gr1 = GRanges(c('chr1', "chr1"), IRanges(c(1,5),c(4,8)), 
-                strand=c('*','*'))
-  gr2 = GRanges(c('chr2', "chr2", "chr2"), IRanges(c(1,15, 5),c(4,20,8)), 
-                strand=c('*','*', "*"))
-  grl = GRangesList(gr1, gr2)
-  names(grl) <- c("t1", "t2")
-
-  s6 = ScoreMatrixBin(l, grl, bin.num=2)
-  m6 = matrix(c(1,1.5,2,3,4,4.5,5,6), ncol=2, byrow=T)
-  checkEquals(s6, m6)
-  
-  # target = l
-  # windows = grl
-  # bin.num = 2
-  # bin.op = "mean"
-  # strand.aware = FALSE
-
-}
-
-        

@@ -165,3 +165,38 @@ test_that_ScoreMatrix_character_GRange_bigWig = function()
   m = as(m, 'ScoreMatrix')
   checkEquals(s, m)
 }
+
+
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_RleList_GRangesList = function()
+{
+  # usage
+  # target RleList, windows GRangesList
+
+  l = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
+  gr1 = GRanges(c('chr1', "chr1"), IRanges(c(1,5),c(4,8)),
+                strand=c('+','-'))
+  gr2 = GRanges(c('chr2', "chr2", "chr2"), IRanges(c(1,15, 5),c(4,20,8)),
+                strand=c('+','+', "-"))
+  grl = GRangesList(gr1, gr2)
+  names(grl) <- c("t1", "t2")
+
+  s6 = ScoreMatrixBin(l, grl, bin.num=2)
+  m6 = matrix(c(1,1.5,2,3,4,4.5,5,6), ncol=2, byrow=T)
+  checkEquals(s6, m6)
+  
+  #2. test for different bin.op
+  s7 = ScoreMatrixBin(l, grl, bin.num=2, bin.op = "min")
+  m7 = matrix(c(1,1,2,3,4,4,5,6), ncol=2, byrow=T)
+  checkEquals(s7, m7)
+  
+  s8 = ScoreMatrixBin(l, grl, bin.num=2, bin.op = "max")
+  m8 = matrix(c(1,2,2,3,4,5,5,6), ncol=2, byrow=T)
+  checkEquals(s8, m8)
+  
+  #3. test strand aware
+  m9 = matrix(c(1,1.5,3,2,4,4.5,6,5), ncol=2, byrow=T)
+  s9 = ScoreMatrixBin(l, grl, bin.num=2, strand.aware=T)
+  checkEquals(m9, s9)
+}

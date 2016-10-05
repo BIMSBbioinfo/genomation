@@ -35,9 +35,12 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
 \item{target}{\code{RleList},  \code{GRanges}, BAM file or a bigWig file 
 object to be overlapped with ranges in \code{windows}}
 
-\item{windows}{\code{GRanges} object that contains the windows of interest. 
-It could be promoters, CpG islands, exons, introns. However, 
-the sizes of windows does NOT have to be equal.}
+\item{windows}{\code{GRanges} of \code{GRangesList} object that contains
+the windows of interest. It could be promoters, CpG islands, 
+exons, introns as GRanges object or GrangesList object representing
+exons of each transcript. Exons must be ordered by ascending rank
+by their position in transcript. The sizes of windows 
+does NOT have to be equal.}
 
 \item{bin.num}{single \code{integer} value denoting how many bins there 
 should be for each window}

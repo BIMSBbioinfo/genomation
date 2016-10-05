@@ -111,9 +111,12 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'
 #' @param target  \code{RleList},  \code{GRanges}, BAM file or a bigWig file 
 #'               object to be overlapped with ranges in \code{windows}
-#' @param windows \code{GRanges} object that contains the windows of interest. 
-#'                It could be promoters, CpG islands, exons, introns. However, 
-#'                the sizes of windows does NOT have to be equal.
+#' @param windows \code{GRanges} of \code{GRangesList} object that contains
+#'                the windows of interest. It could be promoters, CpG islands, 
+#'                exons, introns as GRanges object or GrangesList object representing
+#'                exons of each transcript. Exons must be ordered by ascending rank
+#'                by their position in transcript. The sizes of windows 
+#'                does NOT have to be equal.
 #' @param bin.num single \code{integer} value denoting how many bins there 
 #'                should be for each window
 #' @param bin.op bin operation that is either one of the following strings: 
@@ -190,9 +193,6 @@ setGeneric("ScoreMatrixBin",
 
 
 # ---------------------------------------------------------------------------- #
-
-# TODO: check if exons within the same granges in grl are form the same chromosome
-# two exons from the same gene shouldne be on two different chromosomes
 
 #' @aliases ScoreMatrixBin,RleList,GRangesList-method
 #' @rdname ScoreMatrixBin-methods
