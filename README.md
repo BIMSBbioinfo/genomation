@@ -3,7 +3,7 @@
 Status [![Build Status](https://api.travis-ci.org/BIMSBbioinfo/genomation.svg?branch=master)](https://travis-ci.org/BIMSBbioinfo/genomation) [![codecov.io](https://codecov.io/github/BIMSBbioinfo/genomation/coverage.svg?branch=master)](https://codecov.io/github/BIMSBbioinfo/genomation?branch=master)    [![BioC_years](http://www.bioconductor.org/shields/years-in-bioc/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html) [![BioC_availability](http://www.bioconductor.org/shields/availability/release/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html)
 
 
-This package is a collection of functions for simplfiying common tasks in genomic feature
+This package is a collection of functions for simplfiying common tasks in genomic feature/interval
 analysis. It provides functions for reading BED and GFF files as GRanges objects, summarizing genomic features over predefined windows so users can make average enrichment of features over defined regions or produce heatmaps. It can also annotate given regions
 with other genomic features such as exons,introns and promoters.
 
