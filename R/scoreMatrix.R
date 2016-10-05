@@ -341,7 +341,6 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
               
             }
             
-            
             # call ScoreMatrix function
             ScoreMatrix(target.rle,windows,strand.aware)
           })
@@ -353,12 +352,13 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 #'                                                   type='', rpm=FALSE,
 #'                                                   unique=FALSE, extend=0, param=NULL, 
 #'                                                   bam.paired.end=FALSE,
-#'                                                   library.size=NULL)
+#'                                                   library.size=NULL,
+#'                                                   is.noCovNA=FALSE)
 setMethod("ScoreMatrix",signature("character","GRanges"),
           function(target,windows, strand.aware, type='', 
                    rpm=FALSE, unique=FALSE, extend=0, 
                    param=NULL, bam.paired.end=FALSE,
-                   library.size=NULL){
+                   library.size=NULL, is.noCovNA=FALSE){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
@@ -367,7 +367,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             fm = c('bam','bigWig')
             if(!type %in% fm){
 	      if(type==""){
-		stop(paste0('set argument type to "bam" or "BigWig"\n'))
+		stop(paste0('set argument type to "bam" or "bigWig"\n'))
 	      }
 	      stop('currently supported formats are bam and BigWig\n')
             }
@@ -377,15 +377,34 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
-            if(type == 'bam')
+            if(type == 'bam'){
+              
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param, 
                              paired.end=bam.paired.end, library.size)
-            if(type == 'bigWig')
-              covs = readBigWig(target=target, windows=windows)            
-            
-            #get coverage vectors
-            ScoreMatrix(covs,windows,strand.aware)
+              #get coverage vectors
+              ScoreMatrix(covs,windows,strand.aware)
+            }
+              
+            if(type == 'bigWig'){
+              if(is.noCovNA==FALSE){
+                
+                covs = readBigWig(target=target, windows=windows)
+                ScoreMatrix(covs,windows,strand.aware)
+                
+              }else{
+                
+                if(is.null(windows)){
+                  bw = import(target)
+                }else{
+                  bw = import(target, which=windows)
+                }
+                if(length(bw) == 0)
+                  stop('There are no ranges selected')
+                
+                ScoreMatrix(bw, windows, strand.aware, weight.col, is.noCovNA)
+              }
+            }           
           })
 
 
