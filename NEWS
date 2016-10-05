@@ -1,3 +1,15 @@
+genomation 1.5.6
+--------------
+NEW FUNCTIONS AND FEATURES
+* annotateWithFeatures() function added for a diversity of annotation operations
+  bases on genomic interval overlap. 
+* heatTargetAnnotation() returns a heatmap for percentage of genomic intervals
+  overlapping with annotation features. These functions are more general than
+  the old annotation functions and could be used in variety of settings.
+* plotGeneAnnotation() is depracated, use heatTargetAnnotation() instead. It 
+  does the same job and has more features.
+
+
 genomation 1.5.5
 --------------
 
@@ -367,4 +379,3 @@ genomation 0.2.1
 IMPROVEMENTS AND BUG FIXES
 
 * scoreMatrixBin should work now correctly with modRleList objects
-
