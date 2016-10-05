@@ -5,13 +5,19 @@
 \alias{ScoreMatrixBin}
 \alias{ScoreMatrixBin,GRanges,GRanges-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
+\alias{ScoreMatrixBin,RleList,GRangesList-method}
 \alias{ScoreMatrixBin,character,GRanges-method}
+\alias{ScoreMatrixBin,character,GRangesList-method}
 \title{Get bin score for bins on each window}
 \usage{
 ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
   type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
   bam.paired.end = FALSE, library.size = NULL)
+
+\\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,strand.aware)
+
+\\S4method{ScoreMatrixBin}{character,GRangesList}(target,windows,strand.aware)
 
 \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
                                                    strand.aware)
@@ -85,12 +91,12 @@ sum(idxStats(target)$mapped).}
 returns a \code{scoreMatrix} object
 }
 \description{
-The function firsts bins each window to equal number of bins, and calculates
-the a summary metrix for scores of each bin (currently, mean, max and min supported)
+The function first bins each window to equal number of bins, and calculates
+the a summary matrix for scores of each bin (currently, mean, max and min supported)
 A scoreMatrix object can be used to draw average profiles or heatmap of read coverage
-or wig track-like data. \code{windows} can be a predefined region such as CpG islands
-or gene bodies that are not necessarily equi-width. Each window will be chopped to 
-equal number of bins based on \code{bin.num} option.
+or wig track-like data. \code{windows} can be a predefined region such as CpG islands,
+gene bodies, transcripts or CDS (coding sequences) that are not necessarily equi-width. 
+Each window will be chopped to equal number of bins based on \code{bin.num} option.
 }
 \examples{
 data(cage)
