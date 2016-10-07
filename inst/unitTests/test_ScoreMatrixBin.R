@@ -166,7 +166,6 @@ test_that_ScoreMatrix_character_GRange_bigWig = function()
   checkEquals(s, m)
 }
 
-
 # # ---------------------------------------------------------------------------- #
 # test for ScoreMatrixBin function
 test_ScoreMatrixBin_RleList_GRangesList = function()
@@ -181,22 +180,24 @@ test_ScoreMatrixBin_RleList_GRangesList = function()
                 strand=c('+','+', "-"))
   grl = GRangesList(gr1, gr2)
   names(grl) <- c("t1", "t2")
-
+  
   s6 = ScoreMatrixBin(l, grl, bin.num=2)
   m6 = matrix(c(1,1.5,2,3,4,4.5,5,6), ncol=2, byrow=T)
-  checkEquals(s6, m6)
+  # first column is integer, second numeric of s6
+  # that's why checkEquals returns error
+  checkEqualsNumeric(s6, m6)
   
   #2. test for different bin.op
   s7 = ScoreMatrixBin(l, grl, bin.num=2, bin.op = "min")
   m7 = matrix(c(1,1,2,3,4,4,5,6), ncol=2, byrow=T)
-  checkEquals(s7, m7)
+  checkEqualsNumeric(s7, m7)
   
   s8 = ScoreMatrixBin(l, grl, bin.num=2, bin.op = "max")
   m8 = matrix(c(1,2,2,3,4,5,5,6), ncol=2, byrow=T)
-  checkEquals(s8, m8)
+  checkEqualsNumeric(s8, m8)
   
   #3. test strand aware
   m9 = matrix(c(1,1.5,3,2,4,4.5,6,5), ncol=2, byrow=T)
   s9 = ScoreMatrixBin(l, grl, bin.num=2, strand.aware=T)
-  checkEquals(m9, s9)
+  checkEqualsNumeric(m9, s9)
 }
