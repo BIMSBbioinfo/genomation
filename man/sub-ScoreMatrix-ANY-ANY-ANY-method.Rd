@@ -3,7 +3,7 @@
 \docType{methods}
 \name{[,ScoreMatrix,ANY,ANY,ANY-method}
 \alias{[,ScoreMatrix,ANY,ANY,ANY-method}
-\alias{extract,ScoreMatrix,ANY-method}
+\alias{[,ScoreMatrix-method}
 \title{Extract method for a ScoreMatrix object.}
 \usage{
 \S4method{[}{ScoreMatrix,ANY,ANY,ANY}(x, i, j)

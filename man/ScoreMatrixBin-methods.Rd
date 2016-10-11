@@ -15,9 +15,15 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
   bam.paired.end = FALSE, library.size = NULL)
 
-\\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,strand.aware)
+\\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,
+                                                        bin.num, bin.op,
+                                                        strand.aware)
 
-\\S4method{ScoreMatrixBin}{character,GRangesList}(target,windows,strand.aware)
+\\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
+                                                     bin.op='mean',strand.aware, type,
+                                                     rpm, unique, extend, param,
+                                                     bam.paired.end=FALSE, 
+                                                     library.size=NULL)
 
 \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
                                                    strand.aware)

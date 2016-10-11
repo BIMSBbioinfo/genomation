@@ -316,7 +316,11 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,character,GRangesList-method
 #' @rdname ScoreMatrixBin-methods
-#' @usage  \\S4method{ScoreMatrixBin}{character,GRangesList}(target,windows,strand.aware)
+#' @usage  \\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
+#'                                                      bin.op='mean',strand.aware, type,
+#'                                                      rpm, unique, extend, param,
+#'                                                      bam.paired.end=FALSE, 
+#'                                                      library.size=NULL)
 setMethod("ScoreMatrixBin",signature("character","GRangesList"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 

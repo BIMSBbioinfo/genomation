@@ -29,7 +29,7 @@ Imports:
     BSgenome,
     data.table,
     GenomeInfoDb,
-    GenomicRanges (>= 1.23.26), 
+    GenomicRanges (>= 1.23.26),
     GenomicAlignments,
     S4Vectors (>= 0.9.25),
     ggplot2,
@@ -72,4 +72,4 @@ Collate:
     'test_genomation_package.R'
     'RcppExports.R'
     'deprecated_defunct.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.0
