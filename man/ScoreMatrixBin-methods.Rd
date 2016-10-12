@@ -4,6 +4,7 @@
 \name{ScoreMatrixBin}
 \alias{ScoreMatrixBin}
 \alias{ScoreMatrixBin,GRanges,GRanges-method}
+\alias{ScoreMatrixBin,GRanges,GRangesList-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
 \alias{ScoreMatrixBin,RleList,GRangesList-method}
 \alias{ScoreMatrixBin,character,GRanges-method}
@@ -15,33 +16,40 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
   bam.paired.end = FALSE, library.size = NULL)
 
-\\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,
-                                                        bin.num, bin.op,
-                                                        strand.aware)
-
-\\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
-                                                     bin.op='mean',strand.aware, type,
-                                                     rpm, unique, extend, param,
-                                                     bam.paired.end=FALSE, 
-                                                     library.size=NULL)
-
 \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
                                                    strand.aware)
 
-\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,
-                                                   strand.aware,weight.col,is.noCovNA)
+\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,
+                                                   bin.num,bin.op,
+                                                   strand.aware,weight.col,
+                                                   is.noCovNA)
 
 \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
                                                      bin.op='mean',strand.aware, type,
                                                      rpm, unique, extend, param,
                                                      bam.paired.end=FALSE, 
                                                      library.size=NULL)
+
+\\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,
+                                                        bin.num, bin.op,
+                                                        strand.aware)
+
+\\S4method{ScoreMatrixBin}{GRanges,GRangesList}(target,windows,
+                                                   bin.num,bin.op,
+                                                   strand.aware,weight.col,
+                                                   is.noCovNA)
+
+\\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
+                                                     bin.op='mean',strand.aware, type,
+                                                     rpm, unique, extend, param,
+                                                     bam.paired.end=FALSE, 
+                                                     library.size=NULL)
 }
 \arguments{
-\item{target}{\code{RleList},  \code{GRanges}, BAM file or a bigWig file 
+\item{target}{\code{RleList}, \code{GRanges}, a BAM file or a bigWig file 
 object to be overlapped with ranges in \code{windows}}
 
-\item{windows}{\code{GRanges} of \code{GRangesList} object that contains
+\item{windows}{\code{GRanges} or \code{GRangesList} object that contains
 the windows of interest. It could be promoters, CpG islands, 
 exons, introns as GRanges object or GrangesList object representing
 exons of each transcript. Exons must be ordered by ascending rank
@@ -61,7 +69,7 @@ If the strand of a window is -, the values of the bins
 for that window will be reversed}
 
 \item{weight.col}{if the object is \code{GRanges} object a numeric column
- in meta data part can be used as weights. This is particularly
+in meta data part can be used as weights. This is particularly
 useful when genomic regions have scores other than their
 coverage values, such as percent methylation, conservation
 scores, GC content, etc.}
@@ -123,6 +131,15 @@ myMat2=ScoreMatrixBin(target=cage,
 \donttest{
 plot(colMeans(myMat2,na.rm=TRUE),type="l")
 }
+
+# Compute transcript coverage of a set of exons.
+library(GenomicRanges)
+library(GenomicFeatures)
+target.rle = coverage(cage)
+gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
+txdb=makeTxDbFromGFF(gff.file)
+transcripts = exonsBy(txdb)
+sm = ScoreMatrixBin(target=target.rle, windows=transcripts[1:100], bin.num=50)
 }
 \seealso{
 \code{\link{ScoreMatrix}}

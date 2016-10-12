@@ -49,7 +49,7 @@ getViewsBin = function(target, windows, bin.num){
   
   # get views on your windows
   my.vList = Views(target[chrs], win.list[chrs] )
-  my.vList = lapply(chrs, 
+  my.vList = lapply(chrs,
                     function(x){
                       v = my.vList[[x]]
                       names(v) = IRanges::values(subWins)$X_rank[as.character(seqnames(subWins)) == x]
@@ -57,7 +57,6 @@ getViewsBin = function(target, windows, bin.num){
   names(my.vList) = chrs
   return(my.vList)
 }
-
 
 # ---------------------------------------------------------------------------- #
 # applies the summary function for the views to bin the objects - for standard Rle and returns a matrix object
@@ -94,7 +93,6 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
   
 }
 
-
 #######################################
 # S4 functions
 #######################################
@@ -109,9 +107,9 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' gene bodies, transcripts or CDS (coding sequences) that are not necessarily equi-width. 
 #' Each window will be chopped to equal number of bins based on \code{bin.num} option.
 #'
-#' @param target  \code{RleList},  \code{GRanges}, BAM file or a bigWig file 
-#'               object to be overlapped with ranges in \code{windows}
-#' @param windows \code{GRanges} of \code{GRangesList} object that contains
+#' @param target  \code{RleList}, \code{GRanges}, a BAM file or a bigWig file 
+#'                object to be overlapped with ranges in \code{windows}
+#' @param windows \code{GRanges} or \code{GRangesList} object that contains
 #'                the windows of interest. It could be promoters, CpG islands, 
 #'                exons, introns as GRanges object or GrangesList object representing
 #'                exons of each transcript. Exons must be ordered by ascending rank
@@ -120,14 +118,14 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @param bin.num single \code{integer} value denoting how many bins there 
 #'                should be for each window
 #' @param bin.op bin operation that is either one of the following strings: 
-#'              "max","min","mean". The operation is applied on the 
-#'              values in the bin. Defaults to "mean"
+#'                "max","min","mean". The operation is applied on the 
+#'                values in the bin. Defaults to "mean"
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will 
 #'                     be taken into account in the resulting \code{scoreMatrix}. 
 #'                     If the strand of a window is -, the values of the bins 
 #'                     for that window will be reversed
 #' @param weight.col if the object is \code{GRanges} object a numeric column
-#'                 in meta data part can be used as weights. This is particularly
+#'                in meta data part can be used as weights. This is particularly
 #'                useful when genomic regions have scores other than their
 #'                coverage values, such as percent methylation, conservation
 #'                scores, GC content, etc. 
@@ -172,6 +170,15 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' \donttest{
 #' plot(colMeans(myMat2,na.rm=TRUE),type="l")
 #' }
+#' 
+#' # Compute transcript coverage of a set of exons.
+#' library(GenomicRanges)
+#' library(GenomicFeatures)
+#' target.rle = coverage(cage)
+#' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
+#' txdb=makeTxDbFromGFF(gff.file)
+#' transcripts = exonsBy(txdb)
+#' sm = ScoreMatrixBin(target=target.rle, windows=transcripts[1:100], bin.num=50)
 #' @seealso \code{\link{ScoreMatrix}}
 #' @docType methods
 #' @rdname ScoreMatrixBin-methods           
@@ -190,174 +197,6 @@ setGeneric("ScoreMatrixBin",
                     library.size=NULL
            ) 
            standardGeneric("ScoreMatrixBin") )
-
-
-# ---------------------------------------------------------------------------- #
-
-#' @aliases ScoreMatrixBin,RleList,GRangesList-method
-#' @rdname ScoreMatrixBin-methods
-#' @usage  \\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,
-#'                                                         bin.num, bin.op,
-#'                                                         strand.aware)
-setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
-          function(target, windows, bin.num, bin.op, strand.aware){
-            
-            # input: RleList target, GRangesList windows (transcripts with exons)
-            seqinfo(target) <- merge(seqinfo(target), seqinfo(windows))
-            if (!isTRUEorFALSE(strand.aware))
-              stop("'ignore.strand' must be TRUE or FALSE")
-            
-            if( length(names(windows)) != length(unique(names(windows))) )
-              stop("Windows don't have unique names")
-            
-            # Remove windows that fall of the chromosomes
-            # Window ids are in values(windows)$X_rank 
-            wind.nams = names(windows)
-            wind.eltNROWS = elementNROWS(windows)
-            
-            unlisted <- unlist(windows)
-            extra.col = rep(wind.nams, wind.eltNROWS)
-            unlisted$transcript.name <- extra.col
-            
-            ex = genomation:::constrainRanges(target, 
-                                              unlisted )
-            
-            # Checks whether some windows are shorter than the wanted window size
-            wi = IRanges::width(ex) < bin.num
-            if(any(wi)){
-              ex = ex[-which(wi)]
-              if(length(ex) == 0)
-                stop('all supplied windows have width < number of bins')
-              warning(paste0("supplied GRangesList object contains ",sum(wi),
-                             " ranges of width < number of bins"))
-            }
-            
-            # After removing windows out of chrs and shorter
-            # than window size reconstruct GRangesList
-            # without them
-            order.transcripts = unique(ex$transcript.name)
-            tbl = table(ex$transcript.name)
-            tbl.ord = tbl[ order(match(names(tbl),order.transcripts)) ]
-            n.elements.ingrl = as.numeric(tbl.ord) 
-            names.elements.ingrl = names(tbl.ord)
-            
-            windows.new = relist(
-              ex, 
-              # PartitioningByWidth indicates only structure of
-              # new GRangesList after removing windows out of chrs
-              # content (start, end, strand) doesnt matter for 
-              # the relist function
-              PartitioningByWidth( n.elements.ingrl )
-            )
-            names(windows.new) <- names.elements.ingrl
-            
-            if(length(windows.new) < length(windows)){
-              warning(paste0( length(windows)-length(windows.new), 
-                              " GRanges objects were removed which ",
-                              "contain all windows\n",
-                              "that fall of chromosomes or ",
-                              "windows were shorter than wanted window size."))
-            }
-            
-            ## Copied from GenomicFeatures:coverageByTranscript
-            # take only unique exons
-            ## We could simply do 'uex <- unique(ex)' here but we're going to need
-            ## 'sm' and 'is_unique' later to compute the "reverse index" so we compute
-            ## them now and use them to extract the unique exons. That way we hash
-            ## 'ex' only once (the expensive operation).
-            sm <- selfmatch(ex)  # uses a hash table internally
-            is_unique <- sm == seq_along(sm)
-            uex2ex <- which(is_unique)  # index of unique exons
-            uex <- ex[uex2ex]  # unique exons
-            
-            ## 2) Compute coverage for each unique exon ('uex_cvg').
-            # coverage for every window regardless from which transcript they come from
-            cvg <- target
-            uex_cvg <- cvg[uex]  # parallel to 'uex'
-            
-            # This step is not needed because
-            # they are already reverted by genomation in summarizeViewsRle function
-            ## 3) Flip coverage for exons on minus strand.
-            ## It feels like this is not as fast as it could be (the bottleneck being
-            ## subsetting an Rle object which needs to be revisited at some point).
-            #uex_cvg <- revElements(uex_cvg, strand(uex) == "-") 
-            
-            ## 4) Compute coverage by original exon ('ex_cvg').
-            ex2uex <- (seq_along(sm) - cumsum(!is_unique))[sm]  # reverse index
-            stopifnot(identical(ex2uex[uex2ex], seq_along(uex2ex)))  # sanity
-            stopifnot(identical(ex2uex[sm], ex2uex))  # sanity
-            stopifnot(all(uex[ex2uex] == ex))  # sanity
-            ex_cvg <- uex_cvg[ex2uex]  # parallel go 'ex'
-            
-            ## 5) Compute coverage of each transcript by concatenating coverage of its
-            ##    exons.
-            ans <- IRanges:::regroupBySupergroup(ex_cvg, windows.new)
-            mcols(ans) <- mcols(windows.new) 
-            #names(ans) <- names(windows) # if not mcols then names works.
-            
-            # gets the view list
-            rlist = lapply(1:length(windows.new),
-                            function(i){
-                              # I assume that all exons of a transcript 
-                              # are on the same chromosome
-                              windows.i = keepSeqlevels(windows.new[[i]],
-                                                        as.character(unique(
-                                                          seqnames(windows.new[[i]]))
-                                                        ))
-                              seqlevels(windows.i) <- unique(windows.i$transcript.name)
-                              my.vList.i = getViewsBin(ans, windows.i, bin.num)
-                              summarizeViewsRle(my.vList.i, windows.i,
-                                                bin.op, bin.num, strand.aware)
-                            })
-            mat = do.call(rbind, rlist)
-            new("ScoreMatrix",mat)
-          })
-
-# ---------------------------------------------------------------------------- #
-#' @aliases ScoreMatrixBin,character,GRangesList-method
-#' @rdname ScoreMatrixBin-methods
-#' @usage  \\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
-#'                                                      bin.op='mean',strand.aware, type,
-#'                                                      rpm, unique, extend, param,
-#'                                                      bam.paired.end=FALSE, 
-#'                                                      library.size=NULL)
-setMethod("ScoreMatrixBin",signature("character","GRangesList"),
-          function(target, windows, bin.num=10, 
-                   bin.op='mean', strand.aware, 
-                   type, rpm, unique, extend, param,
-                   bam.paired.end=FALSE, library.size=NULL){
-            
-            if(!file.exists(target)){
-              stop("Indicated 'target' file does not exist\n")
-            }
-            
-            fmbw = c('bigWig','bw','bigwig','BigWig')
-            if(!type %in% c('bam', fmbw)){
-              if(type==""){
-                stop(paste0('set argument type to "bam" or "bigWig"\n'))
-              }
-              stop('currently supported formats are bam and bigWig\n')
-            }
-            
-            if(type == 'bam' & !grepl('bam$',target))
-              warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$|BigWig$',target))
-              warning('you have set type="bigWig", but the designated file does not have .bw extension')
-            
-            if(type == 'bam')
-              covs = readBam(target, windows, rpm=rpm, unique=unique, 
-                             extend=extend, param=param,
-                             paired.end=bam.paired.end, library.size=library.size)
-            if(type %in% fmbw)
-              covs = readBigWig(target=target, windows=windows)        
-            
-            # get coverage vectors
-            ScoreMatrixBin(covs,
-                           windows,
-                           bin.num=bin.num,
-                           bin.op=bin.op,
-                           strand.aware=strand.aware)
-          })
 
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrixBin,RleList,GRanges-method
@@ -391,10 +230,13 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases  ScoreMatrixBin,GRanges,GRanges-method
 #' @rdname ScoreMatrixBin-methods
-#' @usage \\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,
-#'                                                    strand.aware,weight.col,is.noCovNA)
+#' @usage \\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,
+#'                                                    bin.num,bin.op,
+#'                                                    strand.aware,weight.col,
+#'                                                    is.noCovNA)
 setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
-          function(target,windows,bin.num,bin.op,strand.aware,weight.col,is.noCovNA){
+          function(target,windows,bin.num,bin.op,
+                   strand.aware,weight.col,is.noCovNA){
             
             #make coverage vector  from target
             if(is.null(weight.col)){
@@ -471,3 +313,245 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
                            bin.op=bin.op,
                            strand.aware=strand.aware)
           })
+
+# ---------------------------------------------------------------------------- #
+#' @aliases ScoreMatrixBin,RleList,GRangesList-method
+#' @rdname ScoreMatrixBin-methods
+#' @usage  \\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,
+#'                                                         bin.num, bin.op,
+#'                                                         strand.aware)
+setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
+          function(target, windows, bin.num, bin.op, strand.aware){
+            
+            # input: RleList target, 
+            #        GRangesList windows (e.g.transcripts with exons)
+            seqinfo(target) <- merge(seqinfo(target), seqinfo(windows))
+            if (!isTRUEorFALSE(strand.aware))
+              stop("'ignore.strand' must be TRUE or FALSE")
+            
+            if( length(names(windows)) != length(unique(names(windows))) )
+              stop("Windows don't have unique names")
+            
+            # Remove windows that fall of the chromosomes
+            wind.nams = names(windows)
+            wind.eltNROWS = elementNROWS(windows)
+            
+            unlisted <- unlist(windows)
+            extra.col = rep(wind.nams, wind.eltNROWS)
+            unlisted$transcript.name <- extra.col
+            ex = genomation:::constrainRanges(target, 
+                                              unlisted )
+            # Checks whether some windows are shorter than the wanted window size
+            wi = IRanges::width(ex) < bin.num
+            if(any(wi)){
+              ex = ex[-which(wi)]
+              if(length(ex) == 0)
+                stop('all supplied windows have width < number of bins')
+              warning(paste0("supplied GRangesList object contains ",sum(wi),
+                             " ranges of width < number of bins"))
+            }
+            # After removing windows out of chrs and shorter
+            # than window size reconstruct GRangesList without them
+            order.transcripts = unique(ex$transcript.name)
+            tbl = table(ex$transcript.name)
+            tbl.ord = tbl[ order(match(names(tbl),order.transcripts)) ]
+            n.elements.ingrl = as.numeric(tbl.ord) 
+            names.elements.ingrl = names(tbl.ord)
+            
+            windows.new = relist(
+              ex, 
+              # PartitioningByWidth indicates only structure of
+              # new GRangesList after removing windows out of chrs.
+              # Content (start, end, strand) doesn't matter for 
+              # the relist function.
+              PartitioningByWidth( n.elements.ingrl )
+            )
+            names(windows.new) <- names.elements.ingrl
+            
+            if(length(windows.new) < length(windows)){
+              warning(paste0( "supplied GRangesList object contains ",
+                              length(windows)-length(windows.new), 
+                              " GRanges objects that ",
+                              "all windows\n",
+                              "fall of chromosomes or ",
+                              "windows were shorter than wanted",
+                              " window size (bin.num arg)."))
+            }
+            
+            ## Copied from GenomicFeatures:coverageByTranscript
+            ## We could simply do 'uex <- unique(ex)' here but we're going to need
+            ## 'sm' and 'is_unique' later to compute the "reverse index" so we compute
+            ## them now and use them to extract the unique exons. That way we hash
+            ## 'ex' only once (the expensive operation).
+            sm <- selfmatch(ex)  # uses a hash table internally
+            is_unique <- sm == seq_along(sm)
+            uex2ex <- which(is_unique)  # index of unique exons
+            uex <- ex[uex2ex]  # unique exons
+            
+            ## 2) Compute coverage for each unique exon ('uex_cvg').
+            # coverage for every window regardless from which transcript they come from
+            #** in the lines with #** I dont get it why they did it, 
+            #** it doesnt make sense to me.
+            #** if (strand.aware==FALSE) {
+              cvg <- target
+              uex_cvg <- cvg[uex]
+            #** }
+            #** else {
+            #**   x1 <- x[strand(x) %in% c("+", "*")]
+            #**   x2 <- x[strand(x) %in% c("-", "*")]
+            #**   cvg1 <- coverage(x1)
+            #**   cvg2 <- coverage(x2)
+            #**   is_plus_ex <- strand(uex) == "+"
+            #**   is_minus_ex <- strand(uex) == "-"
+            #**   if (!identical(is_plus_ex, !is_minus_ex))
+            #**    stop(wmsg("'windows' has GRanges objects on the * strand. ",
+            #**               "This is not supported at the moment."))
+            #**   uex_cvg <- cvg1[uex]
+            #**   uex_cvg[is_minus_ex] <- cvg2[uex[is_minus_ex]]
+            #** }
+            
+            ## 3) Flip coverage for exons on minus strand.
+            if (strand.aware){
+              uex_cvg <- revElements(uex_cvg, strand(uex) == "-")
+            }
+
+            ## 4) Compute coverage by original exon ('ex_cvg').
+            ex2uex <- (seq_along(sm) - cumsum(!is_unique))[sm]  # reverse index
+            stopifnot(identical(ex2uex[uex2ex], seq_along(uex2ex)))  # sanity
+            stopifnot(identical(ex2uex[sm], ex2uex))  # sanity
+            stopifnot(all(uex[ex2uex] == ex))  # sanity
+            ex_cvg <- uex_cvg[ex2uex]  # parallel go 'ex'
+            
+            ## 5) Compute coverage of each transcript by concatenating coverage of its
+            ##    exons.
+            ans <- IRanges:::regroupBySupergroup(ex_cvg, windows.new)
+            mcols(ans) <- mcols(windows.new) 
+            #names(ans) <- names(windows) # if not mcols then names works.
+            
+            ans.gr = as(ans, "GRanges")
+            bins <- IRangesList(lapply(seqlengths(ans.gr),
+                                       function(seqlen)
+                                         IRanges(breakInChunks(seqlen, 
+                                                               (seqlen / bin.num) + 1
+                                                               ))))
+            bins.gr <- as(bins, "GRanges")
+            seqinfo(bins.gr) <- seqinfo(ans.gr)
+            #* I dont how to adapt it to use summarizeViewsRle function
+            #* and I am not sure if it's worth it.
+            #* If we figure out how to do it then ## 3) after else should be commented and #* uncommented
+            #* IRanges::values(bins.gr)$X_rank = rep(IRanges::values(unlist(windows.new))$X_rank, each=bin.num)
+            my.vList <- RleViewsList(
+              lapply(names(ans),
+                     function(seqname)
+                       Views(ans[[seqname]], bins[[seqname]])))
+            #* my.vList = lapply(chrs,
+            #*                   function(x){
+            #*                     v = my.vList[[x]]
+            #*                     names(v) = IRanges::values(bins)$X_rank[as.character(seqnames(subWins)) == x]
+            #*                     return(v)})
+            #* mat = summarizeViewsRle(as(my.vList, "list"), bins.gr,
+            #*                   bin.op, bin.num, strand.aware)
+            # Copied from genomation:::summarizeViewsRle
+            # Calculate min/mean/max/median in each bins
+            functs = c("min",'mean','max','median')
+            if(!bin.op %in% functs)
+              stop(paste(c('Supported binning functions are', functs,'\n')))
+            if(bin.op=="min")
+              sum.bins=unlist(viewMins(my.vList,na.rm=TRUE), use.names=FALSE)     
+            if(bin.op=="max")
+              sum.bins=unlist(viewMaxs(my.vList,na.rm=TRUE), use.names=FALSE)
+            if(bin.op=="mean")
+              sum.bins=unlist(viewMeans(my.vList,na.rm=TRUE), use.names=FALSE)
+            if(bin.op=="median")
+              sum.bins=unlist(viewApply(my.vList, median, simplify = TRUE),
+                              use.names=FALSE)
+            
+            mat = matrix( sum.bins, ncol=bin.num, byrow=TRUE )
+            mat[is.nan(mat)] = NA
+            new("ScoreMatrix",mat)
+          })
+
+# ---------------------------------------------------------------------------- #
+#' @aliases  ScoreMatrixBin,GRanges,GRangesList-method
+#' @rdname ScoreMatrixBin-methods
+#' @usage \\S4method{ScoreMatrixBin}{GRanges,GRangesList}(target,windows,
+#'                                                    bin.num,bin.op,
+#'                                                    strand.aware,weight.col,
+#'                                                    is.noCovNA)
+setMethod("ScoreMatrixBin",signature("GRanges","GRangesList"),
+          function(target,windows,bin.num,bin.op,
+                   strand.aware,weight.col,is.noCovNA){
+            
+            #make coverage vector  from target
+            if(is.null(weight.col)){
+              target.rle=coverage(target)
+            }else{
+              if(! weight.col %in% names(mcols(target)) ){
+                stop("provided column 'weight.col' does not exist in target\n")
+              }
+              if(is.noCovNA)
+              {
+                # adding 1 to figure out NA columns later
+                target.rle=coverage(target,weight=(mcols(target)[weight.col][,1]+1) )
+
+                # figure out which ones are real 0 score
+                # which ones has no coverage
+                # put NAs for no coverage bases
+                runValue(target.rle)=runValue(target.rle)-1
+                runValue(target.rle)[runValue(target.rle)<0]=NA
+
+              }else{
+                # get coverage with weights
+                target.rle=coverage(target,weight=weight.col)
+              }
+            }
+            # call scoreMatrix function
+            ScoreMatrixBin(target.rle,windows,bin.num,
+                           bin.op,strand.aware)
+          })
+
+# ---------------------------------------------------------------------------- #
+#' @aliases ScoreMatrixBin,character,GRangesList-method
+#' @rdname ScoreMatrixBin-methods
+#' @usage  \\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
+#'                                                      bin.op='mean',strand.aware, type,
+#'                                                      rpm, unique, extend, param,
+#'                                                      bam.paired.end=FALSE, 
+#'                                                      library.size=NULL)
+setMethod("ScoreMatrixBin",signature("character","GRangesList"),
+          function(target, windows, bin.num=10, 
+                   bin.op='mean', strand.aware, 
+                   type, rpm, unique, extend, param,
+                   bam.paired.end=FALSE, library.size=NULL){
+            
+            if(!file.exists(target)){
+              stop("Indicated 'target' file does not exist\n")
+            }
+            fmbw = c('bigWig','bw','bigwig','BigWig')
+            if(!type %in% c('bam', fmbw)){
+              if(type==""){
+                stop(paste0('set argument type to "bam" or "bigWig"\n'))
+              }
+              stop('currently supported formats are bam and bigWig\n')
+            }
+            if(type == 'bam' & !grepl('bam$',target))
+              warning('you have set type="bam", but the designated file does not have .bam extension')
+            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$|BigWig$',target))
+              warning('you have set type="bigWig", but the designated file does not have .bw extension')
+            
+            if(type == 'bam')
+              covs = readBam(target, unlist(windows), 
+                             rpm=rpm, unique=unique, 
+                             extend=extend, param=param,
+                             paired.end=bam.paired.end, library.size=library.size)
+            if(type %in% fmbw)
+              covs = readBigWig(target=target, 
+                                windows=unlist(windows))        
+            # get coverage vectors
+            ScoreMatrixBin(covs,
+                           windows,
+                           bin.num=bin.num,
+                           bin.op=bin.op,
+                           strand.aware=strand.aware)
+          })
+

@@ -172,32 +172,74 @@ test_ScoreMatrixBin_RleList_GRangesList = function()
 {
   # usage
   # target RleList, windows GRangesList
-
-  l = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
-  gr1 = GRanges(c('chr1', "chr1"), IRanges(c(1,5),c(4,8)),
-                strand=c('+','-'))
-  gr2 = GRanges(c('chr2', "chr2", "chr2"), IRanges(c(1,15, 5),c(4,20,8)),
-                strand=c('+','+', "-"))
-  grl = GRangesList(gr1, gr2)
-  names(grl) <- c("t1", "t2")
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', 
+                            '-', '-', '-', '-', '-', '-', '+'))
+  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1, 10,20),c(6, 12, 25)), strand="-")
+  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1, 10,20),c(6, 12, 25)), strand="+")
+  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
   
-  s6 = ScoreMatrixBin(l, grl, bin.num=2)
-  m6 = matrix(c(1,1.5,2,3,4,4.5,5,6), ncol=2, byrow=T)
-  # first column is integer, second numeric of s6
-  # that's why checkEquals returns error
-  checkEqualsNumeric(s6, m6)
+  s6 = ScoreMatrixBin(coverage(target), t, bin.num=2)
+  m6 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  checkEquals(s6, as(m6, 'ScoreMatrix'))
   
   #2. test for different bin.op
-  s7 = ScoreMatrixBin(l, grl, bin.num=2, bin.op = "min")
-  m7 = matrix(c(1,1,2,3,4,4,5,6), ncol=2, byrow=T)
-  checkEqualsNumeric(s7, m7)
+  s7 = ScoreMatrixBin(coverage(target), t, bin.num=2, bin.op = "min")
+  m7 = matrix(c(2,2,2,2), ncol=2, byrow=T)
+  checkEquals(s7, as(m7, 'ScoreMatrix'))
   
-  s8 = ScoreMatrixBin(l, grl, bin.num=2, bin.op = "max")
-  m8 = matrix(c(1,2,2,3,4,5,5,6), ncol=2, byrow=T)
-  checkEqualsNumeric(s8, m8)
+  s8 = ScoreMatrixBin(coverage(target), t, bin.num=2, bin.op = "max")
+  m8 = matrix(c(4,3,4,3), ncol=2, byrow=T)
+  checkEquals(s8, as(m8, 'ScoreMatrix'))
   
   #3. test strand aware
-  m9 = matrix(c(1,1.5,3,2,4,4.5,6,5), ncol=2, byrow=T)
-  s9 = ScoreMatrixBin(l, grl, bin.num=2, strand.aware=T)
-  checkEqualsNumeric(m9, s9)
+  # almost symmetric values in bins, e.g. 234442
+  # that's why even flipped give the same result
+  m9 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  s9 = ScoreMatrixBin(coverage(target), t, bin.num=2, strand.aware=T)
+  checkEquals(s9, as(m9, "ScoreMatrix"))
 }
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_character_GRangesList = function()
+{
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', 
+                            '-', '-', '-', '-', '-', '-', '+'))
+  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="-")
+  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="+")
+  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  
+  # -----------------------------------------------#
+  # usage
+  # bam file
+  bam.file = system.file('unitTests/test.bam', package='genomation')
+  s10 = ScoreMatrixBin(bam.file, t, type='bam', bin.num=2)
+  m10 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  checkEquals(s10, as(m10, "ScoreMatrix"))
+}
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_GRanges_GRangesList = function()
+{
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', 
+                            '-', '-', '-', '-', '-', '-', '+'))
+  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="-")
+  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="+")
+  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  # -----------------------------------------------#
+  # usage
+  s11 = ScoreMatrixBin(target, t, type='bam', bin.num=2)
+  m11 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  checkEquals(s11, as(m11, "ScoreMatrix"))
+}
+
+
+
