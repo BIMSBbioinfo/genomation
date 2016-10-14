@@ -134,12 +134,13 @@ plot(colMeans(myMat2,na.rm=TRUE),type="l")
 
 # Compute transcript coverage of a set of exons.
 library(GenomicRanges)
-library(GenomicFeatures)
-target.rle = coverage(cage)
-gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
-txdb=makeTxDbFromGFF(gff.file)
-transcripts = exonsBy(txdb)
-sm = ScoreMatrixBin(target=target.rle, windows=transcripts[1:100], bin.num=50)
+bed.file = system.file("extdata/chr21.refseq.hg19.bed", 
+                       package = "genomation")
+gene.parts = readTranscriptFeatures(bed.file)
+transcripts = split(gene.parts$exons, gene.parts$exons$name)
+myMat3 = ScoreMatrixBin(target=cage, windows=transcripts[1:250], 
+                    bin.num=10)
+myMat3                     
 }
 \seealso{
 \code{\link{ScoreMatrix}}

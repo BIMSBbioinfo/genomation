@@ -232,18 +232,17 @@ chromosome that was not present in the target).
 
 The *windows* of *ScoreMatrixBin* might be not only GRanges, but also GRangesList object. 
 For instance, *ScoreMatrixBin* can be used to calculate transcript coverage of a set of exons. 
-In the example below, *ScoreMatrixBin* function calculates coverage on exons, 
-stiches exons of each transcript together, bins them into 50 bins and 
+In the example below, *ScoreMatrixBin* function calculates coverage of concatenated
+exons within each transcript together, bins them into 50 bins and 
 calculate average coverage within bins.
 ```{r ScoreMatrixBinExample_GRangesList, eval=FALSE, tidy=TRUE}
-library(GenomicRanges)
-library(GenomicFeatures)
 data(cage)
-target.rle=coverage(cage)
+library(GenomicRanges)
 gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
-txdb=makeTxDbFromGFF(gff.file)
-transcripts = exonsBy(txdb)
-sm = ScoreMatrixBin(target=target.rle, windows=transcripts, bin.num=50)
+exons = gffToGRanges(gff.file, filter="exon")
+transcripts = split(exons, exons$transcript_id)
+sm = ScoreMatrixBin(target=cage, windows=transcripts, bin.num=10)
+sm
 ```
 
 To simultaneously work on multiple files you can use the *ScoreMatrixList*

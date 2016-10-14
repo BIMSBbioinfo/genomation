@@ -173,12 +173,13 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' 
 #' # Compute transcript coverage of a set of exons.
 #' library(GenomicRanges)
-#' library(GenomicFeatures)
-#' target.rle = coverage(cage)
-#' gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
-#' txdb=makeTxDbFromGFF(gff.file)
-#' transcripts = exonsBy(txdb)
-#' sm = ScoreMatrixBin(target=target.rle, windows=transcripts[1:100], bin.num=50)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", 
+#'                        package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' transcripts = split(gene.parts$exons, gene.parts$exons$name)
+#' myMat3 = ScoreMatrixBin(target=cage, windows=transcripts[1:250], 
+#'                     bin.num=10)
+#' myMat3                     
 #' @seealso \code{\link{ScoreMatrix}}
 #' @docType methods
 #' @rdname ScoreMatrixBin-methods           
@@ -323,8 +324,6 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
 setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
           function(target, windows, bin.num, bin.op, strand.aware){
             
-            # input: RleList target, 
-            #        GRangesList windows (e.g.transcripts with exons)
             seqinfo(target) <- merge(seqinfo(target), seqinfo(windows))
             if (!isTRUEorFALSE(strand.aware))
               stop("'ignore.strand' must be TRUE or FALSE")
@@ -371,14 +370,13 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             if(length(windows.new) < length(windows)){
               warning(paste0( "supplied GRangesList object contains ",
                               length(windows)-length(windows.new), 
-                              " GRanges objects that ",
+                              " GRanges objects in which ",
                               "all windows\n",
-                              "fall of chromosomes or ",
+                              "fall off chromosomes or ",
                               "windows were shorter than wanted",
                               " window size (bin.num arg)."))
             }
-            
-            ## Copied from GenomicFeatures:coverageByTranscript
+            ## Copied from GenomicFeatures::coverageByTranscript
             ## We could simply do 'uex <- unique(ex)' here but we're going to need
             ## 'sm' and 'is_unique' later to compute the "reverse index" so we compute
             ## them now and use them to extract the unique exons. That way we hash
@@ -390,25 +388,8 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             
             ## 2) Compute coverage for each unique exon ('uex_cvg').
             # coverage for every window regardless from which transcript they come from
-            #** in the lines with #** I dont get it why they did it, 
-            #** it doesnt make sense to me.
-            #** if (strand.aware==FALSE) {
-              cvg <- target
-              uex_cvg <- cvg[uex]
-            #** }
-            #** else {
-            #**   x1 <- x[strand(x) %in% c("+", "*")]
-            #**   x2 <- x[strand(x) %in% c("-", "*")]
-            #**   cvg1 <- coverage(x1)
-            #**   cvg2 <- coverage(x2)
-            #**   is_plus_ex <- strand(uex) == "+"
-            #**   is_minus_ex <- strand(uex) == "-"
-            #**   if (!identical(is_plus_ex, !is_minus_ex))
-            #**    stop(wmsg("'windows' has GRanges objects on the * strand. ",
-            #**               "This is not supported at the moment."))
-            #**   uex_cvg <- cvg1[uex]
-            #**   uex_cvg[is_minus_ex] <- cvg2[uex[is_minus_ex]]
-            #** }
+            cvg <- target
+            uex_cvg <- cvg[uex]
             
             ## 3) Flip coverage for exons on minus strand.
             if (strand.aware){
@@ -425,34 +406,22 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             ## 5) Compute coverage of each transcript by concatenating coverage of its
             ##    exons.
             ans <- IRanges:::regroupBySupergroup(ex_cvg, windows.new)
-            mcols(ans) <- mcols(windows.new) 
-            #names(ans) <- names(windows) # if not mcols then names works.
+            mcols(ans) <- mcols(windows.new)  # names() would work too
             
             ans.gr = as(ans, "GRanges")
             bins <- IRangesList(lapply(seqlengths(ans.gr),
                                        function(seqlen)
                                          IRanges(breakInChunks(seqlen, 
-                                                               (seqlen / bin.num) + 1
-                                                               ))))
+                                                               (seqlen / bin.num) + 1))))
+            # Bin concatenated exons
             bins.gr <- as(bins, "GRanges")
             seqinfo(bins.gr) <- seqinfo(ans.gr)
-            #* I dont how to adapt it to use summarizeViewsRle function
-            #* and I am not sure if it's worth it.
-            #* If we figure out how to do it then ## 3) after else should be commented and #* uncommented
-            #* IRanges::values(bins.gr)$X_rank = rep(IRanges::values(unlist(windows.new))$X_rank, each=bin.num)
             my.vList <- RleViewsList(
               lapply(names(ans),
                      function(seqname)
                        Views(ans[[seqname]], bins[[seqname]])))
-            #* my.vList = lapply(chrs,
-            #*                   function(x){
-            #*                     v = my.vList[[x]]
-            #*                     names(v) = IRanges::values(bins)$X_rank[as.character(seqnames(subWins)) == x]
-            #*                     return(v)})
-            #* mat = summarizeViewsRle(as(my.vList, "list"), bins.gr,
-            #*                   bin.op, bin.num, strand.aware)
             # Copied from genomation:::summarizeViewsRle
-            # Calculate min/mean/max/median in each bins
+            # Calculate min/mean/max/median in each bin
             functs = c("min",'mean','max','median')
             if(!bin.op %in% functs)
               stop(paste(c('Supported binning functions are', functs,'\n')))
@@ -463,8 +432,9 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             if(bin.op=="mean")
               sum.bins=unlist(viewMeans(my.vList,na.rm=TRUE), use.names=FALSE)
             if(bin.op=="median")
-              sum.bins=unlist(viewApply(my.vList, median, simplify = TRUE),
-                              use.names=FALSE)
+              sum.bins=unlist(viewApply(my.vList, 
+                                        function(x) median(x, na.rm=TRUE), 
+                                        simplify = TRUE), use.names=FALSE)
             
             mat = matrix( sum.bins, ncol=bin.num, byrow=TRUE )
             mat[is.nan(mat)] = NA

@@ -1,3 +1,12 @@
+genomation 1.5.7
+--------------
+
+NEW FUNCTIONS AND FEATURES
+* scoreMatrixBin() calculates coverage over windows that are not only
+  GRanges, but also GRangesList. It's usefull for calculating transcript
+  coverage of a set of exons.
+
+
 genomation 1.5.6
 --------------
 NEW FUNCTIONS AND FEATURES
