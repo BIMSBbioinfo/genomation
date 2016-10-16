@@ -288,6 +288,9 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
+            if( type=="bigWig" & rpm==TRUE)
+              warning("rpm=TRUE is not supported for type='bigWig'")
+            
             if(type == 'bam')
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param,
