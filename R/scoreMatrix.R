@@ -315,7 +315,11 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             #check if all windows are equal length
             if( length(unique(width(windows))) >1 ){
               stop("width of 'windows' are not equal, provide 'windows' with equal widths")
-            }     
+            }  
+            # check if windows have width > 1
+            if( any(width(windows)==1) ){
+              stop("provide 'windows' with widths greater than 1")
+            } 
             
             # set a uniq id for the GRanges
             windows.len=length(windows)

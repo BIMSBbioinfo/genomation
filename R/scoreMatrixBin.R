@@ -199,6 +199,11 @@ setGeneric("ScoreMatrixBin",
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
 
+            # check if windows have width > 1
+            if( any(width(windows)==1) ){
+              stop("provide 'windows' with widths greater than 1")
+            } 
+            
             # removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
             windows.len=length(windows)
             windows = constrainRanges(target, windows)
