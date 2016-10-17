@@ -41,8 +41,6 @@ detectUCSCheader <- function(filename){
   return(skip)
 }
 
-
-# fast reading of big tables
 readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
   
   filename <- compressedAndUrl2temp(filename)
@@ -79,7 +77,6 @@ readTableFast<-function(filename,header=TRUE,skip=0,sep="\t"){
     }else if(cla=="logical")
       cl=paste0(cl, "l")
   }
-  
   df <- read_delim(file=filename, 
                    delim=sep, 
                    skip=skip,
@@ -289,7 +286,9 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 #'             it can also start with \code{https://} or \code{ftps://}.
 #' @param track.line the number of track lines to skip, "auto" to detect them automatically
 #'                   or FALSE(default) if the bed file doesn't have track lines
-#' @usage readBroadPeak(file, track.line=FALSE)
+#' @param zero.based a boolean which tells whether the ranges in 
+#'        the bed file are 0 or 1 base encoded. (Default: TRUE)
+#' @usage readBroadPeak(file, track.line=FALSE, zero.based=TRUE)
 #' @return a GRanges object
 #'
 #' @examples
@@ -301,7 +300,7 @@ readBed<-function(file,track.line=FALSE,remove.unusual=FALSE,zero.based=TRUE)
 #' @docType methods
 #' @rdname readBroadPeak
 #' @export
-readBroadPeak<-function(file, track.line=FALSE){
+readBroadPeak<-function(file, track.line=FALSE, zero.based=TRUE){
   
   g = readGeneric(file,
                   strand=6,
@@ -311,7 +310,8 @@ readBroadPeak<-function(file, track.line=FALSE){
                                  pvalue=8,
                                  qvalue=9),
                   header=FALSE,
-                  skip=track.line)
+                  skip=track.line,
+                  zero.based=zero.based)
   return(g)
 }
 
@@ -324,7 +324,9 @@ readBroadPeak<-function(file, track.line=FALSE){
 #'             it can also start with \code{https://} or \code{ftps://}.
 #' @param track.line the number of track lines to skip, "auto" to detect them automatically
 #'                   or FALSE(default) if the bed file doesn't have track lines
-#' @usage readNarrowPeak(file, track.line=FALSE)
+#' @param zero.based a boolean which tells whether the ranges in 
+#'        the bed file are 0 or 1 base encoded. (Default: TRUE)
+#' @usage readNarrowPeak(file, track.line=FALSE, zero.based=TRUE)
 #' @return a GRanges object
 #'
 #' @examples
@@ -335,7 +337,7 @@ readBroadPeak<-function(file, track.line=FALSE){
 #' @docType methods
 #' @rdname readNarrowPeak
 #' @export
-readNarrowPeak<-function(file, track.line=FALSE){
+readNarrowPeak<-function(file, track.line=FALSE, zero.based=TRUE){
   
   g = readGeneric(file,
                   strand=6,
@@ -346,7 +348,8 @@ readNarrowPeak<-function(file, track.line=FALSE){
                                  qvalue=9,
                                  peak=10),
                   header=FALSE,
-                  skip=track.line)
+                  skip=track.line,
+                  zero.based=zero.based)
   return(g)
 }
 
