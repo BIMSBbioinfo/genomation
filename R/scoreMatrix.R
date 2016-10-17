@@ -318,8 +318,12 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             }     
             
             # set a uniq id for the GRanges
+            windows.len=length(windows)
             windows = constrainRanges(target, windows)
-            
+            if(length(windows)!=windows.len){
+              warning(paste0(windows.len-length(windows),
+                             " windows fall off the target"))
+            }
             
             # fetches the windows and the scores
             chrs = sort(intersect(names(target), as.character(unique(seqnames(windows)))))

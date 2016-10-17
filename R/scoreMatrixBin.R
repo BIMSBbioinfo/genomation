@@ -200,7 +200,12 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
 
             # removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
+            windows.len=length(windows)
             windows = constrainRanges(target, windows)
+            if(length(windows)!=windows.len){
+              warning(paste0(windows.len-length(windows),
+                             " windows fall off the target"))
+            }
             
             # checks whether some windows are shorter than the wanted window size
             wi = IRanges::width(windows) < bin.num
