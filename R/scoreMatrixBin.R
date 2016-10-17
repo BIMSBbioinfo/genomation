@@ -136,7 +136,8 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
-#' @param type if target is a character vector of file paths, then type designates 
+#' @param type   (Default:"auto")
+#'               if target is a character vector of file paths, then type designates 
 #'               the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
 #'            FALSE by default. See \code{library.size}.
@@ -180,7 +181,7 @@ setGeneric("ScoreMatrixBin",
                     bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
                     weight.col=NULL,is.noCovNA=FALSE,
-                    type='',
+                    type='auto',
                     rpm=FALSE,
                     unique=FALSE,
                     extend=0,
@@ -261,32 +262,21 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 #' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
-#'                                                      bin.op='mean',strand.aware, type,
-#'                                                      rpm, unique, extend, param,
-#'                                                      bam.paired.end=FALSE, 
+#'                                                      bin.op='mean',strand.aware, 
+#'                                                      type='auto',rpm, unique, extend, 
+#'                                                      param,bam.paired.end=FALSE, 
 #'                                                      library.size=NULL)
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
-                   type, rpm, unique, extend, param,
+                   type='auto', rpm, unique, extend, param,
                    bam.paired.end=FALSE, library.size=NULL){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
             
-            fm = c('bam','bigWig')
-            if(!type %in% fm){
-	      if(type==""){
-		stop(paste0('set argument type to "bam" or "BigWig"\n'))
-	      }
-	      stop('currently supported formats are bam and BigWig\n')
-            }
-            
-            if(type == 'bam' & !grepl('bam$',target))
-              warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
-              warning('you have set type="bigWig", but the designated file does not have .bw extension')
+            type = target.type(target, type)
             
             if( type=="bigWig" & rpm==TRUE)
               warning("rpm=TRUE is not supported for type='bigWig'")

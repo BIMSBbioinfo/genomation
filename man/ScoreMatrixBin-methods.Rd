@@ -10,8 +10,8 @@
 \usage{
 ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  bam.paired.end = FALSE, library.size = NULL)
+  type = "auto", rpm = FALSE, unique = FALSE, extend = 0,
+  param = NULL, bam.paired.end = FALSE, library.size = NULL)
 
 \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
                                                    strand.aware)
@@ -58,7 +58,8 @@ if TRUE,and if 'target' is a GRanges object with 'weight.col'
  you can not have coverage all over the genome, such as CpG
   methylation values.}
 
-\item{type}{if target is a character vector of file paths, then type designates 
+\item{type}{(Default:"auto")
+if target is a character vector of file paths, then type designates 
 the type of the corresponding files (bam or bigWig)}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion reads. 

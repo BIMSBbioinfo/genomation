@@ -55,8 +55,9 @@
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
 #'                    
-#' @param type if \code{targets} is a character vector of file paths, then type 
-#'        designates the type of the corresponding files (bam or bigWig)
+#' @param type (Default:"auto")
+#'             if \code{targets} is a character vector of file paths, then type 
+#'             designates the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
 #'            FALSE by default. See \code{library.size}.
 #' @param unique boolean which tells the function to remove duplicated reads 
@@ -95,7 +96,7 @@
 #' @rdname ScoreMatrixList-methods
 ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL, 
                            bin.op='mean', strand.aware=FALSE, weight.col=NULL, 
-                           is.noCovNA=FALSE, type='', rpm=FALSE, unique=FALSE, 
+                           is.noCovNA=FALSE, type='auto', rpm=FALSE, unique=FALSE, 
                            extend=0, param=NULL, library.size=NULL, cores=1){
   len = length(targets)
   if(len == 0L)
