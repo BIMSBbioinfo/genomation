@@ -17,7 +17,8 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
 \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware,
                                                 weight.col, is.noCovNA)
 
-\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, 
+\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware,
+                                                  weight.col=NULL,is.noCovNA=FALSE, 
                                                   type='', rpm=FALSE,
                                                   unique=FALSE, extend=0, param=NULL, 
                                                   bam.paired.end=FALSE,

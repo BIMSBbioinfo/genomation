@@ -261,13 +261,16 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @aliases ScoreMatrixBin,character,GRanges-method
 #' @rdname ScoreMatrixBin-methods
 #' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
-#'                                                      bin.op='mean',strand.aware, type,
+#'                                                      bin.op='mean',strand.aware, 
+#'                                                      weight.col=NULL,
+#'                                                      is.noCovNA=FALSE, type,
 #'                                                      rpm, unique, extend, param,
 #'                                                      bam.paired.end=FALSE, 
 #'                                                      library.size=NULL)
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
+                   weight.col=NULL,is.noCovNA=FALSE,
                    type, rpm, unique, extend, param,
                    bam.paired.end=FALSE, library.size=NULL){
             
@@ -288,17 +291,42 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
             if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
-            if(type == 'bam')
+            if(type == 'bam'){
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param,
                              paired.end=bam.paired.end, library.size=library.size)
-            if(type == 'bigWig')
-              covs = readBigWig(target=target, windows=windows)        
+              return(ScoreMatrixBin(covs,
+                                    windows,
+                                    bin.num=bin.num,
+                                    bin.op=bin.op,
+                                    strand.aware=strand.aware))
+            }
             
-            # get coverage vectors
-            ScoreMatrixBin(covs,
-                           windows,
-                           bin.num=bin.num,
-                           bin.op=bin.op,
-                           strand.aware=strand.aware)
+            if(type == 'bigWig'){
+              if(is.noCovNA==FALSE){
+                covs = readBigWig(target=target, windows=windows)
+                # get coverage vectors
+                return(ScoreMatrixBin(covs,
+                               windows,
+                               bin.num=bin.num,
+                               bin.op=bin.op,
+                               strand.aware=strand.aware))
+                
+              }else{
+                if(is.null(windows)){
+                  target.gr = import(target)
+                }else{
+                  target.gr = import(target, which=windows)
+                }
+                if(length(target.gr) == 0)
+                  stop('There are no ranges selected')
+                return(ScoreMatrixBin(target.gr,
+                               windows,
+                               bin.num=bin.num,
+                               bin.op=bin.op,
+                               strand.aware=strand.aware,
+                               weight.col=weight.col,
+                               is.noCovNA=is.noCovNA))
+              }
+            }
           })

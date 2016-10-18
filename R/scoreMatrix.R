@@ -327,7 +327,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
               target.rle=coverage(target)
             }else{
               if(! weight.col %in% names(mcols(target)) ){
-                stop("provided column 'weight.col' does not exist in tartget\n")
+                stop("provided column 'weight.col' does not exist in target\n")
               }
               if(is.noCovNA)
               { # adding 1 to figure out NA columns later
@@ -348,17 +348,19 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
-#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, 
+#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware,
+#'                                                   weight.col=NULL,is.noCovNA=FALSE, 
 #'                                                   type='', rpm=FALSE,
 #'                                                   unique=FALSE, extend=0, param=NULL, 
 #'                                                   bam.paired.end=FALSE,
-#'                                                   library.size=NULL,
-#'                                                   is.noCovNA=FALSE)
+#'                                                   library.size=NULL)
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows, strand.aware, type='', 
-                   rpm=FALSE, unique=FALSE, extend=0, 
-                   param=NULL, bam.paired.end=FALSE,
-                   library.size=NULL, is.noCovNA=FALSE){
+          function(target,windows, strand.aware,
+                   weight.col=NULL,is.noCovNA=FALSE,
+                   type='',rpm=FALSE, 
+                   unique=FALSE, extend=0,param=NULL,
+                   bam.paired.end=FALSE,
+                   library.size=NULL){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
@@ -383,7 +385,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
                              extend=extend, param=param, 
                              paired.end=bam.paired.end, library.size)
               #get coverage vectors
-              ScoreMatrix(covs,windows,strand.aware)
+              return(ScoreMatrix(covs,windows,strand.aware))
             }
               
             if(type == 'bigWig'){
@@ -402,7 +404,9 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
                 if(length(bw) == 0)
                   stop('There are no ranges selected')
                 
-                ScoreMatrix(bw, windows, strand.aware, weight.col, is.noCovNA)
+                return(ScoreMatrix(bw, windows, strand.aware, 
+                                   weight.col=weight.col, 
+                                   is.noCovNA=is.noCovNA))
               }
             }           
           })

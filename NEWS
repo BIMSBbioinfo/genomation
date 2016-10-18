@@ -1,3 +1,9 @@
+genomation 1.5.7
+--------------
+NEW FUNCTIONS AND FEATURES
+* ScoreMatrix-like functions work with bigWig files
+  and supplied weight.col and is.noCovNA=TRUE
+
 genomation 1.5.6
 --------------
 NEW FUNCTIONS AND FEATURES

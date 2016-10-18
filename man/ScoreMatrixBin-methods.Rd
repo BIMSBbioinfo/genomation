@@ -20,7 +20,9 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
                                                    strand.aware,weight.col,is.noCovNA)
 
 \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
-                                                     bin.op='mean',strand.aware, type,
+                                                     bin.op='mean',strand.aware, 
+                                                     weight.col=NULL,
+                                                     is.noCovNA=FALSE, type,
                                                      rpm, unique, extend, param,
                                                      bam.paired.end=FALSE, 
                                                      library.size=NULL)

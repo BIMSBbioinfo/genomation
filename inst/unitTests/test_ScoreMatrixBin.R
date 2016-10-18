@@ -135,7 +135,19 @@ test_ScoreMatrixBin_character_GRanges = function()
   m5 = ScoreMatrixBin(resize(unique(target.paired.end), width=16), windows.paired.end)
   checkEquals(s5,m5)
   
-  #bigWig file - missing
+  # bigWig file with is.noCovNA=TRUE and weight.col="score"
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
+  g = GRanges(seqnames=c("chr2","chr19", "chr19", "chr19"),
+              IRanges(start=c(1201, 1501, 2401, 2800), width=6),
+              strand='*')
+  s1 = ScoreMatrixBin(test_bw, g, strand.aware=FALSE, 
+                   weight.col="score",is.noCovNA=TRUE,
+                   type="bigWig", bin.num=2)
+  m1 = matrix(c(rep(0, 2), rep(0.25,2), rep(1,2), rep(NA,2)), 
+              nrow=4,  byrow = TRUE)
+  rownames(m1) = 1:4
+  m1 = as(m1, 'ScoreMatrix')
+  checkEquals(s1, m1)
   
   # -----------------------------------------------#
   # errors
