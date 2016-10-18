@@ -72,4 +72,4 @@ Collate:
     'test_genomation_package.R'
     'RcppExports.R'
     'deprecated_defunct.R'
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

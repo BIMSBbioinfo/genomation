@@ -169,6 +169,20 @@ test_ScoreMatrix_character_GRanges_bigWig = function()
   rownames(m) = 1:6
   m = as(m, 'ScoreMatrix')
   checkEquals(s, m)
+  
+  # test is.noCovNA
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
+  g = GRanges(seqnames=c("chr2","chr19", "chr19", "chr19"),
+              IRanges(start=c(1201, 1501, 2401, 2800), width=6),
+              strand='*')
+  s1 = ScoreMatrix(test_bw, g, strand.aware=FALSE, 
+                   weight.col="score", 
+                   is.noCovNA=TRUE,  type="bigWig")
+  m1 = matrix(c(rep(0, 6), rep(0.25,6), rep(1,6), rep(NA,6)), 
+             nrow=4,  byrow = TRUE)
+  rownames(m1) = 1:4
+  m1 = as(m1, 'ScoreMatrix')
+  checkEquals(s1, m1)
 }
 
 

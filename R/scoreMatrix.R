@@ -327,7 +327,7 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
               target.rle=coverage(target)
             }else{
               if(! weight.col %in% names(mcols(target)) ){
-                stop("provided column 'weight.col' does not exist in tartget\n")
+                stop("provided column 'weight.col' does not exist in target\n")
               }
               if(is.noCovNA)
               { # adding 1 to figure out NA columns later
@@ -341,7 +341,6 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
               
             }
             
-            
             # call ScoreMatrix function
             ScoreMatrix(target.rle,windows,strand.aware)
           })
@@ -349,15 +348,18 @@ setMethod("ScoreMatrix",signature("GRanges","GRanges"),
 # ---------------------------------------------------------------------------- #
 #' @aliases ScoreMatrix,character,GRanges-method
 #' @rdname ScoreMatrix-methods
-#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, 
+#' @usage \\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware,
+#'                                                   weight.col=NULL,is.noCovNA=FALSE, 
 #'                                                   type='', rpm=FALSE,
 #'                                                   unique=FALSE, extend=0, param=NULL, 
 #'                                                   bam.paired.end=FALSE,
 #'                                                   library.size=NULL)
 setMethod("ScoreMatrix",signature("character","GRanges"),
-          function(target,windows, strand.aware, type='', 
-                   rpm=FALSE, unique=FALSE, extend=0, 
-                   param=NULL, bam.paired.end=FALSE,
+          function(target,windows, strand.aware,
+                   weight.col=NULL,is.noCovNA=FALSE,
+                   type='',rpm=FALSE, 
+                   unique=FALSE, extend=0,param=NULL,
+                   bam.paired.end=FALSE,
                    library.size=NULL){
             
             if(!file.exists(target)){
@@ -367,7 +369,7 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             fm = c('bam','bigWig')
             if(!type %in% fm){
 	      if(type==""){
-		stop(paste0('set argument type to "bam" or "BigWig"\n'))
+		stop(paste0('set argument type to "bam" or "bigWig"\n'))
 	      }
 	      stop('currently supported formats are bam and BigWig\n')
             }
@@ -377,15 +379,36 @@ setMethod("ScoreMatrix",signature("character","GRanges"),
             if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$',target))
               warning('you have set type="bigWig", but the designated file does not have .bw extension')
             
-            if(type == 'bam')
+            if(type == 'bam'){
+              
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param, 
                              paired.end=bam.paired.end, library.size)
-            if(type == 'bigWig')
-              covs = readBigWig(target=target, windows=windows)            
-            
-            #get coverage vectors
-            ScoreMatrix(covs,windows,strand.aware)
+              #get coverage vectors
+              return(ScoreMatrix(covs,windows,strand.aware))
+            }
+              
+            if(type == 'bigWig'){
+              if(is.noCovNA==FALSE){
+                
+                covs = readBigWig(target=target, windows=windows)
+                ScoreMatrix(covs,windows,strand.aware)
+                
+              }else{
+                
+                if(is.null(windows)){
+                  bw = import(target)
+                }else{
+                  bw = import(target, which=windows)
+                }
+                if(length(bw) == 0)
+                  stop('There are no ranges selected')
+                
+                return(ScoreMatrix(bw, windows, strand.aware, 
+                                   weight.col=weight.col, 
+                                   is.noCovNA=is.noCovNA))
+              }
+            }           
           })
 
 
