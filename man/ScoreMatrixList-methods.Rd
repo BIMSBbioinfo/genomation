@@ -7,8 +7,8 @@
 \usage{
 ScoreMatrixList(targets, windows = NULL, bin.num = NULL, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  library.size = NULL, cores = 1)
+  type = "auto", rpm = FALSE, unique = FALSE, extend = 0,
+  param = NULL, library.size = NULL, cores = 1)
 }
 \arguments{
 \item{targets}{can be a list of \code{scoreMatrix} objects, that are coerced 
@@ -43,7 +43,8 @@ if TRUE,and if 'targets' is a GRanges object with 'weight.col'
  you can not have coverage all over the genome, such as CpG
   methylation values.}
 
-\item{type}{if \code{targets} is a character vector of file paths, then type 
+\item{type}{(Default:"auto")
+if \code{targets} is a character vector of file paths, then type 
 designates the type of the corresponding files (bam or bigWig)}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion reads. 

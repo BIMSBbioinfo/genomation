@@ -790,7 +790,6 @@ setMethod("annotateWithFeature",
 #'         a GRangesList, a list of \code{AnnotationByFeature} objects.
 #'      
 #' @export
-#'
 #' @examples
 #' library(GenomicRanges)
 #' data(cage)

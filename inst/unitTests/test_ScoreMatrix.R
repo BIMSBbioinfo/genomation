@@ -148,9 +148,6 @@ test_ScoreMatrix_character_GRanges = function()
   # error upon not specifying the file
   checkException(ScoreMatrix('',windows), silent=TRUE)
   
-  # error upon not specifying the format
-  checkException(ScoreMatrix(bam.file, target), silent=TRUE)
-  
 }
 
 # ---------------------------------------------------------------------------- #

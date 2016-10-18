@@ -135,7 +135,8 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG
 #'                    methylation values.
-#' @param type if target is a character vector of file paths, then type designates 
+#' @param type   (Default:"auto")
+#'               if target is a character vector of file paths, then type designates 
 #'               the type of the corresponding files (bam or bigWig)
 #' @param rpm boolean telling whether to normalize the coverage to per milion reads. 
 #'            FALSE by default. See \code{library.size}.
@@ -189,7 +190,7 @@ setGeneric("ScoreMatrixBin",
                     bin.num=10,bin.op="mean",
                     strand.aware=FALSE,
                     weight.col=NULL,is.noCovNA=FALSE,
-                    type='',
+                    type='auto',
                     rpm=FALSE,
                     unique=FALSE,
                     extend=0,
@@ -206,9 +207,19 @@ setGeneric("ScoreMatrixBin",
 #'                                                    strand.aware)
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
+
+            # check if windows have width > 1
+            if( any(width(windows)==1) ){
+              stop("provide 'windows' with widths greater than 1")
+            } 
             
             # removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
+            windows.len=length(windows)
             windows = constrainRanges(target, windows)
+            if(length(windows)!=windows.len){
+              warning(paste0(windows.len-length(windows),
+                             " windows fall off the target"))
+            }
             
             # checks whether some windows are shorter than the wanted window size
             wi = IRanges::width(windows) < bin.num
@@ -275,7 +286,7 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
 #'                                                      bin.op='mean',strand.aware, 
 #'                                                      weight.col=NULL,
-#'                                                      is.noCovNA=FALSE, type,
+#'                                                      is.noCovNA=FALSE, type='auto',
 #'                                                      rpm, unique, extend, param,
 #'                                                      bam.paired.end=FALSE, 
 #'                                                      library.size=NULL)
@@ -283,26 +294,18 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
                    weight.col=NULL,is.noCovNA=FALSE,
-                   type, rpm, unique, extend, param,
+                   type='auto', rpm, unique, extend, param,
                    bam.paired.end=FALSE, library.size=NULL){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
             
-            fmbw = c('bigWig','bw','bigwig','BigWig')
-            if(!type %in% c('bam', fmbw)){
-              if(type==""){
-                stop(paste0('set argument type to "bam" or "bigWig"\n'))
-              }
-              stop('currently supported formats are bam and bigWig\n')
-            }
+            type = target.type(target, type)
             
-            if(type == 'bam' & !grepl('bam$',target))
-              warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$|BigWig$',target))
-              warning('you have set type="bigWig", but the designated file does not have .bw extension')
-            
+            if( type=="bigWig" & rpm==TRUE)
+              warning("rpm=TRUE is not supported for type='bigWig'")
+
             if(type == 'bam'){
               covs = readBam(target, windows, rpm=rpm, unique=unique, 
                              extend=extend, param=param,

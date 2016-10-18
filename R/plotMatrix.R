@@ -77,7 +77,6 @@
 #'           cex.axis=0.9)
 #'  }
 #' @export
-#' 
 heatMeta<-function(mat, centralTend="mean",
                    profile.names=NULL,xcoords=NULL,col=NULL,
                    meta.rescale=FALSE, winsorize=c(0,100),
@@ -1272,7 +1271,6 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
 #' 
 #' 
 #' @export
-#'
 multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
                           group=NULL,group.col=NULL,
                           order=FALSE,user.order=FALSE,
