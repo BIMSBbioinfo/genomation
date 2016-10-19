@@ -6,6 +6,15 @@ NEW FUNCTIONS AND FEATURES
   coverage of a set of exons.
 * ScoreMatrix-like functions work with bigWig files
   and supplied weight.col and is.noCovNA=TRUE
+  
+IMPROVEMENTS AND BUG FIXES
+* Added warning for rpm=TRUE and type='bigWig'
+* type='auto' by default in ScoreMatrix-like functions 
+* narrowPeak() and broadPeak() are 0-based by default (#144 fixed)
+* Fixed error in readGeneric when reading files with numeric chromosomes (#133 fixed)
+* Show warning if windows fall off target 
+* Show error if windows have width 1
+
 
 genomation 1.5.6
 --------------
