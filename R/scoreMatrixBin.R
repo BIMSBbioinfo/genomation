@@ -515,44 +515,64 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRangesList"),
 #' @aliases ScoreMatrixBin,character,GRangesList-method
 #' @rdname ScoreMatrixBin-methods
 #' @usage  \\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
-#'                                                      bin.op='mean',strand.aware, type,
+#'                                                      bin.op='mean',strand.aware, 
+#'                                                      weight.col=NULL,
+#'                                                      is.noCovNA=FALSE, type='auto',
 #'                                                      rpm, unique, extend, param,
 #'                                                      bam.paired.end=FALSE, 
 #'                                                      library.size=NULL)
 setMethod("ScoreMatrixBin",signature("character","GRangesList"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
-                   type, rpm, unique, extend, param,
+                   weight.col=NULL,is.noCovNA=FALSE, type='auto', 
+                   rpm, unique, extend, param,
                    bam.paired.end=FALSE, library.size=NULL){
             
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
-            fmbw = c('bigWig','bw','bigwig','BigWig')
-            if(!type %in% c('bam', fmbw)){
-              if(type==""){
-                stop(paste0('set argument type to "bam" or "bigWig"\n'))
-              }
-              stop('currently supported formats are bam and bigWig\n')
-            }
-            if(type == 'bam' & !grepl('bam$',target))
-              warning('you have set type="bam", but the designated file does not have .bam extension')
-            if(type == 'bigWig' & !grepl('bw$|bigWig$|bigwig$|BigWig$',target))
-              warning('you have set type="bigWig", but the designated file does not have .bw extension')
+            type = target.type(target, type)
+            
+            if( type=="bigWig" & rpm==TRUE)
+              warning("rpm=TRUE is not supported for type='bigWig'")
             
             if(type == 'bam')
               covs = readBam(target, unlist(windows), 
                              rpm=rpm, unique=unique, 
                              extend=extend, param=param,
                              paired.end=bam.paired.end, library.size=library.size)
-            if(type %in% fmbw)
-              covs = readBigWig(target=target, 
-                                windows=unlist(windows))        
-            # get coverage vectors
-            ScoreMatrixBin(covs,
-                           windows,
-                           bin.num=bin.num,
-                           bin.op=bin.op,
-                           strand.aware=strand.aware)
+              return(ScoreMatrixBin(covs,
+                                  windows,
+                                  bin.num=bin.num,
+                                  bin.op=bin.op,
+                                  strand.aware=strand.aware))
+            
+            if(type == 'bigWig'){
+              if(is.noCovNA==FALSE){
+                covs = readBigWig(target=target, windows=unlist(windows))
+                # get coverage vectors
+                return(ScoreMatrixBin(covs,
+                                      windows,
+                                      bin.num=bin.num,
+                                      bin.op=bin.op,
+                                      strand.aware=strand.aware))
+                
+              }else{
+                if(is.null(windows)){
+                  target.gr = import(target)
+                }else{
+                  target.gr = import(target, which=unlist(windows))
+                }
+                if(length(target.gr) == 0)
+                  stop('There are no ranges selected')
+                return(ScoreMatrixBin(target.gr,
+                                      windows,
+                                      bin.num=bin.num,
+                                      bin.op=bin.op,
+                                      strand.aware=strand.aware,
+                                      weight.col=weight.col,
+                                      is.noCovNA=is.noCovNA))
+              }
+            }
           })
 
