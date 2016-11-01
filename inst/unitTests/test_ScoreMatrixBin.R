@@ -208,45 +208,39 @@ test_ScoreMatrixBin_RleList_GRangesList = function()
   s9 = ScoreMatrixBin(target, grl, bin.num=3, strand.aware=T)
   checkEquals(s9, as(m9, "ScoreMatrix"))
 }
-# # ---------------------------------------------------------------------------- #
-# test for ScoreMatrixBin function
-test_ScoreMatrixBin_character_GRangesList = function()
-{
-  target = GRanges(rep(c(1,2),each=7), 
-                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
-                   weight = rep(c(1,2),each=7), 
-                   strand=c('-', '-', '-', '-', '+', '-', '+', 
-                            '-', '-', '-', '-', '-', '-', '+'))
-  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="-")
-  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="+")
-  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
-  
-  # -----------------------------------------------#
-  # usage
-  # bam file
-  bam.file = system.file('unitTests/test.bam', package='genomation')
-  s10 = ScoreMatrixBin(bam.file, t, type='bam', bin.num=2)
-  m10 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
-  checkEquals(s10, as(m10, "ScoreMatrix"))
-}
+
 # # ---------------------------------------------------------------------------- #
 # test for ScoreMatrixBin function
 test_ScoreMatrixBin_GRanges_GRangesList = function()
 {
-  target = GRanges(rep(c(1,2),each=7), 
-                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
-                   weight = rep(c(1,2),each=7), 
-                   strand=c('-', '-', '-', '-', '+', '-', '+', 
-                            '-', '-', '-', '-', '-', '-', '+'))
-  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="-")
-  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="+")
-  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
-  # -----------------------------------------------#
-  # usage
-  s11 = ScoreMatrixBin(target, t, type='bam', bin.num=2)
-  m11 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
-  checkEquals(s11, as(m11, "ScoreMatrix"))
+  target = RleList('c1'= Rle(c(1,1,1,2,2,2,3,3,3)),
+                   'c2'= Rle(c(10,10,10,20,20,20,30,30,30)))
+  target = as(target, 'GRanges')
+  
+  gr1 = GRanges(rep('c1',each=3), IRanges(c(1, 4, 7),width=3), strand="-")
+  gr2 = GRanges(rep('c2',each=3), IRanges(c(1, 4, 7),width=3), strand="+")
+  grl = GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  
+  s11 = ScoreMatrixBin(target, grl, bin.num=3, weight.col='score')
+  m11 = matrix(c(1,2,3,10,20,30), ncol=3, byrow=T)
+  checkEquals(s11, as(m11, 'ScoreMatrix'))
 }
 
-
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_character_GRangesList = function()
+{
+  require(GenomicAlignments)
+  bam.file = system.file('unitTests/test.bam', package='genomation')
+  ga = as(readGAlignments(bam.file),'GRanges')
+  
+  gr1 = GRanges(rep('1',each=3), IRanges(c(1, 4, 7),width=3), strand="-")
+  gr2 = GRanges(rep('2',each=3), IRanges(c(1, 4, 7),width=3), strand="+")
+  grl = GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  
+  m12 = ScoreMatrixBin(ga, grl, bin.num=3)
+  s12 = ScoreMatrixBin(bam.file, grl, type='bam', bin.num=3)
+  
+  checkEquals(s12, as(m12, "ScoreMatrix"))
+}
 
