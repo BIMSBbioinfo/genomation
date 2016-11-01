@@ -181,33 +181,31 @@ test_ScoreMatrixBin_RleList_GRangesList = function()
 {
   # usage
   # target RleList, windows GRangesList
-  target = GRanges(rep(c(1,2),each=7), 
-                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
-                   weight = rep(c(1,2),each=7), 
-                   strand=c('-', '-', '-', '-', '+', '-', '+', 
-                            '-', '-', '-', '-', '-', '-', '+'))
-  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1, 10,20),c(6, 12, 25)), strand="-")
-  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1, 10,20),c(6, 12, 25)), strand="+")
-  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  target = RleList('c1'= Rle(c(1,1,1,2,2,2,3,3,3)),
+                   'c2'= Rle(c(10,10,10,20,20,20,30,30,30)))
   
-  s6 = ScoreMatrixBin(coverage(target), t, bin.num=2)
-  m6 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  gr1 = GRanges(rep('c1',each=3), IRanges(c(1, 4, 7),width=3), strand="-")
+  gr2 = GRanges(rep('c2',each=3), IRanges(c(1, 4, 7),width=3), strand="+")
+  grl = GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  
+  s6 = ScoreMatrixBin(target, grl, bin.num=3)
+  m6 = matrix(c(1,2,3,10,20,30), ncol=3, byrow=T)
   checkEquals(s6, as(m6, 'ScoreMatrix'))
   
   #2. test for different bin.op
-  s7 = ScoreMatrixBin(coverage(target), t, bin.num=2, bin.op = "min")
-  m7 = matrix(c(2,2,2,2), ncol=2, byrow=T)
+  s7 = ScoreMatrixBin(target, grl, bin.num=1, bin.op='min')
+  m7 = matrix(c(1,10), ncol=1, byrow=T)
   checkEquals(s7, as(m7, 'ScoreMatrix'))
   
-  s8 = ScoreMatrixBin(coverage(target), t, bin.num=2, bin.op = "max")
-  m8 = matrix(c(4,3,4,3), ncol=2, byrow=T)
+  s8 = ScoreMatrixBin(target, grl, bin.num=1, bin.op='max')
+  m8 = matrix(c(3,30), ncol=1, byrow=T)
   checkEquals(s8, as(m8, 'ScoreMatrix'))
   
   #3. test strand aware
   # almost symmetric values in bins, e.g. 234442
   # that's why even flipped give the same result
-  m9 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
-  s9 = ScoreMatrixBin(coverage(target), t, bin.num=2, strand.aware=T)
+  m9 = matrix(c(3,2,1,10,20,30), ncol=3, byrow=T)
+  s9 = ScoreMatrixBin(target, grl, bin.num=3, strand.aware=T)
   checkEquals(s9, as(m9, "ScoreMatrix"))
 }
 # # ---------------------------------------------------------------------------- #

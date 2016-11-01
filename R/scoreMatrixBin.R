@@ -366,20 +366,19 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             wind.nams = names(windows)
             wind.eltNROWS = elementNROWS(windows)
             
-            unlisted <- unlist(windows)
-            extra.col = rep(wind.nams, wind.eltNROWS)
-            unlisted$transcript.name <- extra.col
+            unlisted = unlist(windows)
+            unlisted$transcript.name = rep(wind.nams, wind.eltNROWS)
             ex = genomation:::constrainRanges(target, 
                                               unlisted )
             # Checks whether some windows are shorter than the wanted window size
-            wi = IRanges::width(ex) < bin.num
-            if(any(wi)){
-              ex = ex[-which(wi)]
-              if(length(ex) == 0)
-                stop('all supplied windows have width < number of bins')
-              warning(paste0("supplied GRangesList object contains ",sum(wi),
-                             " ranges of width < number of bins"))
-            }
+            # wi = IRanges::width(ex) < bin.num
+            # if(any(wi)){
+            #   ex = ex[-which(wi)]
+            #   if(length(ex) == 0)
+            #     stop('all supplied windows have width < number of bins')
+            #   warning(paste0("supplied GRangesList object contains ",sum(wi),
+            #                  " ranges of width < number of bins"))
+            # }
             # After removing windows out of chrs and shorter
             # than window size reconstruct GRangesList without them
             order.transcripts = unique(ex$transcript.name)
