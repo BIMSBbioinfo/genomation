@@ -182,29 +182,32 @@ test_ScoreMatrixBin_RleList_GRangesList = function()
   # usage
   # target RleList, windows GRangesList
   target = RleList('c1'= Rle(c(1,1,1,2,2,2,3,3,3)),
-                   'c2'= Rle(c(10,10,10,20,20,20,30,30,30)))
+                   'c2'= Rle(c(10,10,10,20,20,20,30,30,30)),
+                   'c3'= Rle(c(1,2,3,4,5,6,7,8,9)))
   
   gr1 = GRanges(rep('c1',each=3), IRanges(c(1, 4, 7),width=3), strand="-")
   gr2 = GRanges(rep('c2',each=3), IRanges(c(1, 4, 7),width=3), strand="+")
-  grl = GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  gr3 = GRanges(rep('c3',each=3), IRanges(c(1, 4, 7),width=3), strand="-")
+  grl = GRangesList("transcript1" = gr1, "transcript2" = gr2, 'tr3'=gr3)
   
   s6 = ScoreMatrixBin(target, grl, bin.num=3)
-  m6 = matrix(c(1,2,3,10,20,30), ncol=3, byrow=T)
+  m6 = matrix(c(1,2,3,10,20,30,2,5,8), ncol=3, byrow=T)
   checkEquals(s6, as(m6, 'ScoreMatrix'))
   
   #2. test for different bin.op
   s7 = ScoreMatrixBin(target, grl, bin.num=1, bin.op='min')
-  m7 = matrix(c(1,10), ncol=1, byrow=T)
+  m7 = matrix(c(1,10,1), ncol=1, byrow=T)
   checkEquals(s7, as(m7, 'ScoreMatrix'))
   
   s8 = ScoreMatrixBin(target, grl, bin.num=1, bin.op='max')
-  m8 = matrix(c(3,30), ncol=1, byrow=T)
+  m8 = matrix(c(3,30,9), ncol=1, byrow=T)
   checkEquals(s8, as(m8, 'ScoreMatrix'))
   
   #3. test strand aware
-  m9 = matrix(c(3,2,1,10,20,30), ncol=3, byrow=T)
+  m9 = matrix(c(3,2,1,10,20,30,8,5,2), ncol=3, byrow=T)
   s9 = ScoreMatrixBin(target, grl, bin.num=3, strand.aware=T)
   checkEquals(s9, as(m9, "ScoreMatrix"))
+
 }
 
 # # ---------------------------------------------------------------------------- #
