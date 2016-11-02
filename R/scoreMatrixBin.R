@@ -20,6 +20,7 @@ binner=function(start,end,nbins){
   return( t(cbind(my.start, my.end) )  )
 }
 
+
 # ---------------------------------------------------------------------------- #
 # given a target Rle and windows gets the views to be used for binning
 getViewsBin = function(target, windows, bin.num){
@@ -361,13 +362,14 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             
             if( length(names(windows)) != length(unique(names(windows))) )
               stop("Windows don't have unique names")
-            
+
             # Remove windows that fall of the chromosomes
             unlisted = unlist(windows)
             unlisted$'.trname' = rep(names(windows), elementNROWS(windows))
-            unlisted = sort(unlisted)
+            if(is.unsorted(unlisted))
+              unlisted = sort(unlisted)
             ex = genomation:::constrainRanges(target, 
-                                              unlisted )
+                                              unlisted)
             
             # extracts the coverage vectors for individual exons and
             # concatenates them together
@@ -376,28 +378,37 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             dex.cvg = dex.cvg[,list(cvg=list(unlist(cvg, use.names=FALSE))),by=id]
             
             # reorders the coverage vectors to correspond to the original GRList
-            dex.cvg = dex.cvg[match(names(windows),dex.cvg$id),]
-            
+            dex.cvg = dex.cvg[match(unique(ex$'.trname'),dex.cvg$id),]
+
             if (strand.aware){
               dex.cvg$strand = unlist(runValue(strand(windows))[dex.cvg$id])
-              dex.cvg[dex.cvg$strand == '-',cvg := list(list(rev(unlist(cvg))))]
+              dex.cvg[dex.cvg$strand == '-',cvg := list(list(rev(unlist(cvg)))), by=list(id[strand=='-'])]
             }
             
+            # removes transcripts seqlen < bin.num
+            seqlen = dex.cvg[,length(cvg[[1]]), by=id]$V1
+            wi = seqlen < bin.num
+            if(any(wi)){
+              dex.cvg = dex.cvg[!wi]
+              if(nrow(dex.cvg) == 0)
+                stop('all supplied windows have width < number of bins')
+              warning('supplied GRangesList object contains ranges of width < number of bins')
+            }
+           
+            
             # constructs the bins for each transcript
-            seqlen = dex.cvg[,length(unlist(cvg, use.names=TRUE)), by=id]$V1
             bins = IRangesList(lapply(seqlen,
                                        function(x)
                                          IRanges(breakInChunks(x, 
                                                                nchunk=bin.num))))
             names(bins) = dex.cvg$id
-            rle = RleList(dex.cvg$cvg)
+            rle = dex.cvg$cvg
             names(rle) = dex.cvg$id
-            
             # bins the signal
             my.vList = RleViewsList(
-              lapply(names(rle),
+                lapply(names(rle),
                      function(seqname)
-                       Views(rle[[seqname]], bins[[seqname]])))
+                       Views(Rle(rle[[seqname]]), bins[[seqname]])))
             # Copied from genomation:::summarizeViewsRle
             # Calculate min/mean/max/median in each bin
             functs = c("min",'mean','max','median')
