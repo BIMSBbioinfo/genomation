@@ -1,4 +1,4 @@
-genomation 1.5.7
+genomation 1.7.1
 --------------
 NEW FUNCTIONS AND FEATURES
 * scoreMatrixBin() calculates coverage over windows that are not only
