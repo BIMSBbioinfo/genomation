@@ -88,7 +88,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
     orig.rows=windows[strand(windows) == '-',]$X_rank
     mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
   }
-  mat = mat[order(as.numeric(rownames(mat))),]
+  mat = mat[order(as.numeric(rownames(mat))),,drop=FALSE]
   return(mat)
   
 }
@@ -178,6 +178,7 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #'                        package = "genomation")
 #' gene.parts = readTranscriptFeatures(bed.file)
 #' transcripts = split(gene.parts$exons, gene.parts$exons$name)
+#' transcripts = transcripts[]
 #' myMat3 = ScoreMatrixBin(target=cage, windows=transcripts[1:250], 
 #'                     bin.num=10)
 #' myMat3                     

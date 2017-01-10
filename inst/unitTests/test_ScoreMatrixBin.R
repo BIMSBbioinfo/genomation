@@ -17,6 +17,11 @@ test_ScoreMatrixBin_RleList_GRanges = function()
   s1 = ScoreMatrixBin(rl, gr1, bin.num=2)
   checkEquals(s1, m1)
   
+  #1.1 check for name dropping
+  s1.1 = ScoreMatrixBin(rl, gr1, bin.num=1)
+  checkEquals(rownames(s1.1),as.character(1:4))
+  
+  
   #2. test for different bin.op
   for(fun in c('min', 'max', 'median')){
     message('testing:', fun)
