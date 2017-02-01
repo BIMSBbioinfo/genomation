@@ -19,7 +19,7 @@ importMethodsFrom("rtracklayer", import)
 #importClassesFrom("GenomicRanges",GRanges,GRangesList)
 
 #importClassesFrom("IRanges", RangedData, RangedDataList, DataTable,
-#                  Annotated, Vector, List, DataTableORNULL, characterORNULL,
+#                  Annotated, Vector, List, DataTable_OR_NULL, character_OR_NULL,
 #                  RangedSelection, SimpleList, DataFrame,SimpleRleList,RleList,SimpleAtomicList,AtomicList,RleViews,RleViewsList)
 
 #importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
