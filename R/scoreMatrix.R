@@ -157,7 +157,7 @@ readBam = function(target, windows, rpm=FALSE,
   if(rpm){
     message('Normalizing to rpm ...')
     if(is.null(library.size)){
-      total = 1e6/sum(idxStats(normalizePath(target))[3])
+      total = 1e6/sum(idxstatsBam(normalizePath(target))[3])
     }else{
       total = 1e6/library.size
     }
@@ -246,8 +246,8 @@ readBigWig = function(target, windows=NULL, ...){
 #' @param library.size numeric indicating total number of mapped reads in a BAM file
 #'                            (\code{rpm} has to be set to TRUE).
 #'                            If is not given (default: NULL) then library size 
-#'                            is calculated using a Samtools idxstats like function:
-#'                            sum(idxStats(target)$mapped).
+#'                            is calculated using the Rsamtools idxstatsBam function:
+#'                            sum(idxstatsBam(target)$mapped).
 #' 
 #' @note
 #' We assume that a paired-end BAM file contains reads with unique ids and we remove 
