@@ -72,8 +72,8 @@ Paired-reads will be treated as fragments.}
 \item{library.size}{numeric indicating total number of mapped reads in a BAM file
 (\code{rpm} has to be set to TRUE).
 If is not given (default: NULL) then library size 
-is calculated using a Samtools idxstats like function:
-sum(idxStats(target)$mapped).}
+is calculated using the Rsamtools idxstatsBam function:
+sum(idxstatsBam(target)$mapped).}
 }
 \value{
 returns a \code{ScoreMatrix} object

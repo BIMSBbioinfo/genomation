@@ -150,8 +150,8 @@ summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
 #' @param library.size numeric indicating total number of mapped reads in a BAM file
 #'                            (\code{rpm} has to be set to TRUE).
 #'                            If is not given (default: NULL) then library size 
-#'                            is calculated using a Samtools idxstats like function:
-#'                            sum(idxStats(target)$mapped).
+#'                            is calculated using the Rsamtools idxstatsBam function:
+#'                            sum(idxstatsBam(target)$mapped).
 #'                                          
 #' @return returns a \code{scoreMatrix} object
 #' 
