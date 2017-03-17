@@ -1,3 +1,9 @@
+genomation 1.7.2
+--------------
+IMPROVEMENTS AND BUG FIXES
+* Now we rely on Rsamtools idxStatsBam function to calculate rpm, previously it was a cpp function 
+  written by alexg9010.
+
 genomation 1.7.1
 --------------
 NEW FUNCTIONS AND FEATURES
