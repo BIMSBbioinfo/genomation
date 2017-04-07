@@ -183,7 +183,7 @@ average enrichment over a certain predefined set of ranges, such as mean coverag
 of a certain histone modification around a transcription factor binding site,
 or visualization of histone positions around transcription start sites.
 
-## Extraction of data over genomic winows
+## Extraction of data over genomic windows
 
 *ScoreMatrix* and *ScoreMatrixBin* are functions used to extract 
 data over predefined windows.
@@ -197,7 +197,7 @@ Both functions have 2 main arguments: *target* and
 *windows*. *target* is the data that we want to extract, while the 
 *windows* represents the regions over which we want to see the enrichment.
 The target data can be in 3 forms: a GRanges, a RLeList or a path to an indexed 
-.bam file. The *windows* must be GRanges object.
+.bam file. The *windows* can be GRanges or GRangesList object.
 
 As an example we will extract the density of cage tags around the promoters on 
 the human chromosome 21.
@@ -209,7 +209,7 @@ sm
 ```
   
 *ScoreMatrixBin* function has an additional *bin.num* argument which
-specifies the number of bins that will represent each windot window  
+specifies the number of bins that will represent each window  
 (ie. it converts windows of unequal width into ones of equal width.). 
 By default, the binning function is set to *mean*.
 ```{r ScoreMatrixBinExample, eval=FALSE, tidy=TRUE}
@@ -229,6 +229,21 @@ that the 10th element in the target GRanges object was used to extract the data)
 If a certain rowname is not present in the ScoreMatrix object, that means that 
 the corresponding range was filtered out (e.g. the range could have been on a 
 chromosome that was not present in the target).
+
+The *windows* of *ScoreMatrixBin* might be not only GRanges, but also GRangesList object. 
+For instance, *ScoreMatrixBin* can be used to calculate transcript coverage of a set of exons. 
+In the example below, *ScoreMatrixBin* function calculates coverage of concatenated
+exons within each transcript together, bins them into 50 bins and 
+calculate average coverage within bins.
+```{r ScoreMatrixBinExample_GRangesList, eval=FALSE, tidy=TRUE}
+data(cage)
+library(GenomicRanges)
+gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package="genomation")
+exons = gffToGRanges(gff.file, filter="exon")
+transcripts = split(exons, exons$transcript_id)
+sm = ScoreMatrixBin(target=cage, windows=transcripts, bin.num=10)
+sm
+```
 
 To simultaneously work on multiple files you can use the *ScoreMatrixList*
 function. The function also has 2 obligatory arguments *targets* and 

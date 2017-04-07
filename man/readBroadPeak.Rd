@@ -5,7 +5,7 @@
 \alias{readBroadPeak}
 \title{A function to read the Encode formatted broad peak file into a GRanges object}
 \usage{
-readBroadPeak(file, track.line=FALSE)
+readBroadPeak(file, track.line=FALSE, zero.based=TRUE)
 }
 \arguments{
 \item{file}{an absolute or relative path to a bed file formatted by the Encode broadPeak standard.
@@ -15,6 +15,9 @@ it can also start with \code{https://} or \code{ftps://}.}
 
 \item{track.line}{the number of track lines to skip, "auto" to detect them automatically
 or FALSE(default) if the bed file doesn't have track lines}
+
+\item{zero.based}{a boolean which tells whether the ranges in 
+the bed file are 0 or 1 base encoded. (Default: TRUE)}
 }
 \value{
 a GRanges object

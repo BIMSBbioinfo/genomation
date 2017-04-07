@@ -1,3 +1,27 @@
+genomation 1.7.2
+--------------
+IMPROVEMENTS AND BUG FIXES
+* Now we rely on Rsamtools idxStatsBam function to calculate rpm, previously it was a cpp function 
+  written by alexg9010.
+
+genomation 1.7.1
+--------------
+NEW FUNCTIONS AND FEATURES
+* scoreMatrixBin() calculates coverage over windows that are not only
+  GRanges, but also GRangesList. It's usefull for calculating transcript
+  coverage of a set of exons.
+* ScoreMatrix-like functions work with bigWig files
+  and supplied weight.col and is.noCovNA=TRUE
+  
+IMPROVEMENTS AND BUG FIXES
+* Added warning for rpm=TRUE and type='bigWig'
+* type='auto' by default in ScoreMatrix-like functions 
+* narrowPeak() and broadPeak() are 0-based by default (#144 fixed)
+* Fixed error in readGeneric when reading files with numeric chromosomes (#133 fixed)
+* Show warning if windows fall off target 
+* Show error if windows have width 1
+
+
 genomation 1.5.6
 --------------
 NEW FUNCTIONS AND FEATURES

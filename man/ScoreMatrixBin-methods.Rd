@@ -4,34 +4,61 @@
 \name{ScoreMatrixBin}
 \alias{ScoreMatrixBin}
 \alias{ScoreMatrixBin,GRanges,GRanges-method}
+\alias{ScoreMatrixBin,GRanges,GRangesList-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
+\alias{ScoreMatrixBin,RleList,GRangesList-method}
 \alias{ScoreMatrixBin,character,GRanges-method}
+\alias{ScoreMatrixBin,character,GRangesList-method}
 \title{Get bin score for bins on each window}
 \usage{
 ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
   strand.aware = FALSE, weight.col = NULL, is.noCovNA = FALSE,
-  type = "", rpm = FALSE, unique = FALSE, extend = 0, param = NULL,
-  bam.paired.end = FALSE, library.size = NULL)
+  type = "auto", rpm = FALSE, unique = FALSE, extend = 0,
+  param = NULL, bam.paired.end = FALSE, library.size = NULL)
 
 \\S4method{ScoreMatrixBin}{RleList,GRanges}(target, windows, bin.num, bin.op,
                                                    strand.aware)
 
-\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,bin.num,bin.op,
-                                                   strand.aware,weight.col,is.noCovNA)
+\\S4method{ScoreMatrixBin}{GRanges,GRanges}(target,windows,
+                                                   bin.num,bin.op,
+                                                   strand.aware,weight.col,
+                                                   is.noCovNA)
 
 \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
-                                                     bin.op='mean',strand.aware, type,
+                                                     bin.op='mean',strand.aware, 
+                                                     weight.col=NULL,
+                                                     is.noCovNA=FALSE, type='auto',
+                                                     rpm, unique, extend, param,
+                                                     bam.paired.end=FALSE, 
+                                                     library.size=NULL)
+
+\\S4method{ScoreMatrixBin}{RleList,GRangesList}(target,windows,
+                                                        bin.num, bin.op,
+                                                        strand.aware)
+
+\\S4method{ScoreMatrixBin}{GRanges,GRangesList}(target,windows,
+                                                   bin.num,bin.op,
+                                                   strand.aware,weight.col,
+                                                   is.noCovNA)
+
+\\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
+                                                     bin.op='mean',strand.aware, 
+                                                     weight.col=NULL,
+                                                     is.noCovNA=FALSE, type='auto',
                                                      rpm, unique, extend, param,
                                                      bam.paired.end=FALSE, 
                                                      library.size=NULL)
 }
 \arguments{
-\item{target}{\code{RleList},  \code{GRanges}, BAM file or a bigWig file 
+\item{target}{\code{RleList}, \code{GRanges}, a BAM file or a bigWig file 
 object to be overlapped with ranges in \code{windows}}
 
-\item{windows}{\code{GRanges} object that contains the windows of interest. 
-It could be promoters, CpG islands, exons, introns. However, 
-the sizes of windows does NOT have to be equal.}
+\item{windows}{\code{GRanges} or \code{GRangesList} object that contains
+the windows of interest. It could be promoters, CpG islands, 
+exons, introns as GRanges object or GrangesList object representing
+exons of each transcript. Exons must be ordered by ascending rank
+by their position in transcript. The sizes of windows 
+does NOT have to be equal.}
 
 \item{bin.num}{single \code{integer} value denoting how many bins there 
 should be for each window}
@@ -46,7 +73,7 @@ If the strand of a window is -, the values of the bins
 for that window will be reversed}
 
 \item{weight.col}{if the object is \code{GRanges} object a numeric column
- in meta data part can be used as weights. This is particularly
+in meta data part can be used as weights. This is particularly
 useful when genomic regions have scores other than their
 coverage values, such as percent methylation, conservation
 scores, GC content, etc.}
@@ -58,7 +85,8 @@ if TRUE,and if 'target' is a GRanges object with 'weight.col'
  you can not have coverage all over the genome, such as CpG
   methylation values.}
 
-\item{type}{if target is a character vector of file paths, then type designates 
+\item{type}{(Default:"auto")
+if target is a character vector of file paths, then type designates 
 the type of the corresponding files (bam or bigWig)}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion reads. 
@@ -78,19 +106,19 @@ fragments.}
 \item{library.size}{numeric indicating total number of mapped reads in a BAM file
 (\code{rpm} has to be set to TRUE).
 If is not given (default: NULL) then library size 
-is calculated using a Samtools idxstats like function:
-sum(idxStats(target)$mapped).}
+is calculated using the Rsamtools idxstatsBam function:
+sum(idxstatsBam(target)$mapped).}
 }
 \value{
 returns a \code{scoreMatrix} object
 }
 \description{
-The function firsts bins each window to equal number of bins, and calculates
-the a summary metrix for scores of each bin (currently, mean, max and min supported)
+The function first bins each window to equal number of bins, and calculates
+the a summary matrix for scores of each bin (currently, mean, max and min supported)
 A scoreMatrix object can be used to draw average profiles or heatmap of read coverage
-or wig track-like data. \code{windows} can be a predefined region such as CpG islands
-or gene bodies that are not necessarily equi-width. Each window will be chopped to 
-equal number of bins based on \code{bin.num} option.
+or wig track-like data. \code{windows} can be a predefined region such as CpG islands,
+gene bodies, transcripts or CDS (coding sequences) that are not necessarily equi-width. 
+Each window will be chopped to equal number of bins based on \code{bin.num} option.
 }
 \examples{
 data(cage)
@@ -108,6 +136,16 @@ myMat2=ScoreMatrixBin(target=cage,
 \donttest{
 plot(colMeans(myMat2,na.rm=TRUE),type="l")
 }
+
+# Compute transcript coverage of a set of exons.
+library(GenomicRanges)
+bed.file = system.file("extdata/chr21.refseq.hg19.bed", 
+                       package = "genomation")
+gene.parts = readTranscriptFeatures(bed.file)
+transcripts = split(gene.parts$exons, gene.parts$exons$name)
+myMat3 = ScoreMatrixBin(target=cage, windows=transcripts[1:250], 
+                    bin.num=10)
+myMat3                     
 }
 \seealso{
 \code{\link{ScoreMatrix}}
