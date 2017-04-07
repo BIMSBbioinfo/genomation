@@ -235,7 +235,6 @@
 #' @docType methods
 #' @rdname patternMatrix-methods           
 #' @export
-#' 
 setGeneric(
   name="patternMatrix",
   def=function(pattern, windows, 

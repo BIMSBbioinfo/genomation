@@ -9,7 +9,7 @@
 \title{Get base-pair score for bases in each window}
 \usage{
 ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
-  is.noCovNA = FALSE, type = "", rpm = FALSE, unique = FALSE,
+  is.noCovNA = FALSE, type = "auto", rpm = FALSE, unique = FALSE,
   extend = 0, param = NULL, bam.paired.end = FALSE, library.size = NULL)
 
 \\S4method{ScoreMatrix}{RleList,GRanges}(target,windows,strand.aware)
@@ -17,8 +17,9 @@ ScoreMatrix(target, windows, strand.aware = FALSE, weight.col = NULL,
 \\S4method{ScoreMatrix}{GRanges,GRanges}(target, windows, strand.aware,
                                                 weight.col, is.noCovNA)
 
-\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware, 
-                                                  type='', rpm=FALSE,
+\\S4method{ScoreMatrix}{character,GRanges}(target, windows, strand.aware,
+                                                  weight.col=NULL,is.noCovNA=FALSE, 
+                                                  type='auto', rpm=FALSE,
                                                   unique=FALSE, extend=0, param=NULL, 
                                                   bam.paired.end=FALSE,
                                                   library.size=NULL)
@@ -50,8 +51,9 @@ if TRUE,and if 'target' is a GRanges object with 'weight.col'
  you can not have coverage all over the genome, such as CpG 
  methylation values.}
 
-\item{type}{if target is a character vector of file paths, then type designates
-the type of the corresponding files (bam or bigWig)}
+\item{type}{(Default:"auto")
+if target is a character vector of file paths, then type designates
+the type of the corresponding files (bam or bigWig).}
 
 \item{rpm}{boolean telling whether to normalize the coverage to per milion 
 reads. FALSE by default. See \code{library.size}.}
@@ -70,8 +72,8 @@ Paired-reads will be treated as fragments.}
 \item{library.size}{numeric indicating total number of mapped reads in a BAM file
 (\code{rpm} has to be set to TRUE).
 If is not given (default: NULL) then library size 
-is calculated using a Samtools idxstats like function:
-sum(idxStats(target)$mapped).}
+is calculated using the Rsamtools idxstatsBam function:
+sum(idxstatsBam(target)$mapped).}
 }
 \value{
 returns a \code{ScoreMatrix} object
