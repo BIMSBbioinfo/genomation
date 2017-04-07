@@ -15,7 +15,7 @@ setMethod("Ops", signature(e1="ScoreMatrix", e2="ScoreMatrix"),
 
 #' Extract method for a ScoreMatrix object. 
 #' 
-# @aliases [,ScoreMatrix-method
+#' @aliases [,ScoreMatrix-method
 #' @param x the \code{\link{ScoreMatrix}} object
 #' @param i numeric value
 #' @param j numeric value
@@ -105,7 +105,7 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
 
 #' Extract method for a ScoreMatrixList object. 
 #' 
-# @aliases [,ScoreMatrixList-method
+#' @aliases [,ScoreMatrixList-method
 #' @param x the \code{\link{ScoreMatrixList}} object
 #' @param i numeric value
 #' @aliases extract,ScoreMatrixList,ANY-method

@@ -115,7 +115,7 @@ test_ScoreMatrixBin_character_GRanges = function()
   
   # bam file, rpm=TRUE
   s2 = ScoreMatrixBin(bam.file, windows,bin.num=2, type='bam', rpm=TRUE)
-  tot = 1e6/sum(idxStats(normalizePath(bam.file))$mapped)
+  tot = 1e6/sum(idxstatsBam(normalizePath(bam.file))$mapped)
   m2 = m1*tot
   checkEquals(s2, m2)
   
@@ -135,15 +135,24 @@ test_ScoreMatrixBin_character_GRanges = function()
   m5 = ScoreMatrixBin(resize(unique(target.paired.end), width=16), windows.paired.end)
   checkEquals(s5,m5)
   
-  #bigWig file - missing
+  # bigWig file with is.noCovNA=TRUE and weight.col="score"
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
+  g = GRanges(seqnames=c("chr2","chr19", "chr19", "chr19"),
+              IRanges(start=c(1201, 1501, 2401, 2800), width=6),
+              strand='*')
+  s1 = ScoreMatrixBin(test_bw, g, strand.aware=FALSE, 
+                   weight.col="score",is.noCovNA=TRUE,
+                   type="bigWig", bin.num=2)
+  m1 = matrix(c(rep(0, 2), rep(0.25,2), rep(1,2), rep(NA,2)), 
+              nrow=4,  byrow = TRUE)
+  rownames(m1) = 1:4
+  m1 = as(m1, 'ScoreMatrix')
+  checkEquals(s1, m1)
   
   # -----------------------------------------------#
   # errors
   # error upon not specifying the file
   checkException(ScoreMatrixBin('',windows), silent=TRUE)
-  
-  # error upon not specifying the format
-  checkException(ScoreMatrixBin(bam.file, target), silent=TRUE)
 }
 
 # ---------------------------------------------------------------------------- #
@@ -165,3 +174,81 @@ test_that_ScoreMatrix_character_GRange_bigWig = function()
   m = as(m, 'ScoreMatrix')
   checkEquals(s, m)
 }
+
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_RleList_GRangesList = function()
+{
+  # usage
+  # target RleList, windows GRangesList
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', 
+                            '-', '-', '-', '-', '-', '-', '+'))
+  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1, 10,20),c(6, 12, 25)), strand="-")
+  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1, 10,20),c(6, 12, 25)), strand="+")
+  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  
+  s6 = ScoreMatrixBin(coverage(target), t, bin.num=2)
+  m6 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  checkEquals(s6, as(m6, 'ScoreMatrix'))
+  
+  #2. test for different bin.op
+  s7 = ScoreMatrixBin(coverage(target), t, bin.num=2, bin.op = "min")
+  m7 = matrix(c(2,2,2,2), ncol=2, byrow=T)
+  checkEquals(s7, as(m7, 'ScoreMatrix'))
+  
+  s8 = ScoreMatrixBin(coverage(target), t, bin.num=2, bin.op = "max")
+  m8 = matrix(c(4,3,4,3), ncol=2, byrow=T)
+  checkEquals(s8, as(m8, 'ScoreMatrix'))
+  
+  #3. test strand aware
+  # almost symmetric values in bins, e.g. 234442
+  # that's why even flipped give the same result
+  m9 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  s9 = ScoreMatrixBin(coverage(target), t, bin.num=2, strand.aware=T)
+  checkEquals(s9, as(m9, "ScoreMatrix"))
+}
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_character_GRangesList = function()
+{
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', 
+                            '-', '-', '-', '-', '-', '-', '+'))
+  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="-")
+  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="+")
+  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  
+  # -----------------------------------------------#
+  # usage
+  # bam file
+  bam.file = system.file('unitTests/test.bam', package='genomation')
+  s10 = ScoreMatrixBin(bam.file, t, type='bam', bin.num=2)
+  m10 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  checkEquals(s10, as(m10, "ScoreMatrix"))
+}
+# # ---------------------------------------------------------------------------- #
+# test for ScoreMatrixBin function
+test_ScoreMatrixBin_GRanges_GRangesList = function()
+{
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', 
+                            '-', '-', '-', '-', '-', '-', '+'))
+  gr1 = GRanges(rep(c(1),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="-")
+  gr2 = GRanges(rep(c(2),each=3), IRanges(c(1,10,20),c(6, 12, 25)), strand="+")
+  t <- GRangesList("transcript1" = gr1, "transcript2" = gr2)
+  # -----------------------------------------------#
+  # usage
+  s11 = ScoreMatrixBin(target, t, type='bam', bin.num=2)
+  m11 = matrix(c(3.4, 2.5, 3.4, 2.5), ncol=2, byrow=T)
+  checkEquals(s11, as(m11, "ScoreMatrix"))
+}
+
+
+

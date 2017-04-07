@@ -113,7 +113,7 @@ test_ScoreMatrix_character_GRanges = function()
   
   # bam file, rpm=TRUE
   s2 = ScoreMatrix(bam.file, windows, type='bam', rpm=TRUE)
-  tot = 1e6/sum(idxStats(normalizePath(bam.file))$mapped)
+  tot = 1e6/sum(idxstatsBam(normalizePath(bam.file))$mapped)
   m2 = m1*tot
   checkEquals(s2, m2)
   
@@ -148,9 +148,6 @@ test_ScoreMatrix_character_GRanges = function()
   # error upon not specifying the file
   checkException(ScoreMatrix('',windows), silent=TRUE)
   
-  # error upon not specifying the format
-  checkException(ScoreMatrix(bam.file, target), silent=TRUE)
-  
 }
 
 # ---------------------------------------------------------------------------- #
@@ -169,6 +166,20 @@ test_ScoreMatrix_character_GRanges_bigWig = function()
   rownames(m) = 1:6
   m = as(m, 'ScoreMatrix')
   checkEquals(s, m)
+  
+  # test is.noCovNA
+  test_bw <- system.file("unitTests/test.bw", package = "genomation")
+  g = GRanges(seqnames=c("chr2","chr19", "chr19", "chr19"),
+              IRanges(start=c(1201, 1501, 2401, 2800), width=6),
+              strand='*')
+  s1 = ScoreMatrix(test_bw, g, strand.aware=FALSE, 
+                   weight.col="score", 
+                   is.noCovNA=TRUE,  type="bigWig")
+  m1 = matrix(c(rep(0, 6), rep(0.25,6), rep(1,6), rep(NA,6)), 
+             nrow=4,  byrow = TRUE)
+  rownames(m1) = 1:4
+  m1 = as(m1, 'ScoreMatrix')
+  checkEquals(s1, m1)
 }
 
 
@@ -245,6 +256,3 @@ test_scaleScoreMatrix = function()
   m3 = as(matrix(0,nrow=3,ncol=3),'ScoreMatrix')
   checkEquals(s3,m3, tolerance=1e-5)
 }
-
-
-        
