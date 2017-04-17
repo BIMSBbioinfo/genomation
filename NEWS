@@ -1,3 +1,9 @@
+genomation 1.7.3
+--------------
+IMPROVEMENTS AND BUG FIXES
+* added OS check for tests involving BigWig files. They can not be read in
+  windows OS.
+
 genomation 1.7.2
 --------------
 IMPROVEMENTS AND BUG FIXES
