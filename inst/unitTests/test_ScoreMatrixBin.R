@@ -135,6 +135,9 @@ test_ScoreMatrixBin_character_GRanges = function()
   m5 = ScoreMatrixBin(resize(unique(target.paired.end), width=16), windows.paired.end)
   checkEquals(s5,m5)
   
+  if (.Platform$OS.type == "windows")
+       return()
+  
   # bigWig file with is.noCovNA=TRUE and weight.col="score"
   test_bw <- system.file("unitTests/test.bw", package = "genomation")
   g = GRanges(seqnames=c("chr2","chr19", "chr19", "chr19"),
