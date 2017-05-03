@@ -143,7 +143,7 @@ ScoreMatrixList = function(targets, windows=NULL, bin.num=NULL,
                                  unique=unique, extend=extend, param=param,
                                  bin.num,library.size=library.size){
     
-    message(paste("working on", names(targets)[i]))
+    message(paste("working on", basename(targets)[i]))
     
     if(is.null(bin.num) && all(width(windows) == unique(width(windows)))){
       
