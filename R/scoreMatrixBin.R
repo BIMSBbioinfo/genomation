@@ -362,95 +362,47 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             if( length(names(windows)) != length(unique(names(windows))) )
               stop("Windows don't have unique names")
             
+            if(any(elementNROWS(windows)< bin.num))
+              stop('Please remove transcripts that are shorter than bin.num')
+            
             # Remove windows that fall of the chromosomes
-            wind.nams = names(windows)
-            wind.eltNROWS = elementNROWS(windows)
-            
-            unlisted <- unlist(windows)
-            extra.col = rep(wind.nams, wind.eltNROWS)
-            unlisted$transcript.name <- extra.col
+            unlisted = unlist(windows)
+            unlisted$'.trname' = rep(names(windows), elementNROWS(windows))
+            if(is.unsorted(unlisted))
+              unlisted = sort(unlisted)
             ex = genomation:::constrainRanges(target, 
-                                              unlisted )
-            # Checks whether some windows are shorter than the wanted window size
-            wi = IRanges::width(ex) < bin.num
-            if(any(wi)){
-              ex = ex[-which(wi)]
-              if(length(ex) == 0)
-                stop('all supplied windows have width < number of bins')
-              warning(paste0("supplied GRangesList object contains ",sum(wi),
-                             " ranges of width < number of bins"))
-            }
-            # After removing windows out of chrs and shorter
-            # than window size reconstruct GRangesList without them
-            order.transcripts = unique(ex$transcript.name)
-            tbl = table(ex$transcript.name)
-            tbl.ord = tbl[ order(match(names(tbl),order.transcripts)) ]
-            n.elements.ingrl = as.numeric(tbl.ord) 
-            names.elements.ingrl = names(tbl.ord)
+                                              unlisted)
             
-            windows.new = relist(
-              ex, 
-              # PartitioningByWidth indicates only structure of
-              # new GRangesList after removing windows out of chrs.
-              # Content (start, end, strand) doesn't matter for 
-              # the relist function.
-              PartitioningByWidth( n.elements.ingrl )
-            )
-            names(windows.new) <- names.elements.ingrl
+            # extracts the coverage vectors for individual exons and
+            # concatenates them together
+            ex_cvg = as(target[ex],'NumericList')
+            dex.cvg = data.table(cvg = as.list(ex_cvg), id=ex$'.trname')
+            dex.cvg = dex.cvg[,list(cvg=list(unlist(cvg, use.names=FALSE))),by=id]
             
-            if(length(windows.new) < length(windows)){
-              warning(paste0( "supplied GRangesList object contains ",
-                              length(windows)-length(windows.new), 
-                              " GRanges objects in which ",
-                              "all windows\n",
-                              "fall off chromosomes or ",
-                              "windows were shorter than wanted",
-                              " window size (bin.num arg)."))
-            }
-            ## Copied from GenomicFeatures::coverageByTranscript
-            ## We could simply do 'uex <- unique(ex)' here but we're going to need
-            ## 'sm' and 'is_unique' later to compute the "reverse index" so we compute
-            ## them now and use them to extract the unique exons. That way we hash
-            ## 'ex' only once (the expensive operation).
-            sm <- selfmatch(ex)  # uses a hash table internally
-            is_unique <- sm == seq_along(sm)
-            uex2ex <- which(is_unique)  # index of unique exons
-            uex <- ex[uex2ex]  # unique exons
+            # reorders the coverage vectors to correspond to the original GRList
+            dex.cvg = dex.cvg[match(unique(ex$'.trname'),dex.cvg$id),]
             
-            ## 2) Compute coverage for each unique exon ('uex_cvg').
-            # coverage for every window regardless from which transcript they come from
-            cvg <- target
-            uex_cvg <- cvg[uex]
             
-            ## 3) Flip coverage for exons on minus strand.
             if (strand.aware){
-              uex_cvg <- revElements(uex_cvg, strand(uex) == "-")
+              dex.cvg$strand = unlist(runValue(strand(windows))[dex.cvg$id])
+              dex.cvg[dex.cvg$strand == '-',cvg := list(list(rev(unlist(cvg))))]
             }
-
-            ## 4) Compute coverage by original exon ('ex_cvg').
-            ex2uex <- (seq_along(sm) - cumsum(!is_unique))[sm]  # reverse index
-            stopifnot(identical(ex2uex[uex2ex], seq_along(uex2ex)))  # sanity
-            stopifnot(identical(ex2uex[sm], ex2uex))  # sanity
-            stopifnot(all(uex[ex2uex] == ex))  # sanity
-            ex_cvg <- uex_cvg[ex2uex]  # parallel go 'ex'
             
-            ## 5) Compute coverage of each transcript by concatenating coverage of its
-            ##    exons.
-            ans <- IRanges:::regroupBySupergroup(ex_cvg, windows.new)
-            mcols(ans) <- mcols(windows.new)  # names() would work too
+            # constructs the bins for each transcript
+            seqlen = dex.cvg[,length(unlist(cvg, use.names=TRUE)), by=id]$V1
+            bins = IRangesList(lapply(seqlen,
+                                       function(x)
+                                         IRanges(breakInChunks(x, 
+                                                               nchunk=bin.num))))
+            names(bins) = dex.cvg$id
+            rle = RleList(dex.cvg$cvg)
+            names(rle) = dex.cvg$id
             
-            ans.gr = as(ans, "GRanges")
-            bins <- IRangesList(lapply(seqlengths(ans.gr),
-                                       function(seqlen)
-                                         IRanges(breakInChunks(seqlen, 
-                                                               (seqlen / bin.num) + 1))))
-            # Bin concatenated exons
-            bins.gr <- as(bins, "GRanges")
-            seqinfo(bins.gr) <- seqinfo(ans.gr)
-            my.vList <- RleViewsList(
-              lapply(names(ans),
+            # bins the signal
+            my.vList = RleViewsList(
+              lapply(names(rle),
                      function(seqname)
-                       Views(ans[[seqname]], bins[[seqname]])))
+                       Views(rle[[seqname]], bins[[seqname]])))
             # Copied from genomation:::summarizeViewsRle
             # Calculate min/mean/max/median in each bin
             functs = c("min",'mean','max','median')
