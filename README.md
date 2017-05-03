@@ -31,4 +31,4 @@ install_github("BIMSBbioinfo/genomation",build_vignettes=FALSE)
 ```
 
 # Using the package
-see the package vignette [here](http://www.bioconductor.org/packages/release/bioc/vignettes/genomation/inst/doc/GenomationManual-knitr.html)
+see the package vignette [here](http://www.bioconductor.org/packages/release/bioc/vignettes/genomation/inst/doc/GenomationManual.html)
