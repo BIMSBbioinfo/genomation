@@ -363,7 +363,7 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             if( length(names(windows)) != length(unique(names(windows))) )
               stop("Windows don't have unique names")
             
-            if(any(elementNROWS(windows)< bin.num))
+            if(any(sum(width(windows))< bin.num))
               stop('Please remove transcripts that are shorter than bin.num')
             
             # Remove windows that fall of the chromosomes

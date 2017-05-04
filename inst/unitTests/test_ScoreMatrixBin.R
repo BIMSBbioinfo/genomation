@@ -217,6 +217,11 @@ test_ScoreMatrixBin_RleList_GRangesList = function()
   m9 = matrix(c(3,2,1,10,20,30,8,5,2), ncol=3, byrow=T)
   s9 = ScoreMatrixBin(target, grl, bin.num=3, strand.aware=T)
   checkEquals(s9, as(m9, "ScoreMatrix"))
+  
+  #4. test bin.num exception
+  checkException(ScoreMatrixBin(target, grl, bin.num=4, strand.aware=T),
+                 'Please remove transcripts that are shorter than bin.num',
+                 silent=TRUE)
 
 }
 
