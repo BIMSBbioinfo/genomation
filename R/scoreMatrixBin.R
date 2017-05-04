@@ -383,10 +383,9 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             # reorders the coverage vectors to correspond to the original GRList
             dex.cvg = dex.cvg[match(unique(ex$'.trname'),dex.cvg$id),]
             
-            
             if (strand.aware){
               dex.cvg$strand = unlist(runValue(strand(windows))[dex.cvg$id])
-              dex.cvg[dex.cvg$strand == '-',cvg := list(list(rev(unlist(cvg))))]
+              dex.cvg[dex.cvg$strand == '-',cvg := list(list(rev(unlist(cvg)))), by=list(id)]
             }
             
             # constructs the bins for each transcript
