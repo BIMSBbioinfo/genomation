@@ -50,7 +50,6 @@ Suggests:
     BiocGenerics,
     genomationData,
     knitr,
-    knitrBootstrap,
     RColorBrewer,
     rmarkdown
 Collate:
