@@ -53,6 +53,7 @@ Suggests:
     RColorBrewer,
     rmarkdown
 Collate:
+	'combineScoreMatrixList.R'
     'documentData.R'
     'genomation-classes.R'
     'getRandomEnrichment.R'
@@ -68,4 +69,4 @@ Collate:
     'Ops.R'
     'test_genomation_package.R'
     'deprecated_defunct.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1.9000
