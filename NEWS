@@ -1,3 +1,11 @@
+genomation 1.9.1
+--------------
+IMPROVEMENTS AND BUG FIXES
+* The knitrBootstrap dependecy is removed and following issues are fixed
+   - https://github.com/BIMSBbioinfo/genomation/issues/135
+   - https://github.com/BIMSBbioinfo/genomation/issues/146
+   - https://github.com/BIMSBbioinfo/genomation/issues/147
+
 genomation 1.7.3
 --------------
 IMPROVEMENTS AND BUG FIXES
