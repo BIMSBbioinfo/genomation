@@ -191,7 +191,63 @@ test_ScoreMatrixList_Ops = function()
   sml2 = as(lapply(sml, function(x) x*10), "ScoreMatrixList")
   checkEquals(sml1, sml2, checkNames=FALSE)
 }
-
-
-
+# ---------------------------------------------------------------------------- #
+# Combine scoreMatrix objects into a scoreMatrixList
+test_ScoreMatrixList_combine = function()
+{
+  target = GRanges(rep(c(1,2),each=7), 
+                   IRanges(rep(c(1,1,2,3,7,8,9), times=2), width=5),
+                   weight = rep(c(1,2),each=7), 
+                   strand=c('-', '-', '-', '-', '+', '-', '+', '-', 
+                            '-', '-', '-', '-', '-', '+'))
+  windows = GRanges(rep(c(1,2),each=2), IRanges(rep(c(1,2), times=2), width=5), 
+                    strand=c('-','+','-','+'))
+  
+  tar.list1 = list(tar1=target, tar2=target)
+  sml = ScoreMatrixList(tar.list1, windows)
+  s1 = ScoreMatrix(target=target, windows=windows)
+  s2 = ScoreMatrix(target=target, windows=windows)
+  
+  # label names are given by a user
+  sml1 = c(sml,s1=s1,s2=s2)
+  tar.list2 = list(tar1=target, tar2=target, s1=target, s2=target)
+  sml2 = ScoreMatrixList(tar.list2, windows)
+  checkEquals(sml1, sml2)
+  
+  # label names are not given by a user
+  sml3 = c(sml,s1,s2)
+  tar.list4 = list(tar1=target, tar2=target, scoreMatrix3=target, scoreMatrix4=target)
+  sml4 = ScoreMatrixList(tar.list4, windows)
+  checkEquals(sml3, sml4)
+  
+  # lack of the label name of one of the labels
+  sml5 = c(sml,s1,s2=s2)
+  tar.list6 = list(tar1=target, tar2=target, scoreMatrix3=target, s2=target)
+  sml6 = ScoreMatrixList(tar.list6, windows)
+  checkEquals(sml5, sml6)
+  
+  # combine two ScoreMatrixList objects
+  sml7 = c(sml,sml)
+  tar.list8 = list(tar1=target, tar2=target, tar1=target, tar2=target)
+  sml8 = ScoreMatrixList(tar.list8, windows)
+  checkEquals(sml7, sml8)
+  
+  # combine a ScoreMatrix into a ScoreMatrixList object
+  sml9 = c(s1, sml)
+  tar.list10 = list(scoreMatrix1=target, tar1=target, tar2=target)
+  sml10 = ScoreMatrixList(tar.list10, windows)
+  checkEquals(sml9, sml10)
+  
+  # combine a ScoreMatrix into a ScoreMatrixList object
+  sml11 = c(s1, sml, s2)
+  tar.list12 = list(scoreMatrix1=target, tar1=target, tar2=target, scoreMatrix4=target)
+  sml12 = ScoreMatrixList(tar.list12, windows)
+  checkEquals(sml11, sml12)
+  
+  # combine a ScoreMatrix into a ScoreMatrixList object
+  sml13 = c(s1=s1, sml,s2=s2)
+  tar.list14 = list(s1=target, tar1=target, tar2=target, s2=target)
+  sml14 = ScoreMatrixList(tar.list14, windows)
+  checkEquals(sml13, sml14)
+}
 
