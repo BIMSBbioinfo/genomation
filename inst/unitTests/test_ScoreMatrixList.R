@@ -216,13 +216,13 @@ test_ScoreMatrixList_combine = function()
   
   # label names are not given by a user
   sml3 = c(sml,s1,s2)
-  tar.list4 = list(tar1=target, tar2=target, scoreMatrix3=target, scoreMatrix4=target)
+  tar.list4 = list(tar1=target, tar2=target,target,target)
   sml4 = ScoreMatrixList(tar.list4, windows)
   checkEquals(sml3, sml4)
   
   # lack of the label name of one of the labels
   sml5 = c(sml,s1,s2=s2)
-  tar.list6 = list(tar1=target, tar2=target, scoreMatrix3=target, s2=target)
+  tar.list6 = list(tar1=target, tar2=target,target, s2=target)
   sml6 = ScoreMatrixList(tar.list6, windows)
   checkEquals(sml5, sml6)
   
@@ -234,19 +234,19 @@ test_ScoreMatrixList_combine = function()
   
   # combine a ScoreMatrix into a ScoreMatrixList object
   sml9 = c(s1, sml)
-  tar.list10 = list(scoreMatrix1=target, tar1=target, tar2=target)
+  tar.list10 = list(tar1=target, tar2=target, target)
   sml10 = ScoreMatrixList(tar.list10, windows)
   checkEquals(sml9, sml10)
   
   # combine a ScoreMatrix into a ScoreMatrixList object
   sml11 = c(s1, sml, s2)
-  tar.list12 = list(scoreMatrix1=target, tar1=target, tar2=target, scoreMatrix4=target)
+  tar.list12 = list(tar1=target, tar2=target, target, target)
   sml12 = ScoreMatrixList(tar.list12, windows)
   checkEquals(sml11, sml12)
   
   # combine a ScoreMatrix into a ScoreMatrixList object
   sml13 = c(s1=s1, sml,s2=s2)
-  tar.list14 = list(s1=target, tar1=target, tar2=target, s2=target)
+  tar.list14 = list(tar1=target, tar2=target, s1=target, s2=target)
   sml14 = ScoreMatrixList(tar.list14, windows)
   checkEquals(sml13, sml14)
 }
