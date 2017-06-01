@@ -1,3 +1,12 @@
+genomation 1.9.2
+--------------
+NEW FUNCTIONS AND FEATURES
+* c() function to append a ScoreMatrix as well as a ScoreMatrixList to an existing ScoreMatrixList
+   (issue: https://github.com/BIMSBbioinfo/genomation/issues/151)
+
+IMPROVEMENTS AND BUG FIXES
+* added a slot "names" to a ScoreMatrixList class
+   
 genomation 1.9.1
 --------------
 IMPROVEMENTS AND BUG FIXES
