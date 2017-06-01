@@ -18,7 +18,7 @@ c.ScoreMatrixList<-function(..., recursive = FALSE, use.names = TRUE) {
       y3 <- append(y3, y2)
       #combine its label name
       Ln <- append(Ln, names(y[[i]]))
-      #combine the scoreMatrix object
+    #combine the scoreMatrix object
     }else if(is(y[[i]], "ScoreMatrix")){
       y3 <- append(y3, list(y[[i]]))
       #combine its label name
@@ -54,7 +54,7 @@ c.ScoreMatrix<-function(..., recursive = FALSE, use.names = TRUE) {
       y3 <- append(y3, y2)
       #combine its label name
       Ln <- append(Ln, names(y[[i]]))
-      #combine the scoreMatrix object
+   #combine the scoreMatrix object
     }else if(is(y[[i]], "ScoreMatrix")){
       y3 <- append(y3, list(y[[i]]))
       #combine its label name
