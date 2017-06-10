@@ -55,6 +55,7 @@ Suggests:
 Collate:
 	'combineScoreMatrixList.R'
     'documentData.R'
+	'enrichmentMatrix.R'
     'genomation-classes.R'
     'getRandomEnrichment.R'
     'findFeatureComb.R'
@@ -65,6 +66,7 @@ Collate:
     'readData.R'
     'scoreMatrix.R'
     'scoreMatrixBin.R'
+	'scoreMatrixControl.R'
     'scoreMatrixList.R'
     'Ops.R'
     'test_genomation_package.R'
