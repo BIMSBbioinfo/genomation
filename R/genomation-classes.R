@@ -123,8 +123,6 @@ setClass("ScoreMatrixControl",
 #' 
 #' \code{x$name}, \code{x$name}: value: Get or set element \code{name}, where \code{name} is a name or character vector of length 1.
 #' 
-#' @slot name A character vector containing names of all stored \code{ScoreMatrix} objects.
-#' 
 #' @seealso \code{\link{ScoreMatrixList}}
 #' @export
 setClass("ScoreMatrixList",

@@ -7,12 +7,6 @@
 \description{
 The resulting object is an extension of a \code{list} object, where each element corresponds to a score matrix object
 }
-\section{Slots}{
-
-\describe{
-\item{\code{name}}{A character vector containing names of all stored \code{ScoreMatrix} objects.}
-}}
-
 \section{Constructors}{
 
 see \code{\link{ScoreMatrixList}}
