@@ -3,9 +3,7 @@
 \docType{methods}
 \name{ScoreMatrixControl}
 \alias{ScoreMatrixControl}
-\alias{ScoreMatrixControl,ScoreMatrix,ScoreMatrix}
-\alias{-}
-\alias{method}
+\alias{ScoreMatrixControl,ScoreMatrix,ScoreMatrix-method}
 \title{Make ScoreMatrixControl from ScoreMatrix objects of IP and control samples}
 \usage{
 ScoreMatrixControl(IP, control)
@@ -13,12 +11,12 @@ ScoreMatrixControl(IP, control)
 \arguments{
 \item{IP}{the \code{\link{ScoreMatrix}} object storing an IP sample}
 
-\item{control}{the \code{\link{ScoreMatrix}} object storing an control sample}
+\item{control}{the \code{\link{ScoreMatrix}} object storing a control sample}
 }
 \value{
 returns a \code{ScoreMatrixControl} object
 }
 \description{
-The function creates a \code{ScoreMatrixControl} object that stores a \code{ScoreMatrix} containing an signal values of IP sample as well as \code{ScoreMatrix} object with control sample. 
+The function creates a \code{ScoreMatrixControl} object that stores a \code{ScoreMatrix} containing a signal values of IP sample as well as a \code{ScoreMatrix} object with control sample. 
 This object is an input in \code{\link{enrichmentMatrix}} function that compute enrichment over IgG or input DNA control.
 }

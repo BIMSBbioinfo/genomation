@@ -5,8 +5,14 @@
 \alias{ScoreMatrixControl-class}
 \title{An S4 class for storing \code{ScoreMatrixControl} function results}
 \description{
-The resulting object is an extension of a \code{ScoreMatrix} object, that stores ScoreMatrix of IP sample as well as ScoreMatrix containing IgG or input DNA control sample
+The resulting object is an extension of a \code{ScoreMatrix} object, that stores ScoreMatrix of IP sample as well as ScoreMatrix containing IgG or input DNA control sample.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{control}}{A \code{\link{ScoreMatrix}} object storing a control sample.}
+}}
+
 \section{Constructors}{
 
 see \code{\link{ScoreMatrixControl}}

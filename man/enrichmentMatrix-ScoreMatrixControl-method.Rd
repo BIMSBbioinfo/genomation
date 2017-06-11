@@ -2,8 +2,7 @@
 % Please edit documentation in R/enrichmentMatrix.R
 \name{enrichmentMatrix}
 \alias{enrichmentMatrix}
-\alias{enrichmentMatrix,ScoreMatrixControl-}
-\alias{method}
+\alias{enrichmentMatrix,ScoreMatrixControl-method}
 \title{Compute an enrichment of IP over control stored in ScoreMatrixControl object}
 \usage{
 enrichmentMatrix(x)

@@ -5,7 +5,7 @@
 #' This object is an input in \code{\link{enrichmentMatrix}} function that compute enrichment over IgG or input DNA control.
 #'
 #' @param IP the \code{\link{ScoreMatrix}} object storing an IP sample
-#' @param control the \code{\link{ScoreMatrix}} object storing an control sample
+#' @param control the \code{\link{ScoreMatrix}} object storing a control sample
 #' @return returns a \code{ScoreMatrixControl} object
 #' 
 #' @aliases ScoreMatrixControl,ScoreMatrix,ScoreMatrix-method
@@ -18,7 +18,7 @@ setGeneric("ScoreMatrixControl",
 })
 
 
-setMethod("ScoreMatrixControl", signature("ScoreMatrix","ScoreMatrix"),
+setMethod("ScoreMatrixControl", signature("ScoreMatrix", "ScoreMatrix"),
           function(IP, control) {
             m <- as(IP, "ScoreMatrixControl")
             m@control <- control

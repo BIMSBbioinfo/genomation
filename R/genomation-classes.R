@@ -75,7 +75,7 @@ setClass("ScoreMatrix",contains = "matrix")
 # ---------------------------------------------------------------------------- #
 #' An S4 class for storing \code{ScoreMatrixControl} function results
 #'
-#' The resulting object is an extension of a \code{ScoreMatrix} object, that stores ScoreMatrix of IP sample as well as ScoreMatrix containing IgG or input DNA control sample 
+#' The resulting object is an extension of a \code{ScoreMatrix} object, that stores ScoreMatrix of IP sample as well as ScoreMatrix containing IgG or input DNA control sample. 
 #' 
 #' @name ScoreMatrixControl-class
 #' @rdname ScoreMatrixControl-class
@@ -93,10 +93,12 @@ setClass("ScoreMatrix",contains = "matrix")
 #' 
 #' \code{'x@control[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset of control ScoreMatrix object.
 #' 
+#' @slot control A \code{\link{ScoreMatrix}} object storing a control sample.
+#' 
 #' @seealso \code{\link{ScoreMatrixList}}, \code{\link{ScoreMatrix}}
 #' @export
 setClass("ScoreMatrixControl",
-         slots = c(control="ScoreMatrix"),
+         slots = c(control = "ScoreMatrix"),
          contains = "ScoreMatrix"
 )
 
@@ -121,10 +123,12 @@ setClass("ScoreMatrixControl",
 #' 
 #' \code{x$name}, \code{x$name}: value: Get or set element \code{name}, where \code{name} is a name or character vector of length 1.
 #' 
+#' @slot name A character vector containing names of all stored \code{ScoreMatrix} objects.
+#' 
 #' @seealso \code{\link{ScoreMatrixList}}
 #' @export
 setClass("ScoreMatrixList",
-            slots = c(names="character"),
+            slots = c(names = "character"),
             contains = "list"
 #            validity=.valid.ScoreMatrixList
             )
