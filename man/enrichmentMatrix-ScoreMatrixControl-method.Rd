@@ -3,16 +3,16 @@
 \name{enrichmentMatrix}
 \alias{enrichmentMatrix}
 \alias{enrichmentMatrix,ScoreMatrixControl-method}
-\title{Compute an enrichment of IP over control stored in ScoreMatrixControl object}
+\title{Compute an enrichment of IP over control both stored in ScoreMatrixControl object}
 \usage{
 enrichmentMatrix(x)
 }
 \arguments{
-\item{x}{the \code{\link{ScoreMatrixControl}} object}
+\item{x}{\code{\link{ScoreMatrixControl}}}
 }
 \value{
-\code{ScoreMatrix}
+\code{\link{ScoreMatrix}}
 }
 \description{
-This is a \code{\link{enrichmentMatrix}} function for a ScoreMatrixControl object that enables to normalize ChIP-seq signals with respect to IgG or input DNA control.
+This is a \code{\link{enrichmentMatrix}} function for ScoreMatrixControl object, that enables to normalize ChIP-seq signals with respect to IgG or input DNA control.
 }

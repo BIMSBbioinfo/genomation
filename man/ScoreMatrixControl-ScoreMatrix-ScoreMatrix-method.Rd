@@ -9,12 +9,12 @@
 ScoreMatrixControl(IP, control)
 }
 \arguments{
-\item{IP}{the \code{\link{ScoreMatrix}} object storing an IP sample}
+\item{IP}{\code{\link{ScoreMatrix}} object storing an IP sample}
 
-\item{control}{the \code{\link{ScoreMatrix}} object storing a control sample}
+\item{control}{\code{\link{ScoreMatrix}} object storing a control sample}
 }
 \value{
-returns a \code{ScoreMatrixControl} object
+\code{ScoreMatrixControl} object
 }
 \description{
 The function creates a \code{ScoreMatrixControl} object that stores a \code{ScoreMatrix} containing a signal values of IP sample as well as a \code{ScoreMatrix} object with control sample. 

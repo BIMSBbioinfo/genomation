@@ -25,7 +25,7 @@ as(from, "ScoreMatrixControl"): Creates a \code{ScoreMatrixControl} object from 
 
 \section{Subsetting}{
 
-In the code snippets below, x is a ScoreMatrix object.
+In the code snippets below, x is a ScoreMatrixControl object.
  
 \code{'x[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset of IP ScoreMatrix object.
 
@@ -33,5 +33,5 @@ In the code snippets below, x is a ScoreMatrix object.
 }
 
 \seealso{
-\code{\link{ScoreMatrixList}}, \code{\link{ScoreMatrix}}
+\code{\link{ScoreMatrixListControl}}, \code{\link{ScoreMatrix}}
 }
