@@ -102,3 +102,5 @@ export(ScoreMatrixList)
 
 S3method(c,ScoreMatrixList)
 S3method(c,ScoreMatrix)
+S3method(c,ScoreMatrixListControl)
+S3method(c,ScoreMatrixControl)

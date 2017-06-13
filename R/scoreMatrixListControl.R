@@ -23,7 +23,7 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrixList
             if(length(IP) != length(control))
               stop('IP argument and control argument should have the same length')
             
-            # checks whether each corresponding elements of ScoreMatrixList objects have the same size 
+            # checks whether all corresponding elements of ScoreMatrixList objects have the same size 
             check.size <- function (i, IP, control){
               if(dim(IP[[i]])[1] != dim(control[[i]])[1] || dim(IP[[i]])[2] != dim(control[[i]])[2])
                 stop( "element:",i,"\t IP argument and control argument do not have the same size")
