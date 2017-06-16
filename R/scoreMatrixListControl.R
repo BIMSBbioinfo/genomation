@@ -1,7 +1,7 @@
 #' Make ScoreMatrixListControl from ScoreMatrixList objects of IP and control samples
 #' 
 #' The function creates a \code{ScoreMatrixListControl} object that stores \code{ScoreMatrixControl} objects.
-#' This object is an input in \code{\link{enrichmentMatrix}} function that compute enrichment over IgG or input DNA control.
+#' This object is an input in \code{enrichmentMatrix} function that compute enrichment over IgG or input DNA control.
 #'
 #' @param IP \code{\link{ScoreMatrixList}} object storing IP samples
 #' @param control \code{\link{ScoreMatrixList}} storing control samples
@@ -10,13 +10,39 @@
 #' @rdname ScoreMatrixListControl-ScoreMatrixList-ScoreMatrixList-method
 #' @export
 #' @docType methods
-
+#' @seealso \code{\link{ScoreMatrixControl}}, \code{\link{ScoreMatrixList}}, 
+#' \code{\link{enrichmentMatrix}} 
+#' @examples
+#' #load IP and control BAM files and create ScoreMatrix objects
+#' source("http://bioconductor.org/biocLite.R")
+#' biocLite('genomationData')
+#' data(promoters)
+#' bam.file_IP_1 <- system.file("extdata", 
+#' "wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam", package = "genomationData")
+#' IP_1 = ScoreMatrix(target = bam.file_IP_1, windows = promoters, type = 'bam')
+#'
+#' bam.file_IP_2 <- system.file("extdata", 
+#' "wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
+#' IP_2 = ScoreMatrix(target = bam.file_IP_2, windows = promoters, type = 'bam')
+#' 
+#' bam.file_c <- system.file("extdata", 
+#' "wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+#' control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
+#' 
+#' # create ScoreMatrixList objects of IP and control ScoreMatrix objects
+#' sml_IP <- ScoreMatrixList(list(IP_1,IP_2))
+#' sml_control <- ScoreMatrixList(list(control, control))
+#' 
+#' #create a ScoreMatrixListControl object
+#' ScoreMatrixListControl(sml_IP,sml_control)
+#' 
+#' 
 setGeneric("ScoreMatrixListControl", 
            function(IP, control){
              standardGeneric("ScoreMatrixListControl" ) 
            })
 
-setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrixList"),
+setMethod("ScoreMatrixListControl", signature("ScoreMatrixList", "ScoreMatrixList"),
           function(IP, control){
             
             # checks whether the arguments consist of the same number of elements 
@@ -26,12 +52,11 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrixList
             # checks whether all corresponding elements of ScoreMatrixList objects have the same size 
             check.size <- function (i, IP, control){
               if(dim(IP[[i]])[1] != dim(control[[i]])[1] || dim(IP[[i]])[2] != dim(control[[i]])[2])
-                stop( "element:",i,"\t IP argument and control argument do not have the same size")
+                stop( "element:", i, "\t IP argument and control argument do not have the same size")
             }
             
-            n <- mclapply(1:length(IP), check.size, IP=IP, control=control)
-            
-            
+            n <- mclapply(1:length(IP), check.size, IP = IP, control = control)
+        
             #create a ScoreMatrixListControl object
             
             create.ScoreMatrixControl<- function(i, IP, control){
@@ -43,7 +68,6 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrixList
             names(smlc) <- names(IP)
             smlc <- as(smlc, "ScoreMatrixListControl")
             
-            
             validObject(smlc)
             return(smlc)
           }
@@ -53,7 +77,7 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrixList
 #' Make ScoreMatrixListControl from ScoreMatrixList object of IP samples and ScoreMatrix object of control sample
 #' 
 #' The function creates a \code{ScoreMatrixListControl} object that stores \code{ScoreMatrixControl} objects.
-#' This object is an input in \code{\link{enrichmentMatrix}} function that compute enrichment over IgG or input DNA control.
+#' This object is an input in \code{enrichmentMatrix} function that compute enrichment over IgG or input DNA control.
 #'
 #' @param IP \code{\link{ScoreMatrixList}} object storing an IP samples
 #' @param control \code{\link{ScoreMatrix}} storing control sample
@@ -61,7 +85,33 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrixList
 #' @aliases ScoreMatrixListControl,ScoreMatrixList,ScoreMatrix-method
 #' @rdname ScoreMatrixListControl-ScoreMatrixList-ScoreMatrix-method
 #' @export
+#' @seealso \code{\link{ScoreMatrixControl}}, \code{\link{ScoreMatrixList}}, 
+#' \code{\link{ScoreMatrix}}, \code{\link{enrichmentMatrix}} 
 #' @docType methods
+#' @examples
+#' #load IP and control BAM files and create ScoreMatrix objects
+#' source("http://bioconductor.org/biocLite.R")
+#' biocLite('genomationData')
+#' data(promoters)
+#' bam.file_IP_1 <- system.file("extdata", 
+#' "wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam", package = "genomationData")
+#' IP_1 <- ScoreMatrix(target = bam.file_IP_1, windows = promoters, type = 'bam')
+#'
+#' bam.file_IP_2 <- system.file("extdata", 
+#' "wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
+#' IP_2 <- ScoreMatrix(target=bam.file_IP_2, windows = promoters, type = 'bam')
+#' 
+#' bam.file_c <- system.file("extdata", 
+#' "wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+#' control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
+#' 
+#' # create a ScoreMatrixList object of IP ScoreMatrix objects
+#' sml_IP <- ScoreMatrixList(list(IP_1,IP_2))
+#' 
+#' #create a ScoreMatrixListControl object
+#' ScoreMatrixListControl(sml_IP, control)
+#' 
+
 setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrix"),
           function(IP, control){
             
@@ -70,7 +120,7 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrix"),
               if(dim(IP[[i]])[1] != dim(control)[1] || dim(IP[[i]])[2] != dim(control)[2])
                 stop( "element:1",i,"\t IP argument and control argument do not have the same size")
             }
-            n <- mclapply(1:length(IP), check.size, IP=IP, control=control)
+            n <- mclapply(1:length(IP), check.size, IP = IP, control = control)
             
             #create a ScoreMatrixListControl object
             
@@ -107,7 +157,7 @@ setMethod("show", "ScoreMatrixListControl",
               dimsC = dim(object[[i]]@control)
               s2=sprintf("      %s %d %d", "IP matrix with dims:", dimsD[1], dimsD[2])
               s3=sprintf("      %s %d %d", "control scoreMatrix with dims:", dimsC[1], dimsC[2])
-              message(s2,'\n', s3)
+              message(s2, '\n', s3)
             }
           }
 )

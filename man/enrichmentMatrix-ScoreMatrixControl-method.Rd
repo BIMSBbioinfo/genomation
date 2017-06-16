@@ -14,5 +14,29 @@ enrichmentMatrix(x)
 \code{\link{ScoreMatrix}}
 }
 \description{
-This is a \code{\link{enrichmentMatrix}} function for ScoreMatrixControl object, that enables to normalize ChIP-seq signals with respect to IgG or input DNA control.
+This is a \code{enrichmentMatrix} function for \code{ScoreMatrixControl} object, 
+that enables to normalize ChIP-seq signals with respect to IgG or input DNA control.
+}
+\examples{
+ 
+#load IP and control BAM files and create ScoreMatrix objects
+source("http://bioconductor.org/biocLite.R")
+biocLite('genomationData')
+bam.file_IP <- system.file("extdata", 
+"wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
+bam.file_c <- system.file("extdata", 
+"wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+data(promoters)
+IP <- ScoreMatrix(target = bam.file_IP, windows = promoters, type = 'bam')
+control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
+
+# create a ScoreMatrixControl object
+smControl <- ScoreMatrixControl(IP, control)
+
+# compute an enrichment of IP over control
+enrichmentMatrix(smControl)
+
+}
+\seealso{
+\code{\link{ScoreMatrixListControl}}, \code{\link{ScoreMatrixControl}}
 }

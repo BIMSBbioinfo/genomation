@@ -18,5 +18,35 @@ ScoreMatrixListControl(IP, control)
 }
 \description{
 The function creates a \code{ScoreMatrixListControl} object that stores \code{ScoreMatrixControl} objects.
-This object is an input in \code{\link{enrichmentMatrix}} function that compute enrichment over IgG or input DNA control.
+This object is an input in \code{enrichmentMatrix} function that compute enrichment over IgG or input DNA control.
+}
+\examples{
+#load IP and control BAM files and create ScoreMatrix objects
+source("http://bioconductor.org/biocLite.R")
+biocLite('genomationData')
+data(promoters)
+bam.file_IP_1 <- system.file("extdata", 
+"wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam", package = "genomationData")
+IP_1 = ScoreMatrix(target = bam.file_IP_1, windows = promoters, type = 'bam')
+
+bam.file_IP_2 <- system.file("extdata", 
+"wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
+IP_2 = ScoreMatrix(target = bam.file_IP_2, windows = promoters, type = 'bam')
+
+bam.file_c <- system.file("extdata", 
+"wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
+
+# create ScoreMatrixList objects of IP and control ScoreMatrix objects
+sml_IP <- ScoreMatrixList(list(IP_1,IP_2))
+sml_control <- ScoreMatrixList(list(control, control))
+
+#create a ScoreMatrixListControl object
+ScoreMatrixListControl(sml_IP,sml_control)
+
+
+}
+\seealso{
+\code{\link{ScoreMatrixControl}}, \code{\link{ScoreMatrixList}}, 
+\code{\link{enrichmentMatrix}}
 }

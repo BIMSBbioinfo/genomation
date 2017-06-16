@@ -17,6 +17,27 @@ ScoreMatrixControl(IP, control)
 \code{ScoreMatrixControl} object
 }
 \description{
-The function creates a \code{ScoreMatrixControl} object that stores a \code{ScoreMatrix} containing a signal values of IP sample as well as a \code{ScoreMatrix} object with control sample. 
+The function creates a \code{ScoreMatrixControl} object that stores a \code{ScoreMatrix} 
+containing a signal values of IP sample as well as a \code{ScoreMatrix} object with control sample. 
 This object is an input in \code{\link{enrichmentMatrix}} function that compute enrichment over IgG or input DNA control.
+}
+\examples{
+ 
+#load IP and control BAM files and create ScoreMatrix objects
+source("http://bioconductor.org/biocLite.R")
+biocLite('genomationData')
+bam.file_IP <- system.file("extdata", 
+"wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
+bam.file_c <- system.file("extdata", 
+"wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+data(promoters)
+IP <- ScoreMatrix(target = bam.file_IP, windows = promoters, type = 'bam')
+control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
+
+# create a ScoreMatrixControl object
+ScoreMatrixControl(IP, control)
+
+}
+\seealso{
+\code{\link{ScoreMatrixListControl}}, \code{\link{ScoreMatrix}}, \code{\link{enrichmentMatrix}}
 }
