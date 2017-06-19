@@ -40,9 +40,7 @@ checkEquals(smlc3, smlc1)
 checkException(ScoreMatrixListControl(ScoreMatrixList(list(IP, IP, IP)), sml_control), silent=TRUE)
 
 # error for unequal matrix sizes
-checkException(ScoreMatrixListControl(sml_IP, ScoreMatrixList(list(control, control[1:2,]))), silent=TRUE)
 checkException(ScoreMatrixListControl(sml_IP, control[1:2,]), silent=TRUE)
-
 
 # ---------------------------------------------------------------------------- #
 # c() function
@@ -112,3 +110,4 @@ es1 <- log2((IP + 1) / (control + 1))
 es2 <- log2((IP + 1) / (control + 1))
 esml_2 <- ScoreMatrixList(list(IP1 = es1, IP2 = es1))
 checkEquals(esml_1, esml_2)
+
