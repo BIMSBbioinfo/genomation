@@ -39,9 +39,6 @@ checkEquals(smlc3, smlc1)
 # error for unequal list lengths
 checkException(ScoreMatrixListControl(ScoreMatrixList(list(IP, IP, IP)), sml_control), silent=TRUE)
 
-# error for unequal matrix sizes
-checkException(ScoreMatrixListControl(sml_IP, control[1:2,]), silent=TRUE)
-
 # ---------------------------------------------------------------------------- #
 # c() function
 # ---------------------------------------------------------------------------- #
