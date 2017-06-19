@@ -1,10 +1,15 @@
-genomation 1.9.3
+genomation 1.9.4
 --------------
 NEW FUNCTIONS AND FEATURES
 * new ScoreMatrixControl and ScoreMatrixListControl class objects that store ScoreMatrixControl() and ScoreMatrixListControl() function results, respectively
 * c() function to append a ScoreMatrixControl and a ScoreMatrixListControl to an existing ScoreMatrixListControl object
 * added an enrichmentMatrix() function to compute an enrichment of IP sample over IgG or input DNA control sample
    (issue: https://github.com/BIMSBbioinfo/genomation/issues/138)
+
+genomation 1.9.3
+--------------
+IMPROVEMENTS AND BUG FIXES
+* tests for different parameter combinations for ScoreMatrixBin
 
 genomation 1.9.2
 --------------
