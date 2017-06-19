@@ -37,7 +37,7 @@ bam.file_c <- system.file("extdata",
 control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
 
 # create a ScoreMatrixList object of IP ScoreMatrix objects
-sml_IP <- ScoreMatrixList(list(IP_1,IP_2))
+sml_IP <- ScoreMatrixList(list(IP1 = IP_1, IP2 = IP_2))
 
 #create a ScoreMatrixListControl object
 ScoreMatrixListControl(sml_IP, control)

@@ -30,11 +30,11 @@
 #' control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
 #' 
 #' # create ScoreMatrixList objects of IP and control ScoreMatrix objects
-#' sml_IP <- ScoreMatrixList(list(IP_1,IP_2))
-#' sml_control <- ScoreMatrixList(list(control, control))
+#' sml_IP <- ScoreMatrixList(list(IP1 = IP_1, IP2 = IP_2))
+#' sml_control <- ScoreMatrixList(list(c1 = control, c2 = control))
 #' 
 #' #create a ScoreMatrixListControl object
-#' ScoreMatrixListControl(sml_IP,sml_control)
+#' ScoreMatrixListControl(sml_IP, sml_control)
 #' 
 #' 
 setGeneric("ScoreMatrixListControl", 
@@ -106,7 +106,7 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList", "ScoreMatrixLis
 #' control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
 #' 
 #' # create a ScoreMatrixList object of IP ScoreMatrix objects
-#' sml_IP <- ScoreMatrixList(list(IP_1,IP_2))
+#' sml_IP <- ScoreMatrixList(list(IP1 = IP_1, IP2 = IP_2))
 #' 
 #' #create a ScoreMatrixListControl object
 #' ScoreMatrixListControl(sml_IP, control)
@@ -118,8 +118,9 @@ setMethod("ScoreMatrixListControl", signature("ScoreMatrixList","ScoreMatrix"),
             # checks whether each element of IP ScoreMatrixList has the same size like control ScoreMatrix 
             check.size <- function (i, IP, control){
               if(dim(IP[[i]])[1] != dim(control)[1] || dim(IP[[i]])[2] != dim(control)[2])
-                stop( "element:1",i,"\t IP argument and control argument do not have the same size")
+                stop( "element:",i,"\t IP argument and control argument do not have the same size")
             }
+            
             n <- mclapply(1:length(IP), check.size, IP = IP, control = control)
             
             #create a ScoreMatrixListControl object

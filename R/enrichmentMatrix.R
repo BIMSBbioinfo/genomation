@@ -68,7 +68,7 @@ setMethod("enrichmentMatrix", signature("ScoreMatrixControl"),
 #' control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
 #' 
 #' # create a ScoreMatrixList object of IP ScoreMatrix object
-#' IPs <- list(IP_1,IP_2)
+#' IPs <- list(IP1 = IP_1, IP2 = IP_2)
 #' sml_IP <- ScoreMatrixList(IPs)
 #' 
 #' #create a ScoreMatrixListControl object
