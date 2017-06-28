@@ -72,6 +72,35 @@ setMethod("show", "RandomEnrichment", function(object) {
 #' @export
 setClass("ScoreMatrix",contains = "matrix")
 
+# ---------------------------------------------------------------------------- #
+#' An S4 class for storing \code{ScoreMatrixControl} function results
+#'
+#' The resulting object is an extension of a \code{ScoreMatrix} object, that stores ScoreMatrix of IP sample as well as ScoreMatrix containing IgG or input DNA control sample. 
+#' 
+#' @name ScoreMatrixControl-class
+#' @rdname ScoreMatrixControl-class
+#'  
+#' @section Constructors:
+#' see \code{\link{ScoreMatrixControl}}
+#' 
+#' @section Coercion:
+#' as(from, "ScoreMatrixControl"): Creates a \code{ScoreMatrixControl} object from a \code{\link{ScoreMatrix}} or \code{\link{ScoreMatrixBin}} objects. 
+#' 
+#' @section Subsetting:
+#' In the code snippets below, x is a ScoreMatrixControl object.
+#'  
+#' \code{'x[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset of IP ScoreMatrix object.
+#' 
+#' \code{'x@control[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset of control ScoreMatrix object.
+#' 
+#' @slot control A \code{\link{ScoreMatrix}} object storing a control sample.
+#' 
+#' @seealso \code{\link{ScoreMatrixListControl}}, \code{\link{ScoreMatrix}}
+#' @export
+setClass("ScoreMatrixControl",
+         slots = c(control = "ScoreMatrix"),
+         contains = "ScoreMatrix"
+)
 
 # ---------------------------------------------------------------------------- #
 #' An S4 class for storing a set of \code{ScoreMatrixList} 
@@ -97,10 +126,40 @@ setClass("ScoreMatrix",contains = "matrix")
 #' @seealso \code{\link{ScoreMatrixList}}
 #' @export
 setClass("ScoreMatrixList",
-            slots = c(names="character"),
+            slots = c(names = "character"),
             contains = "list"
 #            validity=.valid.ScoreMatrixList
             )
+
+# ---------------------------------------------------------------------------- #
+#' An S4 class for storing \code{ScoreMatrixListControl} function results
+#'
+#' The resulting object is an extension of a \code{ScoreMatrixList} object, that stores \code{ScoreMatrixControl} objects
+#' 
+#' @name ScoreMatrixListControl-class
+#' @rdname ScoreMatrixListControl-class
+#'  
+#' @section Constructors:
+#' see \code{\link{ScoreMatrixListControl}}
+#' 
+#' @section Coercion:
+#' as(from, "ScoreMatrixListControl"): Creates a \code{ScoreMatrixListControl} object from a list of \code{\link{ScoreMatrixControl}} objects. 
+#' 
+#' @section Subsetting:
+#' In the code snippets below, x is a ScoreMatrixListControl object.
+#'  
+#' \code{x[[i]]}: Get or set \code{ScoreMatrixControl} object \code{i}, where \code{i} is a numeric or character vector of length 1.
+#' 
+#' \code{x$name}: value: Get or set element \code{name}, where \code{name} is a name or character vector of length 1.
+#' 
+#' @slot names A character vector containing names of all stored \code{ScoreMatrixControl} objects.
+#' 
+#' @seealso \code{\link{ScoreMatrixControl}}, \code{\link{ScoreMatrixList}}
+#' @export
+setClass("ScoreMatrixListControl",
+         slots = c(names = "character"),
+         contains = "ScoreMatrixList"
+)
 
 # ---------------------------------------------------------------------------- #
 # ------------------ #
