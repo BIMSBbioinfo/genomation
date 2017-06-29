@@ -41,6 +41,20 @@ test_ScoreMatrixBin_RleList_GRanges = function()
   s3 = ScoreMatrixBin(rl, gr1, bin.num=2, strand.aware=T)
   checkEquals(s3, m3)
   
+  #4.A bin.num > 1 and dropping chromosomes
+  t4 = GRanges(rep(c('chr1','chr2'), times=c(3,2)), IRanges(c(seq(1,20,4)), width=3))
+  t4$score = 1
+  w4 = GRanges(rep(c('chr3','chr2'), each=2), IRanges(rep(c(13,17), times=2), width=3))
+  s4 = suppressWarnings(ScoreMatrixBin(t4, w4, bin.num = 2,type = "bigWig"))
+  checkEquals(as.numeric(rownames(as.data.frame(s4))), c(3,4))
+  
+  #4.B bin.num = 1 and dropping chromosomes
+  t5 = GRanges(rep(c('chr1','chr2'), times=c(3,2)), IRanges(c(seq(1,20,4)), width=3))
+  t5$score = 1
+  w5 = GRanges(rep(c('chr3','chr2'), each=2), IRanges(rep(c(13,17), times=2), width=3))
+  s5 = suppressWarnings(ScoreMatrixBin(t5, w5,bin.num = 1,type = "bigWig"))
+  checkEquals(as.numeric(rownames(as.data.frame(s5))), c(3,4))
+  
   # -----------------------------------------------#
   # errors
   # error for removing all bins

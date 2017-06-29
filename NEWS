@@ -1,3 +1,9 @@
+genomation 1.9.3
+--------------
+IMPROVEMENTS AND BUG FIXES
+* tests for different parameter combinations for ScoreMatrixBin
+
+
 genomation 1.9.2
 --------------
 NEW FUNCTIONS AND FEATURES
