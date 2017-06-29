@@ -205,13 +205,13 @@ test_ScoreMatrix_Ops = function()
 	
 # ---------------------------------------------------------------------------- #
 # test for constrainRanges
-test_constrainRanges = function()
-{
-	target = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
-	gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,8),c(3,7,3,10)))
-	gt1 = GRanges(c('chr1','chr1','chr2'), IRanges(c(1,5,1),c(3,7,3)))
-	expect_identical(genomation:::constrainRanges(target, gr1), gt1)
-}
+# test_constrainRanges = function()
+# {
+# 	target = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
+# 	gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,8),c(3,7,3,10)))
+# 	gt1 = GRanges(c('chr1','chr1','chr2'), IRanges(c(1,5,1),c(3,7,3)))
+# 	expect_identical(genomation:::constrainRanges(target, gr1), gt1)
+# }
 
 
 # ---------------------------------------------------------------------------- #
