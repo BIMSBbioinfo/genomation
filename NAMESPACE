@@ -94,3 +94,6 @@ exportMethods(scaleScoreMatrixList)
 
 export(gffToGRanges)
 export(ScoreMatrixList)
+
+S3method(c,ScoreMatrixList)
+S3method(c,ScoreMatrix)

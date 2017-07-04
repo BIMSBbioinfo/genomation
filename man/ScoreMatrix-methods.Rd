@@ -3,8 +3,8 @@
 \docType{methods}
 \name{ScoreMatrix}
 \alias{ScoreMatrix}
-\alias{ScoreMatrix,GRanges,GRanges-method}
 \alias{ScoreMatrix,RleList,GRanges-method}
+\alias{ScoreMatrix,GRanges,GRanges-method}
 \alias{ScoreMatrix,character,GRanges-method}
 \title{Get base-pair score for bases in each window}
 \usage{
@@ -126,4 +126,3 @@ scores3
 \seealso{
 \code{\link{ScoreMatrixBin}}
 }
-

@@ -123,4 +123,3 @@ Small sample sizes (5-10) can cause notches to extend beyond the interquartile r
          smoothfun=function(x) stats::lowess(x, f = 1/5))
  }
 }
-

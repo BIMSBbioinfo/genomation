@@ -45,4 +45,3 @@ cpgi.flanks = getFlanks(cpgi)
 flank.annot = annotateWithFeatureFlank(cage, cpgi, cpgi.flanks)
 
 }
-

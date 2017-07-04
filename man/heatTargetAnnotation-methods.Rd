@@ -69,4 +69,3 @@ heatTargetAnnotation(annot)
 see  \code{\link{getMembers}}, 
            \code{\link{annotateWithFeatures}}
 }
-

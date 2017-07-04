@@ -80,4 +80,3 @@ produces a heatmap or a set of stacked heatmaps for meta-region profiles
           cex.axis=0.9)
  }
 }
-

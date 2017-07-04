@@ -47,4 +47,3 @@ gene.parts = readTranscriptFeatures(bed.file)
 cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 cage.annot
 }
-
