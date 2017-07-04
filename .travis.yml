@@ -5,8 +5,18 @@
 #   https://github.com/craigcitro/r-travis/wiki
 
 language: r
+
+# See https://docs.travis-ci.com/user/languages/r/#R-Versions
+r:
+    - release
+    - devel
+     
+
 sudo: required
 bioc_required: true
+
+
+
 
 r_github_packages:
   - jimhester/covr

@@ -3,11 +3,11 @@
 \docType{methods}
 \name{ScoreMatrixBin}
 \alias{ScoreMatrixBin}
-\alias{ScoreMatrixBin,GRanges,GRanges-method}
-\alias{ScoreMatrixBin,GRanges,GRangesList-method}
 \alias{ScoreMatrixBin,RleList,GRanges-method}
-\alias{ScoreMatrixBin,RleList,GRangesList-method}
+\alias{ScoreMatrixBin,GRanges,GRanges-method}
 \alias{ScoreMatrixBin,character,GRanges-method}
+\alias{ScoreMatrixBin,RleList,GRangesList-method}
+\alias{ScoreMatrixBin,GRanges,GRangesList-method}
 \alias{ScoreMatrixBin,character,GRangesList-method}
 \title{Get bin score for bins on each window}
 \usage{
@@ -143,6 +143,7 @@ bed.file = system.file("extdata/chr21.refseq.hg19.bed",
                        package = "genomation")
 gene.parts = readTranscriptFeatures(bed.file)
 transcripts = split(gene.parts$exons, gene.parts$exons$name)
+transcripts = transcripts[]
 myMat3 = ScoreMatrixBin(target=cage, windows=transcripts[1:250], 
                     bin.num=10)
 myMat3                     
@@ -150,4 +151,3 @@ myMat3
 \seealso{
 \code{\link{ScoreMatrix}}
 }
-

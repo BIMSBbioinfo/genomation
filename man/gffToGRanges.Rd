@@ -32,4 +32,3 @@ gff.file = system.file('extdata/chr21.refseq.hg19.gtf', package='genomation')
 gff = gffToGRanges(gff.file)
 
 }
-

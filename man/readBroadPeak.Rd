@@ -32,4 +32,3 @@ broad.peak = readBroadPeak(broad.peak.file)
 head(broad.peak)
 
 }
-

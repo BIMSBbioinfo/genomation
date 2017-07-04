@@ -39,4 +39,3 @@ sml
 intersectScoreMatrixList(sml)
 
 }
-

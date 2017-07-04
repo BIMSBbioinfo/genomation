@@ -40,4 +40,3 @@ refseq = readBed(my.file,track.line=FALSE,remove.unusual=FALSE)
 head(refseq)
 
 }
-

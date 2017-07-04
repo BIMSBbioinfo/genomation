@@ -18,4 +18,3 @@
 \description{
 Arithmetic methods for ScoreMatrixList
 }
-

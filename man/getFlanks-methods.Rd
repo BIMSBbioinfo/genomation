@@ -32,4 +32,3 @@ cpgi.flanks = getFlanks(cpgi)
 head(cpgi.flanks)
 
 }
-

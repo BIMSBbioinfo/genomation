@@ -39,4 +39,3 @@ sm = ScoreMatrix(target, windows)
 bin = binMatrix(sm, bin.num=2)
 
 }
-

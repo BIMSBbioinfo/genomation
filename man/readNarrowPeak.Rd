@@ -32,4 +32,3 @@ narrow.peak.file = system.file('extdata',"ex.narrowPeak", package='genomation')
 narrow.peak = readBroadPeak(narrow.peak.file)
 head(narrow.peak)
 }
-

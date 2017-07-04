@@ -67,4 +67,3 @@ refseq = readGeneric(my.file,chr=1,start=2,end=3,strand=NULL,
                       keep.all.metadata=FALSE, zero.based=TRUE)
 head(refseq)
 }
-

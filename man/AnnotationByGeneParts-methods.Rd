@@ -2,10 +2,10 @@
 % Please edit documentation in R/readAnnotate.R
 \docType{methods}
 \name{getAssociationWithTSS}
-\alias{AnnotationByGeneParts-method}
 \alias{getAssociationWithTSS}
-\alias{getAssociationWithTSS,}
 \alias{getAssociationWithTSS,-methods}
+\alias{getAssociationWithTSS,}
+\alias{AnnotationByGeneParts-method}
 \alias{getAssociationWithTSS,AnnotationByGeneParts-method}
 \title{Get distance to nearest TSS and gene id from AnnotationByGeneParts}
 \usage{
@@ -32,4 +32,3 @@ cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 head(getAssociationWithTSS(cage.annot))
  
 }
-

@@ -9,4 +9,3 @@
 promoters of hg19 assembly of human genome on chr21 and chr22. Promoter set is 
 derived from refseq TSS.
 }
-

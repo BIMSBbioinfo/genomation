@@ -25,7 +25,7 @@ In the code snippets below, x is a ScoreMatrixList object.
 
 \code{x$name}, \code{x$name}: value: Get or set element \code{name}, where \code{name} is a name or character vector of length 1.
 }
+
 \seealso{
 \code{\link{ScoreMatrixList}}
 }
-

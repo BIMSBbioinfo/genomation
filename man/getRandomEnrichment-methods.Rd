@@ -40,4 +40,3 @@ enr = getRandomEnrichment(cage, cpgi, randomizations=50)
 \seealso{
 \code{\link{randomizeFeature}}
 }
-

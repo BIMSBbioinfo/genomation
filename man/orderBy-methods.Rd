@@ -37,4 +37,3 @@ sml.ordered = orderBy(sml, kmeans.clust$cluster)
 multiHeatMatrix(sml.ordered)
 }
 }
-

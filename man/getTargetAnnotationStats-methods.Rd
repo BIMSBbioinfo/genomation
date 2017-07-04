@@ -43,4 +43,3 @@ cage.annot=annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
 getTargetAnnotationStats(cage.annot)
 
 }
-
