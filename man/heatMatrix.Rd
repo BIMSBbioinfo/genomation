@@ -131,4 +131,3 @@ heatMatrix(mat=scores1,legend.name="tpm",winsorize=c(0,99),xlab="region around T
 
 
 }
-

@@ -96,7 +96,8 @@ setClass("ScoreMatrix",contains = "matrix")
 #' 
 #' @seealso \code{\link{ScoreMatrixList}}
 #' @export
-setClass("ScoreMatrixList", 
+setClass("ScoreMatrixList",
+            slots = c(names="character"),
             contains = "list"
 #            validity=.valid.ScoreMatrixList
             )

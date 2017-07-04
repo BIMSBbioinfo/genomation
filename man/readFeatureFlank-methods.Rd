@@ -41,4 +41,3 @@ cgi.path = system.file('extdata/chr21.CpGi.hg19.bed', package='genomation')
 cgi.shores = readFeatureFlank(cgi.path)
 cgi.shores
 }
-

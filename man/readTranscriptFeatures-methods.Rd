@@ -43,4 +43,3 @@ feats = readTranscriptFeatures(my.bed12.file)
 names(feats)
 sapply(feats, head)
 }
-

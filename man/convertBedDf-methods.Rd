@@ -26,4 +26,3 @@ one bed track per file is only accepted, the bed
 
 bed files are expected not to have header lines
 }
-

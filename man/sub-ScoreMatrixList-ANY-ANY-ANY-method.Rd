@@ -16,4 +16,3 @@
 \description{
 Extract method for a ScoreMatrixList object.
 }
-

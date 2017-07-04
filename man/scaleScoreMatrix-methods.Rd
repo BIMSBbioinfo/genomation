@@ -40,4 +40,3 @@ sm = ScoreMatrix(target, windows)
 ssm = scaleScoreMatrix(sm, rows=TRUE)
 
 }
-

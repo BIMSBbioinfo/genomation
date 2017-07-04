@@ -18,4 +18,3 @@
 \description{
 Extract method for a ScoreMatrix object.
 }
-

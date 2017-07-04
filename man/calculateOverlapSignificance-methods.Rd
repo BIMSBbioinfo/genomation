@@ -52,4 +52,3 @@ This function calculates the significance of overlaps of two sets of features us
 randomization can be constrained by supplied arguments.
 The function is still in Beta mode - the regions can overlap excluded regions, and the randomized regions are not disjoint. Please take care that the excluded and included regions are not too strict when compared to the total width of the ranges.
 }
-

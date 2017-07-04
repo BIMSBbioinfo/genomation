@@ -16,7 +16,7 @@ The resulting object stores the results of \code{getRandomEnrichment} function
                  \item{\code{rand.p.value}:}{ p-value from randomization by calculation the proportion of how many times a random number of overlap exceeds the original number of overlap}
                 }
 }
+
 \seealso{
 \code{\link{getRandomEnrichment}}
 }
-

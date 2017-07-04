@@ -6,12 +6,12 @@
 \alias{patternMatrix,character,DNAStringSet,ANY-method}
 \alias{patternMatrix,character,DNAStringSet-method}
 \alias{patternMatrix,character,GRanges,BSgenome-method}
-\alias{patternMatrix,list,DNAStringSet,ANY-method}
-\alias{patternMatrix,list,DNAStringSet-method}
-\alias{patternMatrix,list,GRanges,BSgenome-method}
 \alias{patternMatrix,matrix,DNAStringSet,ANY-method}
 \alias{patternMatrix,matrix,DNAStringSet-method}
 \alias{patternMatrix,matrix,GRanges,BSgenome-method}
+\alias{patternMatrix,list,DNAStringSet,ANY-method}
+\alias{patternMatrix,list,DNAStringSet-method}
+\alias{patternMatrix,list,GRanges,BSgenome-method}
 \title{Get scores that correspond to k-mer or PWM matrix occurrence for bases in each window}
 \usage{
 patternMatrix(pattern, windows, genome = NULL, min.score = 0.8,
@@ -100,4 +100,3 @@ p
 \seealso{
 \code{\link{ScoreMatrix}}, \code{\link{ScoreMatrixList}}
 }
-

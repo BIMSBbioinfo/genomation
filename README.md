@@ -1,3 +1,9 @@
+<a name="logo"/>
+<div align="center">
+<img src="https://dl.dropboxusercontent.com/u/1373164/genomation_logo.png" alt="methylKit Logo"  ></img>
+</a>
+</div>
+
 # genomation: convenience functions for visualing and summarizing genomic intervals
 
 Status [![Build Status](https://api.travis-ci.org/BIMSBbioinfo/genomation.svg?branch=master)](https://travis-ci.org/BIMSBbioinfo/genomation) [![codecov.io](https://codecov.io/github/BIMSBbioinfo/genomation/coverage.svg?branch=master)](https://codecov.io/github/BIMSBbioinfo/genomation?branch=master)    [![BioC_years](http://www.bioconductor.org/shields/years-in-bioc/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html) [![BioC_availability](http://www.bioconductor.org/shields/availability/release/genomation.svg)](http://www.bioconductor.org/packages/release/bioc/html/genomation.html)

@@ -23,7 +23,7 @@ as(from, "matrix"): Creates a matrix from \code{ScoreMatrix} object. You can als
 In the code snippets below, x is a ScoreMatrix object.
 \code{'x[i,j]'}: Get or set elements from row \code{i} and column \code{j} and return a subset ScoreMatrix object.
 }
+
 \seealso{
 \code{\link{ScoreMatrix}}
 }
-

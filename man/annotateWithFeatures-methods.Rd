@@ -63,4 +63,3 @@ see  \code{\link{getMembers}},
            \code{\link{heatTargetAnnotation}}, 
            \code{\link{plotTargetAnnotation}}
 }
-

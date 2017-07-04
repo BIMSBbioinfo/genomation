@@ -43,4 +43,3 @@ findFeatureComb(gl)
 findFeatureComb(gl, use.names=TRUE)
 
 }
-

@@ -29,4 +29,3 @@ exons = convertBed2Exons(bed12)
 head(exons)
 
 }
-

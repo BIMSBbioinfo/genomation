@@ -31,4 +31,3 @@ introns = convertBed2Introns(bed12)
 head(introns)
 
 }
-
