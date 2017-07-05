@@ -5,7 +5,7 @@ Version: 1.9.3
 Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka
     [aut], Alexander Gosdschan [ctb], Liz Ing-Simmons [ctb]
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
-    <vedran.franke@gmail.com>
+    <vedran.franke@gmail.com>, Katarzyna Wreczycka <katwre@gmail.com>
 Description: A package for summary and annotation of genomic intervals. Users
     can visualize and quantify genomic intervals over pre-defined functional
     regions, such as promoters, exons, introns, etc. The genomic intervals
