@@ -69,4 +69,5 @@ Collate:
     'Ops.R'
     'test_genomation_package.R'
     'deprecated_defunct.R'
+	'enrichmentMatrix.R'
 RoxygenNote: 6.0.1.9000
