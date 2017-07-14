@@ -30,8 +30,3 @@ checkEquals(esml_3, esml_4)
 
 # error for unequal list lengths
 checkException(enrichmentMatrix(ScoreMatrixList(list(IP, IP, IP)), sml_control), silent=TRUE)
-
-# error for unequal matrix sizes
-checkException(ScoreMatrixControl(IP, control[1:2,]), silent=TRUE)
-checkException(enrichmentMatrix(sml_IP, ScoreMatrixList(list(control, control[1:2,]))), silent=TRUE)
-
