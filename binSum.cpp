@@ -197,28 +197,28 @@ NumericMatrix  listSliceMean(List xlist,int n) {
 }
 
 // [[Rcpp::export]]
-NumericVector binMean2(NumericVector x,int n) {
-  int p = x.size();  // get the length of the input vector
-  double w_size=double(p-1)/double(n); // window size can be a double
-  int step = ceil(w_size);
+NumericVector binMean2(NumericVector x, int n) {
+  int rozm = x.size();
+  double w_size=double(rozm-1)/double(n); // window size can be a double
+  int step = ceil(w_size); 
   NumericVector res(n);// create the output vector
+  NumericVector bz(step); // create a vector for storing bin samples
   
-  NumericMatrix bin(step,n);
-  
-  for (int i = 0; i < p; i++){
-    bin[i] = x[i];
+  int ile, k = 0;
+  for(int i = 0; i < rozm; i++){
+    for(int z = 0; z < n; z++){ 
+      ile = step;
+      while(ile){
+        bz[(step-ile)] = x[k];   //creates a vector storing samples from one bin
+        ile--;
+        k++;
+      } 
+      res[z] = std::accumulate(bz.begin(), bz.end(), 0.0)/bz.size(); //calculates a mean value of samples from a particular bin
+    }
+    i = k-1; // subtracts one additional value due to adding 1 to i at the finish of while loop
   }
-  
-  NumericVector bz(step);
-  
-  for(int z = 0; z < n; z++){
-    bz = bin( _, z);
-    res[z] = std::accumulate(bz.begin(), bz.end(), 0.0)/bz.size();
-  } 
-  
   return res;
 }
-
 
 
 // [[Rcpp::export]]
@@ -226,9 +226,10 @@ NumericMatrix  listSliceMean2(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
+  NumericVector tabx;
   for (int i = 0; i < m; i++) {
-    subVec = binMean2(xlist[i],n);
-    res(i, _) = subVec;
+    subVec = binMean2(xlist[i], n); //gives vector of mean values
+    res(i, _) = subVec;             //adds the vector to the matrix
   }
   return res;
 }
