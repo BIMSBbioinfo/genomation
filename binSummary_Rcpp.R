@@ -18,6 +18,7 @@ promoter.gr=ref$promoters
 
 
 myFunc<-function(bwFile,promoter.gr){
+  mcols(promoter.gr)$X_rank = 1:length(promoter.gr);
   cov.bw=import(bwFile, which=promoter.gr,as = "RleList");
   myViews=Views(cov.bw,as(promoter.gr,"RangesList")); # get subsets of coverage
   
@@ -25,7 +26,17 @@ myFunc<-function(bwFile,promoter.gr){
   
   mat = lapply(myViews,function(x) as.list((viewApply(x,as.vector,
                                                       simplify = FALSE))) )
-  listSliceMean(do.call("c",mat),10);
+  
+  mat_res = listSliceMean(do.call("c",mat),10);
+  ## copied from scoreMatrix.R
+  # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+  r.list=split(mcols(promoter.gr)[,"X_rank"], as.vector(seqnames(promoter.gr))  )
+  r.list=r.list[order(names(r.list))]
+  ranks=do.call("c",r.list)
+  rownames(mat_res) = ranks
+  mat_res = mat_res[order(ranks),] 
+  return(mat_res)
+
 }
 
 myFunc2<-function(bwFile,promoter.gr){
@@ -35,12 +46,18 @@ myFunc2<-function(bwFile,promoter.gr){
   myViews=Views(cov.bw,as(promoter.gr,"RangesList")); # get subsets of coverage
   
   Xrank <- myViews$chr21@elementMetadata$X_rank
-  
   mat = lapply(myViews,function(x) as.list((viewApply(x,as.vector,
                                                       simplify = FALSE))) )
-  #p<-do.call("c",mat)
+  mat_res = listSliceMean2(do.call("c",mat),10);
   
-  listSliceMean2(do.call("c",mat),10);
+  ## copied from scoreMatrix.R
+  # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+  r.list=split(mcols(promoter.gr)[,"X_rank"], as.vector(seqnames(promoter.gr))  )
+  r.list=r.list[order(names(r.list))]
+  ranks=do.call("c",r.list)
+  rownames(mat_res) = ranks
+  mat_res = mat_res[order(ranks),] 
+  return(mat_res)
 }
 
 bigp=rep(promoter.gr,20) # make a realistic number of windows 
