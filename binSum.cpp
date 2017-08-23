@@ -202,6 +202,17 @@ NumericVector binMean2(NumericVector x, int n) {
   double w_size=double(rozm-1)/double(n); // window size can be a double
   int step = ceil(w_size); 
   NumericVector res(n);// create the output vector
+  
+  // if the bins equals the vector size ,set the window size to 1
+  if(rozm==n){
+    w_size=1;
+  }
+  
+  // if the bins number larger than vector size return zeros 
+  if(rozm < n){
+    return res;
+  }
+  
   NumericVector bz(step); // create a vector for storing bin samples
   
   int ile, k = 0;
@@ -233,6 +244,32 @@ NumericMatrix  listSliceMean2(List xlist,int n) {
   }
   return res;
 }
+
+
+// [[Rcpp::export]]
+NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
+  int m = x.nrow();
+  int n = x.ncol();
+  
+  NumericMatrix res(m, n);
+  NumericVector r(m);
+  
+  for (int v = 0; v < m; v++){
+    r[v] = v + 1;
+  }
+  
+  for (int i = 0; i < m; i++){
+    for (int j = 0; j < m; j++){
+      if(p[i]==r[j]){
+        res(j, _) = x(i, _);
+        break;
+      }
+    }
+  }
+  return res;
+}
+
+
 
 // You can include R code blocks in C++ files processed with sourceCpp
 // (useful for testing and development). The R code will be automatically 
