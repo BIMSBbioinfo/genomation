@@ -1,5 +1,7 @@
 #include <Rcpp.h>
 #include <math.h> 
+
+
 using namespace Rcpp;
 
 // This is a simple example of exporting a C++ function to R. You can
@@ -205,7 +207,7 @@ NumericVector binMean2(NumericVector x, int n) {
   
   // if the bins equals the vector size ,set the window size to 1
   if(rozm==n){
-    w_size=1;
+    step=1;
   }
   
   // if the bins number larger than vector size return zeros 
@@ -252,11 +254,9 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
   int n = x.ncol();
   
   NumericMatrix res(m, n);
-  NumericVector r(m);
+  NumericVector r = p;
   
-  for (int v = 0; v < m; v++){
-    r[v] = v + 1;
-  }
+  std::sort(r.begin(), r.end());
   
   for (int i = 0; i < m; i++){
     for (int j = 0; j < m; j++){
