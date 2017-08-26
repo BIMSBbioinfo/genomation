@@ -14,24 +14,11 @@ using namespace Rcpp;
 //   http://gallery.rcpp.org/
 //
 
-// function to test max min and indeces shouldn't be exported
-// [[Rcpp::export]]
-double basic_function(NumericVector x,int prev,int end) { // this function is just a trial, can be deleted
-  double res = *std::max_element(x.begin()+prev,x.begin()+end);// get max
-  return res;
-}
-
-
-// [[Rcpp::export]]
-std::vector<double>  binMax(NumericVector x,int n) {
+NumericVector  binMean(NumericVector x,int n) {
   
   int sz = x.size() ;// get the length of the input vector
-  
-  std::vector<double>  res(n);// create the output vector
-  
-  double prev=0; // index for start positions over vector
-  double w_size=double(sz-1)/double(n); // window size can be a double
-  //std::cout << w_size << " || \n";
+  NumericVector res(n);// create the output vector
+  double w_size=double(sz)/double(n); // window size can be a double
   
   // if the bins equals the vector size ,set the window size to 1
   if(sz==n){
@@ -43,209 +30,52 @@ std::vector<double>  binMax(NumericVector x,int n) {
     return res;
   }
   
-  //w_size=round(w_size);
-  int prev2 ;// integers for indices
-  int end2  ;
-  double end;
-  for(int i = 0; i < n-1; i++) {
-    end=prev+(w_size); //get the end index of vector
-    
-    prev2= ceil(prev); // get the integer index for slices over vector
-    end2 = ceil(end);
-    std::cout << prev2  << " " <<end2 << "\n";
-    
-    res[i] = *std::max_element(x.begin()+prev2,x.begin()+end2);// get max
-    prev=prev+ w_size; // update the begining index of the slice
-  }
-  
-  // for the last slice do calc outside the loop to be able to include last element in the slice
-  // there might be more elegant way to do this but there is no time
-  end=prev+(w_size); 
-  //std::cout << prev  << " " <<end << "\n";
-  prev2= ceil(prev);
-  end2 = ceil(end);
-  //std::cout << prev2  << " " <<end2 << "\n";
-  res[(n-1)] = *std::max_element(x.begin()+prev2,x.end());
-  //std::cout <<  *std::max(x.begin()+prev2,x.end()) << "\n";
-  return res;
-}
-
-// function that calculates the bin sum
-std::vector<double>  binSum(NumericVector x,int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
-  
-  std::vector<double>  res(n);// create the output vector
-  
   double prev=0; // index for start positions over vector
-  double w_size=double(sz-1)/double(n); // window size can be a double
-  //std::cout << w_size << " || \n";
-  
-  // if the bins equals the vector size ,set the window size to 1
-  if(sz==n){
-    w_size=1;
-  }
-  
-  // if the bins number larger than vector size return zeros 
-  if(sz < n){
-    return res;
-  }
-  
-  //w_size=round(w_size);
-  int prev2 ;// integers for indices
-  int end2  ;
+  NumericVector prev2(n) ;// integers for indices
+  NumericVector end2(n)  ;
   double end;
-  for(int i = 0; i < n-1; i++) {
-    end=prev+(w_size); //get the end index of vector
-    //std::cout << prev  << " " <<end << "\n";
-    
-    prev2= ceil(prev); // get the integer index for slices over vector
-    end2 = ceil(end);
-    res[i] = std::accumulate(x.begin()+prev2,x.begin()+end2, 0.0);// sum up
-    prev=prev+ w_size; // update the begining index of the slice
+  for(int i = 0; i <= n; i++) {
+    end = prev + (w_size); //get the end index of the interval
+    prev2[i] = ceil(prev); // get the integer index for slices over vector
+    end2[i] = ceil(end);
+    prev = prev + w_size; // update the begining index of the slice
   }
-  
-  // for the last slice do calc outside the loop to be able to include last element in the slice
-  // there might be more elegant way to do this but there is no time
-  end=prev+(w_size); 
-  //std::cout << prev  << " " <<end << "\n";
-  prev2= ceil(prev);
-  end2 = ceil(end);
-  //std::cout << prev2  << " " <<end2 << "\n";
-  res[n-1] = std::accumulate(x.begin()+prev2,x.begin()+(end2+1), 0.0);
-  return res;
-}
-
-std::vector<double>  binMean(NumericVector x,int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
-  
-  std::vector<double>  res(n);// create the output vector
-  
-  double prev=0; // index for start positions over vector
-  double w_size=double(sz-1)/double(n); // window size can be a double
-  //std::cout << w_size << " || \n";
-  
-  // if the bins equals the vector size ,set the window size to 1
-  if(sz==n){
-    w_size=1;
+  // std::cout << prev2  << "\n" <<end2 << "\n";
+  double partSum;
+  NumericVector::iterator it;
+  for(int i = 0; i < n; i++) {
+    partSum = 0;
+    if((n-1)-i){
+   //caltulate the sum of values from the intervals excluding the last one
+      for(it = &x[prev2[i]]; it != &x[end2[i]]; ++it) {
+         partSum += *it;
+      } 
+     }else{  //calculate the sum of values from the last interval 
+    for(it = &x[prev2[i]]; it <= &x[end2[i]]; ++it) {
+         partSum += *it;
+       }
   }
-  
-  // if the bins number larger than vector size return zeros 
-  if(sz < n){
-    return res;
-  }
-  
-  //w_size=round(w_size);
-  int prev2 ;// integers for indices
-  int end2  ;
-  double end;
-  for(int i = 0; i < n-1; i++) {
-    end=prev+(w_size); //get the end index of vector
-    //std::cout << prev  << " " <<end << "\n";
-    
-    prev2= ceil(prev); // get the integer index for slices over vector
-    end2 = ceil(end);
-    res[i] = std::accumulate(x.begin()+prev2,x.begin()+end2, 0.0);// sum up
-    res[i] = res[i]/(end2-prev2); // get mean
-    prev=prev+ w_size; // update the begining index of the slice
-  }
-  
-  // for the last slice do calc outside the loop to be able to include las slice
-  // there might be more elegant way to do this but there is no time
-  end=prev+(w_size); 
-  //std::cout << prev  << " " <<end << "\n";
-  prev2= ceil(prev);
-  end2 = ceil(end);
-  //std::cout << prev2  << " " <<end2 << "\n";
-  res[n-1] = std::accumulate(x.begin()+prev2,x.begin()+(end2+1), 0.0)/(end2-prev2+1);
-  return res;
-}
-
-
-
-
-
-// [[Rcpp::export]]
-NumericMatrix  listSliceSum(List xlist,int n) {
-  int m = xlist.size(); 
-  std::cout << m  << " " <<n << "\n";
-  NumericMatrix res(m, n);
-  std::vector<double>  subVec;
-  for (int i = 0; i < m; i++) {
-    subVec=binSum(xlist[i],n);
-    for (int j = 0; j < n; j++) {
-      res(i, j)=subVec[j];
-    }
+   res[i] = partSum/(&x[end2[i]]-&x[prev2[i]]); //calculate the mean value of the bin
   }
   
   return res;
 }
+
 
 
 // [[Rcpp::export]]
 NumericMatrix  listSliceMean(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
-  std::vector<double>  subVec;
-  for (int i = 0; i < m; i++) {
-    subVec=binMean(xlist[i],n);
-    for (int j = 0; j < n; j++) {
-      res(i, j)=subVec[j];
-    }
-  }
-  
-  return res;
-}
-
-// [[Rcpp::export]]
-NumericVector binMean2(NumericVector x, int n) {
-  int rozm = x.size();
-  double w_size=double(rozm-1)/double(n); // window size can be a double
-  int step = ceil(w_size); 
-  NumericVector res(n);// create the output vector
-  
-  // if the bins equals the vector size ,set the window size to 1
-  if(rozm==n){
-    step=1;
-  }
-  
-  // if the bins number larger than vector size return zeros 
-  if(rozm < n){
-    return res;
-  }
-  
-  NumericVector bz(step); // create a vector for storing bin samples
-  
-  int ile, k = 0;
-  for(int i = 0; i < rozm; i++){
-    for(int z = 0; z < n; z++){ 
-      ile = step;
-      while(ile){
-        bz[(step-ile)] = x[k];   //creates a vector storing samples from one bin
-        ile--;
-        k++;
-      } 
-      res[z] = std::accumulate(bz.begin(), bz.end(), 0.0)/bz.size(); //calculates a mean value of samples from a particular bin
-    }
-    i = k-1; // subtracts one additional value due to adding 1 to i at the finish of while loop
-  }
-  return res;
-}
-
-
-// [[Rcpp::export]]
-NumericMatrix  listSliceMean2(List xlist,int n) {
-  int m = xlist.size(); 
-  NumericMatrix res(m, n);
   NumericVector  subVec;
   NumericVector tabx;
   for (int i = 0; i < m; i++) {
-    subVec = binMean2(xlist[i], n); //gives vector of mean values
+    subVec = binMean(xlist[i], n); //gives vector of mean values
     res(i, _) = subVec;             //adds the vector to the matrix
   }
   return res;
 }
+
 
 
 // [[Rcpp::export]]
@@ -279,11 +109,11 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
 /*** R
 #x=binSum(1:35,10)
 #x
-binMax(1:35,10)
+#binMax(1:35,10)
 
-listSliceSum(list(1:35,1:25),10)
+#listSliceSum(list(1:35,1:25),10)
 listSliceMean(list(1:35,1:25),10)
-listSliceMean2(list(1:35,1:25),10)
+#listSliceMean3(list(1:35,1:25),10)
 listSliceMean(list(c(120,1:35,120),1:25),10)
-listSliceMean2(list(c(120,1:35,120),1:25),10)
+#listSliceMean3(list(c(120,1:35,120),1:25),10)
 */
