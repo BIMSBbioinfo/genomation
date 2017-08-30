@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include <Rmath.h>
+#include <math.h>
 
 
 
@@ -159,6 +159,74 @@ NumericVector binMedian2(NumericVector x, int n) {
   return res;
 }
 
+NumericVector binMax(NumericVector x,int n) {
+  
+  int sz = x.size() ;// get the length of the input vector
+  NumericVector res(n);// create the output vector
+  double w_size=double(sz)/double(n); // window size can be a double
+  
+  // if the bins equals the vector size ,set the window size to 1
+  if(sz == n){
+    w_size=1;
+  }
+  
+  // if the bins number larger than vector size return zeros 
+  if(sz < n){
+    return res;
+  }
+  
+  double prev=0; // index for start positions over vector
+  NumericVector prev2(n) ;// integers for indices
+  NumericVector end2(n)  ;
+  double end;
+  for(int i = 0; i <= n; i++) {
+    end = prev + (w_size); //get the end index of the interval
+    prev2[i] = ceil(prev); // get the integer index for slices over vector
+    end2[i] = ceil(end);
+    prev = prev + w_size; // update the begining index of the slice
+  }
+
+  for(int i = 0; i < n; i++) {
+    res[i] = *std::max_element(&x[prev2[i]], &x[end2[i]]); //calculate the max value in the bin
+  }
+  
+  return res;
+}
+
+
+NumericVector binMin(NumericVector x,int n) {
+  
+  int sz = x.size() ;// get the length of the input vector
+  NumericVector res(n);// create the output vector
+  double w_size=double(sz)/double(n); // window size can be a double
+  
+  // if the bins equals the vector size ,set the window size to 1
+  if(sz == n){
+    w_size=1;
+  }
+  
+  // if the bins number larger than vector size return zeros 
+  if(sz < n){
+    return res;
+  }
+  
+  double prev=0; // index for start positions over vector
+  NumericVector prev2(n) ;// integers for indices
+  NumericVector end2(n)  ;
+  double end;
+  for(int i = 0; i <= n; i++) {
+    end = prev + (w_size); //get the end index of the interval
+    prev2[i] = ceil(prev); // get the integer index for slices over vector
+    end2[i] = ceil(end);
+    prev = prev + w_size; // update the begining index of the slice
+  }
+  
+  for(int i = 0; i < n; i++) {
+    res[i] = *std::min_element(&x[prev2[i]], &x[end2[i]]); //calculate the max value in the bin
+  }
+  return res;
+}
+
 
 // [[Rcpp::export]]
 NumericMatrix  listSliceMean(List xlist,int n) {
@@ -174,7 +242,7 @@ NumericMatrix  listSliceMean(List xlist,int n) {
 }
 
 // [[Rcpp::export]]
-NumericMatrix  listSliceMedian(List xlist,int n) {
+NumericMatrix  listSliceMedian2(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
@@ -187,13 +255,27 @@ NumericMatrix  listSliceMedian(List xlist,int n) {
 }
 
 // [[Rcpp::export]]
-NumericMatrix  listSliceMedian2(List xlist,int n) {
+NumericMatrix  listSliceMax(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
   NumericVector tabx;
   for (int i = 0; i < m; i++) {
-    subVec = binMedian2(xlist[i], n); //gives vector of mean values
+    subVec = binMax(xlist[i], n); //gives vector of mean values
+    res(i, _) = subVec;             //adds the vector to the matrix
+  }
+  return res;
+}
+
+
+// [[Rcpp::export]]
+NumericMatrix  listSliceMin(List xlist,int n) {
+  int m = xlist.size(); 
+  NumericMatrix res(m, n);
+  NumericVector  subVec;
+  NumericVector tabx;
+  for (int i = 0; i < m; i++) {
+    subVec = binMin(xlist[i], n); //gives vector of mean values
     res(i, _) = subVec;             //adds the vector to the matrix
   }
   return res;
@@ -235,6 +317,7 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
 listSliceMean(list(1:35,1:25),10)
 #listSliceMean3(list(1:35,1:25),10)
 listSliceMean(list(c(120,1:35,120),1:25),10)
-listSliceMedian(list(c(120,1:35,120),1:25),10)
 listSliceMedian2(list(c(120,1:35,120),1:25),10)
+listSliceMax(list(c(120,1:35,120),1:25),10)
+listSliceMin(list(c(120,1:35,120),1:25),10)
 */
