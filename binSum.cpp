@@ -39,22 +39,9 @@ NumericVector binMean(NumericVector x,int n) {
     end2[i] = ceil(end);
     prev = prev + w_size; // update the begining index of the slice
   }
-  // std::cout << prev2  << "\n" <<end2 << "\n";
-  double partSum;
-  NumericVector::iterator it;
+  
   for(int i = 0; i < n; i++) {
-    partSum = 0;
-    if((n-1)-i){
-   //caltulate the sum of values from the intervals excluding the last one
-      for(it = &x[prev2[i]]; it != &x[end2[i]]; ++it) {
-         partSum += *it;
-      } 
-     }else{  //calculate the sum of values from the last interval 
-    for(it = &x[prev2[i]]; it <= &x[end2[i]]; ++it) {
-         partSum += *it;
-       }
-  }
-   res[i] = partSum/(&x[end2[i]]-&x[prev2[i]]); //calculate the mean value of the bin
+   res[i] = std::accumulate(&x[prev2[i]], &x[end2[i]], 0.0)/(&x[end2[i]]-&x[prev2[i]]); //calculate the mean value of the bin
   }
   
   return res;
@@ -201,7 +188,7 @@ NumericVector binSum(NumericVector x,int n) {
   }
   
   for(int i = 0; i < n; i++) {
-    res[i] = std::accumulate(&x[prev2[i]], &x[end2[i]], 0.0); //calculate the max value in the bin
+    res[i] = std::accumulate(&x[prev2[i]], &x[end2[i]], 0.0); //calculate the sum value of the bin
   }
   return res;
 }
