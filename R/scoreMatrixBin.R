@@ -231,12 +231,39 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
               warning('supplied GRanges object contains ranges of width < number of bins')
             }
             
+            ##### C++
             # gets the view list
-            my.vList = getViewsBin(target, windows, bin.num)
+           # my.vList = getViewsBin(target, windows, bin.num)
             
             # summarize views with the given function
-            mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
-            new("ScoreMatrix",mat)
+          #  mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
+            
+            mcols(windows)$X_rank = 1:length(windows);
+            
+            # fetches the windows and the scores
+            chrs = sort(intersect(names(target), as.character(unique(seqnames(windows)))))
+            myViews=Views(target,as(windows,"RangesList")[chrs]); # get subsets of coverage
+      
+            mat = lapply(myViews,function(x) as.list((viewApply(x,as.vector,
+                                                                simplify = FALSE))) )
+            
+            if(bin.op =="min")
+              mat_res = listSliceMin(do.call("c",mat), bin.num);
+            if(bin.op =="max")
+              mat_res = listSliceMax(do.call("c",mat), bin.num);
+            if(bin.op =="mean")
+              mat_res = listSliceMean(do.call("c",mat), bin.num);
+            if(bin.op =="median") 
+              mat_res <- listSliceMedian(do.call("c",mat), bin.num);
+            if(bin.op =="sum") 
+              mat_res <- listSliceMedian(do.call("c",mat), bin.num);
+            
+            r.list = split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
+            r.list = r.list[order(names(r.list))]
+            ranks = do.call("c",r.list)
+            mat_res = ranksOrder(mat_res, ranks)
+            
+            new("ScoreMatrix",mat_res)
           })
 
 
