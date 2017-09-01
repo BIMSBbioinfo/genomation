@@ -289,3 +289,6 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
 // run after the compilation.
 //
 
+/*** R
+
+  */

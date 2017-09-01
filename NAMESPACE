@@ -1,3 +1,6 @@
+useDynLib(genomation)
+exportPattern("^[[:alpha:]]+")
+
 import(methods)
 import(Biostrings)
 import(BSgenome)
@@ -47,7 +50,7 @@ importFrom("seqPattern", motifScanScores)
 importFrom("seqPattern", getPatternOccurrenceList)
 importFrom("stats", "dist", "hclust", "pnorm", "runif")
 importFrom("utils", "download.file", "read.table", "unzip")
-
+importFrom(Rcpp, evalCpp)
 
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
