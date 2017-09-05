@@ -1,99 +1,4 @@
 #######################################
-# S3 functions
-#######################################
-# ---------------------------------------------------------------------------- #
-# given a vector and length smooths the vector to a given size
-# the function is not safe - check for the window length before
-binner=function(start,end,nbins){
-  
-  if(! is.numeric(start))
-    stop('start needs to be class numeric')
-  if(! is.numeric(end))
-    stop('end needs to be class numeric')
-  if(! is.numeric(nbins))
-    stop('nbins needs to be class numeric')
-  
-  x = unique(seq(from = start, to = end,length.out=nbins + 1 ) )
-  my.start = ceiling(x)[-length(x)]
-  my.end = floor(x)[-1]
-  
-  return( t(cbind(my.start, my.end) )  )
-}
-
-# ---------------------------------------------------------------------------- #
-# given a target Rle and windows gets the views to be used for binning
-getViewsBin = function(target, windows, bin.num){
-  
-  #get coordinates of bins in each window
-  coord = matrix(mapply(binner, 
-                        IRanges::start(windows),
-                        IRanges::end(windows), 
-                        bin.num, SIMPLIFY=TRUE), 
-                 ncol=2, byrow=TRUE)
-  
-  # make GRanges object for the bins
-  # subtract 1 so next start pos is not identical to  current end pos
-  # keep window rank from original "windows" GRanges object
-  subWins = GRanges(seqnames=rep(as.character(seqnames(windows)),each=bin.num),
-                    IRanges(start=coord[,1],end=coord[,2])) 
-  IRanges::values(subWins)$X_rank = rep(IRanges::values(windows)$X_rank, each=bin.num)
-  
-  # convert sub-windows to RangesList to be fed into coverage()
-  win.list=as(subWins, "RangesList")
-  win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
-  
-  #check if there are common chromsomes
-  chrs  = intersect(names(win.list), names(target))
-  if(length(chrs)==0)
-    stop("There are no common chromosomes/spaces to do overlap")
-  
-  # get views on your windows
-  my.vList = Views(target[chrs], win.list[chrs] )
-  my.vList = lapply(chrs,
-                    function(x){
-                      v = my.vList[[x]]
-                      names(v) = IRanges::values(subWins)$X_rank[as.character(seqnames(subWins)) == x]
-                      return(v)})
-  names(my.vList) = chrs
-  return(my.vList)
-}
-
-# ---------------------------------------------------------------------------- #
-# applies the summary function for the views to bin the objects - for standard Rle and returns a matrix object
-summarizeViewsRle = function(my.vList, windows, bin.op, bin.num, strand.aware){
-  
-  # chop windows to bins
-  functs = c("min",'mean','max','median')
-  if(!bin.op %in% functs)
-    stop(paste(c('Supported binning functions are', functs,'\n')))
-  if(bin.op=="min")
-    sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-      IRanges::viewMins(x,na.rm=TRUE) ),use.names=FALSE)      
-  
-  if(bin.op=="max")
-    sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-      IRanges::viewMaxs(x,na.rm=TRUE) ),use.names=FALSE)      
-  if(bin.op=="mean")
-    sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-      IRanges::viewMeans(x,na.rm=TRUE) ),use.names=FALSE)    
-  
-  if(bin.op=="median")
-    sum.bins=unlist(IRanges::lapply(my.vList, function(x) 
-      viewApply(x, function(x) median(as.numeric(x),na.rm=TRUE)  )), use.names=FALSE) 
-  
-  mat=matrix( sum.bins, ncol=bin.num,byrow=TRUE)
-  mat[is.nan(mat)]=NA
-  rownames(mat) = unlist(IRanges::lapply(my.vList, names), use.names=FALSE)[seq(1, length(mat), bin.num)]
-  if(strand.aware){
-    orig.rows=windows[strand(windows) == '-',]$X_rank
-    mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% orig.rows, ncol(mat):1]
-  }
-  mat = mat[order(as.numeric(rownames(mat))),,drop=FALSE]
-  return(mat)
-  
-}
-
-#######################################
 # S4 functions
 #######################################
 
@@ -215,55 +120,48 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             } 
             
             # removes windows that fall of the chromosomes - window id is in values(windows)$X_rank 
-            windows.len=length(windows)
-            windows = constrainRanges(target, windows)
+            windows.len <- length(windows)
+            windows <- constrainRanges(target, windows)
             if(length(windows)!=windows.len){
               warning(paste0(windows.len-length(windows),
                              " windows fall off the target"))
             }
             
             # checks whether some windows are shorter than the wanted window size
-            wi = IRanges::width(windows) < bin.num
+            wi <- IRanges::width(windows) < bin.num
             if(any(wi)){
-              windows = windows[!wi]
+              windows <- windows[!wi]
               if(length(windows) == 0)
                 stop('all supplied windows have width < number of bins')
               warning('supplied GRanges object contains ranges of width < number of bins')
             }
             
-            ##### C++
-            # gets the view list
-           # my.vList = getViewsBin(target, windows, bin.num)
-            
-            # summarize views with the given function
-          #  mat = summarizeViewsRle(my.vList, windows, bin.op, bin.num, strand.aware)
-            
-            mcols(windows)$X_rank = 1:length(windows);
+            mcols(windows)$X_rank <- 1:length(windows);
             
             # fetches the windows and the scores
-            chrs = sort(intersect(names(target), as.character(unique(seqnames(windows)))))
-            myViews=Views(target,as(windows,"RangesList")[chrs]); # get subsets of coverage
-      
-            mat = lapply(myViews,function(x) as.list((viewApply(x,as.vector,
-                                                                simplify = FALSE))) )
-            
+            chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
+            myViews <- Views(target[chrs],as(windows,"RangesList")[chrs]); # get subsets of coverage
+                  
+            mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,
+                                            simplify = FALSE))) )
+                       
             if(bin.op =="min")
-              mat_res = listSliceMin(do.call("c",mat), bin.num);
+              mat_res <- listSliceMin(do.call("c",mat), bin.num);
             if(bin.op =="max")
-              mat_res = listSliceMax(do.call("c",mat), bin.num);
+              mat_res <- listSliceMax(do.call("c",mat), bin.num);
             if(bin.op =="mean")
-              mat_res = listSliceMean(do.call("c",mat), bin.num);
+              mat_res <- listSliceMean(do.call("c",mat), bin.num);
             if(bin.op =="median") 
               mat_res <- listSliceMedian(do.call("c",mat), bin.num);
             if(bin.op =="sum") 
               mat_res <- listSliceMedian(do.call("c",mat), bin.num);
             
-            r.list = split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
-            r.list = r.list[order(names(r.list))]
-            ranks = do.call("c",r.list)
-            mat_res = ranksOrder(mat_res, ranks)
+            r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
+            r.list <- r.list[order(names(r.list))]
+            ranks <- do.call("c",r.list)
+            mat_res <- ranksOrder(mat_res, ranks)
             
-            new("ScoreMatrix",mat_res)
+       new("ScoreMatrix", mat_res)
           })
 
 
@@ -279,6 +177,7 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
                    strand.aware,weight.col,is.noCovNA){
             
             #make coverage vector  from target
+            
             if(is.null(weight.col)){
               target.rle=coverage(target)
             }else{
