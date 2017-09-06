@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include <math.h>
+#include <Rmath.h>
 
 using namespace Rcpp;
 
@@ -13,6 +14,7 @@ using namespace Rcpp;
 //   http://gallery.rcpp.org/
 //
 
+// [[Rcpp::export]]
 NumericVector binMean(NumericVector x,int n) {
   
   int sz = x.size() ;// get the length of the input vector
@@ -47,7 +49,7 @@ NumericVector binMean(NumericVector x,int n) {
   return res;
 }
 
-
+// [[Rcpp::export]]
 NumericVector binMedian(NumericVector x, int n) {
   
   int sz = x.size() ;// get the length of the input vector
@@ -91,7 +93,7 @@ NumericVector binMedian(NumericVector x, int n) {
   return res;
 }
 
-
+// [[Rcpp::export]]
 NumericVector binMax(NumericVector x,int n) {
   
   int sz = x.size() ;// get the length of the input vector
@@ -126,7 +128,7 @@ NumericVector binMax(NumericVector x,int n) {
   return res;
 }
 
-
+// [[Rcpp::export]]
 NumericVector binMin(NumericVector x,int n) {
   
   int sz = x.size() ;// get the length of the input vector
@@ -160,6 +162,7 @@ NumericVector binMin(NumericVector x,int n) {
   return res;
 }
 
+// [[Rcpp::export]]
 NumericVector binSum(NumericVector x,int n) {
   
   int sz = x.size() ;// get the length of the input vector
@@ -247,7 +250,6 @@ NumericMatrix  listSliceMin(List xlist,int n) {
 }
 
 
-
 // [[Rcpp::export]]
 NumericMatrix  listSliceSum(List xlist,int n) {
   int m = xlist.size(); 
@@ -283,12 +285,3 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
   return res;
 }
 
-
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
-// run after the compilation.
-//
-
-/*** R
-
-  */

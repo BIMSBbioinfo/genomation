@@ -5,6 +5,66 @@
 
 using namespace Rcpp;
 
+// binMean
+NumericVector binMean(NumericVector x, int n);
+RcppExport SEXP genomation_binMean(SEXP xSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(binMean(x, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binMedian
+NumericVector binMedian(NumericVector x, int n);
+RcppExport SEXP genomation_binMedian(SEXP xSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(binMedian(x, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binMax
+NumericVector binMax(NumericVector x, int n);
+RcppExport SEXP genomation_binMax(SEXP xSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(binMax(x, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binMin
+NumericVector binMin(NumericVector x, int n);
+RcppExport SEXP genomation_binMin(SEXP xSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(binMin(x, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binSum
+NumericVector binSum(NumericVector x, int n);
+RcppExport SEXP genomation_binSum(SEXP xSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(binSum(x, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 // listSliceMean
 NumericMatrix listSliceMean(List xlist, int n);
 RcppExport SEXP genomation_listSliceMean(SEXP xlistSEXP, SEXP nSEXP) {
@@ -79,6 +139,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"genomation_binMean", (DL_FUNC) &genomation_binMean, 2},
+    {"genomation_binMedian", (DL_FUNC) &genomation_binMedian, 2},
+    {"genomation_binMax", (DL_FUNC) &genomation_binMax, 2},
+    {"genomation_binMin", (DL_FUNC) &genomation_binMin, 2},
+    {"genomation_binSum", (DL_FUNC) &genomation_binSum, 2},
     {"genomation_listSliceMean", (DL_FUNC) &genomation_listSliceMean, 2},
     {"genomation_listSliceMedian", (DL_FUNC) &genomation_listSliceMedian, 2},
     {"genomation_listSliceMax", (DL_FUNC) &genomation_listSliceMax, 2},

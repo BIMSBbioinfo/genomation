@@ -1,6 +1,3 @@
-useDynLib(genomation)
-exportPattern("^[[:alpha:]]+")
-
 import(methods)
 import(Biostrings)
 import(BSgenome)
@@ -50,7 +47,7 @@ importFrom("seqPattern", motifScanScores)
 importFrom("seqPattern", getPatternOccurrenceList)
 importFrom("stats", "dist", "hclust", "pnorm", "runif")
 importFrom("utils", "download.file", "read.table", "unzip")
-importFrom(Rcpp, evalCpp)
+importFrom(Rcpp, sourceCpp)
 
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
@@ -95,8 +92,11 @@ exportMethods(ScoreMatrixBin)
 exportMethods(scaleScoreMatrix)
 exportMethods(scaleScoreMatrixList)
 
-export(gffToGRanges)
+export(gffToGRanges) 
 export(ScoreMatrixList)
 
 S3method(c,ScoreMatrixList)
 S3method(c,ScoreMatrix)
+
+useDynLib(genomation)
+exportPattern("^[[:alpha:]]+")

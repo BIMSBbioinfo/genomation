@@ -1,3 +1,7 @@
+.onUnload <- function (libpath) {
+  library.dynam.unload("genomation", libpath)
+}
+
 #######################################
 # S4 functions
 #######################################
@@ -89,6 +93,8 @@
 #' myMat3                     
 #' @seealso \code{\link{ScoreMatrix}}
 #' @docType methods
+#' @useDynLib genomation
+#' @importFrom Rcpp sourceCpp
 #' @rdname ScoreMatrixBin-methods           
 #' @export
 setGeneric("ScoreMatrixBin",
@@ -142,19 +148,20 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
             myViews <- Views(target[chrs],as(windows,"RangesList")[chrs]); # get subsets of coverage
                   
-            mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,
-                                            simplify = FALSE))) )
-                       
-            if(bin.op =="min")
-              mat_res <- listSliceMin(do.call("c",mat), bin.num);
-            if(bin.op =="max")
-              mat_res <- listSliceMax(do.call("c",mat), bin.num);
-            if(bin.op =="mean")
-              mat_res <- listSliceMean(do.call("c",mat), bin.num);
-            if(bin.op =="median") 
-              mat_res <- listSliceMedian(do.call("c",mat), bin.num);
-            if(bin.op =="sum") 
-              mat_res <- listSliceMedian(do.call("c",mat), bin.num);
+            mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector))) )
+            mat <- do.call("c",mat)
+            
+            
+            if(bin.op =="min"){
+              mat_res <- listSliceMin(mat, bin.num);
+            } else if(bin.op =="max"){
+              mat_res <- listSliceMax(mat, bin.num);
+            } else if(bin.op =="sum"){
+               mat_res <- listSliceSum(mat, bin.num);
+            } else if(bin.op =="median"){
+              mat_res <- listSliceMedian(mat, bin.num);
+            } else(bin.op =="mean")
+              mat_res <- listSliceMean(mat, bin.num);
             
             r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
             r.list <- r.list[order(names(r.list))]
