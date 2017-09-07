@@ -32,18 +32,15 @@ NumericVector binMean(NumericVector x,int n) {
   }
   
   double prev=0; // index for start positions over vector
-  NumericVector prev2(n) ;// integers for indices
-  NumericVector end2(n)  ;
+  int prev2 ;// integers for indices
+  int end2  ;
   double end;
-  for(int i = 0; i <= n; i++) {
+  for(int i = 0; i< n; i++) {
     end = prev + (w_size); //get the end index of the interval
-    prev2[i] = ceil(prev); // get the integer index for slices over vector
-    end2[i] = ceil(end);
+    prev2 = ceil(prev); // get the integer index for slices over vector
+    end2 = ceil(end);
     prev = prev + w_size; // update the begining index of the slice
-  }
-  
-  for(int i = 0; i < n; i++) {
-   res[i] = std::accumulate(&x[prev2[i]], &x[end2[i]], 0.0)/(&x[end2[i]]-&x[prev2[i]]); //calculate the mean value of the bin
+    res[i] = std::accumulate(&x[prev2], &x[end2], 0.0)/(&x[end2]-&x[prev2]); //calculate the mean value of the bin
   }
   
   return res;
@@ -67,29 +64,29 @@ NumericVector binMedian(NumericVector x, int n) {
   }
   
   double prev=0; // index for start positions over vector
-  NumericVector prev2(n) ;// integers for indices
-  NumericVector end2(n)  ;
+  int prev2 ;  // integers for indices
+  int end2  ;
   double end;
-  for(int i = 0; i <= n; i++) {
-    end = prev + (w_size); //get the end index of the interval
-    prev2[i] = ceil(prev); // get the integer index for slices over vector
-    end2[i] = ceil(end);
-    prev = prev + w_size; // update the begining index of the slice
-  }
-  //std::cout << prev2  << "\n" <<end2 << "\n";
   for(int i = 0; i < n; i++) {
-    int dint = &x[end2[i]] - &x[prev2[i]];  //size of the ith bin 
-           //caltulate the median of values from the bin
-      if(dint%2 == 0){
-       std::sort(&x[prev2[i]], &x[end2[i]]);
-     // double d = x[prev2[i]]+(dint/2)-1;  // (dint/2)
-    //  double d2 = x[prev2[i]]+dint/2;  //  (dint/2)+1
-      res[i] = (x[(prev2[i]+(dint/2)-1)] + (x[(prev2[i]+dint/2)]))/2;
-     }else{
-     std::sort(&x[prev2[i]], &x[end2[i]]);
-     res[i] = x[(prev2[i] + dint/2)]; //(dint+1)/2
-     }
+    end = prev + (w_size); //get the end index of the interval
+    prev2 = ceil(prev); // get the integer index for slices over vector
+    end2 = ceil(end);
+    prev = prev + w_size; // update the begining index of the slice
+    
+    int dint = &x[end2] - &x[prev2];  //size of the ith bin 
+    //caltulate the median of values from the bin
+    if(dint%2 == 0){
+      std::sort(&x[prev2], &x[end2]);
+      // double d = x[prev2]+(dint/2)-1;  // (dint/2)
+      //  double d2 = x[prev2]+dint/2;  //  (dint/2)+1
+      res[i] = (x[(prev2+(dint/2)-1)] + (x[(prev2+dint/2)]))/2;
+    }else{
+      std::sort(&x[prev2], &x[end2]);
+      res[i] = x[(prev2 + dint/2)]; //(dint+1)/2
     }
+    
+  }
+  
   return res;
 }
 
@@ -111,18 +108,15 @@ NumericVector binMax(NumericVector x,int n) {
   }
   
   double prev=0; // index for start positions over vector
-  NumericVector prev2(n) ;// integers for indices
-  NumericVector end2(n)  ;
+  int prev2 ;// integers for indices
+  int end2 ;
   double end;
-  for(int i = 0; i <= n; i++) {
-    end = prev + (w_size); //get the end index of the interval
-    prev2[i] = ceil(prev); // get the integer index for slices over vector
-    end2[i] = ceil(end);
-    prev = prev + w_size; // update the begining index of the slice
-  }
-
   for(int i = 0; i < n; i++) {
-    res[i] = *std::max_element(&x[prev2[i]], &x[end2[i]]); //calculate the max value in the bin
+    end = prev + (w_size); //get the end index of the interval
+    prev2 = ceil(prev); // get the integer index for slices over vector
+    end2 = ceil(end);
+    prev = prev + w_size; // update the begining index of the slice
+    res[i] = *std::max_element(&x[prev2], &x[end2]); //calculate the max value in the bin
   }
   
   return res;
@@ -146,19 +140,17 @@ NumericVector binMin(NumericVector x,int n) {
   }
   
   double prev=0; // index for start positions over vector
-  NumericVector prev2(n) ;// integers for indices
-  NumericVector end2(n)  ;
+  int prev2 ;// integers for indices
+  int end2  ;
   double end;
-  for(int i = 0; i <= n; i++) {
+  for(int i = 0; i < n; i++) {
     end = prev + (w_size); //get the end index of the interval
-    prev2[i] = ceil(prev); // get the integer index for slices over vector
-    end2[i] = ceil(end);
+    prev2 = ceil(prev); // get the integer index for slices over vector
+    end2 = ceil(end);
     prev = prev + w_size; // update the begining index of the slice
+    res[i] = *std::min_element(&x[prev2], &x[end2]); //calculate the max value in the bin
   }
   
-  for(int i = 0; i < n; i++) {
-    res[i] = *std::min_element(&x[prev2[i]], &x[end2[i]]); //calculate the max value in the bin
-  }
   return res;
 }
 
@@ -180,19 +172,18 @@ NumericVector binSum(NumericVector x,int n) {
   }
   
   double prev=0; // index for start positions over vector
-  NumericVector prev2(n) ;// integers for indices
-  NumericVector end2(n)  ;
+  int prev2 ;// integers for indices
+  int end2  ;
   double end;
-  for(int i = 0; i <= n; i++) {
+  for(int i = 0; i < n; i++) {
     end = prev + (w_size); //get the end index of the interval
-    prev2[i] = ceil(prev); // get the integer index for slices over vector
-    end2[i] = ceil(end);
+    prev2 = ceil(prev); // get the integer index for slices over vector
+    end2 = ceil(end);
     prev = prev + w_size; // update the begining index of the slice
+    res[i] = std::accumulate(&x[prev2], &x[end2], 0.0); //calculate the sum value of the bin
+    
   }
   
-  for(int i = 0; i < n; i++) {
-    res[i] = std::accumulate(&x[prev2[i]], &x[end2[i]], 0.0); //calculate the sum value of the bin
-  }
   return res;
 }
 
@@ -201,10 +192,11 @@ NumericMatrix  listSliceMean(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
-  NumericVector tabx;
   for (int i = 0; i < m; i++) {
-    subVec = binMean(xlist[i], n); //gives vector of mean values
-    res(i, _) = subVec;             //adds the vector to the matrix
+    subVec=binMean(xlist[i],n);
+    for (int j = 0; j < n; j++) {
+      res(i, j)=subVec[j];
+    }
   }
   return res;
 }
@@ -284,4 +276,3 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
   }
   return res;
 }
-
