@@ -1,6 +1,7 @@
-#include <Rcpp.h>
 #include <math.h>
 #include <Rmath.h>
+#include <RcppArmadillo.h>
+
 
 using namespace Rcpp;
 
@@ -46,6 +47,21 @@ NumericVector binMean(NumericVector x,int n) {
   return res;
 }
 
+// [[Rcpp::depends(RcppArmadillo)]]
+double Median_c(NumericVector x){
+  int dint = x.size();
+  double res;
+  if(dint%2 == 0){
+    std::sort(x.begin(), x.end());
+    res = (x[(dint/2)-1] + x[dint/2] ) / 2; 
+  }else{
+    std::nth_element(x.begin(), x.begin()+dint/2, x.end());
+    res = x[dint/2];
+  }
+  return res;
+}
+
+
 // [[Rcpp::export]]
 NumericVector binMedian(NumericVector x, int n) {
   
@@ -73,22 +89,15 @@ NumericVector binMedian(NumericVector x, int n) {
     end2 = ceil(end);
     prev = prev + w_size; // update the begining index of the slice
     
-    int dint = &x[end2] - &x[prev2];  //size of the ith bin 
-    //caltulate the median of values from the bin
-    if(dint%2 == 0){
-      std::sort(&x[prev2], &x[end2]);
-      // double d = x[prev2]+(dint/2)-1;  // (dint/2)
-      //  double d2 = x[prev2]+dint/2;  //  (dint/2)+1
-      res[i] = (x[(prev2+(dint/2)-1)] + (x[(prev2+dint/2)]))/2;
-    }else{
-      std::sort(&x[prev2], &x[end2]);
-      res[i] = x[(prev2 + dint/2)]; //(dint+1)/2
-    }
+    NumericVector vec(&x[prev2], &x[end2]);
+    res[i] = Median_c(vec);
     
   }
   
   return res;
 }
+
+
 
 // [[Rcpp::export]]
 NumericVector binMax(NumericVector x,int n) {

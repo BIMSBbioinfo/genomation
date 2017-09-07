@@ -152,20 +152,20 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             mat <- do.call("c",mat)
             
             if(bin.op =="min"){
-              mat_res <-t(sapply(mat, function(x) binMin(x, bin.num)));
+              mat_res <- listSliceMin(mat, bin.num);
             } else if(bin.op =="max"){
-              mat_res <-t(sapply(mat, function(x) binMax(x, bin.num)));
+              mat_res <- listSliceMax(mat, bin.num);
             } else if(bin.op =="sum"){
-              mat_res <-t(sapply(mat, function(x) binSum(x, bin.num)));
-          #  } else if(bin.op =="median"){
-           #   mat_res <-t(sapply(mat, function(x) binMedian(x, bin.num)));
+              mat_res <- listSliceSum(mat, bin.num);
+            } else if(bin.op =="median"){
+              mat_res <- listSliceMedian(mat, bin.num);
             } else(bin.op =="mean")
-              mat_res <-t(sapply(mat, function(x) binMean(x, bin.num)));
+              mat_res <- listSliceMean(mat, bin.num);
             
-          #  r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
-         #   r.list <- r.list[order(names(r.list))]
-          #  ranks <- do.call("c",r.list)
-          #  mat_res <- ranksOrder(mat_res, ranks)
+            r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
+            r.list <- r.list[order(names(r.list))]
+            ranks <- do.call("c",r.list)
+            mat_res <- ranksOrder(mat_res, ranks)
             
        new("ScoreMatrix", mat_res)
           })

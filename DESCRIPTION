@@ -46,7 +46,8 @@ Imports:
     seqPattern,
     rtracklayer,
     RUnit,
-	Rcpp (>= 0.12.11)
+	Rcpp (>= 0.12.11),
+	RcppArmadillo
 Suggests:
     BiocGenerics,
     genomationData,
@@ -71,5 +72,6 @@ Collate:
     'test_genomation_package.R'
     'deprecated_defunct.R'
 	'RcppExports.R'
-LinkingTo: Rcpp
+LinkingTo: Rcpp,
+	RcppArmadillo
 RoxygenNote: 6.0.1.9000
