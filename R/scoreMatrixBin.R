@@ -148,20 +148,29 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
             myViews <- Views(target[chrs],as(windows,"RangesList")[chrs]); # get subsets of coverage
                   
-            mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector))) )
+            mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,simplify=FALSE))))
+           
             mat <- do.call("c",mat)
             
             if(bin.op =="min"){
-              mat_res <- listSliceMin(mat, bin.num);
-            } else if(bin.op =="max"){
-              mat_res <- listSliceMax(mat, bin.num);
-            } else if(bin.op =="sum"){
-              mat_res <- listSliceSum(mat, bin.num);
-            } else if(bin.op =="median"){
-              mat_res <- listSliceMedian(mat, bin.num);
-            } else(bin.op =="mean")
-              mat_res <- listSliceMean(mat, bin.num);
+              mat_res <- listSliceMin(mat, bin.num)
+            }else if(bin.op =="max"){
+              mat_res <- listSliceMax(mat, bin.num)
+            }else if(bin.op =="sum"){
+              mat_res <- listSliceSum(mat, bin.num)
+            }else if(bin.op =="median"){
+              mat_res <- listSliceMedian(mat, bin.num)
+            }else if(bin.op =="mean")
+              mat_res <- listSliceMean(mat, bin.num)
             
+            # if strand aware is TRUE, we need to flip the windows on the minus strand
+            if(strand.aware == TRUE){
+              orig.rows=windows[strand(windows) == '-',]$X_rank
+              mat_res[rownames(mat_res) %in% orig.rows,] = mat_res[rownames(mat_res) %in% 
+                                                         orig.rows, ncol(mat_res):1]
+            }
+            
+      
             r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
             r.list <- r.list[order(names(r.list))]
             ranks <- do.call("c",r.list)

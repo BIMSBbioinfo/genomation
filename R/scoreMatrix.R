@@ -3,6 +3,25 @@
 #######################################
 
 # ---------------------------------------------------------------------------- #
+# given a vector and length smooths the vector to a given size
+# the function is not safe - check for the window length before
+binner=function(start,end,nbins){
+  
+  if(! is.numeric(start))
+    stop('start needs to be class numeric')
+  if(! is.numeric(end))
+    stop('end needs to be class numeric')
+  if(! is.numeric(nbins))
+    stop('nbins needs to be class numeric')
+  
+  x = unique(seq(from = start, to = end,length.out=nbins + 1 ) )
+  my.start = ceiling(x)[-length(x)]
+  my.end = floor(x)[-1]
+  
+  return( t(cbind(my.start, my.end) )  )
+}
+
+# ---------------------------------------------------------------------------- #
 ### gets colors for a factor variable
 getColors = function(n) {
   
