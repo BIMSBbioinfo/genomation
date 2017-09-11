@@ -144,10 +144,18 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             
             mcols(windows)$X_rank <- 1:length(windows);
             
-            # fetches the windows and the scores
-            chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
-            myViews <- Views(target[chrs],as(windows,"RangesList")[chrs]); # get subsets of coverage
-                  
+            # convert sub-windows to RangesList to be fed into coverage()
+            win.list=as(windows, "RangesList")
+            win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
+            
+            #check if there are common chromsomes
+            chrs  = sort(intersect(names(win.list), names(target)))
+            if(length(chrs)==0)
+              stop("There are no common chromosomes/spaces to do overlap")
+            
+            myViews <- Views(target[chrs], win.list[chrs]); # get subsets of coverage
+            
+
             mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,simplify=FALSE))))
            
             mat <- do.call("c",mat)
@@ -170,7 +178,7 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
                                                          orig.rows, ncol(mat_res):1]
             }
             
-      
+            # reorder matrix
             r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
             r.list <- r.list[order(names(r.list))]
             ranks <- do.call("c",r.list)
