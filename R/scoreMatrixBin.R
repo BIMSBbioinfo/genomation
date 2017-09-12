@@ -120,6 +120,8 @@ setGeneric("ScoreMatrixBin",
 setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
           function(target, windows, bin.num, bin.op, strand.aware){
 
+            mcols(windows)$X_rank <- 1:length(windows)
+            
             # check if windows have width > 1
             if( any(width(windows)==1) ){
               stop("provide 'windows' with widths greater than 1")
@@ -142,24 +144,17 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
               warning('supplied GRanges object contains ranges of width < number of bins')
             }
             
-            mcols(windows)$X_rank <- 1:length(windows);
             
-            # convert sub-windows to RangesList to be fed into coverage()
-            win.list=as(windows, "RangesList")
-            win.list = win.list[sapply(win.list, length) > 0] # remove chr with no views on
             
-            #check if there are common chromsomes
-            chrs  = sort(intersect(names(win.list), names(target)))
-            if(length(chrs)==0)
-              stop("There are no common chromosomes/spaces to do overlap")
-            
-            myViews <- Views(target[chrs], win.list[chrs]); # get subsets of coverage
-            
-
+            # fetches the windows and the scores
+            chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
+            myViews <- Views(target[chrs],as(windows,"RangesList")[chrs]); # get subsets of coverage
+                  
             mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,simplify=FALSE))))
            
             mat <- do.call("c",mat)
             
+   
             if(bin.op =="min"){
               mat_res <- listSliceMin(mat, bin.num)
             }else if(bin.op =="max"){
@@ -171,18 +166,22 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             }else if(bin.op =="mean")
               mat_res <- listSliceMean(mat, bin.num)
             
-            # if strand aware is TRUE, we need to flip the windows on the minus strand
-            if(strand.aware == TRUE){
-              orig.rows=windows[strand(windows) == '-',]$X_rank
-              mat_res[rownames(mat_res) %in% orig.rows,] = mat_res[rownames(mat_res) %in% 
-                                                         orig.rows, ncol(mat_res):1]
-            }
             
-            # reorder matrix
             r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
             r.list <- r.list[order(names(r.list))]
             ranks <- do.call("c",r.list)
+            
+            rownames(mat) = ranks
+            # if strand aware is TRUE, we need to flip the windows on the minus strand
+            if(strand.aware == TRUE){
+              orig.rows=windows[strand(windows) == '-',]$X_rank
+              mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
+                                                         orig.rows, ncol(mat):1]
+            }
+  
+         
             mat_res <- ranksOrder(mat_res, ranks)
+            rownames(mat_res) = sort(ranks)
             
        new("ScoreMatrix", mat_res)
           })

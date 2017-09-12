@@ -6,13 +6,13 @@ test_ScoreMatrixBin_RleList_GRanges = function()
   # -----------------------------------------------#
   # usage
   # input RleList
-  rl = RleList(chr1 = Rle(rep(c(1,2,3), each=3)), chr2=Rle(rep(c(4,5,6), each=3)))
+  rl = RleList(chr1 = Rle(rep(c(1,2,3), each=4)), chr2=Rle(rep(c(4,5,6), each=4)))
   
   #1. test for proper workings
-  gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,5,1,5),c(3,7,3,7)), 
+  gr1 = GRanges(rep(c('chr1','chr2'), each=2), IRanges(c(1,6,1,6),c(4,9,4,9)), 
                 strand=c('+','-','+','-'))
-  m1 = matrix(c(1,1,1,2,2,3,4,4,4,5,5,6), ncol=3, byrow=T)
-  m1 = as(cbind(rowMeans(m1[,1:2]), rowMeans(m1[,2:3])),'ScoreMatrix')
+  m1 = matrix(c(1,1,1,1,2,2,2,3,4,4,4,4,5,5,5,6), ncol=4, byrow=T)
+  m1 = as(cbind(rowMeans(m1[,1:2]), rowMeans(m1[,3:4])),'ScoreMatrix')
   rownames(m1) = 1:4
   s1 = ScoreMatrixBin(rl, gr1, bin.num=2)
   checkEquals(s1, m1)
@@ -25,17 +25,17 @@ test_ScoreMatrixBin_RleList_GRanges = function()
   #2. test for different bin.op
   for(fun in c('min', 'max', 'median')){
     message('testing:', fun)
-    m2 = matrix(c(1,1,1,2,2,3,4,4,4,5,5,6), ncol=3, byrow=T)
+    m2 = matrix(c(1,1,1,1,2,2,2,3,4,4,4,4,5,5,5,6), ncol=4, byrow=T)
     m2 = as(cbind(apply(m2[,1:2],1,match.fun(fun)), 
-                  apply(m2[,2:3],1,match.fun(fun))),'ScoreMatrix')
+                  apply(m2[,3:4],1,match.fun(fun))),'ScoreMatrix')
     rownames(m2) = 1:4
     s2 = ScoreMatrixBin(rl, gr1, bin.num=2, bin.op=fun)
     checkEquals(s2, m2)  
   }
   
   #3. test strand aware
-  m3 = matrix(c(1,1,1,2,2,3,4,4,4,5,5,6), ncol=3, byrow=T)
-  m3 = as(cbind(rowMeans(m3[,1:2]), rowMeans(m3[,2:3])),'ScoreMatrix')
+  m3 = matrix(c(1,1,1,1,2,2,2,3,4,4,4,4,5,5,5,6), ncol=4, byrow=T)
+  m3 = as(cbind(rowMeans(m3[,1:2]), rowMeans(m3[,3:4])),'ScoreMatrix')
   rownames(m3) = 1:4
   m3[c(2,4),] = m3[c(2,4),2:1]
   s3 = ScoreMatrixBin(rl, gr1, bin.num=2, strand.aware=T)
@@ -79,7 +79,7 @@ test_ScoreMatrixBin_GRanges_GRanges = function()
   # normal function works
   s1 = ScoreMatrixBin(target=target, windows=windows, bin.num=2)
   m1 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
-  m1 = as(cbind(rowMeans(m1[,1:3]), rowMeans(m1[,3:5])), 'ScoreMatrix')
+  m1 = as(cbind(rowMeans(m1[,1:3]), rowMeans(m1[,4:5])), 'ScoreMatrix')
   rownames(m1) = 1:4
   checkEquals(s1,m1)
   
@@ -87,7 +87,7 @@ test_ScoreMatrixBin_GRanges_GRanges = function()
   s2 = ScoreMatrixBin(target=target, windows=windows,bin.num=2, weight.col='weight')
   m2 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
   m2[3:4,] = m2[3:4,]*2
-  m2 = as(cbind(rowMeans(m2[,1:3]), rowMeans(m2[,3:5])), 'ScoreMatrix')
+  m2 = as(cbind(rowMeans(m2[,1:3]), rowMeans(m2[,4:5])), 'ScoreMatrix')
   rownames(m2) = 1:4
   checkEquals(s2,m2)  
   
@@ -96,7 +96,7 @@ test_ScoreMatrixBin_GRanges_GRanges = function()
   m3 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
   rownames(m3) = 1:4
   m3[c(1,3),] = rev(m3[c(1,3),])
-  m3 = as(cbind(rowMeans(m3[,1:3]), rowMeans(m3[,3:5])), 'ScoreMatrix')
+  m3 = as(cbind(rowMeans(m3[,1:3]), rowMeans(m3[,4:5])), 'ScoreMatrix')
   rownames(m3) = 1:4
   checkEquals(s3,m3)
   
