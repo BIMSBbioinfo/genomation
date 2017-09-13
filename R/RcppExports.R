@@ -21,24 +21,28 @@ binSum <- function(x, n) {
     .Call('genomation_binSum', PACKAGE = 'genomation', x, n)
 }
 
-listSliceMean <- function(xlist, n) {
-    .Call('genomation_listSliceMean', PACKAGE = 'genomation', xlist, n)
+reverse_L <- function(y) {
+    .Call('genomation_reverse_L', PACKAGE = 'genomation', y)
 }
 
-listSliceMedian <- function(xlist, n) {
-    .Call('genomation_listSliceMedian', PACKAGE = 'genomation', xlist, n)
+listSliceMean <- function(xlist, n, ranks) {
+    .Call('genomation_listSliceMean', PACKAGE = 'genomation', xlist, n, ranks)
 }
 
-listSliceMax <- function(xlist, n) {
-    .Call('genomation_listSliceMax', PACKAGE = 'genomation', xlist, n)
+listSliceMedian <- function(xlist, n, ranks) {
+    .Call('genomation_listSliceMedian', PACKAGE = 'genomation', xlist, n, ranks)
 }
 
-listSliceMin <- function(xlist, n) {
-    .Call('genomation_listSliceMin', PACKAGE = 'genomation', xlist, n)
+listSliceMax <- function(xlist, n, ranks) {
+    .Call('genomation_listSliceMax', PACKAGE = 'genomation', xlist, n, ranks)
 }
 
-listSliceSum <- function(xlist, n) {
-    .Call('genomation_listSliceSum', PACKAGE = 'genomation', xlist, n)
+listSliceMin <- function(xlist, n, ranks) {
+    .Call('genomation_listSliceMin', PACKAGE = 'genomation', xlist, n, ranks)
+}
+
+listSliceSum <- function(xlist, n, ranks) {
+    .Call('genomation_listSliceSum', PACKAGE = 'genomation', xlist, n, ranks)
 }
 
 ranksOrder <- function(x, p) {

@@ -144,42 +144,37 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
               warning('supplied GRanges object contains ranges of width < number of bins')
             }
             
-            
-            
+            r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
+            r.list <- r.list[order(names(r.list))]
+            ranks <- do.call("c",r.list)    
+
             # fetches the windows and the scores
             chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
             myViews <- Views(target[chrs],as(windows,"RangesList")[chrs]); # get subsets of coverage
-                  
+
+ 
             mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,simplify=FALSE))))
-           
             mat <- do.call("c",mat)
+            names(mat) <- ranks
             
-   
-            if(bin.op =="min"){
-              mat_res <- listSliceMin(mat, bin.num)
-            }else if(bin.op =="max"){
-              mat_res <- listSliceMax(mat, bin.num)
-            }else if(bin.op =="sum"){
-              mat_res <- listSliceSum(mat, bin.num)
-            }else if(bin.op =="median"){
-              mat_res <- listSliceMedian(mat, bin.num)
-            }else if(bin.op =="mean")
-              mat_res <- listSliceMean(mat, bin.num)
-            
-            
-            r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
-            r.list <- r.list[order(names(r.list))]
-            ranks <- do.call("c",r.list)
-            
-            rownames(mat) = ranks
-            # if strand aware is TRUE, we need to flip the windows on the minus strand
+            # if strand aware is TRUE, we need to flip the windows on the minus strand 
             if(strand.aware == TRUE){
               orig.rows=windows[strand(windows) == '-',]$X_rank
-              mat[rownames(mat) %in% orig.rows,] = mat[rownames(mat) %in% 
-                                                         orig.rows, ncol(mat):1]
+            }else{
+              orig.rows = vector(mode="character", length=0)
             }
   
-         
+            if(bin.op =="min"){
+              mat_res <- listSliceMin(mat, bin.num, orig.rows)
+            }else if(bin.op =="max"){
+              mat_res <- listSliceMax(mat, bin.num, orig.rows)
+            }else if(bin.op =="sum"){
+              mat_res <- listSliceSum(mat, bin.num, orig.rows)
+            }else if(bin.op =="median"){
+              mat_res <- listSliceMedian(mat, bin.num, orig.rows)
+            }else if(bin.op =="mean")
+              mat_res <- listSliceMean(mat, bin.num, orig.rows)
+            
             mat_res <- ranksOrder(mat_res, ranks)
             rownames(mat_res) = sort(ranks)
             

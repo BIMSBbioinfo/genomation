@@ -66,63 +66,79 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// reverse_L
+NumericVector reverse_L(NumericVector y);
+RcppExport SEXP genomation_reverse_L(SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(reverse_L(y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // listSliceMean
-NumericMatrix listSliceMean(List xlist, int n);
-RcppExport SEXP genomation_listSliceMean(SEXP xlistSEXP, SEXP nSEXP) {
+NumericMatrix listSliceMean(List xlist, int n, CharacterVector ranks);
+RcppExport SEXP genomation_listSliceMean(SEXP xlistSEXP, SEXP nSEXP, SEXP ranksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type xlist(xlistSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(listSliceMean(xlist, n));
+    Rcpp::traits::input_parameter< CharacterVector >::type ranks(ranksSEXP);
+    rcpp_result_gen = Rcpp::wrap(listSliceMean(xlist, n, ranks));
     return rcpp_result_gen;
 END_RCPP
 }
 // listSliceMedian
-NumericMatrix listSliceMedian(List xlist, int n);
-RcppExport SEXP genomation_listSliceMedian(SEXP xlistSEXP, SEXP nSEXP) {
+NumericMatrix listSliceMedian(List xlist, int n, CharacterVector ranks);
+RcppExport SEXP genomation_listSliceMedian(SEXP xlistSEXP, SEXP nSEXP, SEXP ranksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type xlist(xlistSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(listSliceMedian(xlist, n));
+    Rcpp::traits::input_parameter< CharacterVector >::type ranks(ranksSEXP);
+    rcpp_result_gen = Rcpp::wrap(listSliceMedian(xlist, n, ranks));
     return rcpp_result_gen;
 END_RCPP
 }
 // listSliceMax
-NumericMatrix listSliceMax(List xlist, int n);
-RcppExport SEXP genomation_listSliceMax(SEXP xlistSEXP, SEXP nSEXP) {
+NumericMatrix listSliceMax(List xlist, int n, CharacterVector ranks);
+RcppExport SEXP genomation_listSliceMax(SEXP xlistSEXP, SEXP nSEXP, SEXP ranksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type xlist(xlistSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(listSliceMax(xlist, n));
+    Rcpp::traits::input_parameter< CharacterVector >::type ranks(ranksSEXP);
+    rcpp_result_gen = Rcpp::wrap(listSliceMax(xlist, n, ranks));
     return rcpp_result_gen;
 END_RCPP
 }
 // listSliceMin
-NumericMatrix listSliceMin(List xlist, int n);
-RcppExport SEXP genomation_listSliceMin(SEXP xlistSEXP, SEXP nSEXP) {
+NumericMatrix listSliceMin(List xlist, int n, CharacterVector ranks);
+RcppExport SEXP genomation_listSliceMin(SEXP xlistSEXP, SEXP nSEXP, SEXP ranksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type xlist(xlistSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(listSliceMin(xlist, n));
+    Rcpp::traits::input_parameter< CharacterVector >::type ranks(ranksSEXP);
+    rcpp_result_gen = Rcpp::wrap(listSliceMin(xlist, n, ranks));
     return rcpp_result_gen;
 END_RCPP
 }
 // listSliceSum
-NumericMatrix listSliceSum(List xlist, int n);
-RcppExport SEXP genomation_listSliceSum(SEXP xlistSEXP, SEXP nSEXP) {
+NumericMatrix listSliceSum(List xlist, int n, CharacterVector ranks);
+RcppExport SEXP genomation_listSliceSum(SEXP xlistSEXP, SEXP nSEXP, SEXP ranksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type xlist(xlistSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(listSliceSum(xlist, n));
+    Rcpp::traits::input_parameter< CharacterVector >::type ranks(ranksSEXP);
+    rcpp_result_gen = Rcpp::wrap(listSliceSum(xlist, n, ranks));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -145,11 +161,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"genomation_binMax", (DL_FUNC) &genomation_binMax, 2},
     {"genomation_binMin", (DL_FUNC) &genomation_binMin, 2},
     {"genomation_binSum", (DL_FUNC) &genomation_binSum, 2},
-    {"genomation_listSliceMean", (DL_FUNC) &genomation_listSliceMean, 2},
-    {"genomation_listSliceMedian", (DL_FUNC) &genomation_listSliceMedian, 2},
-    {"genomation_listSliceMax", (DL_FUNC) &genomation_listSliceMax, 2},
-    {"genomation_listSliceMin", (DL_FUNC) &genomation_listSliceMin, 2},
-    {"genomation_listSliceSum", (DL_FUNC) &genomation_listSliceSum, 2},
+    {"genomation_reverse_L", (DL_FUNC) &genomation_reverse_L, 1},
+    {"genomation_listSliceMean", (DL_FUNC) &genomation_listSliceMean, 3},
+    {"genomation_listSliceMedian", (DL_FUNC) &genomation_listSliceMedian, 3},
+    {"genomation_listSliceMax", (DL_FUNC) &genomation_listSliceMax, 3},
+    {"genomation_listSliceMin", (DL_FUNC) &genomation_listSliceMin, 3},
+    {"genomation_listSliceSum", (DL_FUNC) &genomation_listSliceSum, 3},
     {"genomation_ranksOrder", (DL_FUNC) &genomation_ranksOrder, 2},
     {NULL, NULL, 0}
 };
