@@ -6,16 +6,15 @@
 
 using namespace Rcpp;
 
-// This is a simple example of exporting a C++ function to R. You can
-// source this function into an R session using the Rcpp::sourceCpp 
-// function (or via the Source button on the editor toolbar). Learn
-// more about Rcpp at:
-//
-//   http://www.rcpp.org/
-//   http://adv-r.had.co.nz/Rcpp.html
-//   http://gallery.rcpp.org/
-//
-
+//' Functions that compute the value for each bin
+//'
+//' binMean() computes a mean value, binMedian() computes a median value, binMax() and binMin() 
+//' give maximum and minumum values respectively, binSum() computes the sum of the values in a bin
+//'
+//' @param x NumericVector - vector of values of a bin
+//' @param n intiger - number of bins
+//' @export
+//' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMean(NumericVector x,int n) {
   
@@ -48,6 +47,7 @@ NumericVector binMean(NumericVector x,int n) {
   return res;
 }
 
+
 // [[Rcpp::depends(RcppArmadillo)]]
 double Median_c(NumericVector x){
   int dint = x.size();
@@ -62,7 +62,8 @@ double Median_c(NumericVector x){
   return res;
 }
 
-
+//' @export
+//' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMedian(NumericVector x, int n) {
   
@@ -99,7 +100,8 @@ NumericVector binMedian(NumericVector x, int n) {
 }
 
 
-
+//' @export
+//' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMax(NumericVector x,int n) {
   
@@ -132,6 +134,8 @@ NumericVector binMax(NumericVector x,int n) {
   return res;
 }
 
+//' @export
+//' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMin(NumericVector x,int n) {
   
@@ -164,6 +168,8 @@ NumericVector binMin(NumericVector x,int n) {
   return res;
 }
 
+//' @export
+//' @rdname bin
 // [[Rcpp::export]]
 NumericVector binSum(NumericVector x,int n) {
   
@@ -197,12 +203,28 @@ NumericVector binSum(NumericVector x,int n) {
   return res;
 }
 
+
+//' Function reverses a vector 
+//' 
+//' @param y NumericVector
+//' @export
+//' @rdname reverse_L
 // [[Rcpp::export]]
 NumericVector reverse_L(NumericVector y) {
   std::reverse(y.begin(), y.end());
   return y;
 }
 
+//' Functions create a matrix storing the data with desirable number of bins for each window 
+//'
+//' listSliceMean() calls the binMean() function, listSliceMedian calls the binMedian(), 
+//' listSliceMax() - binMax(), listSliceMin() - binMin(), listSliceSum() - binSum()
+//'
+//' @param xlist List - vector of values of a bin
+//' @param n intiger - number of bins
+//' @param ranks CharacterVector - position of the windows whose strand is "-"
+//' @export
+//' @rdname listSlice
 // [[Rcpp::export]]
 NumericMatrix  listSliceMean(List xlist,int n, CharacterVector ranks)   {
   if(ranks.length()){
@@ -225,6 +247,8 @@ NumericMatrix  listSliceMean(List xlist,int n, CharacterVector ranks)   {
   return res;
 }
 
+//' @export
+//' @rdname listSlice
 // [[Rcpp::export]]
 NumericMatrix  listSliceMedian(List xlist,int n, CharacterVector ranks) {
   if(ranks.length()){
@@ -246,6 +270,8 @@ NumericMatrix  listSliceMedian(List xlist,int n, CharacterVector ranks) {
   return res;
 }
 
+//' @export
+//' @rdname listSlice
 // [[Rcpp::export]]
 NumericMatrix  listSliceMax(List xlist,int n, CharacterVector ranks) {
   if(ranks.length()){
@@ -267,7 +293,8 @@ NumericMatrix  listSliceMax(List xlist,int n, CharacterVector ranks) {
   return res;
 }
 
-
+//' @export
+//' @rdname listSlice
 // [[Rcpp::export]]
 NumericMatrix  listSliceMin(List xlist,int n, CharacterVector ranks) {
   if(ranks.length()){
@@ -289,7 +316,8 @@ NumericMatrix  listSliceMin(List xlist,int n, CharacterVector ranks) {
   return res;
 }
 
-
+//' @export
+//' @rdname listSlice
 // [[Rcpp::export]]
 NumericMatrix  listSliceSum(List xlist,int n, CharacterVector ranks) {
   if(ranks.length()){
@@ -312,6 +340,12 @@ NumericMatrix  listSliceSum(List xlist,int n, CharacterVector ranks) {
 }
 
 
+//' Function reorders matrix to obtain the original order of the windows
+//'
+//' @param x NumericMatrix 
+//' @param p NumericVector - stors an original window order
+//' @export 
+//' @rdname ranksOrder
 // [[Rcpp::export]]
 NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
   int m = x.nrow();
