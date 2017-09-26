@@ -14,6 +14,8 @@ matRes(xlist, n, negranks, binOp, p)
 
 \item{negranks}{CharacterVector - position of the windows whose strand is "-"}
 
+\item{binOp}{- "bin" option - "mean", "max", "sum", "median", "min"}
+
 \item{p}{NumericVector - stors an original window order}
 }
 \description{

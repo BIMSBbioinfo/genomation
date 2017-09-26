@@ -101,6 +101,7 @@ ranksOrder <- function(x, p) {
 #' @param xlist List of vectors storing values of a bin
 #' @param n intiger - number of bins
 #' @param negranks CharacterVector - position of the windows whose strand is "-"
+#' @param binOp - "bin" option - "mean", "max", "sum", "median", "min"
 #' @param p NumericVector - stors an original window order
 #' @export 
 #' @rdname matRes
