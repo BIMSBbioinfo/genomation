@@ -1,10 +1,16 @@
 #######################################
 # S3 functions
 #######################################
-# Combine a scoreMatrix into a scoreMatrixList object
 
 # ---------------------------------------------------------------------------- #
-#  when a ScoreMatrixList is a first argument
+#' c.ScoreMatrixList
+#' 
+#' Combine a scoreMatrix into a scoreMatrixList object - when a ScoreMatrixList is a first argument
+#'
+#' @param ... contais scoreMatrix and scoreMatrixList objects
+#' @param recursive logical
+#' @param use.names logical
+#' @return returns a \code{scoreMatrixList} object 
 c.ScoreMatrixList<-function(..., recursive = FALSE, use.names = TRUE) {
   y <- list(...)
   n <- length(y)
@@ -39,7 +45,14 @@ c.ScoreMatrixList<-function(..., recursive = FALSE, use.names = TRUE) {
 }
 
 # ---------------------------------------------------------------------------- #
-#  when a ScoreMatrix is a first argument
+#' c.ScoreMatrix
+#' 
+#' Combine a scoreMatrix into a scoreMatrixList object - when a ScoreMatrix is a first argument
+#'
+#' @param ... contais scoreMatrix and scoreMatrixList objects
+#' @param recursive logical
+#' @param use.names logical
+#' @return returns a \code{scoreMatrixList} object 
 
 c.ScoreMatrix<-function(..., recursive = FALSE, use.names = TRUE) {
   y <- list(...)

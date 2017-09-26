@@ -173,11 +173,11 @@ galpTo2Ranges <- function(x)
 #'
 #' @param target target object
 #' @param windows windows
-#' @param rpm logic
-#' @param unique logic
+#' @param rpm logical
+#' @param unique logical
 #' @param extend numeric
 #' @param param ScanBamParam object 
-#' @param paired.end logic
+#' @param paired.end llogical
 #' @param library.size numeric
 #' @param ... additional parameters
 #' 
