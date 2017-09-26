@@ -5,7 +5,7 @@
 #include <algorithm>
 
 using namespace Rcpp;
-
+//#-------------------------------------------------------------------------#
 //' Functions that compute the value for each bin
 //'
 //' binMean() computes a mean value, binMedian() computes a median value, binMax() and binMin() 
@@ -204,6 +204,7 @@ NumericVector binSum(NumericVector x,int n) {
 }
 
 
+//#-------------------------------------------------------------------------#
 //' Function reverses a vector 
 //' 
 //' @param y NumericVector
@@ -215,12 +216,13 @@ NumericVector reverse_L(NumericVector y) {
   return y;
 }
 
+//#-------------------------------------------------------------------------#
 //' Functions create a matrix storing the data with desirable number of bins for each window 
 //'
 //' listSliceMean() calls the binMean() function, listSliceMedian calls the binMedian(), 
 //' listSliceMax() - binMax(), listSliceMin() - binMin(), listSliceSum() - binSum()
 //'
-//' @param xlist List - vector of values of a bin
+//' @param xlist List of vectors storing values of a bin
 //' @param n intiger - number of bins
 //' @param ranks CharacterVector - position of the windows whose strand is "-"
 //' @export
@@ -340,6 +342,7 @@ NumericMatrix  listSliceSum(List xlist,int n, CharacterVector ranks) {
 }
 
 
+//#-------------------------------------------------------------------------#
 //' Function reorders matrix to obtain the original order of the windows
 //'
 //' @param x NumericMatrix 
@@ -366,3 +369,35 @@ NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
   }
   return res;
 }
+
+
+//#-------------------------------------------------------------------------#
+//' Function computes a matrix that stores the data with desirable number of bins and 
+//' keeps original order of the windows  
+//'
+//' @param xlist List of vectors storing values of a bin
+//' @param n intiger - number of bins
+//' @param negranks CharacterVector - position of the windows whose strand is "-"
+//' @param p NumericVector - stors an original window order
+//' @export 
+//' @rdname matRes
+// [[Rcpp::export]]
+NumericMatrix matRes(List xlist, int n, CharacterVector negranks, std::string binOp, NumericVector p){
+  NumericMatrix res(xlist.size(),n);
+  
+ if(binOp.compare("mean") == 0){
+   res = listSliceMean(xlist, n, negranks);
+ }else if(binOp.compare("max") == 0){
+   res = listSliceMax(xlist, n, negranks);
+ }else if(binOp.compare("sum") == 0){
+   res = listSliceSum(xlist, n, negranks);
+ }else if(binOp.compare("median") == 0){
+   res = listSliceMedian(xlist, n, negranks);
+ }else if(binOp.compare("min") == 0){
+   res = listSliceMin(xlist, n, negranks); 
+ }
+ 
+  return ranksOrder(res, p);
+    
+}
+

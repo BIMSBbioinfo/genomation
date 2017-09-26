@@ -154,6 +154,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// matRes
+NumericMatrix matRes(List xlist, int n, CharacterVector negranks, std::string binOp, NumericVector p);
+RcppExport SEXP genomation_matRes(SEXP xlistSEXP, SEXP nSEXP, SEXP negranksSEXP, SEXP binOpSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type xlist(xlistSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type negranks(negranksSEXP);
+    Rcpp::traits::input_parameter< std::string >::type binOp(binOpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(matRes(xlist, n, negranks, binOp, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"genomation_binMean", (DL_FUNC) &genomation_binMean, 2},
@@ -168,6 +183,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"genomation_listSliceMin", (DL_FUNC) &genomation_listSliceMin, 3},
     {"genomation_listSliceSum", (DL_FUNC) &genomation_listSliceSum, 3},
     {"genomation_ranksOrder", (DL_FUNC) &genomation_ranksOrder, 2},
+    {"genomation_matRes", (DL_FUNC) &genomation_matRes, 5},
     {NULL, NULL, 0}
 };
 

@@ -52,7 +52,7 @@ reverse_L <- function(y) {
 #' listSliceMean() calls the binMean() function, listSliceMedian calls the binMedian(), 
 #' listSliceMax() - binMax(), listSliceMin() - binMin(), listSliceSum() - binSum()
 #'
-#' @param xlist List - vector of values of a bin
+#' @param xlist List of vectors storing values of a bin
 #' @param n intiger - number of bins
 #' @param ranks CharacterVector - position of the windows whose strand is "-"
 #' @export
@@ -93,5 +93,18 @@ listSliceSum <- function(xlist, n, ranks) {
 #' @rdname ranksOrder
 ranksOrder <- function(x, p) {
     .Call('genomation_ranksOrder', PACKAGE = 'genomation', x, p)
+}
+
+#' Function computes a matrix that stores the data with desirable number of bins and 
+#' keeps original order of the windows  
+#'
+#' @param xlist List of vectors storing values of a bin
+#' @param n intiger - number of bins
+#' @param negranks CharacterVector - position of the windows whose strand is "-"
+#' @param p NumericVector - stors an original window order
+#' @export 
+#' @rdname matRes
+matRes <- function(xlist, n, negranks, binOp, p) {
+    .Call('genomation_matRes', PACKAGE = 'genomation', xlist, n, negranks, binOp, p)
 }
 

@@ -163,19 +163,9 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             }else{
               orig.rows = vector(mode="character", length=0)
             }
+          
+            mat_res <- matRes(mat, bin.num, orig.rows, bin.op, ranks)
   
-            if(bin.op =="min"){
-              mat_res <- listSliceMin(mat, bin.num, orig.rows)
-            }else if(bin.op =="max"){
-              mat_res <- listSliceMax(mat, bin.num, orig.rows)
-            }else if(bin.op =="sum"){
-              mat_res <- listSliceSum(mat, bin.num, orig.rows)
-            }else if(bin.op =="median"){
-              mat_res <- listSliceMedian(mat, bin.num, orig.rows)
-            }else if(bin.op =="mean")
-              mat_res <- listSliceMean(mat, bin.num, orig.rows)
-            
-            mat_res <- ranksOrder(mat_res, ranks)
             rownames(mat_res) = sort(ranks)
             
        new("ScoreMatrix", mat_res)

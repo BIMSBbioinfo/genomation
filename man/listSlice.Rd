@@ -19,7 +19,7 @@ listSliceMin(xlist, n, ranks)
 listSliceSum(xlist, n, ranks)
 }
 \arguments{
-\item{xlist}{List - vector of values of a bin}
+\item{xlist}{List of vectors storing values of a bin}
 
 \item{n}{intiger - number of bins}
 

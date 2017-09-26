@@ -102,6 +102,7 @@ export(listSliceMedian)
 export(listSliceMax)
 export(listSliceMin)
 export(listSliceSum)
+export(matRes)
 
 export(gffToGRanges) 
 export(ScoreMatrixList)
