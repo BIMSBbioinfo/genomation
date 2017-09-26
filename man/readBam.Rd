@@ -12,15 +12,15 @@ readBam(target, windows, rpm = FALSE, unique = FALSE, extend = 0,
 
 \item{windows}{windows}
 
-\item{rpm}{logic}
+\item{rpm}{logical}
 
-\item{unique}{logic}
+\item{unique}{logical}
 
 \item{extend}{numeric}
 
 \item{param}{ScanBamParam object}
 
-\item{paired.end}{logic}
+\item{paired.end}{llogical}
 
 \item{library.size}{numeric}
 
