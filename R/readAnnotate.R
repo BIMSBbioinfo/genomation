@@ -11,7 +11,13 @@
 #######################################
 
 # ---------------------------------------------------------------------------- #
-# extracts exons from a bed12 file and puts them into GRanges object
+
+#' bed12ToExons function
+#' 
+#' extracts exons from a bed12 file and puts them into GRanges object
+#'
+#' @param ref data.frame object
+#' 
 bed12ToExons<-function(ref){
 
     ref=unique(ref)
@@ -42,7 +48,12 @@ bed12ToExons<-function(ref){
 } 
 
 # ---------------------------------------------------------------------------- #
-# extracts introns from a bed12 file and puts them into GRanges object
+#' bed12ToIntrons function
+#' 
+#' extracts introns from a bed12 file and puts them into GRanges object
+#'
+#' @param ref data.frame object
+# 
 bed12ToIntrons<-function(ref){
 
     #remove the genes with one exon only (they won't have any introns)
@@ -88,7 +99,13 @@ bed12ToIntrons<-function(ref){
 } 
 
 # ---------------------------------------------------------------------------- #
-# checks the validity of the bed data.frame if it is a legitimate bed columns
+#' checkBedValidity function
+#' 
+#' checks the validity of the bed data.frame if it is a legitimate bed columns
+#'
+#' @param bed.df data.frame object
+#' @param type type
+# 
 checkBedValidity<-function(bed.df,type="none"){
 
     # does it have at least 3 columns
