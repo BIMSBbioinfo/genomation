@@ -155,12 +155,11 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
  
             mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,simplify=FALSE))))
             mat <- do.call("c",mat)
-            names(mat) <- ranks
             
               if(bin.op =="mean"){
-                mat_res <- listSliceMean(mat, bin.num)
+              mat_res <- listSliceMean(mat, bin.num)
               }else if(bin.op =="median"){
-                mat_res <- listSliceMedian(mat, bin.num)
+              mat_res <- listSliceMedian(mat, bin.num)
               }else if(bin.op =="sum"){
               mat_res <- listSliceSum(mat, bin.num)
               }else if(bin.op =="max"){
@@ -169,6 +168,8 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
               mat_res <- listSliceMin(mat, bin.num)
               }
             
+             rownames(mat_res) <- ranks
+             
             # if strand aware is TRUE, we need to flip the windows on the minus strand
                   if(strand.aware == TRUE){
                     orig.rows=windows[strand(windows) == '-',]$X_rank
@@ -176,8 +177,7 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
                                                                  orig.rows, ncol(mat_res):1]                                                                                                             
                   }
             # reorder matrix
-            mat_res = mat_res[order(ranks),] 
-            
+            mat_res = mat_res[order(as.numeric(rownames(mat_res))),,drop=FALSE]
 
        new("ScoreMatrix", mat_res)
           })

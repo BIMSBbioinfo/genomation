@@ -95,8 +95,9 @@ test_ScoreMatrixBin_GRanges_GRanges = function()
   s3 = ScoreMatrixBin(target=target, windows=windows, bin.num=2, strand.aware=T)
   m3 = matrix(rep(c(1,2,3,3,3,2,3,3,3,2),times=2), ncol=5, byrow=T)
   rownames(m3) = 1:4
+  m3 = cbind(rowMeans(m3[,1:3]), rowMeans(m3[,4:5]))
   m3[c(1,3),] = rev(m3[c(1,3),])
-  m3 = as(cbind(rowMeans(m3[,1:3]), rowMeans(m3[,4:5])), 'ScoreMatrix')
+  m3 = as(m3, 'ScoreMatrix')
   rownames(m3) = 1:4
   checkEquals(s3,m3)
   

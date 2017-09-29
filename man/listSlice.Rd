@@ -22,8 +22,6 @@ listSliceSum(xlist, n)
 \item{xlist}{List of vectors storing values of a bin}
 
 \item{n}{intiger - number of bins}
-
-\item{ranks}{CharacterVector - position of the windows whose strand is "-"}
 }
 \description{
 listSliceMean() calls the binMean() function, listSliceMedian calls the binMedian(), 

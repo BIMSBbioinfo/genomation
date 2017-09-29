@@ -45,7 +45,6 @@ binSum <- function(x, n) {
 #'
 #' @param xlist List of vectors storing values of a bin
 #' @param n intiger - number of bins
-#' @param ranks CharacterVector - position of the windows whose strand is "-"
 #' @export
 #' @rdname listSlice
 listSliceMean <- function(xlist, n) {
