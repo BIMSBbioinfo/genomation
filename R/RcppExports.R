@@ -38,15 +38,6 @@ binSum <- function(x, n) {
     .Call('genomation_binSum', PACKAGE = 'genomation', x, n)
 }
 
-#' Function reverses a vector 
-#' 
-#' @param y NumericVector
-#' @export
-#' @rdname reverse_L
-reverse_L <- function(y) {
-    .Call('genomation_reverse_L', PACKAGE = 'genomation', y)
-}
-
 #' Functions create a matrix storing the data with desirable number of bins for each window 
 #'
 #' listSliceMean() calls the binMean() function, listSliceMedian calls the binMedian(), 
@@ -57,55 +48,31 @@ reverse_L <- function(y) {
 #' @param ranks CharacterVector - position of the windows whose strand is "-"
 #' @export
 #' @rdname listSlice
-listSliceMean <- function(xlist, n, ranks) {
-    .Call('genomation_listSliceMean', PACKAGE = 'genomation', xlist, n, ranks)
+listSliceMean <- function(xlist, n) {
+    .Call('genomation_listSliceMean', PACKAGE = 'genomation', xlist, n)
 }
 
 #' @export
 #' @rdname listSlice
-listSliceMedian <- function(xlist, n, ranks) {
-    .Call('genomation_listSliceMedian', PACKAGE = 'genomation', xlist, n, ranks)
+listSliceMedian <- function(xlist, n) {
+    .Call('genomation_listSliceMedian', PACKAGE = 'genomation', xlist, n)
 }
 
 #' @export
 #' @rdname listSlice
-listSliceMax <- function(xlist, n, ranks) {
-    .Call('genomation_listSliceMax', PACKAGE = 'genomation', xlist, n, ranks)
+listSliceMax <- function(xlist, n) {
+    .Call('genomation_listSliceMax', PACKAGE = 'genomation', xlist, n)
 }
 
 #' @export
 #' @rdname listSlice
-listSliceMin <- function(xlist, n, ranks) {
-    .Call('genomation_listSliceMin', PACKAGE = 'genomation', xlist, n, ranks)
+listSliceMin <- function(xlist, n) {
+    .Call('genomation_listSliceMin', PACKAGE = 'genomation', xlist, n)
 }
 
 #' @export
 #' @rdname listSlice
-listSliceSum <- function(xlist, n, ranks) {
-    .Call('genomation_listSliceSum', PACKAGE = 'genomation', xlist, n, ranks)
-}
-
-#' Function reorders matrix to obtain the original order of the windows
-#'
-#' @param x NumericMatrix 
-#' @param p NumericVector - stors an original window order
-#' @export 
-#' @rdname ranksOrder
-ranksOrder <- function(x, p) {
-    .Call('genomation_ranksOrder', PACKAGE = 'genomation', x, p)
-}
-
-#' Function computes a matrix that stores the data with desirable number of bins and 
-#' keeps original order of the windows  
-#'
-#' @param xlist List of vectors storing values of a bin
-#' @param n intiger - number of bins
-#' @param negranks CharacterVector - position of the windows whose strand is "-"
-#' @param binOp - "bin" option - "mean", "max", "sum", "median", "min"
-#' @param p NumericVector - stors an original window order
-#' @export 
-#' @rdname matRes
-matRes <- function(xlist, n, negranks, binOp, p) {
-    .Call('genomation_matRes', PACKAGE = 'genomation', xlist, n, negranks, binOp, p)
+listSliceSum <- function(xlist, n) {
+    .Call('genomation_listSliceSum', PACKAGE = 'genomation', xlist, n)
 }
 

@@ -157,17 +157,28 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             mat <- do.call("c",mat)
             names(mat) <- ranks
             
-            # if strand aware is TRUE, we need to flip the windows on the minus strand 
-            if(strand.aware == TRUE){
-              orig.rows=windows[strand(windows) == '-',]$X_rank
-            }else{
-              orig.rows = vector(mode="character", length=0)
-            }
-          
-            mat_res <- matRes(mat, bin.num, orig.rows, bin.op, ranks)
-  
-            rownames(mat_res) = sort(ranks)
+              if(bin.op =="mean"){
+                mat_res <- listSliceMean(mat, bin.num)
+              }else if(bin.op =="median"){
+                mat_res <- listSliceMedian(mat, bin.num)
+              }else if(bin.op =="sum"){
+              mat_res <- listSliceSum(mat, bin.num)
+              }else if(bin.op =="max"){
+              mat_res <- listSliceMax(mat, bin.num)
+              }else if(bin.op =="min"){
+              mat_res <- listSliceMin(mat, bin.num)
+              }
             
+            # if strand aware is TRUE, we need to flip the windows on the minus strand
+                  if(strand.aware == TRUE){
+                    orig.rows=windows[strand(windows) == '-',]$X_rank
+                    mat_res[rownames(mat_res) %in% orig.rows,] = mat_res[rownames(mat_res) %in% 
+                                                                 orig.rows, ncol(mat_res):1]                                                                                                             
+                  }
+            # reorder matrix
+            mat_res = mat_res[order(ranks),] 
+            
+
        new("ScoreMatrix", mat_res)
           })
 

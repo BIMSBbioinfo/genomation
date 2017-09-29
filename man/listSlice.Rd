@@ -8,15 +8,15 @@
 \alias{listSliceSum}
 \title{Functions create a matrix storing the data with desirable number of bins for each window}
 \usage{
-listSliceMean(xlist, n, ranks)
+listSliceMean(xlist, n)
 
-listSliceMedian(xlist, n, ranks)
+listSliceMedian(xlist, n)
 
-listSliceMax(xlist, n, ranks)
+listSliceMax(xlist, n)
 
-listSliceMin(xlist, n, ranks)
+listSliceMin(xlist, n)
 
-listSliceSum(xlist, n, ranks)
+listSliceSum(xlist, n)
 }
 \arguments{
 \item{xlist}{List of vectors storing values of a bin}

@@ -1,8 +1,6 @@
 #include <math.h>
 #include <Rmath.h>
 #include <RcppArmadillo.h>
-#include <vector>
-#include <algorithm>
 
 using namespace Rcpp;
 //#-------------------------------------------------------------------------#
@@ -203,19 +201,6 @@ NumericVector binSum(NumericVector x,int n) {
   return res;
 }
 
-
-//#-------------------------------------------------------------------------#
-//' Function reverses a vector 
-//' 
-//' @param y NumericVector
-//' @export
-//' @rdname reverse_L
-// [[Rcpp::export]]
-NumericVector reverse_L(NumericVector y) {
-  std::reverse(y.begin(), y.end());
-  return y;
-}
-
 //#-------------------------------------------------------------------------#
 //' Functions create a matrix storing the data with desirable number of bins for each window 
 //'
@@ -228,20 +213,13 @@ NumericVector reverse_L(NumericVector y) {
 //' @export
 //' @rdname listSlice
 // [[Rcpp::export]]
-NumericMatrix  listSliceMean(List xlist,int n, CharacterVector ranks)   {
-  if(ranks.length()){
-    CharacterVector f = xlist.names();
-    std::string p;
-    for(int j=0; j < ranks.size(); j++){
-      p = *std::find(f.begin(),f.end(), ranks(j));
-      xlist[p] = reverse_L(xlist[p]);
-    }
-  }
+NumericMatrix  listSliceMean(List xlist,int n)   {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
   for (int i = 0; i < m; i++) {
-    subVec=binMean(xlist[i],n);
+    subVec=binMean(xlist[i], n );
+    
     for (int j = 0; j < n; j++) {
       res(i, j)=subVec[j];
     }
@@ -252,15 +230,7 @@ NumericMatrix  listSliceMean(List xlist,int n, CharacterVector ranks)   {
 //' @export
 //' @rdname listSlice
 // [[Rcpp::export]]
-NumericMatrix  listSliceMedian(List xlist,int n, CharacterVector ranks) {
-  if(ranks.length()){
-    CharacterVector f = xlist.names();
-    std::string p;
-    for(int j=0; j < ranks.size(); j++){
-      p = *std::find(f.begin(),f.end(), ranks(j));
-      xlist[p] = reverse_L(xlist[p]);
-    }
-  }
+NumericMatrix  listSliceMedian(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
@@ -275,15 +245,7 @@ NumericMatrix  listSliceMedian(List xlist,int n, CharacterVector ranks) {
 //' @export
 //' @rdname listSlice
 // [[Rcpp::export]]
-NumericMatrix  listSliceMax(List xlist,int n, CharacterVector ranks) {
-  if(ranks.length()){
-    CharacterVector f = xlist.names();
-    std::string p;
-    for(int j=0; j < ranks.size(); j++){
-      p = *std::find(f.begin(),f.end(), ranks(j));
-      xlist[p] = reverse_L(xlist[p]);
-    }
-  }
+NumericMatrix  listSliceMax(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
@@ -298,15 +260,7 @@ NumericMatrix  listSliceMax(List xlist,int n, CharacterVector ranks) {
 //' @export
 //' @rdname listSlice
 // [[Rcpp::export]]
-NumericMatrix  listSliceMin(List xlist,int n, CharacterVector ranks) {
-  if(ranks.length()){
-    CharacterVector f = xlist.names();
-    std::string p;
-    for(int j=0; j < ranks.size(); j++){
-      p = *std::find(f.begin(),f.end(), ranks(j));
-      xlist[p] = reverse_L(xlist[p]);
-    }
-  }
+NumericMatrix  listSliceMin(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
@@ -321,15 +275,7 @@ NumericMatrix  listSliceMin(List xlist,int n, CharacterVector ranks) {
 //' @export
 //' @rdname listSlice
 // [[Rcpp::export]]
-NumericMatrix  listSliceSum(List xlist,int n, CharacterVector ranks) {
-  if(ranks.length()){
-    CharacterVector f = xlist.names();
-    std::string p;
-    for(int j=0; j < ranks.size(); j++){
-      p = *std::find(f.begin(),f.end(), ranks(j));
-      xlist[p] = reverse_L(xlist[p]);
-    }
-  }
+NumericMatrix  listSliceSum(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
@@ -339,66 +285,5 @@ NumericMatrix  listSliceSum(List xlist,int n, CharacterVector ranks) {
     res(i, _) = subVec;             //adds the vector to the matrix
   }
   return res;
-}
-
-
-//#-------------------------------------------------------------------------#
-//' Function reorders matrix to obtain the original order of the windows
-//'
-//' @param x NumericMatrix 
-//' @param p NumericVector - stors an original window order
-//' @export 
-//' @rdname ranksOrder
-// [[Rcpp::export]]
-NumericMatrix  ranksOrder(NumericMatrix x, NumericVector p) {
-  int m = x.nrow();
-  int n = x.ncol();
-  
-  NumericMatrix res(m, n);
-  NumericVector r = clone(p);
-  
-  std::sort(r.begin(), r.end());
-  
-  for (int i = 0; i < m; i++){
-    for (int j = 0; j < m; j++){
-      if(p[i]==r[j]){
-        res.row(j) = x.row(i);
-        break;
-      }
-    }
-  }
-  return res;
-}
-
-
-//#-------------------------------------------------------------------------#
-//' Function computes a matrix that stores the data with desirable number of bins and 
-//' keeps original order of the windows  
-//'
-//' @param xlist List of vectors storing values of a bin
-//' @param n intiger - number of bins
-//' @param negranks CharacterVector - position of the windows whose strand is "-"
-//' @param binOp - "bin" option - "mean", "max", "sum", "median", "min"
-//' @param p NumericVector - stors an original window order
-//' @export 
-//' @rdname matRes
-// [[Rcpp::export]]
-NumericMatrix matRes(List xlist, int n, CharacterVector negranks, std::string binOp, NumericVector p){
-  NumericMatrix res(xlist.size(),n);
-  
- if(binOp.compare("mean") == 0){
-   res = listSliceMean(xlist, n, negranks);
- }else if(binOp.compare("max") == 0){
-   res = listSliceMax(xlist, n, negranks);
- }else if(binOp.compare("sum") == 0){
-   res = listSliceSum(xlist, n, negranks);
- }else if(binOp.compare("median") == 0){
-   res = listSliceMedian(xlist, n, negranks);
- }else if(binOp.compare("min") == 0){
-   res = listSliceMin(xlist, n, negranks); 
- }
- 
-  return ranksOrder(res, p);
-    
 }
 
