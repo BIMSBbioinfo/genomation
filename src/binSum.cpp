@@ -11,7 +11,6 @@ using namespace Rcpp;
 //'
 //' @param x NumericVector - vector of values of a bin
 //' @param n intiger - number of bins
-//' @export
 //' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMean(NumericVector x,int n) {
@@ -60,7 +59,6 @@ double Median_c(NumericVector x){
   return res;
 }
 
-//' @export
 //' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMedian(NumericVector x, int n) {
@@ -98,7 +96,6 @@ NumericVector binMedian(NumericVector x, int n) {
 }
 
 
-//' @export
 //' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMax(NumericVector x,int n) {
@@ -132,7 +129,6 @@ NumericVector binMax(NumericVector x,int n) {
   return res;
 }
 
-//' @export
 //' @rdname bin
 // [[Rcpp::export]]
 NumericVector binMin(NumericVector x,int n) {
@@ -166,7 +162,6 @@ NumericVector binMin(NumericVector x,int n) {
   return res;
 }
 
-//' @export
 //' @rdname bin
 // [[Rcpp::export]]
 NumericVector binSum(NumericVector x,int n) {

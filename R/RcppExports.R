@@ -8,31 +8,26 @@
 #'
 #' @param x NumericVector - vector of values of a bin
 #' @param n intiger - number of bins
-#' @export
 #' @rdname bin
 binMean <- function(x, n) {
     .Call('genomation_binMean', PACKAGE = 'genomation', x, n)
 }
 
-#' @export
 #' @rdname bin
 binMedian <- function(x, n) {
     .Call('genomation_binMedian', PACKAGE = 'genomation', x, n)
 }
 
-#' @export
 #' @rdname bin
 binMax <- function(x, n) {
     .Call('genomation_binMax', PACKAGE = 'genomation', x, n)
 }
 
-#' @export
 #' @rdname bin
 binMin <- function(x, n) {
     .Call('genomation_binMin', PACKAGE = 'genomation', x, n)
 }
 
-#' @export
 #' @rdname bin
 binSum <- function(x, n) {
     .Call('genomation_binSum', PACKAGE = 'genomation', x, n)

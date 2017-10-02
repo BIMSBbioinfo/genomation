@@ -144,9 +144,6 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
               warning('supplied GRanges object contains ranges of width < number of bins')
             }
             
-            r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
-            r.list <- r.list[order(names(r.list))]
-            ranks <- do.call("c",r.list)    
 
             # fetches the windows and the scores
             chrs <- sort(intersect(names(target), as.character(unique(seqnames(windows)))))
@@ -168,7 +165,12 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
               mat_res <- listSliceMin(mat, bin.num)
               }
             
-             rownames(mat_res) <- ranks
+            # copied from scoreMatrix()
+            # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+            r.list <- split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
+            r.list <- r.list[order(names(r.list))]
+            ranks <- do.call("c",r.list)    
+            rownames(mat_res) <- ranks
              
             # if strand aware is TRUE, we need to flip the windows on the minus strand
                   if(strand.aware == TRUE){
