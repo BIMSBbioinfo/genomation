@@ -1,6 +1,6 @@
 #include <math.h>
 #include <Rmath.h>
-#include <RcppArmadillo.h>
+#include <Rcpp.h>
 
 using namespace Rcpp;
 //#-------------------------------------------------------------------------#
@@ -41,7 +41,6 @@ NumericVector binMean(NumericVector x,int n) {
   return res;
 }
 
-// [[Rcpp::depends(RcppArmadillo)]]
 double Median_c(NumericVector x){
   int dint = x.size();
   double res;
