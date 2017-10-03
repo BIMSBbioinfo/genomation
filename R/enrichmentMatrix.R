@@ -4,10 +4,16 @@
 #' that enables to normalize ChIP-seq signals with respect to IgG or input DNA control.
 #' @param IP \code{\link{ScoreMatrix}} object storing an IP sample
 #' @param control \code{\link{ScoreMatrix}} object storing a control sample
+#' @note 
+#' The function computes an enrichment of IP over control as follow:
+#' Suppose both IP and control are ScoreMatrix objects that have same dimensions. 
+#' Then, the enrichment is calculated usign a formula: log2((IP + 1) / (control + 1)).
 #' @return \code{ScoreMatrix} object
+#' @usage  \\S4method{enrichmentMatrix}{ScoreMatrix,ScoreMatrix}(IP, control)
 #' @aliases enrichmentMatrix,ScoreMatrix,ScoreMatrix-method
 #' @rdname enrichmentMatrix-ScoreMatrix-method
 #' @seealso \code{\link{ScoreMatrix}}
+#' @docType methods
 #' @examples  
 #' #load IP and control BAM files and create ScoreMatrix objects
 #' source("http://bioconductor.org/biocLite.R")
@@ -45,10 +51,16 @@ setMethod("enrichmentMatrix", signature("ScoreMatrix", "ScoreMatrix"),
 #' 
 #' @param IP \code{\link{ScoreMatrixList}} object storing IP samples
 #' @param control \code{\link{ScoreMatrixList}} storing control samples
+#' @note 
+#' The function computes an enrichment of IP over control as follow:
+#' Suppose both IP and control are ScoreMatrix objects that have same dimensions. 
+#' Then, the enrichment is calculated usign a formula: log2((IP + 1) / (control + 1)).
 #' @return \code{ScoreMatrixList} object
+#' @usage  \\S4method{enrichmentMatrix}{ScoreMatrixList,ScoreMatrixList}(IP, control)
 #' @aliases enrichmentMatrix,ScoreMatrixList,ScoreMatrixList-method
 #' @rdname enrichmentMatrix-ScoreMatrixList-method
 #' @seealso \code{\link{ScoreMatrixList}}
+#' @docType methods
 #' @examples
 #' #load IP and control BAM files and create ScoreMatrix objects
 #' source("http://bioconductor.org/biocLite.R")
@@ -114,10 +126,16 @@ setMethod("enrichmentMatrix", signature("ScoreMatrixList","ScoreMatrixList"),
 #' 
 #' @param IP \code{\link{ScoreMatrixList}} object storing IP samples
 #' @param control \code{\link{ScoreMatrix}} storing control sample
+#' @note 
+#' The function computes an enrichment of IP over control as follow:
+#' Suppose both IP and control are ScoreMatrix objects that have same dimensions. 
+#' Then, the enrichment is calculated usign a formula: log2((IP + 1) / (control + 1)).
 #' @return \code{ScoreMatrixList} object
+#' @usage  \\S4method{enrichmentMatrix}{ScoreMatrixList,ScoreMatrix}(IP, control)
 #' @aliases enrichmentMatrix,ScoreMatrixList,ScoreMatrix-method
 #' @rdname enrichmentMatrix-ScoreMatrixList-ScoreMatrix-method
 #' @seealso \code{\link{ScoreMatrixList}}, \code{\link{ScoreMatrix}}
+#' @docType methods
 #' @examples
 #' #load IP and control BAM files and create ScoreMatrix objects
 #' source("http://bioconductor.org/biocLite.R")

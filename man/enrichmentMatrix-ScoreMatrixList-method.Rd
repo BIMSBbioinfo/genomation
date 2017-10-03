@@ -5,7 +5,7 @@
 \alias{enrichmentMatrix,ScoreMatrixList,ScoreMatrixList-method}
 \title{Compute an enrichment of IP over control both stored in ScoreMatrixList objects}
 \usage{
-\S4method{enrichmentMatrix}{ScoreMatrixList,ScoreMatrixList}(IP, control)
+\\S4method{enrichmentMatrix}{ScoreMatrixList,ScoreMatrixList}(IP, control)
 }
 \arguments{
 \item{IP}{\code{\link{ScoreMatrixList}} object storing IP samples}
@@ -18,6 +18,11 @@
 \description{
 This is an \code{enrichmentMatrix} function for \code{ScoreMatrixList} objects, 
 that enables to normalize ChIP-seq signals with respect to IgG or input DNA control.
+}
+\note{
+The function computes an enrichment of IP over control as follow:
+Suppose both IP and control are ScoreMatrix objects that have same dimensions. 
+Then, the enrichment is calculated usign a formula: log2((IP + 1) / (control + 1)).
 }
 \examples{
 #load IP and control BAM files and create ScoreMatrix objects
