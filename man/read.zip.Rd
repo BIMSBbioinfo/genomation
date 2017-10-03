@@ -14,3 +14,4 @@ read.zip(file, ...)
 \description{
 read.zip function
 }
+\keyword{internal}

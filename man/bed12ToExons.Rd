@@ -12,3 +12,4 @@ bed12ToExons(ref)
 \description{
 extracts exons from a bed12 file and puts them into GRanges object
 }
+\keyword{internal}

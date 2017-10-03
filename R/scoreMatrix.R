@@ -10,7 +10,7 @@
 #' @param start start position
 #' @param end end position
 #' @param nbins number of bins
-
+#' @keywords internal
 binner=function(start,end,nbins){
   
   if(! is.numeric(start))
@@ -33,6 +33,7 @@ binner=function(start,end,nbins){
 #'gets colors for a factor variable
 #'
 #' @param n n
+#' @keywords internal
 getColors = function(n) {
   
   black = "#000000"
@@ -44,6 +45,7 @@ getColors = function(n) {
 #' Extract file extension from file path
 #'
 #' @param x file 
+#' @keywords internal
 file.ext = function(x) {
   pos <- regexpr("\\.([[:alnum:]]+)$", x)
   ifelse(pos > -1L, substring(x, pos + 1L), "")
@@ -56,7 +58,7 @@ file.ext = function(x) {
 #'
 #' @param target target file
 #' @param type type name
-
+#' @keywords internal
 target.type = function(target, type=""){
   
   if(length(target)!=1){
@@ -107,7 +109,7 @@ target.type = function(target, type=""){
 #'
 #' @param target target file
 #' @param windows windows
-
+#' @keywords internal
 constrainRanges = function(target, windows){
   
   checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
@@ -140,7 +142,7 @@ constrainRanges = function(target, windows){
 #' @param x object
 #' @param class.name class name
 #' @param var.name uses x object
-#' 
+#' @keywords internal
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
   
   fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
@@ -155,7 +157,7 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
 #' galpTo2Ranges function
 #'
 #' @param x object
-
+#' @keywords internal
 galpTo2Ranges <- function(x)
 {
   gr1 <- granges(first(x))
@@ -180,7 +182,7 @@ galpTo2Ranges <- function(x)
 #' @param paired.end llogical
 #' @param library.size numeric
 #' @param ... additional parameters
-#' 
+#' @keywords internal
 
 readBam = function(target, windows, rpm=FALSE,
                    unique=FALSE, extend=0, param=NULL, 
@@ -251,7 +253,7 @@ readBam = function(target, windows, rpm=FALSE,
 #' @param target target object
 #' @param windows windows
 #' @param ... additional parameters
-
+#' @keywords internal
 readBigWig = function(target, windows=NULL, ...){
   
   

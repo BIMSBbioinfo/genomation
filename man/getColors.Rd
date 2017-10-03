@@ -12,3 +12,4 @@ getColors(n)
 \description{
 gets colors for a factor variable
 }
+\keyword{internal}

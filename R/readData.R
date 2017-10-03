@@ -3,6 +3,7 @@
 #' 
 #' @param file zip file
 #' @param ... additional objects and parameters
+#' @keywords internal
 read.zip <- function(file, ...) {
   zipFileInfo <- unzip(file, list=TRUE)
   if(nrow(zipFileInfo) > 1)
@@ -14,6 +15,7 @@ read.zip <- function(file, ...) {
 #' compressedAndUrl2temp function
 #' 
 #' @param filename file name
+#' @keywords internal
 compressedAndUrl2temp <- function(filename){ 
   if(grepl('^(http://|https://|ftp://|ftps://).*(.gz|.bz2|.xz|.zip)$',filename)){
     temp <- tempfile()
@@ -30,6 +32,7 @@ compressedAndUrl2temp <- function(filename){
 #' detects UCSC header (and first track)
 #' 
 #' @param filename file name
+#' @keywords internal
 detectUCSCheader <- function(filename){
   skip=0
   if(grepl("^.*(.zip)[[:space:]]*$", filename)){
@@ -61,6 +64,7 @@ detectUCSCheader <- function(filename){
 #' @param skip numeric 
 #' @param sep character
 #' @param chr numeric
+#' @keywords internal
 readTableFast<-function(filename,header=TRUE,skip=0,sep="\t",chr=1){
   
   filename <- compressedAndUrl2temp(filename)

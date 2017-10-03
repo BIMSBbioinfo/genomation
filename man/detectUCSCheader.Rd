@@ -12,3 +12,4 @@ detectUCSCheader(filename)
 \description{
 detects UCSC header (and first track)
 }
+\keyword{internal}

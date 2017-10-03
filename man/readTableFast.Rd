@@ -21,3 +21,4 @@ readTableFast(filename, header = TRUE, skip = 0, sep = "\\t", chr = 1)
 fast reading of big tables
 chr indicates index of column of chromosomes
 }
+\keyword{internal}

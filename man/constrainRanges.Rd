@@ -16,3 +16,4 @@ removes ranges that fell of the rle object
 does not check for the correspondence of the chromosome names - always 
 check before using this function
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ bed12ToIntrons(ref)
 \description{
 extracts introns from a bed12 file and puts them into GRanges object
 }
+\keyword{internal}

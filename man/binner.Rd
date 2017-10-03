@@ -16,3 +16,4 @@ binner(start, end, nbins)
 \description{
 given a vector and length smooths the vector to a given size
 }
+\keyword{internal}

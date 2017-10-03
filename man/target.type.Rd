@@ -15,3 +15,4 @@ target.type(target, type = "")
 Check if a target file is in bam and bigWig formats
 by looking at the file extension
 }
+\keyword{internal}

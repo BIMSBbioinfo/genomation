@@ -12,3 +12,4 @@ file.ext(x)
 \description{
 Extract file extension from file path
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ annotatGrWithGeneParts(gr, prom, exon, intron, strand = FALSE)
 \description{
 annotatGrWithGeneParts function
 }
+\keyword{internal}

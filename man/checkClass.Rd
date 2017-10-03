@@ -16,3 +16,4 @@ checkClass(x, class.name, var.name = deparse(substitute(x)))
 \description{
 check whether the x object corresponds to the given class
 }
+\keyword{internal}

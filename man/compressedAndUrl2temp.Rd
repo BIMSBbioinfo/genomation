@@ -12,3 +12,4 @@ compressedAndUrl2temp(filename)
 \description{
 compressedAndUrl2temp function
 }
+\keyword{internal}

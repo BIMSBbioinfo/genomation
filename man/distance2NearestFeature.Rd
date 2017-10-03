@@ -14,3 +14,4 @@ distance2NearestFeature(g.idh, tss)
 \description{
 distance2NearestFeature function
 }
+\keyword{internal}

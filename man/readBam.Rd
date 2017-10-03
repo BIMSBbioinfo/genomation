@@ -30,3 +30,4 @@ readBam(target, windows, rpm = FALSE, unique = FALSE, extend = 0,
 given a big bam path reads the big wig file into a RleList
 to be used by ScoreMatrix:char,GRanges
 }
+\keyword{internal}

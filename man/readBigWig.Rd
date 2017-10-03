@@ -17,3 +17,4 @@ readBigWig(target, windows = NULL, ...)
 given a big wig path reads the big wig file into a RleList
 to be used by ScoreMatrix:char,GRanges
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ galpTo2Ranges(x)
 \description{
 galpTo2Ranges function
 }
+\keyword{internal}

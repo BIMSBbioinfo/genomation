@@ -14,3 +14,4 @@ checkBedValidity(bed.df, type = "none")
 \description{
 checks the validity of the bed data.frame if it is a legitimate bed columns
 }
+\keyword{internal}
