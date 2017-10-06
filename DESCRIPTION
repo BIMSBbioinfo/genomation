@@ -46,8 +46,7 @@ Imports:
     seqPattern,
     rtracklayer,
     RUnit,
-	Rcpp (>= 0.12.11),
-	RcppArmadillo
+	Rcpp (>= 0.12.11)
 Suggests:
     BiocGenerics,
     genomationData,
