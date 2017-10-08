@@ -38,7 +38,7 @@ bam.file_IP_2 <- system.file("extdata",
 IP_2 <- ScoreMatrix(target=bam.file_IP_2, windows = promoters, type = 'bam')
 
 bam.file_c <- system.file("extdata", 
-"wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+"wgEncodeBroadHistoneH1hescCtcfStdAlnRep1.chr21.bam", package = "genomationData")
 control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
 
 # create a ScoreMatrixList object storing IP ScoreMatrix objects

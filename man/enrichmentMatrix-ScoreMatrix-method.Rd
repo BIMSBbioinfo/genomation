@@ -33,7 +33,7 @@ biocLite('genomationData')
 bam.file_IP <- system.file("extdata", 
 "wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
 bam.file_c <- system.file("extdata", 
-"wgEncodeBroadHistoneH1hescControlStdAlnRep1.chr21.bam", package = "genomation")
+"wgEncodeBroadHistoneH1hescCtcfStdAlnRep1.chr21.bam", package = "genomationData")
 data(promoters)
 IP <- ScoreMatrix(target = bam.file_IP, windows = promoters, type = 'bam')
 control <- ScoreMatrix(target = bam.file_c, windows = promoters, type = 'bam')
