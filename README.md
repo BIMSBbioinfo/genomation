@@ -1,6 +1,6 @@
 <a name="logo"/>
 <div align="center">
-<img src="https://dl.dropboxusercontent.com/u/1373164/genomation_logo.png" alt="methylKit Logo"  ></img>
+<img src="https://github.com/BIMSBbioinfo/genomation/blob/master/inst/genomation_logo.png" alt="hex Logo"  ></img>
 </a>
 </div>
 
