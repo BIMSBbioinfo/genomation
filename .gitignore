@@ -7,3 +7,6 @@ inst/scripts/GenomationDevtools.R
 .DS_Store
 inst/.DS_Store
 inst/extdata/.DS_Store
+src/*.o
+src/*.so
+src/*.dll

@@ -1,7 +1,7 @@
 Package: genomation
 Type: Package
 Title: Summary, annotation and visualization of genomic data
-Version: 1.9.3
+Version: 1.9.4
 Author: Altuna Akalin [aut, cre], Vedran Franke [aut, cre], Katarzyna Wreczycka
     [aut], Alexander Gosdschan [ctb], Liz Ing-Simmons [ctb]
 Maintainer: Altuna Akalin <aakalin@gmail.com>, Vedran Franke
@@ -45,7 +45,8 @@ Imports:
     Rsamtools (>= 1.25.2),
     seqPattern,
     rtracklayer,
-    RUnit
+    RUnit,
+	Rcpp (>= 0.12.11)
 Suggests:
     BiocGenerics,
     genomationData,
@@ -69,4 +70,6 @@ Collate:
     'Ops.R'
     'test_genomation_package.R'
     'deprecated_defunct.R'
+	'RcppExports.R'
+LinkingTo: Rcpp
 RoxygenNote: 6.0.1.9000

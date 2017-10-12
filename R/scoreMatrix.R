@@ -2,20 +2,63 @@
 # S3 functions
 #######################################
 
+#' binner function
+#'
+#'given a vector and length smooths the vector to a given size
+# the function is not safe - check for the window length before
+#'
+#' @param start start position
+#' @param end end position
+#' @param nbins number of bins
+#' @keywords internal
+binner=function(start,end,nbins){
+  
+  if(! is.numeric(start))
+    stop('start needs to be class numeric')
+  if(! is.numeric(end))
+    stop('end needs to be class numeric')
+  if(! is.numeric(nbins))
+    stop('nbins needs to be class numeric')
+  
+  x = unique(seq(from = start, to = end,length.out=nbins + 1 ) )
+  my.start = ceiling(x)[-length(x)]
+  my.end = floor(x)[-1]
+  
+  return( t(cbind(my.start, my.end) )  )
+}
+
 # ---------------------------------------------------------------------------- #
-### gets colors for a factor variable
+#' getColors function
+#'
+#'gets colors for a factor variable
+#'
+#' @param n n
+#' @keywords internal
 getColors = function(n) {
   
   black = "#000000"
   c(black,hcl(h=seq(0,(n-2)/(n-1),length=n-1)*360,c=100,l=65,fixup=TRUE))
 }
-### Extract file extension from file path
+
+#' file.ext function
+#'
+#' Extract file extension from file path
+#'
+#' @param x file 
+#' @keywords internal
 file.ext = function(x) {
   pos <- regexpr("\\.([[:alnum:]]+)$", x)
   ifelse(pos > -1L, substring(x, pos + 1L), "")
 }
-### Check if a target file is in bam and bigWig formats
-### by looking at the file extension
+
+#' target.type function
+#'
+#'Check if a target file is in bam and bigWig formats
+#'by looking at the file extension
+#'
+#' @param target target file
+#' @param type type name
+#' @keywords internal
 target.type = function(target, type=""){
   
   if(length(target)!=1){
@@ -57,9 +100,16 @@ target.type = function(target, type=""){
 }
 
 # ---------------------------------------------------------------------------- #
-# removes ranges that fell of the rle object
-# does not check for the correspondence of the chromosome names - always 
-# check before using this function
+
+#' constrainRanges function
+#' 
+#' removes ranges that fell of the rle object
+#' does not check for the correspondence of the chromosome names - always 
+#' check before using this function
+#'
+#' @param target target file
+#' @param windows windows
+#' @keywords internal
 constrainRanges = function(target, windows){
   
   checkClass(target, c('SimpleRleList','RleList','CompressedRleList'))
@@ -84,7 +134,15 @@ constrainRanges = function(target, windows){
 
 
 # ---------------------------------------------------------------------------- #
-# check whether the x object corresponds to the given class
+
+#' checkClass function
+#' 
+#' check whether the x object corresponds to the given class
+#'
+#' @param x object
+#' @param class.name class name
+#' @param var.name uses x object
+#' @keywords internal
 checkClass = function(x, class.name, var.name = deparse(substitute(x))){
   
   fun.name = match.call(call=sys.call(sys.parent(n=1)))[[1]]
@@ -96,6 +154,10 @@ checkClass = function(x, class.name, var.name = deparse(substitute(x))){
                '\n', sep=''))
 }
 
+#' galpTo2Ranges function
+#'
+#' @param x object
+#' @keywords internal
 galpTo2Ranges <- function(x)
 {
   gr1 <- granges(first(x))
@@ -106,8 +168,22 @@ galpTo2Ranges <- function(x)
 }
 
 # ---------------------------------------------------------------------------- #
-# given a big bam path reads the big wig file into a RleList
-# to be used by ScoreMatrix:char,GRanges
+#' readBam function
+#' 
+#' given a big bam path reads the big wig file into a RleList
+#' to be used by ScoreMatrix:char,GRanges
+#'
+#' @param target target object
+#' @param windows windows
+#' @param rpm logical
+#' @param unique logical
+#' @param extend numeric
+#' @param param ScanBamParam object 
+#' @param paired.end llogical
+#' @param library.size numeric
+#' @param ... additional parameters
+#' @keywords internal
+
 readBam = function(target, windows, rpm=FALSE,
                    unique=FALSE, extend=0, param=NULL, 
                    paired.end=FALSE, library.size=NULL, ...){
@@ -169,8 +245,15 @@ readBam = function(target, windows, rpm=FALSE,
 }
 
 # ---------------------------------------------------------------------------- #
-# given a big wig path reads the big wig file into a RleList
-# to be used by ScoreMatrix:char,GRanges
+#' readBigWig function
+#' 
+#' given a big wig path reads the big wig file into a RleList
+#' to be used by ScoreMatrix:char,GRanges
+#'
+#' @param target target object
+#' @param windows windows
+#' @param ... additional parameters
+#' @keywords internal
 readBigWig = function(target, windows=NULL, ...){
   
   

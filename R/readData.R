@@ -1,5 +1,9 @@
 # ---------------------------------------------------------------------------- #
-
+#' read.zip function
+#' 
+#' @param file zip file
+#' @param ... additional objects and parameters
+#' @keywords internal
 read.zip <- function(file, ...) {
   zipFileInfo <- unzip(file, list=TRUE)
   if(nrow(zipFileInfo) > 1)
@@ -8,6 +12,10 @@ read.zip <- function(file, ...) {
     read.table(unz(file, as.character(zipFileInfo$Name)), ...)
 }
 
+#' compressedAndUrl2temp function
+#' 
+#' @param filename file name
+#' @keywords internal
 compressedAndUrl2temp <- function(filename){ 
   if(grepl('^(http://|https://|ftp://|ftps://).*(.gz|.bz2|.xz|.zip)$',filename)){
     temp <- tempfile()
@@ -18,7 +26,13 @@ compressedAndUrl2temp <- function(filename){
   }
   filename
 }
-# detects UCSC header (and first track)
+
+#' detectUCSCheader function
+#' 
+#' detects UCSC header (and first track)
+#' 
+#' @param filename file name
+#' @keywords internal
 detectUCSCheader <- function(filename){
   skip=0
   if(grepl("^.*(.zip)[[:space:]]*$", filename)){
@@ -41,8 +55,16 @@ detectUCSCheader <- function(filename){
   return(skip)
 }
 
-# fast reading of big tables
-# chr indicates index of column of chromosomes
+#' readTableFast function
+#' 
+#' fast reading of big tables
+#' chr indicates index of column of chromosomes
+#' @param filename file name
+#' @param header logical
+#' @param skip numeric 
+#' @param sep character
+#' @param chr numeric
+#' @keywords internal
 readTableFast<-function(filename,header=TRUE,skip=0,sep="\t",chr=1){
   
   filename <- compressedAndUrl2temp(filename)

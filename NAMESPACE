@@ -47,7 +47,7 @@ importFrom("seqPattern", motifScanScores)
 importFrom("seqPattern", getPatternOccurrenceList)
 importFrom("stats", "dist", "hclust", "pnorm", "runif")
 importFrom("utils", "download.file", "read.table", "unzip")
-
+importFrom(Rcpp, sourceCpp)
 
 exportClasses(AnnotationByFeature)
 exportClasses(AnnotationByGeneParts)
@@ -91,9 +91,17 @@ exportMethods(ScoreMatrix)
 exportMethods(ScoreMatrixBin)
 exportMethods(scaleScoreMatrix)
 exportMethods(scaleScoreMatrixList)
+export(listSliceMean)
+export(listSliceMedian)
+export(listSliceMax)
+export(listSliceMin)
+export(listSliceSum)
 
-export(gffToGRanges)
+export(gffToGRanges) 
 export(ScoreMatrixList)
 
 S3method(c,ScoreMatrixList)
 S3method(c,ScoreMatrix)
+
+useDynLib(genomation)
+exportPattern("^[[:alpha:]]+")

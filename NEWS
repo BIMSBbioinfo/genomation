@@ -1,3 +1,21 @@
+genomation 1.9.4
+--------------
+NEW FUNCTIONS AND FEATURES
+* C++ functions that create a matrix storing data with desirable number of bins for each window:
+	- listSliceMean() - calls the binMean() function,
+	- listSliceMedian() - calls the binMedian(),
+	- listSliceMax() - calls the binMax(), 
+	- listSliceMin() - calls the binMin(),
+	- listSliceSum() - calls the binSum().
+* C++ functions that compute the value for each bin:
+	- binMean() - computes a mean value,
+	- binMedian() - computes a median value, 
+	- binMax() - computes a maximum values,
+	- binMin() - computes a minumum values,
+	- binSum() - computes a sum value.
+* C++ function Median_c() - computes a median value from a vector.
+Implemented by Bozena Mika-Gospodorz.
+
 genomation 1.9.3
 --------------
 IMPROVEMENTS AND BUG FIXES
@@ -8,7 +26,7 @@ genomation 1.9.2
 --------------
 NEW FUNCTIONS AND FEATURES
 * c() function to append a ScoreMatrix as well as a ScoreMatrixList to an existing ScoreMatrixList
-   (issue: https://github.com/BIMSBbioinfo/genomation/issues/151)
+   (issue: https://github.com/BIMSBbioinfo/genomation/issues/151). Implemented by Bozena Mika-Gospodorz.
 
 IMPROVEMENTS AND BUG FIXES
 * added a slot "names" to a ScoreMatrixList class
