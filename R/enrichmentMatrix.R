@@ -16,8 +16,7 @@
 #' @docType methods
 #' @examples  
 #' #load IP and control BAM files and create ScoreMatrix objects
-#' source("http://bioconductor.org/biocLite.R")
-#' biocLite('genomationData')
+#' library('genomationData')
 #' bam.file_IP <- system.file("extdata", 
 #' "wgEncodeBroadHistoneH1hescSuz12051317AlnRep1.chr21.bam", package = "genomationData")
 #' bam.file_c <- system.file("extdata", 
@@ -63,8 +62,7 @@ setMethod("enrichmentMatrix", signature("ScoreMatrix", "ScoreMatrix"),
 #' @docType methods
 #' @examples
 #' #load IP and control BAM files and create ScoreMatrix objects
-#' source("http://bioconductor.org/biocLite.R")
-#' biocLite('genomationData')
+#' library('genomationData')
 #' data(promoters)
 #' bam.file_IP_1 <- system.file("extdata", 
 #' "wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam", package = "genomationData")
@@ -138,8 +136,7 @@ setMethod("enrichmentMatrix", signature("ScoreMatrixList","ScoreMatrixList"),
 #' @docType methods
 #' @examples
 #' #load IP and control BAM files and create ScoreMatrix objects
-#' source("http://bioconductor.org/biocLite.R")
-#' biocLite('genomationData')
+#' library('genomationData')
 #' data(promoters)
 #' bam.file_IP_1 <- system.file("extdata", 
 #' "wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam", package = "genomationData")
