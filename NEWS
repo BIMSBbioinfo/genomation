@@ -1,3 +1,14 @@
+genomation 1.9.5
+--------------
+NEW FUNCTIONS AND FEATURES
+  * enrichmentMatrix() function computes an enrichment of IP sample over IgG or input DNA control sample
+     (issue: https://github.com/BIMSBbioinfo/genomation/issues/138)
+
+IMPROVEMENTS AND BUG FIXES
+* removed a requirement of having a 'chr' string in chromosome names in checkBedValidity() function
+	(issue: https://github.com/BIMSBbioinfo/genomation/issues/160)
+Implemented by Bozena Mika-Gospodorz.
+
 genomation 1.9.4
 --------------
 NEW FUNCTIONS AND FEATURES
