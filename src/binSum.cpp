@@ -34,6 +34,9 @@ NumericVector binMean(NumericVector x,int n) {
     end = prev + (w_size); //get the end index of the interval
     prev2 = ceil(prev); // get the integer index for slices over vector
     end2 = ceil(end);
+    if(i == (n-1)){ // for the last bin
+      end2 = sz;
+    }
     prev = prev + w_size; // update the begining index of the slice
     res[i] = std::accumulate(&x[prev2], &x[end2], 0.0)/(&x[end2]-&x[prev2]); //calculate the mean value of the bin
   }
@@ -84,6 +87,9 @@ NumericVector binMedian(NumericVector x, int n) {
     end = prev + (w_size); //get the end index of the interval
     prev2 = ceil(prev); // get the integer index for slices over vector
     end2 = ceil(end);
+    if(i == (n-1)){ // for the last bin
+      end2 = sz;
+    }
     prev = prev + w_size; // update the begining index of the slice
     
     NumericVector vec(&x[prev2], &x[end2]);
@@ -142,7 +148,6 @@ NumericVector binMin(NumericVector x,int n) {
   int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
-  
   // if the bins equals the vector size ,set the window size to 1
   if(sz == n){
     w_size=1;
@@ -161,6 +166,9 @@ NumericVector binMin(NumericVector x,int n) {
     end = prev + (w_size); //get the end index of the interval
     prev2 = ceil(prev); // get the integer index for slices over vector
     end2 = ceil(end);
+    if(i == (n-1)){ // for the last bin
+      end2 = sz;
+    }
     prev = prev + w_size; // update the begining index of the slice
     res[i] = *std::min_element(&x[prev2], &x[end2]); //calculate the max value in the bin
   }
@@ -198,6 +206,9 @@ NumericVector binSum(NumericVector x,int n) {
     end = prev + (w_size); //get the end index of the interval
     prev2 = ceil(prev); // get the integer index for slices over vector
     end2 = ceil(end);
+    if(i == (n-1)){ // for the last bin
+      end2 = sz;
+    }
     prev = prev + w_size; // update the begining index of the slice
     res[i] = std::accumulate(&x[prev2], &x[end2], 0.0); //calculate the sum value of the bin
     
@@ -217,12 +228,11 @@ NumericVector binSum(NumericVector x,int n) {
 //' @export
 // [[Rcpp::export]]
 NumericMatrix  listSliceMean(List xlist,int n)   {
-  int m = xlist.size(); 
+  int m = xlist.size();
   NumericMatrix res(m, n);
   NumericVector  subVec;
   for (int i = 0; i < m; i++) {
     subVec=binMean(xlist[i], n );
-    
     for (int j = 0; j < n; j++) {
       res(i, j)=subVec[j];
     }

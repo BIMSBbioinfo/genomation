@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // binMean
 NumericVector binMean(NumericVector x, int n);
-RcppExport SEXP genomation_binMean(SEXP xSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_binMean(SEXP xSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +19,7 @@ END_RCPP
 }
 // binMedian
 NumericVector binMedian(NumericVector x, int n);
-RcppExport SEXP genomation_binMedian(SEXP xSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_binMedian(SEXP xSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,7 +31,7 @@ END_RCPP
 }
 // binMax
 NumericVector binMax(NumericVector x, int n);
-RcppExport SEXP genomation_binMax(SEXP xSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_binMax(SEXP xSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,7 +43,7 @@ END_RCPP
 }
 // binMin
 NumericVector binMin(NumericVector x, int n);
-RcppExport SEXP genomation_binMin(SEXP xSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_binMin(SEXP xSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,7 +55,7 @@ END_RCPP
 }
 // binSum
 NumericVector binSum(NumericVector x, int n);
-RcppExport SEXP genomation_binSum(SEXP xSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_binSum(SEXP xSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -67,7 +67,7 @@ END_RCPP
 }
 // listSliceMean
 NumericMatrix listSliceMean(List xlist, int n);
-RcppExport SEXP genomation_listSliceMean(SEXP xlistSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_listSliceMean(SEXP xlistSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -79,7 +79,7 @@ END_RCPP
 }
 // listSliceMedian
 NumericMatrix listSliceMedian(List xlist, int n);
-RcppExport SEXP genomation_listSliceMedian(SEXP xlistSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_listSliceMedian(SEXP xlistSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -91,7 +91,7 @@ END_RCPP
 }
 // listSliceMax
 NumericMatrix listSliceMax(List xlist, int n);
-RcppExport SEXP genomation_listSliceMax(SEXP xlistSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_listSliceMax(SEXP xlistSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -103,7 +103,7 @@ END_RCPP
 }
 // listSliceMin
 NumericMatrix listSliceMin(List xlist, int n);
-RcppExport SEXP genomation_listSliceMin(SEXP xlistSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_listSliceMin(SEXP xlistSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -115,7 +115,7 @@ END_RCPP
 }
 // listSliceSum
 NumericMatrix listSliceSum(List xlist, int n);
-RcppExport SEXP genomation_listSliceSum(SEXP xlistSEXP, SEXP nSEXP) {
+RcppExport SEXP _genomation_listSliceSum(SEXP xlistSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -127,16 +127,16 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"genomation_binMean", (DL_FUNC) &genomation_binMean, 2},
-    {"genomation_binMedian", (DL_FUNC) &genomation_binMedian, 2},
-    {"genomation_binMax", (DL_FUNC) &genomation_binMax, 2},
-    {"genomation_binMin", (DL_FUNC) &genomation_binMin, 2},
-    {"genomation_binSum", (DL_FUNC) &genomation_binSum, 2},
-    {"genomation_listSliceMean", (DL_FUNC) &genomation_listSliceMean, 2},
-    {"genomation_listSliceMedian", (DL_FUNC) &genomation_listSliceMedian, 2},
-    {"genomation_listSliceMax", (DL_FUNC) &genomation_listSliceMax, 2},
-    {"genomation_listSliceMin", (DL_FUNC) &genomation_listSliceMin, 2},
-    {"genomation_listSliceSum", (DL_FUNC) &genomation_listSliceSum, 2},
+    {"_genomation_binMean", (DL_FUNC) &_genomation_binMean, 2},
+    {"_genomation_binMedian", (DL_FUNC) &_genomation_binMedian, 2},
+    {"_genomation_binMax", (DL_FUNC) &_genomation_binMax, 2},
+    {"_genomation_binMin", (DL_FUNC) &_genomation_binMin, 2},
+    {"_genomation_binSum", (DL_FUNC) &_genomation_binSum, 2},
+    {"_genomation_listSliceMean", (DL_FUNC) &_genomation_listSliceMean, 2},
+    {"_genomation_listSliceMedian", (DL_FUNC) &_genomation_listSliceMedian, 2},
+    {"_genomation_listSliceMax", (DL_FUNC) &_genomation_listSliceMax, 2},
+    {"_genomation_listSliceMin", (DL_FUNC) &_genomation_listSliceMin, 2},
+    {"_genomation_listSliceSum", (DL_FUNC) &_genomation_listSliceSum, 2},
     {NULL, NULL, 0}
 };
 

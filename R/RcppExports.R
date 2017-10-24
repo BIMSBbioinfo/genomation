@@ -7,7 +7,7 @@
 #' @param n intiger - number of bins
 #' @keywords internal
 binMean <- function(x, n) {
-    .Call('genomation_binMean', PACKAGE = 'genomation', x, n)
+    .Call('_genomation_binMean', PACKAGE = 'genomation', x, n)
 }
 
 #' Function that computes a median value for each bin
@@ -16,7 +16,7 @@ binMean <- function(x, n) {
 #' @param n intiger - number of bins
 #' @keywords internal
 binMedian <- function(x, n) {
-    .Call('genomation_binMedian', PACKAGE = 'genomation', x, n)
+    .Call('_genomation_binMedian', PACKAGE = 'genomation', x, n)
 }
 
 #' Function that computes a maximum value for each bin
@@ -25,7 +25,7 @@ binMedian <- function(x, n) {
 #' @param n intiger - number of bins
 #' @keywords internal
 binMax <- function(x, n) {
-    .Call('genomation_binMax', PACKAGE = 'genomation', x, n)
+    .Call('_genomation_binMax', PACKAGE = 'genomation', x, n)
 }
 
 #' Function that computes a minimum value for each bin
@@ -34,7 +34,7 @@ binMax <- function(x, n) {
 #' @param n intiger - number of bins
 #' @keywords internal
 binMin <- function(x, n) {
-    .Call('genomation_binMin', PACKAGE = 'genomation', x, n)
+    .Call('_genomation_binMin', PACKAGE = 'genomation', x, n)
 }
 
 #' Function that computes a sum of values in a bin
@@ -43,7 +43,7 @@ binMin <- function(x, n) {
 #' @param n intiger - number of bins
 #' @keywords internal
 binSum <- function(x, n) {
-    .Call('genomation_binSum', PACKAGE = 'genomation', x, n)
+    .Call('_genomation_binSum', PACKAGE = 'genomation', x, n)
 }
 
 #' Function creates a matrix storing data with desirable number of bins for each window 
@@ -55,7 +55,7 @@ binSum <- function(x, n) {
 #' @keywords internal
 #' @export
 listSliceMean <- function(xlist, n) {
-    .Call('genomation_listSliceMean', PACKAGE = 'genomation', xlist, n)
+    .Call('_genomation_listSliceMean', PACKAGE = 'genomation', xlist, n)
 }
 
 #' Function creates a matrix storing data with desirable number of bins for each window 
@@ -67,7 +67,7 @@ listSliceMean <- function(xlist, n) {
 #' @keywords internal
 #' @export
 listSliceMedian <- function(xlist, n) {
-    .Call('genomation_listSliceMedian', PACKAGE = 'genomation', xlist, n)
+    .Call('_genomation_listSliceMedian', PACKAGE = 'genomation', xlist, n)
 }
 
 #' Function creates a matrix storing data with desirable number of bins for each window 
@@ -79,7 +79,7 @@ listSliceMedian <- function(xlist, n) {
 #' @keywords internal
 #' @export
 listSliceMax <- function(xlist, n) {
-    .Call('genomation_listSliceMax', PACKAGE = 'genomation', xlist, n)
+    .Call('_genomation_listSliceMax', PACKAGE = 'genomation', xlist, n)
 }
 
 #' Function creates a matrix storing data with desirable number of bins for each window 
@@ -91,7 +91,7 @@ listSliceMax <- function(xlist, n) {
 #' @keywords internal
 #' @export
 listSliceMin <- function(xlist, n) {
-    .Call('genomation_listSliceMin', PACKAGE = 'genomation', xlist, n)
+    .Call('_genomation_listSliceMin', PACKAGE = 'genomation', xlist, n)
 }
 
 #' Function creates a matrix storing data with desirable number of bins for each window 
@@ -102,6 +102,6 @@ listSliceMin <- function(xlist, n) {
 #' @keywords internal
 #' @export
 listSliceSum <- function(xlist, n) {
-    .Call('genomation_listSliceSum', PACKAGE = 'genomation', xlist, n)
+    .Call('_genomation_listSliceSum', PACKAGE = 'genomation', xlist, n)
 }
 

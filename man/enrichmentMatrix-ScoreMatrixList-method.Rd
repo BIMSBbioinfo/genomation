@@ -26,8 +26,7 @@ Then, the enrichment is calculated usign a formula: log2((IP + 1) / (control + 1
 }
 \examples{
 #load IP and control BAM files and create ScoreMatrix objects
-source("http://bioconductor.org/biocLite.R")
-biocLite('genomationData')
+library('genomationData')
 data(promoters)
 bam.file_IP_1 <- system.file("extdata", 
 "wgEncodeSydhTfbsH1hescZnf143IggrabAlnRep1.chr21.bam", package = "genomationData")
