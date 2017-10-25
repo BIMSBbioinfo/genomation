@@ -64,7 +64,7 @@ does NOT have to be equal.}
 should be for each window}
 
 \item{bin.op}{bin operation that is either one of the following strings: 
-"max","min","mean". The operation is applied on the 
+"max","min","mean","median","sum". The operation is applied on the 
 values in the bin. Defaults to "mean"}
 
 \item{strand.aware}{If TRUE (default: FALSE), the strands of the windows will 
