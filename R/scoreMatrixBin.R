@@ -27,7 +27,7 @@
 #' @param bin.num single \code{integer} value denoting how many bins there 
 #'                should be for each window
 #' @param bin.op bin operation that is either one of the following strings: 
-#'                "max","min","mean". The operation is applied on the 
+#'                "max","min","mean","median","sum". The operation is applied on the 
 #'                values in the bin. Defaults to "mean"
 #' @param strand.aware If TRUE (default: FALSE), the strands of the windows will 
 #'                     be taken into account in the resulting \code{scoreMatrix}. 
