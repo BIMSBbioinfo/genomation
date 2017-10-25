@@ -1,3 +1,10 @@
+genomation 1.9.7
+--------------
+IMPROVEMENTS AND BUG FIXES
+* bug fix relating to calculation of the last bin in scoreMatrixBin function for bin.op = "max"
+	(https://github.com/BIMSBbioinfo/genomation/issues/166)
+Implemented by Bozena Mika-Gospodorz.
+
 genomation 1.9.6
 --------------
 IMPROVEMENTS AND BUG FIXES

@@ -130,6 +130,9 @@ NumericVector binMax(NumericVector x,int n) {
     end = prev + (w_size); //get the end index of the interval
     prev2 = ceil(prev); // get the integer index for slices over vector
     end2 = ceil(end);
+    if(i == (n-1)){ // for the last bin
+      end2 = sz;
+    }
     prev = prev + w_size; // update the begining index of the slice
     res[i] = *std::max_element(&x[prev2], &x[end2]); //calculate the max value in the bin
   }
