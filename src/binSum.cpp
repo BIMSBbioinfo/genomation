@@ -11,8 +11,8 @@ using namespace Rcpp;
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binMean(NumericVector x,int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
+  NumericVector x2 = wrap(na_omit(x));
+  int sz = x2.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
   
@@ -38,7 +38,7 @@ NumericVector binMean(NumericVector x,int n) {
       end2 = sz;
     }
     prev = prev + w_size; // update the begining index of the slice
-    res[i] = std::accumulate(&x[prev2], &x[end2], 0.0)/(&x[end2]-&x[prev2]); //calculate the mean value of the bin
+    res[i] = std::accumulate(&x2[prev2], &x2[end2], 0.0)/(&x2[end2]-&x2[prev2]); //calculate the mean value of the bin
   }
   
   return res;
@@ -64,8 +64,8 @@ double Median_c(NumericVector x){
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binMedian(NumericVector x, int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
+  NumericVector x2 = na_omit(x); 
+  int sz = x2.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
   
@@ -92,7 +92,7 @@ NumericVector binMedian(NumericVector x, int n) {
     }
     prev = prev + w_size; // update the begining index of the slice
     
-    NumericVector vec(&x[prev2], &x[end2]);
+    NumericVector vec(&x2[prev2], &x2[end2]);
     res[i] = Median_c(vec);
     
   }
@@ -107,8 +107,8 @@ NumericVector binMedian(NumericVector x, int n) {
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binMax(NumericVector x,int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
+  NumericVector x2 = na_omit(x); 
+  int sz = x2.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
   
@@ -134,7 +134,7 @@ NumericVector binMax(NumericVector x,int n) {
       end2 = sz;
     }
     prev = prev + w_size; // update the begining index of the slice
-    res[i] = *std::max_element(&x[prev2], &x[end2]); //calculate the max value in the bin
+    res[i] = *std::max_element(&x2[prev2], &x2[end2]); //calculate the max value in the bin
   }
   
   return res;
@@ -147,8 +147,8 @@ NumericVector binMax(NumericVector x,int n) {
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binMin(NumericVector x,int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
+  NumericVector x2 = na_omit(x); 
+  int sz = x2.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
   // if the bins equals the vector size ,set the window size to 1
@@ -173,7 +173,7 @@ NumericVector binMin(NumericVector x,int n) {
       end2 = sz;
     }
     prev = prev + w_size; // update the begining index of the slice
-    res[i] = *std::min_element(&x[prev2], &x[end2]); //calculate the max value in the bin
+    res[i] = *std::min_element(&x2[prev2], &x2[end2]); //calculate the max value in the bin
   }
   
   return res;
@@ -186,8 +186,8 @@ NumericVector binMin(NumericVector x,int n) {
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binSum(NumericVector x,int n) {
-  
-  int sz = x.size() ;// get the length of the input vector
+  NumericVector x2 = na_omit(x); 
+  int sz = x2.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
   
@@ -213,7 +213,7 @@ NumericVector binSum(NumericVector x,int n) {
       end2 = sz;
     }
     prev = prev + w_size; // update the begining index of the slice
-    res[i] = std::accumulate(&x[prev2], &x[end2], 0.0); //calculate the sum value of the bin
+    res[i] = std::accumulate(&x2[prev2], &x2[end2], 0.0); //calculate the sum value of the bin
     
   }
   
@@ -235,10 +235,8 @@ NumericMatrix  listSliceMean(List xlist,int n)   {
   NumericMatrix res(m, n);
   NumericVector  subVec;
   for (int i = 0; i < m; i++) {
-    subVec=binMean(xlist[i], n );
-    for (int j = 0; j < n; j++) {
-      res(i, j)=subVec[j];
-    }
+    subVec = binMean(xlist[i], n); //gives vector of mean values
+    res(i, _) = subVec;             //adds the vector to the matrix
   }
   return res;
 }
@@ -256,7 +254,6 @@ NumericMatrix  listSliceMedian(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
-  NumericVector tabx;
   for (int i = 0; i < m; i++) {
     subVec = binMedian(xlist[i], n); //gives vector of mean values
     res(i, _) = subVec;             //adds the vector to the matrix
@@ -278,7 +275,6 @@ NumericMatrix  listSliceMax(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
-  NumericVector tabx;
   for (int i = 0; i < m; i++) {
     subVec = binMax(xlist[i], n); //gives vector of mean values
     res(i, _) = subVec;             //adds the vector to the matrix
@@ -300,7 +296,6 @@ NumericMatrix  listSliceMin(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
-  NumericVector tabx;
   for (int i = 0; i < m; i++) {
     subVec = binMin(xlist[i], n); //gives vector of mean values
     res(i, _) = subVec;             //adds the vector to the matrix
@@ -321,7 +316,6 @@ NumericMatrix  listSliceSum(List xlist,int n) {
   int m = xlist.size(); 
   NumericMatrix res(m, n);
   NumericVector  subVec;
-  NumericVector tabx;
   for (int i = 0; i < m; i++) {
     subVec = binSum(xlist[i], n); //gives vector of mean values
     res(i, _) = subVec;             //adds the vector to the matrix
