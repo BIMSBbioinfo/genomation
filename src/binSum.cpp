@@ -11,7 +11,7 @@ using namespace Rcpp;
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binMean(NumericVector x,int n) {
-  NumericVector x2 = wrap(na_omit(x));
+  NumericVector x2 = na_omit(x);
   int sz = x2.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   double w_size=double(sz)/double(n); // window size can be a double
