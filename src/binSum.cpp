@@ -5,7 +5,11 @@
 using namespace Rcpp;
 
 //#-------------------------------------------------------------------------#
-
+//' Function that computes a mean value
+//'
+//' @param x NumericVector
+//' @keywords internal
+// [[Rcpp::export]]
 double Mean_c(NumericVector x){
   //remove NA from the vector
   NumericVector x2 = na_omit(x);
@@ -22,7 +26,7 @@ double Mean_c(NumericVector x){
 
 //' Function that computes a mean value for each bin
 //'
-//' @param x NumericVector - vector of values of a bin
+//' @param x NumericVector
 //' @param n intiger - number of bins
 //' @keywords internal
 // [[Rcpp::export]]
@@ -65,7 +69,11 @@ NumericVector binMean(NumericVector x,int n) {
 }
 
 //#-------------------------------------------------------------------------#
-
+//' Function that computes a median value
+//'
+//' @param x NumericVector
+//' @keywords internal
+// [[Rcpp::export]]
 double Median_c(NumericVector x){
   //remove NA from the vector
   NumericVector x2 = na_omit(x);
@@ -89,7 +97,7 @@ double Median_c(NumericVector x){
 
 //' Function that computes a median value for each bin
 //'
-//' @param x NumericVector - vector of values of a bin
+//' @param x NumericVector
 //' @param n intiger - number of bins
 //' @keywords internal
 // [[Rcpp::export]]
@@ -134,7 +142,11 @@ NumericVector binMedian(NumericVector x, int n) {
 
 
 //#-------------------------------------------------------------------------#
-
+//' Function that computes a max value
+//'
+//' @param x NumericVector
+//' @keywords internal
+// [[Rcpp::export]]
 double Max_c(NumericVector x){
   //remove NA from the vector
   NumericVector x2 = na_omit(x);
@@ -152,7 +164,7 @@ double Max_c(NumericVector x){
 
 //' Function that computes a maximum value for each bin
 //'
-//' @param x NumericVector - vector of values of a bin
+//' @param x NumericVector
 //' @param n intiger - number of bins
 //' @keywords internal
 // [[Rcpp::export]]
@@ -194,7 +206,11 @@ NumericVector binMax(NumericVector x,int n) {
 
 
 //#-------------------------------------------------------------------------#
-
+//' Function that computes a min value
+//'
+//' @param x NumericVector
+//' @keywords internal
+// [[Rcpp::export]]
 double Min_c(NumericVector x){
   //remove NA from the vector
   NumericVector x2 = na_omit(x);
@@ -212,7 +228,7 @@ double Min_c(NumericVector x){
 
 //' Function that computes a minimum value for each bin
 //'
-//' @param x NumericVector - vector of values of a bin
+//' @param x NumericVector
 //' @param n intiger - number of bins
 //' @keywords internal
 // [[Rcpp::export]]
@@ -253,7 +269,11 @@ NumericVector binMin(NumericVector x,int n) {
 
 
 //#-------------------------------------------------------------------------#
-
+//' Function that computes a sum value
+//'
+//' @param x NumericVector
+//' @keywords internal
+// [[Rcpp::export]]
 double Sum_c(NumericVector x){
   //remove NA from the vector
   NumericVector x2 = na_omit(x);
