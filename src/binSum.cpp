@@ -4,6 +4,23 @@
 
 using namespace Rcpp;
 //#-------------------------------------------------------------------------#
+
+
+double Mean_c(NumericVector x){
+  //remove NA from the vector
+  NumericVector x2 = na_omit(x);
+  
+  int sz2 = x2.size() ;// get the length of the input vector after removing NAs
+
+  //return NA when the vector consists of NAs (after removing NAs the vector size is equal to 0)
+  if(sz2 == 0){
+    return NA_REAL;
+  }
+  
+  return std::accumulate(x2.begin(), x2.end(), 0.0) / sz2 ; //calculate the mean value of the vector
+}
+
+
 //' Function that computes a mean value for each bin
 //'
 //' @param x NumericVector - vector of values of a bin
@@ -11,22 +28,23 @@ using namespace Rcpp;
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binMean(NumericVector x,int n) {
-  NumericVector x2 = na_omit(x);
-  int sz = x2.size() ;// get the length of the input vector
-  NumericVector res(n);// create the output vector
-  double w_size=double(sz)/double(n); // window size can be a double
   
-  // if the bins equals the vector size ,set the window size to 1
-  if(sz == n){
-    w_size=1;
-  }
+  int sz = x.size() ;// get the length of the input vector
+  NumericVector res(n);// create the output vector
   
   // if the bins number larger than vector size return zeros 
   if(sz < n){
     return res;
   }
   
-  double prev=0; // index for start positions over vector
+  double w_size=double(sz)/double(n); // window size can be a double
+  
+  // if the bins equals the vector size,set the window size to 1
+  if(sz == n){
+    w_size = 1;
+  }
+  
+  double prev = 0; // index for start positions over vector
   int prev2 ;// integers for indices
   int end2  ;
   double end;
@@ -37,12 +55,17 @@ NumericVector binMean(NumericVector x,int n) {
     if(i == (n-1)){ // for the last bin
       end2 = sz;
     }
+    
     prev = prev + w_size; // update the begining index of the slice
-    res[i] = std::accumulate(&x2[prev2], &x2[end2], 0.0)/(&x2[end2]-&x2[prev2]); //calculate the mean value of the bin
+    
+    NumericVector vec(&x[prev2], &x[end2]);
+    res[i] = Mean_c(vec);
   }
   
   return res;
 }
+
+
 
 double Median_c(NumericVector x){
   int dint = x.size();
