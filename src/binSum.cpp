@@ -251,6 +251,22 @@ NumericVector binMin(NumericVector x,int n) {
   return res;
 }
 
+
+//#-------------------------------------------------------------------------#
+
+double Sum_c(NumericVector x){
+  //remove NA from the vector
+  NumericVector x2 = na_omit(x);
+  
+  int sz2 = x2.size() ;// get the length of the input vector after removing NAs
+  
+  //return NA when the vector consists of NAs (after removing NAs the vector size is equal to 0)
+  if(sz2 == 0){
+    return NA_REAL;
+  }
+  return std::accumulate(x2.begin(), x2.end(), 0.0); //calculate the sum value of the vector
+}
+
 //' Function that computes a sum of values in a bin
 //'
 //' @param x NumericVector - vector of values of a bin
@@ -258,22 +274,22 @@ NumericVector binMin(NumericVector x,int n) {
 //' @keywords internal
 // [[Rcpp::export]]
 NumericVector binSum(NumericVector x,int n) {
-  NumericVector x2 = na_omit(x); 
-  int sz = x2.size() ;// get the length of the input vector
+  int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
-  double w_size=double(sz)/double(n); // window size can be a double
-  
-  // if the bins equals the vector size ,set the window size to 1
-  if(sz == n){
-    w_size=1;
-  }
   
   // if the bins number larger than vector size return zeros 
   if(sz < n){
     return res;
   }
   
-  double prev=0; // index for start positions over vector
+  double w_size = double(sz)/double(n); // window size can be a double
+  
+  // if the bins equals the vector size,set the window size to 1
+  if(sz == n){
+    w_size = 1;
+  }
+  
+  double prev = 0; // index for start positions over vector
   int prev2 ;// integers for indices
   int end2  ;
   double end;
@@ -285,8 +301,9 @@ NumericVector binSum(NumericVector x,int n) {
       end2 = sz;
     }
     prev = prev + w_size; // update the begining index of the slice
-    res[i] = std::accumulate(&x2[prev2], &x2[end2], 0.0); //calculate the sum value of the bin
     
+    NumericVector vec(&x[prev2], &x[end2]);
+    res[i] = Sum_c(vec);
   }
   
   return res;
