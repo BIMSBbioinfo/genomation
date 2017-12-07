@@ -42,6 +42,7 @@ ScoreMatrixBin(target, windows, bin.num = 10, bin.op = "mean",
 
 \\S4method{ScoreMatrixBin}{character,GRangesList}(target, windows, bin.num=10,
                                                      bin.op='mean',strand.aware, 
+                                                     weight.col=NULL,
                                                      is.noCovNA=FALSE, type='auto',
                                                      rpm, unique, extend, param,
                                                      bam.paired.end=FALSE, 
@@ -81,7 +82,7 @@ if TRUE,and if 'target' is a GRanges object with 'weight.col'
  provided, the bases that are uncovered will be preserved as
  NA in the returned object. This useful for situations where
  you can not have coverage all over the genome, such as CpG
-  methylation values.}
+ methylation values.}
 
 \item{type}{(Default:"auto")
 if target is a character vector of file paths, then type designates 
