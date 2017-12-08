@@ -1,3 +1,9 @@
+genomation 1.11.1
+--------------
+IMPROVEMENTS AND BUG FIXES
+* bug fix relating to ScorematrixBin that returns all 1's when is.noCovNA=T
+	(https://github.com/BIMSBbioinfo/genomation/issues/168)
+
 genomation 1.9.7
 --------------
 IMPROVEMENTS AND BUG FIXES
