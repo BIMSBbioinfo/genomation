@@ -43,7 +43,7 @@
 #'                   provided, the bases that are uncovered will be preserved as
 #'                   NA in the returned object. This useful for situations where
 #'                   you can not have coverage all over the genome, such as CpG
-#'                    methylation values.
+#'                   methylation values.
 #' @param type   (Default:"auto")
 #'               if target is a character vector of file paths, then type designates 
 #'               the type of the corresponding files (bam or bigWig)
@@ -232,7 +232,6 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 #' @rdname ScoreMatrixBin-methods
 #' @usage \\S4method{ScoreMatrixBin}{character,GRanges}(target, windows, bin.num=10,
 #'                                                      bin.op='mean',strand.aware, 
-#'                                                      weight.col=NULL,
 #'                                                      is.noCovNA=FALSE, type='auto',
 #'                                                      rpm, unique, extend, param,
 #'                                                      bam.paired.end=FALSE, 
@@ -240,7 +239,7 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRanges"),
 setMethod("ScoreMatrixBin",signature("character","GRanges"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
-                   weight.col=NULL,is.noCovNA=FALSE,
+                   is.noCovNA=FALSE,
                    type='auto', rpm, unique, extend, param,
                    bam.paired.end=FALSE, library.size=NULL){
             
@@ -282,6 +281,10 @@ setMethod("ScoreMatrixBin",signature("character","GRanges"),
                 }
                 if(length(target.gr) == 0)
                   stop('There are no ranges selected')
+                
+                # bigwig contains only one column for score
+                weight.col=names(mcols(target.gr)) # name of a score vector
+                
                 return(ScoreMatrixBin(target.gr,
                                windows,
                                bin.num=bin.num,
@@ -319,7 +322,6 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
               unlisted = sort(unlisted)
             ex = genomation:::constrainRanges(target, 
                                               unlisted)
-            
             # extracts the coverage vectors for individual exons and
             # concatenates them together
             ex_cvg = as(target[ex],'NumericList')
@@ -422,19 +424,17 @@ setMethod("ScoreMatrixBin",signature("GRanges","GRangesList"),
 setMethod("ScoreMatrixBin",signature("character","GRangesList"),
           function(target, windows, bin.num=10, 
                    bin.op='mean', strand.aware, 
-                   weight.col=NULL,is.noCovNA=FALSE, type='auto', 
+                   weight.col=NULL, is.noCovNA=FALSE, type='auto', 
                    rpm, unique, extend, param,
                    bam.paired.end=FALSE, library.size=NULL){
-            
             if(!file.exists(target)){
               stop("Indicated 'target' file does not exist\n")
             }
             type = target.type(target, type)
-            
             if( type=="bigWig" & rpm==TRUE)
               warning("rpm=TRUE is not supported for type='bigWig'")
             
-            if(type == 'bam')
+            if(type == 'bam'){
               covs = readBam(target, unlist(windows), 
                              rpm=rpm, unique=unique, 
                              extend=extend, param=param,
@@ -444,7 +444,7 @@ setMethod("ScoreMatrixBin",signature("character","GRangesList"),
                                   bin.num=bin.num,
                                   bin.op=bin.op,
                                   strand.aware=strand.aware))
-            
+            }
             if(type == 'bigWig'){
               if(is.noCovNA==FALSE){
                 covs = readBigWig(target=target, windows=unlist(windows))
