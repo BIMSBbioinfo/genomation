@@ -3,6 +3,8 @@ genomation 1.11.1
 IMPROVEMENTS AND BUG FIXES
 * bug fix relating to ScorematrixBin that returns all 1's when is.noCovNA=T
 	(https://github.com/BIMSBbioinfo/genomation/issues/168)
+* xcoords argument for heatMatrix and multiHeatMatrix now can take character vectors. 
+The character vectors will label the x-axis of heatmaps. Examples: xcoords=c("-2kb","0","2kb")
 
 genomation 1.9.7
 --------------
