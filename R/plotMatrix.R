@@ -718,9 +718,14 @@ plotMeta<-function(mat, centralTend="mean",
   ras=grid.raster(mat2,interpolate = FALSE, width= unit(1, "npc"),
                   height=unit(1, "npc"))
   
+  if(any(is.character(xcoords))) {
+    # take legend labels 
+    at = seq(0,1,length.out=length(xcoords)); label = xcoords
+  } else {
   # make legend ticks
   at = seq(0,1,length.out=5); label = seq(min(xcoords),max(xcoords)
                                           ,length.out=5)
+  }
   
   ax=grid.xaxis(at=at,label=formatC(label,digits=4,format="g"),
                 edits=gEdit("labels", rot=angle,hjust=hjust,vjust=vjust),
@@ -1041,13 +1046,16 @@ heatMatrix<-function(mat,grid=FALSE,col=NULL,xcoords=NULL,
   # get the default/given xcoordinates to plot
   if(!is.null(xcoords) & is.vector(xcoords)){
     
-    # if it is a two element vector of start and end coordinates 
-    # of the first and the last column of the matrix
-    if(length(xcoords)==2 & xcoords[1]<xcoords[2]){
-      xcoords=seq(xcoords[1],xcoords[2],length.out=ncol(mat2) )
+    ## if it is a numeric vector
+    if(all(is.numeric(xcoords))) { 
+      # if it is a two element vector of start and end coordinates 
+      # of the first and the last column of the matrix
+      if(length(xcoords)==2 & xcoords[1]<xcoords[2]){
+        xcoords=seq(xcoords[1],xcoords[2],length.out=ncol(mat2) )
+      }
     }
     
-    if(length(xcoords) != ncol(mat2) ) 
+    if( all(is.numeric(xcoords)) & ( length(xcoords) != ncol(mat2) ) )
       stop("xcoords has wrong length: ",length(xcoords)," \n",
            " it should be equal to the number of columns of ScoreMatrix\n",
            " which is",ncol(mat2),"\n")    
@@ -1599,10 +1607,13 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
       cxcoords=NULL
     }
     
-    # if it is a two element vector of start and end coordinates 
-    # of the first and the last column of the matrix
-    if(length(cxcoords)==2){
-      cxcoords=seq(cxcoords[1],cxcoords[2],length.out=ncol(mat.list[[i]]))
+    ## if it is a numeric vector
+    if(all(is.numeric(cxcoords))) {    
+      # if it is a two element vector of start and end coordinates 
+      # of the first and the last column of the matrix
+      if(length(cxcoords)==2){
+        cxcoords=seq(cxcoords[1],cxcoords[2],length.out=ncol(mat.list[[i]]))
+      }
     }
     
     # ccol: stands for current.color
@@ -1619,7 +1630,7 @@ multiHeatMatrix<-function(sml,grid=TRUE,col=NULL,xcoords=NULL,
     
     # get the default/given xcoordinates to plot
     if(!is.null(cxcoords)){
-      if(length(cxcoords) != ncol( mat.list[[i]] ) ) 
+      if( all(is.numeric(cxcoords)) & ( length(cxcoords) != ncol( mat.list[[i]] ) ) ) 
         stop("xcoords has wrong length: ",length(cxcoords)," \n",
              " it should be equal to the number of columns of ScoreMatrix\n",
              " which is",ncol(mat.list[[i]]),"\n")    
