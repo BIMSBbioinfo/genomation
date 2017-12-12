@@ -1,3 +1,17 @@
+genomation 1.11.2
+--------------
+IMPROVEMENTS AND BUG FIXES
+* improved the C++ function Median_c() to handle NAs 
+* the following C++ functions return NAs instead of zeros if the length of the vector is smaller than the number of bins: 
+	binMean(), binMedian(), binMax(), binMin(), binSum()
+
+NEW FUNCTIONS AND FEATURES
+C++ functions that compute a desired value from a vector and handle NAs:
+	- Mean_c() - computes a mean value, 
+	- Max_c() - computes a maximum values,
+	- Min_c() - computes a minumum values,
+	- Sum_c() - computes a sum value.
+
 genomation 1.11.1
 --------------
 IMPROVEMENTS AND BUG FIXES
