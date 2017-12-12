@@ -153,17 +153,20 @@ setMethod("ScoreMatrixBin",signature("RleList","GRanges"),
             mat <- lapply(myViews,function(x) as.list((viewApply(x,as.vector,simplify=FALSE))))
             mat <- do.call("c",mat)
             
-              if(bin.op =="mean"){
+            functs = c("min",'mean','max','median','sum')
+            if(!bin.op %in% functs)
+              stop(paste(c('Supported binning functions are', functs,'\n')))
+            if(bin.op =="mean"){
               mat_res <- listSliceMean(mat, bin.num)
-              }else if(bin.op =="median"){
+            }else if(bin.op =="median"){
               mat_res <- listSliceMedian(mat, bin.num)
-              }else if(bin.op =="sum"){
+            }else if(bin.op =="sum"){
               mat_res <- listSliceSum(mat, bin.num)
-              }else if(bin.op =="max"){
+            }else if(bin.op =="max"){
               mat_res <- listSliceMax(mat, bin.num)
-              }else if(bin.op =="min"){
+            }else if(bin.op =="min"){
               mat_res <- listSliceMin(mat, bin.num)
-              }
+            }
             
             # copied from scoreMatrix()
             # get the ranks of windows, when things are reorganized by as(...,"RangesList")

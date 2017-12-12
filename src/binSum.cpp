@@ -35,8 +35,11 @@ NumericVector binMean(NumericVector x,int n) {
   int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   
-  // if the bins number larger than vector size return zeros 
+  // if the bins number larger than vector size, return zeros 
   if(sz < n){
+    if(all(is_na(x))){  // if the vector consists of NAs, return NAs
+      res=rep(NA_REAL,n);
+    }
     return res;
   }
   
@@ -106,8 +109,11 @@ NumericVector binMedian(NumericVector x, int n) {
   int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   
-  // if the bins number larger than vector size return zeros 
+  // if the bins number larger than vector size, return zeros 
   if(sz < n){
+    if(all(is_na(x))){  // if the vector consists of NAs, return NAs
+      res=rep(NA_REAL,n);
+    }
     return res;
   }
   
@@ -172,8 +178,11 @@ NumericVector binMax(NumericVector x,int n) {
   int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   
-  // if the bins number larger than vector size return zeros 
+  // if the bins number larger than vector size, return zeros 
   if(sz < n){
+    if(all(is_na(x))){  // if the vector consists of NAs, return NAs
+      res=rep(NA_REAL,n);
+    }
     return res;
   }
   
@@ -236,8 +245,11 @@ NumericVector binMin(NumericVector x,int n) {
   int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   
-  // if the bins number larger than vector size return zeros 
+  // if the bins number larger than vector size, return zeros 
   if(sz < n){
+    if(all(is_na(x))){  // if the vector consists of NAs, return NAs
+      res=rep(NA_REAL,n);
+    }
     return res;
   }
   
@@ -297,8 +309,11 @@ NumericVector binSum(NumericVector x,int n) {
   int sz = x.size() ;// get the length of the input vector
   NumericVector res(n);// create the output vector
   
-  // if the bins number larger than vector size return zeros 
+  // if the bins number larger than vector size, return zeros 
   if(sz < n){
+    if(all(is_na(x))){  // if the vector consists of NAs, return NAs
+      res=rep(NA_REAL,n);
+    }
     return res;
   }
   
@@ -339,7 +354,7 @@ NumericVector binSum(NumericVector x,int n) {
 //' @keywords internal
 //' @export
 // [[Rcpp::export]]
-NumericMatrix  listSliceMean(List xlist,int n)   {
+NumericMatrix  listSliceMean(List xlist,int n) {
   int m = xlist.size();
   NumericMatrix res(m, n);
   NumericVector  subVec;
