@@ -7,7 +7,7 @@
 binMedian(x, n)
 }
 \arguments{
-\item{x}{NumericVector - vector of values of a bin}
+\item{x}{NumericVector}
 
 \item{n}{intiger - number of bins}
 }
