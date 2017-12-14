@@ -15,8 +15,8 @@ r:
 sudo: required
 bioc_required: true
 
-
-
+r_packages:
+  - devtools
 
 r_github_packages:
   - jimhester/covr
