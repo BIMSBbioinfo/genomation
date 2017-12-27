@@ -315,6 +315,10 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
             if( length(names(windows)) != length(unique(names(windows))) )
               stop("Windows don't have unique names")
             
+            #when the windows are unnamed, give the names
+            if(is.name(windows) == FALSE)
+               names(windows) <- seq(1:length(windows))
+            
             if(any(sum(width(windows))< bin.num))
               stop('Please remove transcripts that are shorter than bin.num')
             
