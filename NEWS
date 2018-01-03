@@ -1,4 +1,9 @@
-
+genomation 1.11.3
+--------------
+IMPROVEMENTS AND BUG FIXES
+* fixed an error of data.table() function that occurs when GrangesList object contains unnamed windows 
+in ScoreMatrixBin() function.
+	
 genomation 1.11.2
 --------------
 IMPROVEMENTS AND BUG FIXES
