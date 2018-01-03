@@ -316,7 +316,7 @@ setMethod("ScoreMatrixBin",signature("RleList","GRangesList"),
               stop("Windows don't have unique names")
             
             #when the windows are unnamed, give the names
-            if(is.name(windows) == FALSE)
+            if(is.null(names(windows)))
                names(windows) <- seq(1:length(windows))
             
             if(any(sum(width(windows))< bin.num))
