@@ -414,7 +414,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             
             # fetches the windows and the scores
             chrs = sort(intersect(names(target), as.character(unique(seqnames(windows)))))
-            myViews=Views(target[chrs],as(windows,"RangesList")[chrs]) # get subsets of RleList
+            myViews=Views(target[chrs],as(windows,"IntegerRangesList")[chrs]) # get subsets of RleList
             
             #  get a list of matrices from Views object
             #  operation below lists a matrix for each chromosome
@@ -423,7 +423,7 @@ setMethod("ScoreMatrix",signature("RleList","GRanges"),
             # combine the matrices from chromosomes 
             mat = do.call("rbind",mat)   
             
-            # get the ranks of windows, when things are reorganized by as(...,"RangesList")
+            # get the ranks of windows, when things are reorganized by as(...,"IntegerRangesList")
             r.list=split(mcols(windows)[,"X_rank"], as.vector(seqnames(windows))  )
             r.list=r.list[order(names(r.list))]
             ranks=do.call("c",r.list)

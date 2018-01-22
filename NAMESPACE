@@ -23,7 +23,7 @@ importMethodsFrom("rtracklayer", import)
 #                  RangedSelection, SimpleList, DataFrame,SimpleRleList,RleList,SimpleAtomicList,AtomicList,RleViews,RleViewsList)
 
 #importFrom("IRanges", DataFrame, IRanges, RangedDataList, RangedData,
-#           RangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,subsetByOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
+#           IntegerRangesList, Rle,matchMatrix,findOverlaps, RangedSelection,ranges,countOverlaps,subsetByOverlaps,elementMetadata,"elementMetadata<-",Views,viewApply,RleViewsList)
 
 #importMethodsFrom("IRanges",nearest,as.data.frame,values,length,elementNROWS,width,start,end)
 
