@@ -24,17 +24,17 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
-    Biostrings,
-    BSgenome,
+    Biostrings (>= 2.47.6),
+    BSgenome (>= 1.47.3),
     data.table,
     GenomeInfoDb,
-    GenomicRanges (>= 1.23.26), 
-    GenomicAlignments,
-    S4Vectors (>= 0.9.25),
+    GenomicRanges (>= 1.31.8),
+    GenomicAlignments (>= 1.15.6),
+    S4Vectors (>= 0.17.25),
     ggplot2,
     gridBase,
     impute,
-    IRanges,
+    IRanges (>= 2.13.12),
     matrixStats,
     methods,
     parallel,
@@ -42,9 +42,9 @@ Imports:
     plyr,
     readr,
     reshape2,
-    Rsamtools (>= 1.25.2),
+    Rsamtools (>= 1.31.2),
     seqPattern,
-    rtracklayer,
+    rtracklayer (>= 1.39.7),
     RUnit,
 	Rcpp (>= 0.12.14)
 Suggests:
