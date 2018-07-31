@@ -17,8 +17,9 @@ with other genomic features such as exons,introns and promoters.
 
 ### install via Bioconductor
 ```R
-source("http://bioconductor.org/biocLite.R")
-biocLite("genomation")
+if (!"BiocManager" %in% rownames(installed.packages()))
+  install.packages("BiocManager")
+BiocManager::install("genomation")
 
 ```
 
@@ -26,8 +27,10 @@ biocLite("genomation")
 ```R
 #' Install dependecies
 install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))
-source("http://bioconductor.org/biocLite.R")
-biocLite(c("GenomicRanges","rtracklayer","impute","Rsamtools"))
+if (!"BiocManager" %in% rownames(installed.packages()))
+  install.packages("BiocManager")
+BiocManager::install(c("GenomicRanges","rtracklayer","impute","Rsamtools"))
+
 
 #' install the packages
 library(devtools)
