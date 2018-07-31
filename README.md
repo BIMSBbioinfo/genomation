@@ -25,16 +25,14 @@ BiocManager::install("genomation")
 
 ### Install the latest version via install_github
 ```R
-#' Install dependecies
-install.packages( c("data.table","plyr","reshape2","ggplot2","gridBase","devtools"))
 if (!"BiocManager" %in% rownames(installed.packages()))
   install.packages("BiocManager")
-BiocManager::install(c("GenomicRanges","rtracklayer","impute","Rsamtools"))
+if (!"devtools" %in% rownames(installed.packages()))
+  install.packages("devtools")
 
-
-#' install the packages
 library(devtools)
-install_github("BIMSBbioinfo/genomation",build_vignettes=FALSE)
+install_github("BIMSBbioinfo/genomation",build_vignettes=FALSE,
+               repos=BiocManager::repositories(), dependencies=TRUE)
 
 ```
 
