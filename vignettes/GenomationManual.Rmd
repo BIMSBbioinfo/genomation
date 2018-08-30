@@ -70,8 +70,8 @@ To install the `genomation` and the complementary data package the from
 the Bioconductor repository, copy and paste the following lines into your R interpreter:
 
 ```{r eval=FALSE}
-biocLite('genomationData')
-biocLite('genomation')
+BiocManager::install('genomationData')
+BiocManager::install('genomation')
 ```
 
 
