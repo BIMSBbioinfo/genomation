@@ -103,17 +103,3 @@ setMethod("Ops", signature(e1="numeric", e2="ScoreMatrixList"),
           }
 )
 
-#' Extract method for a ScoreMatrixList object. 
-#' 
-#' @aliases [,ScoreMatrixList-method
-#' @param x the \code{\link{ScoreMatrixList}} object
-#' @param i numeric value
-#' @aliases extract,ScoreMatrixList,ANY-method
-setMethod("[",signature(x="ScoreMatrixList", i = "ANY"), 
-          function(x,i){
-            tmp=x@.Data[i]
-            names(tmp)=names(x)[i]
-            ScoreMatrixList( tmp)
-          }
-)
-
