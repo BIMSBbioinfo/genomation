@@ -368,7 +368,7 @@ setMethod("patternMatrix",
           function(pattern, windows, min.score = 0.8, 
                    asPercentage=FALSE, cores=1){
             
-            if(class(pattern[[1]])=="matrix"){
+            if(inherits(pattern[[1]], "matrix")){
               lmat <- lapply(1:length(pattern), 
                             function(i) patternMatrix(pattern=pattern[[i]], 
                                                       windows=windows, 
@@ -378,7 +378,7 @@ setMethod("patternMatrix",
               return(new("ScoreMatrixList",lmat))
             }
             
-            if(class(pattern[[1]])=="character"){
+            if(is.character(pattern[[1]])){
               pattern = unlist(pattern)
               patternMatrix(pattern, windows, min.score)
             }
@@ -394,7 +394,7 @@ setMethod("patternMatrix",
           function(pattern, windows, genome, min.score = 0.8, 
                    asPercentage=FALSE, cores=1){
                    
-            if(class(pattern[[1]])=="matrix"){
+            if(inherits(pattern[[1]],"matrix")){
               lmat <- lapply(1:length(pattern), 
                             function(i) patternMatrix(pattern=pattern[i], 
                                                       windows=windows, 
@@ -405,7 +405,7 @@ setMethod("patternMatrix",
               return(new("ScoreMatrixList",lmat))
             }
             
-            if(class(pattern[[1]])=="character"){
+            if(is.character(pattern[[1]])){
               pattern = unlist(pattern)
               patternMatrix(pattern, windows, genome=genome, 
                             min.score=min.score, asPercentage=asPercentage)
