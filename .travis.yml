@@ -8,9 +8,7 @@ language: r
 
 # See https://docs.travis-ci.com/user/languages/r/#R-Versions
 r:
-    - release
-    - devel
-     
+  - bioc-devel 
 
 sudo: required
 bioc_required: true
