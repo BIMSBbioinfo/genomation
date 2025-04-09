@@ -12,7 +12,8 @@ import(grid)
 import(gridBase)
 import(impute)
 importMethodsFrom("rtracklayer", import)
-
+importMethodsFrom("BiocGenerics", "as.data.frame")
+exportMethods("as.data.frame")
 
 #importMethodsFrom("GenomicRanges",elementMetadata,countOverlaps,findOverlaps, seqnames, seqlengths, strand,"strand<-")
 

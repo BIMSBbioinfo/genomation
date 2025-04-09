@@ -596,6 +596,36 @@ setMethod("annotateWithGeneParts",
 })
 
 
+#' Convert annotated object to a data.frame
+#'
+#' Convert annotated object from \code{annotateWithGeneParts()} to a data.frame,
+#' merging the `members` and `dist.to.TSS` slots.
+#' 
+#' @param x An object of class \code{AnnotationByGeneParts}.
+#' @param row.names,optional,... additional arguments to be passed to or from methods.
+#' @return a data.frame
+#'
+#' @examples
+#' data(cage)
+#' bed.file = system.file("extdata/chr21.refseq.hg19.bed", package = "genomation")
+#' gene.parts = readTranscriptFeatures(bed.file)
+#' cage.annot = annotateWithGeneParts(cage, gene.parts, intersect.chr=TRUE)
+#' as.data.frame(cage.annot)
+#'
+#' @export
+setMethod(
+    "as.data.frame",
+    "AnnotationByGeneParts",
+    function(x, ...){
+        members = as.data.frame(x@members)
+        tss = x@dist.to.TSS
+        cols = c("dist.to.feature", "feature.name")
+        members[tss[["target.row"]], cols] = tss[cols]
+
+        members
+    }
+)
+
 
 
 # ---------------------------------------------------------------------------- #
