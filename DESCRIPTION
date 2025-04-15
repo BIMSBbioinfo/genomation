@@ -24,6 +24,7 @@ BugReports: https://github.com/BIMSBbioinfo/genomation/issues
 Depends:
     R (>= 3.0.0),grid
 Imports:
+    BiocGenerics,
     Biostrings (>= 2.47.6),
     BSgenome (>= 1.47.3),
     data.table,
@@ -48,7 +49,6 @@ Imports:
     RUnit,
 	Rcpp (>= 0.12.14)
 Suggests:
-    BiocGenerics,
     genomationData,
     knitr,
     RColorBrewer,
@@ -73,4 +73,4 @@ Collate:
     'enrichmentMatrix.R'
     'RcppExports.R'
 LinkingTo: Rcpp
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 7.3.2
