@@ -474,20 +474,26 @@ setGeneric("readTranscriptFeatures",
 setMethod("readTranscriptFeatures", 
           signature(location = "character"),
           function(location,remove.unusual,up.flank ,down.flank ,unique.prom){
-            
-            # readBed6
+
+            # readBed12
             message('Reading the table...\r')
-            bed=readTableFast(location,header=FALSE,skip="auto")                    
+            bed = readTableFast(location, header = FALSE, skip = "auto")
+
+            if(ncol(bed) < 12){
+                stop("readTranscriptFeatures require 12 column bed file, only ",
+                     ncol(bed), " columns found.", call. = FALSE)
+            }
+
             if(remove.unusual)
               bed=bed[grep("_", as.character(bed[,1]),invert=TRUE),]
-            
+
             # introns
             message('Calculating intron coordinates...\r')
             introns    = convertBed2Introns(bed)
             # exons
             message('Calculating exon coordinates...\r')
             exons    = convertBed2Exons(bed)
-            
+
             # get the locations of TSSes
             message('Calculating TSS coordinates...\r')
             tss=bed
@@ -495,24 +501,24 @@ setMethod("readTranscriptFeatures",
             tss[tss$V6=="+",3] = tss[tss$V6=="+",2]
             #  - strand
             tss[tss$V6=="-",2]=tss[tss$V6=="-",3]
-            
+
             tssg = GRanges(seqnames=as.character(tss$V1),
                            ranges=IRanges(start=tss$V2, end=tss$V3),
                            strand=as.character(tss$V6),
                            score=rep(0,nrow(tss)),
                            name=tss$V4)
-            
+
             message('Calculating promoter coordinates...\r')
             # get the locations of promoters
             # + strand
             bed[bed$V6=="+",3]=bed[bed$V6=="+",2]+down.flank
             bed[bed$V6=="+",2]=bed[bed$V6=="+",2]-up.flank
-            
+
             #  - strand
             bed[bed$V6=="-",2]=bed[bed$V6=="-",3]-down.flank
             bed[bed$V6=="-",3]=bed[bed$V6=="-",3]+up.flank
-            
-            
+
+
             if(! unique.prom){
               prom.df = (bed[,c(1,2,3,4,6)])
               prom = GRanges(seqnames=as.character(prom.df$V1),
@@ -528,7 +534,7 @@ setMethod("readTranscriptFeatures",
                              score=rep(0,nrow(prom.df)),
                              name=rep(".",nrow(prom.df)) )
             }
-            
+
             message('Outputting the final GRangesList...\r\n')
             GRangesList(exons=exons,introns=introns,promoters=prom,TSSes=tssg)
           })
